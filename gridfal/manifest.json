@@ -1,0 +1,18 @@
+{
+  "name": "Grid Fall",
+  "short_name": "Grid Fall",
+  "description": "Draft cards. Build chaos. Die. Repeat. A roguelike browser game by VOID CELL.",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#04080f",
+  "theme_color": "#04080f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

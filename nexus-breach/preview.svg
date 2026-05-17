@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020810"/>
+      <stop offset="50%" stop-color="#050e20"/>
+      <stop offset="100%" stop-color="#080520"/>
+    </linearGradient>
+    <radialGradient id="arena-glow" cx="72%" cy="50%" r="35%">
+      <stop offset="0%" stop-color="#00eeff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#00eeff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="btn" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00eeff"/>
+      <stop offset="100%" stop-color="#7755ff"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow2">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#arena-glow)"/>
+
+  <!-- Stars -->
+  <circle cx="60" cy="40" r="1.2" fill="#00eeff" opacity="0.5"/>
+  <circle cx="180" cy="90" r="1" fill="#7755ff" opacity="0.6"/>
+  <circle cx="320" cy="30" r="1.5" fill="#00eeff" opacity="0.4"/>
+  <circle cx="90" cy="200" r="1" fill="#00eeff" opacity="0.3"/>
+  <circle cx="250" cy="520" r="1.2" fill="#7755ff" opacity="0.5"/>
+  <circle cx="50" cy="400" r="1" fill="#00eeff" opacity="0.4"/>
+  <circle cx="380" cy="580" r="1.5" fill="#00eeff" opacity="0.3"/>
+  <circle cx="1100" cy="80" r="1.2" fill="#7755ff" opacity="0.5"/>
+  <circle cx="1050" cy="560" r="1" fill="#00eeff" opacity="0.4"/>
+  <circle cx="950" cy="30" r="1.5" fill="#00eeff" opacity="0.3"/>
+
+  <!-- Arena circle -->
+  <circle cx="860" cy="315" r="220" fill="none" stroke="#00eeff" stroke-width="1.5" opacity="0.2" filter="url(#glow)"/>
+  <circle cx="860" cy="315" r="220" fill="none" stroke="#00eeff" stroke-width="6" opacity="0.05"/>
+  <circle cx="860" cy="315" r="170" fill="none" stroke="#00eeff" stroke-width="0.5" opacity="0.08"/>
+  <circle cx="860" cy="315" r="80" fill="none" stroke="#7755ff" stroke-width="0.5" opacity="0.1"/>
+
+  <!-- Enemy dots -->
+  <circle cx="720" cy="200" r="10" fill="#ff3366" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="990" cy="160" r="8" fill="#ff8833" opacity="0.85" filter="url(#glow)"/>
+  <circle cx="1050" cy="380" r="9" fill="#aa33ff" opacity="0.9" filter="url(#glow)"/>
+  <circle cx="780" cy="450" r="7" fill="#ff3366" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="960" cy="470" r="8" fill="#ff8833" opacity="0.75" filter="url(#glow)"/>
+  <circle cx="690" cy="330" r="6" fill="#aa33ff" opacity="0.8"/>
+
+  <!-- Lightning bolt (chain) -->
+  <polyline points="720,200 780,240 740,270 860,315" stroke="#00eeff" stroke-width="1.5" fill="none" opacity="0.3" filter="url(#glow)"/>
+
+  <!-- Player -->
+  <circle cx="860" cy="315" r="18" fill="#00eeff" opacity="0.15" filter="url(#glow2)"/>
+  <circle cx="860" cy="315" r="9" fill="#00eeff" filter="url(#glow2)"/>
+  <circle cx="860" cy="315" r="4" fill="#fff"/>
+
+  <!-- Particle burst -->
+  <circle cx="990" cy="160" r="3" fill="#ff8833" opacity="0.6"/>
+  <circle cx="1010" cy="140" r="2" fill="#ff8833" opacity="0.4"/>
+  <circle cx="975" cy="145" r="2.5" fill="#ffaa44" opacity="0.5"/>
+  <circle cx="1005" cy="175" r="2" fill="#ff8833" opacity="0.35"/>
+
+  <!-- Left content -->
+  <!-- Kicker -->
+  <text x="72" y="110" font-family="'Courier New',monospace" font-size="12" font-weight="700"
+    letter-spacing="4" fill="#00eeff" opacity="0.65">ARCHITECT-DNA GAME STUDIO</text>
+  <line x1="72" y1="122" x2="240" y2="122" stroke="#00eeff" stroke-width="1" opacity="0.25"/>
+
+  <!-- Game title -->
+  <text x="72" y="230" font-family="'Courier New',monospace" font-size="72" font-weight="900"
+    letter-spacing="6" fill="#00eeff" filter="url(#glow2)" opacity="0.95">NEXUS</text>
+  <text x="72" y="315" font-family="'Courier New',monospace" font-size="72" font-weight="900"
+    letter-spacing="6" fill="#7755ff" filter="url(#glow)" opacity="0.95">BREACH</text>
+
+  <!-- Tagline -->
+  <text x="72" y="370" font-family="'Helvetica Neue',Arial,sans-serif" font-size="18"
+    fill="rgba(200,215,255,0.65)">Survive endless waves. Chain kills. Unleash abilities.</text>
+
+  <!-- Stats row -->
+  <rect x="72" y="396" width="90" height="48" rx="8" fill="rgba(0,238,255,0.06)" stroke="#00eeff" stroke-width="1" stroke-opacity="0.2"/>
+  <text x="117" y="416" font-family="'Courier New',monospace" font-size="18" font-weight="900"
+    text-anchor="middle" fill="#00eeff">60fps</text>
+  <text x="117" y="434" font-family="'Courier New',monospace" font-size="9" letter-spacing="1"
+    text-anchor="middle" fill="rgba(160,185,230,0.45)">SMOOTH</text>
+
+  <rect x="174" y="396" width="90" height="48" rx="8" fill="rgba(119,85,255,0.06)" stroke="#7755ff" stroke-width="1" stroke-opacity="0.2"/>
+  <text x="219" y="416" font-family="'Courier New',monospace" font-size="18" font-weight="900"
+    text-anchor="middle" fill="#7755ff">PWA</text>
+  <text x="219" y="434" font-family="'Courier New',monospace" font-size="9" letter-spacing="1"
+    text-anchor="middle" fill="rgba(160,185,230,0.45)">INSTALL</text>
+
+  <rect x="276" y="396" width="90" height="48" rx="8" fill="rgba(0,238,255,0.06)" stroke="#00eeff" stroke-width="1" stroke-opacity="0.2"/>
+  <text x="321" y="416" font-family="'Courier New',monospace" font-size="18" font-weight="900"
+    text-anchor="middle" fill="#00eeff">FREE</text>
+  <text x="321" y="434" font-family="'Courier New',monospace" font-size="9" letter-spacing="1"
+    text-anchor="middle" fill="rgba(160,185,230,0.45)">NO LOGIN</text>
+
+  <!-- Play button -->
+  <rect x="72" y="470" width="220" height="54" rx="12" fill="url(#btn)" filter="url(#glow)"/>
+  <text x="182" y="504" font-family="'Courier New',monospace" font-size="15" font-weight="800"
+    letter-spacing="3" text-anchor="middle" fill="#000">▶  PLAY NOW</text>
+
+  <!-- URL -->
+  <text x="72" y="600" font-family="'Courier New',monospace" font-size="12"
+    fill="rgba(160,185,230,0.3)" letter-spacing="1">nexus-breach.architect-dna.ch</text>
+</svg>

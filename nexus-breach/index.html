@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXUS BREACH — Architect-DNA Systems</title>
+<meta name="description" content="NEXUS BREACH — neon arena brawler. Survive endless waves. Unleash abilities. A free browser game by Architect-DNA Systems.">
+<meta property="og:title" content="NEXUS BREACH — Neon Arena Brawler">
+<meta property="og:description" content="Survive endless waves. Chain kills. Unleash abilities. Free browser game — no install, no account. Play now.">
+<meta property="og:url" content="https://architect-dna.ch/nexus-breach">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://architect-dna.ch/nexus-breach/preview.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NEXUS BREACH — Neon Arena Brawler">
+<meta name="twitter:description" content="Survive endless waves. Chain kills. Unleash abilities. Free browser game — no install, no account.">
+<meta name="twitter:image" content="https://architect-dna.ch/nexus-breach/preview.svg">
+<meta name="theme-color" content="#000000">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;
+  --bg2:#F0EFEB;
+  --bg3:#E8E7E2;
+  --text:#1A1A1A;
+  --text2:#5A5A58;
+  --text3:#9A9A98;
+  --amber:#B5271E;
+  --amberD:rgba(181,39,30,.08);
+  --amberB:rgba(181,39,30,.18);
+  --border:#E0E0D8;
+  --border2:rgba(0,0,0,.13);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --radius:14px;
+  --cyan:#1aaeff;
+  --cyanD:rgba(26,174,255,.10);
+  --cyanB:rgba(26,174,255,.22);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;height:56px;gap:20px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.header-nav{margin-left:auto;display:flex;gap:4px}
+.header-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s}
+.header-nav a:hover{background:var(--bg2);color:var(--text)}
+
+/* ── GAME HERO ── */
+.game-hero{
+  background:#000;
+  position:relative;
+  overflow:hidden;
+  padding:80px 24px 72px;
+}
+#star-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.game-hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 40%, rgba(26,174,255,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.game-hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1;}
+.game-kicker{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(26,174,255,.6);margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.game-kicker::before{content:'';display:inline-block;width:20px;height:1px;background:rgba(26,174,255,.4);}
+.game-title{
+  font-family:var(--mono);
+  font-size:clamp(48px,10vw,96px);
+  font-weight:900;
+  letter-spacing:-.04em;
+  line-height:1;
+  color:#fff;
+  margin-bottom:6px;
+  text-shadow:0 0 40px rgba(26,174,255,.35), 0 0 80px rgba(26,174,255,.15);
+}
+.game-title span{color:var(--cyan);}
+.game-subtitle{
+  font-family:var(--mono);font-size:clamp(14px,2vw,18px);
+  color:rgba(26,174,255,.45);letter-spacing:.12em;text-transform:uppercase;margin-bottom:32px;
+}
+.game-desc{
+  font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,.55);
+  max-width:480px;line-height:1.75;margin-bottom:40px;
+}
+.game-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.btn-play{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 32px;border-radius:var(--radius);
+  font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;transition:.18s;
+  background:var(--cyan);color:#000;
+  box-shadow:0 0 32px rgba(26,174,255,.35), 0 0 0 1px rgba(26,174,255,.4);
+}
+.btn-play:hover{background:#3bbeff;box-shadow:0 0 48px rgba(26,174,255,.5), 0 0 0 1px rgba(26,174,255,.6);}
+.btn-play svg{width:18px;height:18px;flex-shrink:0}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 22px;border-radius:var(--radius);
+  font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;transition:.18s;
+  background:transparent;color:rgba(26,174,255,.6);
+  border:1px solid rgba(26,174,255,.2);
+}
+.btn-ghost:hover{color:var(--cyan);border-color:rgba(26,174,255,.5);background:rgba(26,174,255,.06);}
+.game-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px;}
+.badge{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 12px;border-radius:20px;
+  background:rgba(26,174,255,.07);border:1px solid rgba(26,174,255,.14);
+  color:rgba(26,174,255,.5);
+}
+
+/* ── ARENA DECORATION ── */
+.arena-deco{
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  width:min(420px,45vw);height:min(420px,45vw);
+  opacity:.12;pointer-events:none;
+}
+@media(max-width:700px){.arena-deco{display:none}}
+
+/* ── SECTION ── */
+section{max-width:960px;margin:0 auto;padding:64px 24px}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:32px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+h2{font-size:clamp(22px,3.5vw,32px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+
+/* ── HOW TO PLAY ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:32px}
+.how-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px}
+.how-card-icon{font-size:24px;line-height:1}
+.how-card-title{font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--text)}
+.how-card-desc{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* ── CONTROLS ── */
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+@media(max-width:560px){.controls-grid{grid-template-columns:1fr}}
+.controls-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.controls-box h3{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-family:var(--mono)}
+.key-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.key-row:last-child{border-bottom:none}
+.key{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  background:var(--bg2);border:1px solid var(--border2);border-bottom:2px solid var(--border2);
+  border-radius:5px;padding:3px 8px;min-width:44px;text-align:center;color:var(--text);flex-shrink:0;
+}
+.key-desc{font-size:13px;color:var(--text2)}
+
+/* ── ENEMIES ── */
+.enemy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:32px}
+.enemy-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.enemy-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:3px;box-shadow:0 0 8px currentColor}
+.enemy-body{}
+.enemy-name{font-size:13px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
+.enemy-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.enemy-tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:4px}
+
+/* ── PLAY CTA BANNER ── */
+.play-banner{background:#000;border-radius:var(--radius);padding:40px 32px;text-align:center;position:relative;overflow:hidden;margin-top:32px}
+.play-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 50%, rgba(26,174,255,.07) 0%, transparent 70%);
+  pointer-events:none;
+}
+.play-banner h3{font-family:var(--mono);font-size:clamp(18px,3vw,26px);font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.02em;position:relative;z-index:1}
+.play-banner p{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:24px;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:32px 24px;margin-top:0}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text)}
+.divider{border:none;border-top:1px solid var(--border);margin:0}
+
+@media(max-width:600px){
+  .header-nav{display:none}
+  .game-hero{padding:52px 20px 52px}
+  section{padding:48px 20px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/>
+          <path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="/#projects">Projects</a>
+      <a href="https://nexus-breach.architect-dna.ch" style="color:var(--cyan)">Play Now</a>
+    </nav>
+  </div>
+</header>
+
+<div class="game-hero">
+  <canvas id="star-canvas"></canvas>
+  <!-- Arena decoration -->
+  <svg class="arena-deco" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="210" cy="210" r="200" stroke="#1aaeff" stroke-width="1.5"/>
+    <circle cx="210" cy="210" r="130" stroke="#1aaeff" stroke-width="0.8" stroke-dasharray="4 6"/>
+    <circle cx="210" cy="210" r="60" stroke="#1aaeff" stroke-width="0.6"/>
+    <polygon points="210,70 310,130 310,250 210,310 110,250 110,130" stroke="#1aaeff" stroke-width="1.2" fill="none"/>
+    <circle cx="210" cy="210" r="10" fill="#1aaeff" opacity="0.6"/>
+    <line x1="210" y1="10" x2="210" y2="70" stroke="#1aaeff" stroke-width="1.5"/>
+    <line x1="310" y1="130" x2="360" y2="100" stroke="#1aaeff" stroke-width="1.5"/>
+    <line x1="310" y1="250" x2="360" y2="280" stroke="#1aaeff" stroke-width="1.5"/>
+    <line x1="210" y1="310" x2="210" y2="370" stroke="#1aaeff" stroke-width="1.5"/>
+    <line x1="110" y1="250" x2="60" y2="280" stroke="#1aaeff" stroke-width="1.5"/>
+    <line x1="110" y1="130" x2="60" y2="100" stroke="#1aaeff" stroke-width="1.5"/>
+  </svg>
+
+  <div class="game-hero-inner">
+    <div class="game-kicker">Browser Game · Free to Play</div>
+    <div class="game-title">NEXUS<br><span>BREACH</span></div>
+    <div class="game-subtitle">Neon Arena Brawler</div>
+    <p class="game-desc">Survive endless waves of enemies in a glowing neon arena. Chain kills for score multipliers, spend coins on permanent upgrades, unleash 4 abilities. Boss every 5 waves. No install, no account — pure browser.</p>
+    <div class="game-cta">
+      <a class="btn-play" href="https://nexus-breach.architect-dna.ch">
+        <svg viewBox="0 0 18 18" fill="currentColor"><path d="M5 3.5l10 5.5-10 5.5V3.5z"/></svg>
+        Play Now
+      </a>
+      <a class="btn-ghost" href="/games">🎮 Game Studio</a>
+    </div>
+    <div class="game-badges">
+      <span class="badge">Free</span>
+      <span class="badge">No Install</span>
+      <span class="badge">Mobile &amp; Desktop</span>
+      <span class="badge">PWA · Offline</span>
+      <span class="badge">Endless Waves</span>
+      <span class="badge">Persistent Progression</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- HOW TO PLAY -->
+<section>
+  <div class="section-label">Gameplay</div>
+  <h2>How it works</h2>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-card-icon">🎯</div>
+      <div class="how-card-title">Auto-Attack</div>
+      <div class="how-card-desc">Your character targets the nearest enemy automatically. Focus on movement, positioning, and chaining kills for streak multipliers.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-card-icon">⚡</div>
+      <div class="how-card-title">4 Abilities</div>
+      <div class="how-card-desc">DASH bursts forward dealing impact damage. NOVA blasts nearby enemies outward. STORM chains lightning. OVERLOAD supercharges all stats temporarily.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-card-icon">🪙</div>
+      <div class="how-card-title">Coin Bank</div>
+      <div class="how-card-desc">Coins you collect carry over between runs. Spend them in the mid-run shop for temporary boosts, or save for the meta-shop for permanent upgrades.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-card-icon">💀</div>
+      <div class="how-card-title">Boss Waves</div>
+      <div class="how-card-desc">Every 5th wave spawns a hexagonal boss with orbiting orbs and spread-shot. At 50% HP it enrages — speed and fire rate nearly double.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-card-icon">🛒</div>
+      <div class="how-card-title">Mid-Run Shop</div>
+      <div class="how-card-desc">Shop opens every 3rd wave. Buy HP repairs, damage boosts, shields, twin-shot, and more. Press B anytime to browse during a run.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-card-icon">🌌</div>
+      <div class="how-card-title">Arena Events</div>
+      <div class="how-card-desc">Random mid-wave events shake things up — meteor showers, void pulses that push everything outward, and frenzy mode that doubles enemy speed.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTROLS -->
+<section>
+  <div class="section-label">Controls</div>
+  <h2>Keyboard &amp; Touch</h2>
+  <div class="controls-grid">
+    <div class="controls-box">
+      <h3>Keyboard</h3>
+      <div class="key-row"><span class="key">WASD / ↑↓←→</span><span class="key-desc">Move</span></div>
+      <div class="key-row"><span class="key">Q</span><span class="key-desc">DASH — burst forward, deals impact damage</span></div>
+      <div class="key-row"><span class="key">W</span><span class="key-desc">NOVA — shockwave pushes all nearby enemies</span></div>
+      <div class="key-row"><span class="key">E</span><span class="key-desc">STORM — chain lightning across multiple foes</span></div>
+      <div class="key-row"><span class="key">R</span><span class="key-desc">OVERLOAD — supercharge all stats (unlocks wave 10)</span></div>
+      <div class="key-row"><span class="key">B</span><span class="key-desc">Open shop mid-run</span></div>
+      <div class="key-row"><span class="key">M</span><span class="key-desc">Mute / unmute audio</span></div>
+      <div class="key-row"><span class="key">Space / ESC</span><span class="key-desc">Pause · Start · Retry</span></div>
+    </div>
+    <div class="controls-box">
+      <h3>Touch (Mobile)</h3>
+      <div class="key-row"><span class="key">Left half</span><span class="key-desc">Virtual joystick — drag to move</span></div>
+      <div class="key-row"><span class="key">Right half</span><span class="key-desc">Ability buttons (Q W E R)</span></div>
+      <div class="key-row"><span class="key">🛒 button</span><span class="key-desc">Open shop</span></div>
+      <div class="key-row"><span class="key">🔊 button</span><span class="key-desc">Mute / unmute</span></div>
+      <div class="key-row"><span class="key">Tap screen</span><span class="key-desc">Start / Retry</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ENEMIES -->
+<section>
+  <div class="section-label">Enemies</div>
+  <h2>Know your enemies</h2>
+  <div class="enemy-grid">
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#e05050;color:#e05050"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Melee · Wave 1+</div>
+        <div class="enemy-name">Grunt</div>
+        <div class="enemy-desc">Fast and aggressive. Rushes directly at you and deals contact damage.</div>
+      </div>
+    </div>
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#e07a20;color:#e07a20"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Ranged · Wave 3+</div>
+        <div class="enemy-name">Archer</div>
+        <div class="enemy-desc">Fires projectiles from a distance and retreats when you get close.</div>
+      </div>
+    </div>
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#cc3355;color:#cc3355;border-radius:3px"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Tank · Wave 5+</div>
+        <div class="enemy-name">Brute</div>
+        <div class="enemy-desc">Slow, square-shaped, high HP. Drops a coin on death.</div>
+      </div>
+    </div>
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#44aaff;color:#44aaff"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Armoured · Wave 6+</div>
+        <div class="enemy-name">Shielded</div>
+        <div class="enemy-desc">Absorbs the first few hits with a rotating shield. Break the shield first, then finish it.</div>
+      </div>
+    </div>
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#44ff88;color:#44ff88"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Support · Wave 8+</div>
+        <div class="enemy-name">Healer</div>
+        <div class="enemy-desc">Pulses green aura that restores HP to nearby enemies. Priority target — kill it first.</div>
+      </div>
+    </div>
+    <div class="enemy-card">
+      <div class="enemy-dot" style="background:#9933cc;color:#9933cc;border-radius:2px"></div>
+      <div class="enemy-body">
+        <div class="enemy-tag">Boss · Wave 5, 10…</div>
+        <div class="enemy-name">The Nexus</div>
+        <div class="enemy-desc">Hexagonal boss with orbiting shield orbs. Fires spiral, cross, and barrage patterns. Enrages at 50% HP.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Play CTA Banner -->
+  <div class="play-banner">
+    <h3>Ready to breach the Nexus?</h3>
+    <p>No sign-up. No download. Just open and play.</p>
+    <a class="btn-play" href="https://nexus-breach.architect-dna.ch">
+      <svg viewBox="0 0 18 18" fill="currentColor" style="width:16px;height:16px"><path d="M5 3.5l10 5.5-10 5.5V3.5z"/></svg>
+      Launch Game
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">Architect-DNA</div>
+      <span class="footer-copy">Bern, Switzerland · A <a href="/games" style="color:var(--text3);text-decoration:none">VOID CELL</a> game</span><br>
+      <span class="footer-copy" style="margin-top:2px;display:block">© 2026 Architect-DNA. All rights reserved.</span>
+    </div>
+    <div class="footer-links">
+      <a href="/">architect-dna.ch</a>
+      <a href="/games">VOID CELL Studio</a>
+      <a href="https://grid-fall.architect-dna.ch" target="_blank">Grid Fall</a>
+      <a href="https://sector-zero.architect-dna.ch" target="_blank">Sector: Unknown</a>
+      <a href="mailto:press@architect-dna.ch">Press</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const canvas = document.getElementById('star-canvas');
+  const ctx = canvas.getContext('2d');
+  const hero = canvas.parentElement;
+
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TAU = Math.PI*2;
+  const rand = (a,b) => a+Math.random()*(b-a);
+  const hsl = (h,s,l,a=1) => `hsla(${h},${s}%,${l}%,${a})`;
+
+  class Star {
+    constructor(x, y) {
+      this.x = x ?? rand(0, canvas.width);
+      this.y = y ?? rand(0, canvas.height);
+      this.vx = rand(-15,15);
+      this.vy = rand(-55,-8);
+      this.life = rand(0.6,2);
+      this.maxLife = this.life;
+      this.r = rand(1,3);
+      this.color = hsl(rand(170,220),80,60);
+    }
+    update(dt){
+      this.x += this.vx*dt; this.y += this.vy*dt;
+      this.vx *= 0.97; this.vy *= 0.97;
+      this.life -= dt;
+    }
+    draw(){
+      const t = this.life/this.maxLife;
+      ctx.globalAlpha = Math.max(0,t);
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, Math.max(0, this.r*t), 0, TAU);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  const stars = [];
+  for(let i=0;i<80;i++) stars.push(new Star());
+
+  let last = 0;
+  function loop(ts){
+    const dt = Math.min((ts-last)/1000, 0.05); last = ts;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=stars.length-1;i>=0;i--){
+      stars[i].update(dt);
+      if(stars[i].life<=0){
+        stars.splice(i,1);
+        stars.push(new Star(rand(0,canvas.width), rand(0,canvas.height)));
+      } else {
+        stars[i].draw();
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>

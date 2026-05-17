@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architect-DNA Systems</title>
+<meta name="description" content="Privacy-first software studio. Switzerland. Web, iOS, Android.">
+<meta property="og:title" content="Architect-DNA Systems">
+<meta property="og:description" content="Privacy-first software studio. Web, Android & iOS. Switzerland.">
+<meta property="og:url" content="https://architect-dna.ch">
+<meta name="theme-color" content="#FAFAF8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;transition:opacity .35s ease}
+body.leaving{opacity:0}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;height:56px;gap:20px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.header-nav{margin-left:auto;display:flex;gap:2px}
+.header-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s}
+.header-nav a:hover{background:var(--bg2);color:var(--text)}
+.header-nav .nav-cta{background:var(--text);color:var(--bg);padding:6px 14px;border-radius:8px}
+.header-nav .nav-cta:hover{background:#2a2820;color:#fff}
+
+/* ── HERO ── */
+.hero{max-width:1100px;margin:0 auto;padding:100px 32px 72px}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:28px;height:2px;background:var(--red);border-radius:1px;flex-shrink:0}
+.hero h1{font-size:clamp(48px,8vw,88px);font-weight:900;letter-spacing:-.05em;line-height:.98;margin-bottom:28px}
+.hero h1 em{font-style:normal;color:var(--text3)}
+.hero-line{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:480px;line-height:1.6;margin-bottom:40px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:44px}
+.chip{font-size:12px;font-weight:600;padding:5px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;color:var(--text2)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:13px 24px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;transition:.15s;cursor:pointer;border:none;font-family:var(--font)}
+.btn-dark{background:var(--text);color:var(--bg)}
+.btn-dark:hover{background:#2a2820}
+.btn-ghost{color:var(--text2);border:1px solid var(--border2);background:transparent}
+.btn-ghost:hover{background:var(--bg2);color:var(--text)}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:32px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── PROJECTS HORIZONTAL SCROLL ── */
+#projects{padding:64px 0}
+.projects-head{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px}
+.projects-head h2{font-size:clamp(22px,3.5vw,32px);font-weight:900;letter-spacing:-.03em}
+.projects-head p{font-size:13px;color:var(--text3)}
+.scroll-zone{position:relative}
+.scroll-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;display:flex;gap:0}
+.scroll-nav.left{left:16px}
+.scroll-nav.right{right:16px}
+.nav-arrow{width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid var(--border2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;box-shadow:0 2px 12px rgba(0,0,0,.08);color:var(--text)}
+.nav-arrow:hover{background:var(--text);color:#fff;border-color:var(--text)}
+.scroll-outer{overflow:hidden;padding:20px 0 32px;cursor:default;user-select:none}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 transparent}30%{box-shadow:0 0 0 4px rgba(26,26,26,.18),0 0 18px 2px rgba(26,26,26,.1)}70%{box-shadow:0 0 0 3px rgba(26,26,26,.1)}}
+@keyframes arrowPulse{0%,100%{box-shadow:0 2px 12px rgba(0,0,0,.08)}40%{box-shadow:0 0 0 5px rgba(26,26,26,.12),0 2px 20px rgba(0,0,0,.18)}80%{box-shadow:0 0 0 2px rgba(26,26,26,.06)}}
+.glow-pulse{animation:glowPulse 1.6s ease forwards}
+.arrow-pulse{animation:arrowPulse 1.6s ease forwards}
+.scroll-track{display:flex;gap:20px;padding:0 calc(50vw - 200px);will-change:transform;transition:none}
+.proj-card{flex-shrink:0;width:320px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .3s,box-shadow .3s;transform:scale(.9);opacity:.55;text-decoration:none;color:inherit;position:relative;overflow:hidden;cursor:pointer}
+.proj-card.active{transform:scale(1);opacity:1;box-shadow:0 8px 40px rgba(0,0,0,.1)}
+.proj-card-arrow{font-size:16px;color:var(--text3);transition:.15s;margin-left:auto}
+.proj-card.active .proj-card-arrow{color:var(--text)}
+.proj-card:hover .proj-card-arrow{transform:translate(2px,-2px)}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,var(--text))}
+.proj-card-icon{font-size:36px;margin-bottom:20px}
+.proj-card-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-family:var(--mono)}
+.proj-card-name{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
+.proj-card-desc{font-size:14px;color:var(--text2);line-height:1.55;flex:1;margin-bottom:24px}
+.proj-card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:16px}
+.proj-card-url{font-size:11px;font-family:var(--mono);color:var(--text3)}
+.proj-card-status{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:10px}
+.s-live{background:rgba(26,122,60,.08);color:#1a7a3c;border:1px solid rgba(26,122,60,.15)}
+.s-new{background:rgba(0,150,100,.1);color:#007a52;border:1px solid rgba(0,150,100,.2)}
+.s-beta{background:rgba(100,80,220,.08);color:#6450dc;border:1px solid rgba(100,80,220,.18)}
+.s-lab{background:rgba(26,110,200,.08);color:#1a6ec8;border:1px solid rgba(26,110,200,.18)}
+
+/* dots */
+.scroll-dots{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:.2s;cursor:pointer;border:none;padding:0}
+.dot.active{background:var(--text);width:20px;border-radius:3px}
+
+/* expand */
+.expand-wrap{text-align:center;margin-top:24px}
+#btn-expand{background:none;border:1px solid var(--border2);color:var(--text2);font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;cursor:pointer;transition:.15s;font-family:var(--font)}
+#btn-expand:hover{background:var(--bg2);color:var(--text)}
+.extra-grid{display:none;max-width:1100px;margin:24px auto 0;padding:0 32px;display:none}
+.extra-grid.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.mini-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;transition:.15s}
+.mini-card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.06);transform:translateY(-2px)}
+.mini-name{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.mini-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.mini-foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+/* ── ABOUT ── */
+#about{max-width:1100px;margin:0 auto;padding:64px 32px}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.about-text{font-size:clamp(18px,2.5vw,26px);font-weight:700;letter-spacing:-.02em;line-height:1.4;color:var(--text)}
+.about-sub{font-size:15px;color:var(--text2);margin-top:16px;line-height:1.7}
+.stack-icons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stack-pill{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.stack-pill-icon{font-size:18px;flex-shrink:0}
+.stack-pill-label{font-size:12px;font-weight:700;color:var(--text);line-height:1.2}
+.stack-pill-sub{font-size:10px;color:var(--text3)}
+
+/* ── PRIVACY ── */
+#privacy{border-top:1px solid var(--border);max-width:1100px;margin:0 auto;padding:64px 32px}
+.privacy-toggle{background:none;border:none;font-size:14px;color:var(--text2);cursor:pointer;font-family:var(--font);font-weight:600;padding:8px 0;display:flex;align-items:center;gap:8px}
+.privacy-toggle:hover{color:var(--text)}
+.privacy-content{display:none;margin-top:24px}
+.privacy-content.open{display:block}
+.privacy-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:32px}
+.privacy-box h3{font-size:15px;font-weight:800;margin-bottom:8px;margin-top:24px;letter-spacing:-.02em}
+.privacy-box h3:first-child{margin-top:0}
+.privacy-box p{font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:12px}
+.privacy-box ul{font-size:14px;color:var(--text2);line-height:1.75;padding-left:20px;margin-bottom:12px}
+.privacy-box ul li{margin-bottom:4px}
+.privacy-box .policy-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:24px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:28px 32px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text)}
+
+@media(max-width:700px){
+  .hero{padding:60px 20px 48px}
+  .header-nav{display:none}
+  .about-inner{grid-template-columns:1fr}
+  .stack-icons{grid-template-columns:1fr 1fr}
+  .projects-head{padding:0 20px}
+  #about,#privacy{padding:48px 20px}
+  .scroll-track{padding:0 calc(50vw - 150px)}
+  .proj-card{width:280px}
+}
+
+/* ── TECH BUBBLE ── */
+#bubble-overlay{
+  position:fixed;inset:0;z-index:600;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  background:rgba(250,250,248,0);
+  transition:background .3s;
+}
+#bubble-overlay.open{
+  pointer-events:all;
+  background:rgba(250,250,248,.45);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+#bubble{
+  position:relative;
+  width:min(70vw,860px);
+  min-height:min(66vh,600px);
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border:1.5px solid rgba(255,255,255,.95);
+  border-radius:50%;
+  box-shadow:0 24px 80px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,1);
+  padding:52px 60px;
+  display:flex;flex-direction:column;gap:16px;
+  transform:scale(0);opacity:0;
+  transition:
+    transform .28s cubic-bezier(.34,1.36,.64,1),
+    border-radius .18s ease-out,
+    opacity .12s;
+  will-change:transform,border-radius;
+}
+#bubble-overlay.open #bubble{
+  transform:scale(1);
+  border-radius:28px;
+  opacity:1;
+}
+#bubble-overlay.closing #bubble{
+  transform:scale(0.05) translateY(30px);
+  border-radius:50%;
+  opacity:0;
+  transition:
+    transform .22s cubic-bezier(.55,.05,1,.45),
+    border-radius .18s,
+    opacity .16s;
+}
+#bubble-close{
+  position:absolute;top:22px;right:26px;
+  width:38px;height:38px;
+  background:rgba(0,0,0,.07);border:none;border-radius:50%;
+  font-size:22px;line-height:38px;text-align:center;
+  cursor:pointer;color:var(--text2);transition:.15s;
+}
+#bubble-close:hover{background:rgba(0,0,0,.14);color:var(--text)}
+#bubble-icon{font-size:clamp(52px,7vw,80px);line-height:1;margin-bottom:4px}
+#bubble-name{font-size:clamp(26px,4vw,48px);font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1}
+#bubble-sub{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:-4px}
+#bubble-desc{font-size:clamp(14px,1.5vw,18px);color:var(--text2);line-height:1.8;flex:1;max-width:580px}
+#bubble-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.b-tag{
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 13px;border-radius:20px;
+  background:rgba(0,0,0,.06);color:var(--text2);
+  border:1px solid rgba(0,0,0,.07);
+}
+.stack-pill{cursor:pointer;transition:transform .18s,box-shadow .18s}
+.stack-pill:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
+</style>
+</head>
+<body>
+<div id="bubble-overlay" aria-hidden="true">
+  <div id="bubble">
+    <button id="bubble-close" aria-label="Close">×</button>
+    <div id="bubble-icon"></div>
+    <div id="bubble-name"></div>
+    <div id="bubble-sub"></div>
+    <div id="bubble-desc"></div>
+    <div id="bubble-tags"></div>
+  </div>
+</div>
+<div id="email-toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999;white-space:nowrap">systems@architect-dna.ch · copied</div>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/><path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="#projects">Work</a>
+      <a href="/games">Games</a>
+      <a href="#about">About</a>
+      <a href="#" onclick="copyEmail(event)" class="nav-cta">Contact →</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-eyebrow">Software Studio · Switzerland</div>
+  <h1>Architect<br><em>DNA</em></h1>
+  <p class="hero-line">Privacy-first apps for web, iOS & Android. Free tier on everything. No accounts where not needed.</p>
+  <div class="hero-chips">
+    <span class="chip">🇨🇭 Bern, Switzerland</span>
+    <span class="chip">WebAuthn · Passkeys</span>
+    <span class="chip">iOS · Android · Web</span>
+    <span class="chip">Zero tracking</span>
+  </div>
+  <div class="hero-cta">
+    <a class="btn btn-dark" href="#projects">See our work</a>
+    <a class="btn btn-ghost" href="#" onclick="copyEmail(event)">Contact</a>
+  </div>
+</div>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="projects-head">
+    <div>
+      <div class="section-label">Work</div>
+      <h2>What we ship</h2>
+    </div>
+    <p>← Move mouse or use arrows →</p>
+  </div>
+
+  <div class="scroll-zone">
+  <div class="scroll-nav left"><button class="nav-arrow" onclick="goTo(current-1)">←</button></div>
+  <div class="scroll-nav right"><button class="nav-arrow" onclick="goTo(current+1)">→</button></div>
+  <div class="scroll-outer" id="scroll-outer">
+    <div class="scroll-track" id="scroll-track">
+
+      <a class="proj-card" href="https://freq.architect-dna.ch" target="_blank" style="--card-accent:#00c8b4">
+        <div class="proj-card-icon">🎧</div>
+        <div class="proj-card-tag">Focus · Ambient · iOS · Web</div>
+        <div class="proj-card-name">VOID FREQ</div>
+        <div class="proj-card-desc">Live ambient sound for deep work. Brown noise, binaural beats, lo-fi. No streaming. Brain.fm — but free.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">freq.architect-dna.ch</span>
+          <span class="proj-card-status s-new">iOS in Review</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="/games" style="--card-accent:#0ea5e9">
+        <div class="proj-card-icon">🕹</div>
+        <div class="proj-card-tag">Game Studio · 3 Titles · Browser</div>
+        <div class="proj-card-name">VOID CELL</div>
+        <div class="proj-card-desc">Three skill-based browser games. Nexus Breach, Grid Fall, Sector Zero. 5k+ players. 40+ countries. Pure canvas.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">architect-dna.ch/games</span>
+          <span class="proj-card-status s-live">3 Live</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="https://konnekt.architect-dna.ch" target="_blank" style="--card-accent:#10b981">
+        <div class="proj-card-icon">🔗</div>
+        <div class="proj-card-tag">Networking · NFC · QR</div>
+        <div class="proj-card-name">Konnekt</div>
+        <div class="proj-card-desc">Share your contact with one tap. NFC & QR. Profile lives in your browser. No app needed on the other end.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">konnekt.architect-dna.ch</span>
+          <span class="proj-card-status s-live">Live</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="https://noise.architect-dna.ch" target="_blank" style="--card-accent:#7c6cfa">
+        <div class="proj-card-icon">🎛</div>
+        <div class="proj-card-tag">Focus · Ambient · Pomodoro · Web</div>
+        <div class="proj-card-name">Noise</div>
+        <div class="proj-card-desc">Layer ambient soundscapes. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">noise.architect-dna.ch</span>
+          <span class="proj-card-status s-new">New</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+  </div>
+
+  <div class="scroll-dots" id="scroll-dots">
+    <button class="dot active" onclick="goTo(0)"></button>
+    <button class="dot" onclick="goTo(1)"></button>
+    <button class="dot" onclick="goTo(2)"></button>
+    <button class="dot" onclick="goTo(3)"></button>
+  </div>
+
+  <div class="expand-wrap">
+    <button id="btn-expand" onclick="toggleExtra()">More projects ↓</button>
+  </div>
+
+  <div class="extra-grid" id="extra-grid">
+    <a class="mini-card" href="https://vault.architect-dna.ch" target="_blank">
+      <div class="mini-name">Prompt Vault</div>
+      <div class="mini-desc">Precision AI prompt templates. Fill, copy, launch.</div>
+      <div class="mini-foot"><span>vault.architect-dna.ch</span><span class="proj-card-status s-live">Live</span></div>
+    </a>
+    <a class="mini-card" href="/lia">
+      <div class="mini-name">LIA</div>
+      <div class="mini-desc">Zero-knowledge legal vault for human rights documentation.</div>
+      <div class="mini-foot"><span>architect-dna.ch/lia</span><span class="proj-card-status s-live">Live</span></div>
+    </a>
+    <a class="mini-card" href="https://qr.architect-dna.ch?demo=1" target="_blank">
+      <div class="mini-name">CV Card</div>
+      <div class="mini-desc">Digital CV behind a QR code. No login, no app.</div>
+      <div class="mini-foot"><span>qr.architect-dna.ch</span><span class="proj-card-status s-live">Live</span></div>
+    </a>
+    <a class="mini-card" href="https://poddna.architect-dna.ch" target="_blank" style="opacity:.72">
+      <div class="mini-name">Podcast DNA</div>
+      <div class="mini-desc">AI podcast companion. Voice + deep research via Claude.</div>
+      <div class="mini-foot"><span>poddna.architect-dna.ch</span><span class="proj-card-status s-beta">Beta</span></div>
+    </a>
+    <a class="mini-card" href="https://tacz.architect-dna.ch" target="_blank" style="opacity:.72">
+      <div class="mini-name">TACZ</div>
+      <div class="mini-desc">AI tool suite with WebAuthn passkeys. One biometric, all apps.</div>
+      <div class="mini-foot"><span>tacz.architect-dna.ch</span><span class="proj-card-status s-beta">Beta</span></div>
+    </a>
+    <div class="mini-card" style="opacity:.55;cursor:default">
+      <div class="mini-name">VELO NOIR</div>
+      <div class="mini-desc">Fog-of-war cycling missions. Shipped — honestly not tested yet.</div>
+      <div class="mini-foot"><span>mission.architect-dna.ch</span><span class="proj-card-status s-lab">Lab</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="about-inner">
+    <div>
+      <p class="about-text">Independent. Privacy-first. Built in Switzerland.</p>
+      <p class="about-sub">We build tools at the intersection of AI, law, and human expression. Everything runs on-device or in the browser — no tracking, no compromise.</p>
+    </div>
+    <div class="stack-icons">
+      <div class="stack-pill"><div class="stack-pill-icon">🔐</div><div><div class="stack-pill-label">WebAuthn</div><div class="stack-pill-sub">Passkeys · PRF</div></div></div>
+      <div class="stack-pill"><div class="stack-pill-icon">🤖</div><div><div class="stack-pill-label">Claude AI</div><div class="stack-pill-sub">Anthropic</div></div></div>
+      <div class="stack-pill"><div class="stack-pill-icon">▲</div><div><div class="stack-pill-label">Vercel</div><div class="stack-pill-sub">Edge deploy</div></div></div>
+      <div class="stack-pill"><div class="stack-pill-icon">📱</div><div><div class="stack-pill-label">iOS · Android</div><div class="stack-pill-sub">App Store · Play</div></div></div>
+      <div class="stack-pill"><div class="stack-pill-icon">⚡</div><div><div class="stack-pill-label">Python · Flask</div><div class="stack-pill-sub">FastAPI · SQLite</div></div></div>
+      <div class="stack-pill"><div class="stack-pill-icon">🗺</div><div><div class="stack-pill-label">Leaflet · OSM</div><div class="stack-pill-sub">GPS · Canvas</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRIVACY ── -->
+<section id="privacy">
+  <div class="section-label">Legal</div>
+  <button class="privacy-toggle" onclick="togglePrivacy()">
+    <span id="privacy-arrow">▶</span> Privacy Policy
+  </button>
+  <div class="privacy-content" id="privacy-content">
+    <div class="privacy-box">
+      <p class="policy-meta">Last updated: May 2026 · architect-dna.ch and all subdomains</p>
+      <h3>Overview</h3>
+      <p>This privacy policy applies to all applications and services operated under the domain <strong>architect-dna.ch</strong> and its subdomains, including VELO NOIR, Podcast DNA, TACZ, Prompt Vault, LIA, Konnekt, and CV Card.</p>
+      <p>These applications are built with a <strong>privacy-by-design</strong> philosophy. Where technically possible, all data is stored locally on your device and never transmitted to external servers.</p>
+      <h3>Data We Collect</h3>
+      <p>Most applications under architect-dna.ch collect <strong>no personal data</strong>. Specifically:</p>
+      <ul>
+        <li>All user data (API keys, settings, ride logs, mission progress, prompts) is stored in your browser's <code>localStorage</code> on your own device.</li>
+        <li>GPS coordinates (VELO NOIR) are used locally to render the map and are never transmitted.</li>
+        <li>Passkey credentials are managed entirely by your device's authenticator via the WebAuthn standard. We do not receive or store your biometric data.</li>
+        <li>Rider cards and crew codes (VELO NOIR) are text strings you share manually — we do not relay or store them.</li>
+      </ul>
+      <h3>Authentication (Passkeys)</h3>
+      <p>Passkey-enabled applications use the <strong>WebAuthn / FIDO2</strong> standard with the PRF extension for key derivation. Your private key never leaves your device. We store only a credential ID in <code>localStorage</code>. No biometric data is accessible to us.</p>
+      <h3>LIA — Legal Vault</h3>
+      <p>LIA stores encrypted evidence documents. Encryption is performed client-side. Only ciphertext is stored — the decryption key never leaves your device.</p>
+      <h3>Cookies and Tracking</h3>
+      <ul>
+        <li>We do not use cookies.</li>
+        <li>We do not use analytics or tracking scripts.</li>
+        <li>We do not use advertising networks.</li>
+        <li>We do not fingerprint your device or browser.</li>
+      </ul>
+      <h3>Third-Party Services</h3>
+      <p>Some applications use Anthropic Claude APIs. When you use an AI feature, your input is transmitted to Anthropic's servers. See <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener" style="color:var(--red)">anthropic.com/privacy</a>. We do not store AI conversation history.</p>
+      <p>Map tiles are loaded from OpenStreetMap servers. Your IP may be visible to OpenStreetMap when fetching map data.</p>
+      <h3>Data Retention and Deletion</h3>
+      <p>All locally stored data can be deleted by clearing your browser's site data for the respective subdomain, or via in-app reset functions.</p>
+      <h3>Your Rights (GDPR / DSG)</h3>
+      <p>As a user in Switzerland or the EU, you have the right to access, correct, and delete any personal data we hold. Since most data is stored locally, you are already in full control. Contact us below for any questions.</p>
+      <h3>Contact</h3>
+      <p>Architect-DNA · Bern, Switzerland<br><a href="#" onclick="copyEmail(event)" style="color:var(--red)">systems@architect-dna.ch</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Architect-DNA Systems · Bern, Switzerland</span>
+    <div class="footer-links">
+      <a href="#privacy">Privacy</a>
+      <a href="/games">Games</a>
+      <a href="#" onclick="copyEmail(event)">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Horizontal scroll — mouse-follow + drag + touch ───────────────────────────
+const track = document.getElementById('scroll-track');
+const outer = document.getElementById('scroll-outer');
+const cards = document.querySelectorAll('.proj-card');
+const dots  = document.querySelectorAll('.dot');
+let current = 0, targetX = 0, currentX = 0, hovering = false;
+
+function cardCenter(i){
+  const c = cards[i];
+  return c.offsetLeft + c.offsetWidth / 2 - window.innerWidth / 2;
+}
+
+function goTo(i){
+  current = Math.max(0, Math.min(cards.length - 1, i));
+  targetX = cardCenter(current);
+  syncActive();
+}
+
+function syncActive(){
+  dots.forEach((d,i) => d.classList.toggle('active', i === current));
+  cards.forEach((c,i) => c.classList.toggle('active', i === current));
+}
+
+function snapNearest(){
+  let best = 0, bestDist = Infinity;
+  cards.forEach((c,i) => { const d = Math.abs(cardCenter(i) - currentX); if(d < bestDist){ bestDist = d; best = i; }});
+  goTo(best);
+}
+
+function lerp(a, b, t){ return a + (b - a) * t; }
+
+function tick(){
+  currentX = lerp(currentX, targetX, 0.09);
+  track.style.transform = `translateX(${-currentX}px)`;
+  let best = 0, bestDist = Infinity;
+  cards.forEach((c,i) => { const d = Math.abs(cardCenter(i) - currentX); if(d < bestDist){ bestDist = d; best = i; }});
+  if(best !== current){ current = best; syncActive(); }
+  requestAnimationFrame(tick);
+}
+
+// mouse follow — zone defined by actual card scroll span, centered in viewport
+outer.addEventListener('mouseenter', () => { hovering = true; });
+outer.addEventListener('mouseleave', () => { hovering = false; snapNearest(); });
+outer.addEventListener('mousemove', e => {
+  const n = cards.length;
+  // The scroll range spans from cardCenter(0) to cardCenter(n-1).
+  // This range is always 680px (card widths + gaps) regardless of viewport size.
+  // Center that zone in the viewport so the mouse maps to where cards visually appear.
+  const span     = cardCenter(n - 1) - cardCenter(0);          // e.g. 680px
+  const zoneLeft = window.innerWidth / 2 - span / 2;
+  const ratio    = Math.max(0, Math.min(1, (e.clientX - zoneLeft) / span));
+  const pos = ratio * (n - 1);
+  const lo  = Math.min(Math.floor(pos), n - 2);
+  const t   = pos - lo;
+  targetX   = cardCenter(lo) + t * (cardCenter(lo + 1) - cardCenter(lo));
+});
+
+// trackpad horizontal swipe — let vertical scroll pass through
+let _wCool = false;
+outer.addEventListener('wheel', e => {
+  if(Math.abs(e.deltaX) > Math.abs(e.deltaY)){
+    e.preventDefault();
+    if(_wCool) return;
+    _wCool = true; setTimeout(()=>_wCool=false, 500);
+    if(e.deltaX > 10) goTo(current + 1);
+    else if(e.deltaX < -10) goTo(current - 1);
+  }
+}, {passive: false});
+
+// touch swipe — only intercept horizontal gestures, let vertical scroll through
+let tStartX=0, tStartY=0, tStartScroll=0, tDir=null;
+outer.addEventListener('touchstart', e=>{
+  const t=e.touches[0];
+  tStartX=t.clientX; tStartY=t.clientY;
+  tStartScroll=targetX; tDir=null; hovering=false;
+},{passive:true});
+outer.addEventListener('touchmove', e=>{
+  const dx=e.touches[0].clientX-tStartX, dy=e.touches[0].clientY-tStartY;
+  if(!tDir && (Math.abs(dx)>8||Math.abs(dy)>8))
+    tDir = Math.abs(dx)>Math.abs(dy) ? 'h' : 'v';
+  if(tDir==='h') targetX=tStartScroll-dx;
+},{passive:true});
+outer.addEventListener('touchend', ()=>{ if(tDir==='h') snapNearest(); tDir=null; },{passive:true});
+
+// keyboard
+window.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight') goTo(current + 1);
+  if(e.key === 'ArrowLeft')  goTo(current - 1);
+});
+
+// ── Scroll-triggered glow pulses ──────────────────────────────────────────────
+function triggerPulse(els, cls){
+  els.forEach((el, i) => {
+    el.classList.remove(cls);
+    // stagger slightly per element
+    setTimeout(() => {
+      void el.offsetWidth; // force reflow so animation restarts
+      el.classList.add(cls);
+      el.addEventListener('animationend', () => el.classList.remove(cls), {once:true});
+    }, i * 120);
+  });
+}
+
+const navArrows = document.querySelectorAll('.nav-arrow');
+const heroBtns  = document.querySelectorAll('.hero-cta .btn');
+const aboutSect = document.getElementById('about');
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(!entry.isIntersecting) return;
+    if(entry.target.id === 'projects'){
+      triggerPulse(Array.from(navArrows), 'arrow-pulse');
+    }
+    if(entry.target === aboutSect){
+      const btns = aboutSect.querySelectorAll('.btn, #btn-expand');
+      triggerPulse(Array.from(btns), 'glow-pulse');
+    }
+  });
+}, { threshold: 0.25 });
+
+const projectsSect = document.getElementById('projects');
+if(projectsSect) io.observe(projectsSect);
+if(aboutSect) io.observe(aboutSect);
+// Hero buttons pulse once on page load after a short delay
+window.addEventListener('load', () => {
+  setTimeout(() => triggerPulse(Array.from(heroBtns), 'glow-pulse'), 900);
+});
+
+// init
+window.addEventListener('load', () => { goTo(0); tick(); });
+window.addEventListener('resize', () => goTo(current));
+
+// ── Expand ────────────────────────────────────────────────────────────────────
+function toggleExtra(){
+  const grid = document.getElementById('extra-grid');
+  const btn  = document.getElementById('btn-expand');
+  const open = grid.classList.toggle('open');
+  btn.textContent = open ? 'Show less ↑' : 'More projects ↓';
+}
+
+// ── Privacy toggle ────────────────────────────────────────────────────────────
+function togglePrivacy(){
+  const c = document.getElementById('privacy-content');
+  const a = document.getElementById('privacy-arrow');
+  const open = c.classList.toggle('open');
+  a.textContent = open ? '▼' : '▶';
+}
+
+// ── Tech bubble ───────────────────────────────────────────────────────────────
+const BUBBLE_DATA = [
+  {
+    icon:'🔐', name:'WebAuthn', sub:'FIDO2 · PRF Extension · Passkeys',
+    desc:'Passwordless authentication using the WebAuthn / FIDO2 standard with PRF extension for cryptographic key derivation. Your private key is generated inside your device\'s secure enclave and never exported. We store only a public credential ID — no password, no biometric data ever reaches our servers.',
+    tags:['FIDO2','Passkeys','PRF','Zero-knowledge','Secure enclave']
+  },
+  {
+    icon:'🤖', name:'Claude AI', sub:'Anthropic · Claude 4',
+    desc:'Anthropic\'s frontier model powers intelligent features across our apps. When AI features are used, input is processed via Anthropic\'s API under their strict privacy policy. We never store conversation history and your data is never used to train models.',
+    tags:['AI','Anthropic','Claude 4','Privacy-respecting','No training']
+  },
+  {
+    icon:'▲', name:'Vercel', sub:'Edge Deploy · Global CDN',
+    desc:'Zero-config deployments across 40+ global edge regions. Every push creates a preview URL with isolated state. Serverless functions with sub-10ms cold starts, instant rollbacks, and 99.99% uptime SLA — for every single app we ship.',
+    tags:['Edge','CDN','Serverless','CI/CD','40+ regions']
+  },
+  {
+    icon:'📱', name:'iOS · Android', sub:'App Store · Google Play',
+    desc:'Native mobile apps built with Capacitor — one TypeScript codebase, two stores. Offline-first architecture means everything works without a network connection. Biometric passkey auth via native platform APIs on both iOS and Android.',
+    tags:['Capacitor','iOS','Android','Offline-first','Native APIs']
+  },
+  {
+    icon:'⚡', name:'Python · Flask', sub:'FastAPI · SQLite',
+    desc:'Lightweight Python backends with Flask for simple service routes and FastAPI for performance-critical endpoints. SQLite for zero-config local data persistence — identical behaviour in dev and production, no database server needed.',
+    tags:['Python','Flask','FastAPI','SQLite','REST']
+  },
+  {
+    icon:'🗺', name:'Leaflet · OSM', sub:'GPS · Canvas API',
+    desc:'Privacy-respecting mapping with Leaflet.js on OpenStreetMap tiles — no Google APIs, no commercial tracking. GPS coordinates stay client-side only. Performance-critical overlays rendered directly on HTML Canvas for smooth 60fps.',
+    tags:['OpenStreetMap','GPS','Canvas','Privacy','Open-source']
+  }
+];
+
+const _bOv  = document.getElementById('bubble-overlay');
+const _bEl  = document.getElementById('bubble');
+let _bTimer = null;
+
+function openBubble(idx, originEl){
+  clearTimeout(_bTimer);
+  const d = BUBBLE_DATA[idx];
+  document.getElementById('bubble-icon').textContent = d.icon;
+  document.getElementById('bubble-name').textContent = d.name;
+  document.getElementById('bubble-sub').textContent  = d.sub;
+  document.getElementById('bubble-desc').textContent = d.desc;
+  document.getElementById('bubble-tags').innerHTML   = d.tags.map(t=>`<span class="b-tag">${t}</span>`).join('');
+  // set transform-origin toward the badge so it pops from there
+  if(originEl){
+    const r = originEl.getBoundingClientRect();
+    const ox = r.left + r.width/2 - window.innerWidth/2;
+    const oy = r.top  + r.height/2 - window.innerHeight/2;
+    _bEl.style.transformOrigin = `calc(50% + ${ox}px) calc(50% + ${oy}px)`;
+  }
+  _bOv.classList.remove('closing');
+  _bOv.classList.add('open');
+}
+
+function closeBubble(){
+  _bOv.classList.add('closing');
+  _bTimer = setTimeout(()=> _bOv.classList.remove('open','closing'), 320);
+}
+
+const _isTouchDevice = () => window.matchMedia('(hover:none)').matches;
+
+document.querySelectorAll('.stack-pill').forEach((pill, i) => {
+  // desktop: hover opens
+  pill.addEventListener('mouseenter', () => { if(!_isTouchDevice()) openBubble(i, pill); });
+  // mobile + desktop fallback: tap/click opens
+  pill.addEventListener('click', e => { e.stopPropagation(); openBubble(i, pill); });
+});
+
+// Close: tap overlay, close button, or Escape
+_bOv.addEventListener('click', e => { if(e.target === _bOv) closeBubble(); });
+document.getElementById('bubble-close').addEventListener('click', closeBubble);
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeBubble(); });
+
+// Desktop only: close when mouse drifts far from bubble
+document.addEventListener('mousemove', e => {
+  if(_isTouchDevice()) return;
+  if(!_bOv.classList.contains('open')) return;
+  const r = _bEl.getBoundingClientRect();
+  const dx = Math.max(0, r.left - e.clientX, e.clientX - r.right);
+  const dy = Math.max(0, r.top  - e.clientY, e.clientY - r.bottom);
+  if(Math.sqrt(dx*dx + dy*dy) > 120) closeBubble();
+});
+
+// ── Contact email copy ────────────────────────────────────────────────────────
+function copyEmail(e){
+  e.preventDefault();
+  navigator.clipboard.writeText('systems@architect-dna.ch').catch(()=>{});
+  const t = document.getElementById('email-toast');
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(copyEmail._timer);
+  copyEmail._timer = setTimeout(()=>{
+    t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(12px)';
+  }, 2200);
+}
+
+// page transitions
+document.querySelectorAll('a[href]').forEach(a=>{
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('#')||href.startsWith('mailto')||a.target==='_blank') return;
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.body.classList.add('leaving');
+    setTimeout(()=>{location.href=href},340);
+  });
+});
+document.body.style.opacity='0';
+requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity='';}));
+</script>
+
+</body>
+</html>

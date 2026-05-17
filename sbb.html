@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SBB Civic Portal — Privatinitiative CH | architect-dna.ch</title>
+<meta name="description" content="Konzept: Informations-Layer für SBB-Billettautomaten. Echtzeit-Abfahrten, Wetter, 5-min WLAN-Portal — ohne App, ohne Account, ohne Tracking.">
+<meta property="og:title" content="SBB Civic Portal — Privatinitiative CH">
+<meta property="og:description" content="Open-Source Konzept für öffentliche Infodisplays an SBB-Automaten. Für Touristen, Kinder, Pendler — QR-Scan, 5 min WLAN, kein Account.">
+<meta property="og:url" content="https://architect-dna.ch/sbb">
+<meta name="robots" content="noindex">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--bg3:#E8E7E2;
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#EB0000;--redD:rgba(235,0,0,.08);--redB:rgba(235,0,0,.18);
+  --border:#E0E0D8;--border2:rgba(0,0,0,.13);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+/* ── NAV ── */
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;height:52px;gap:16px}
+.logo{font-size:13px;font-weight:900;color:var(--text);text-decoration:none;font-family:var(--mono)}
+.logo span{color:var(--red)}
+.back{margin-left:auto;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border2)}
+.back:hover{background:var(--bg2)}
+.sbb-badge{background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.04em}
+
+/* ── HERO ── */
+.hero{max-width:900px;margin:0 auto;padding:60px 24px 40px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.kicker::before{content:'';width:20px;height:2px;background:var(--red);border-radius:1px;display:inline-block}
+h1{font-size:clamp(30px,5vw,52px);font-weight:900;letter-spacing:-.035em;line-height:1.07;margin-bottom:18px}
+h1 .dim{color:var(--text3)}
+.hero-sub{font-size:16px;color:var(--text2);max-width:560px;line-height:1.75;margin-bottom:28px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+.chip{font-size:12px;font-weight:600;padding:5px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text2)}
+.chip.red{background:var(--redD);color:var(--red);border-color:var(--redB)}
+
+/* ── SECTIONS ── */
+.section{max-width:900px;margin:0 auto;padding:0 24px 56px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:20px}
+h2{font-size:22px;font-weight:800;letter-spacing:-.025em;margin-bottom:12px}
+
+/* ── DEMO ── */
+.demo-frame-wrap{
+  border-radius:var(--radius);overflow:hidden;
+  border:2px solid var(--red);
+  width:100%;
+  height:calc(100vh - 80px);
+  min-height:600px;
+  position:relative;
+}
+.demo-frame-wrap iframe{width:100%;height:100%;border:none}
+.demo-caption{font-size:12px;color:var(--text3);margin-top:10px;text-align:center}
+
+/* ── BENEFITS ── */
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:8px}
+.benefit-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+}
+.benefit-icon{font-size:28px;margin-bottom:10px}
+.benefit-title{font-size:14px;font-weight:800;margin-bottom:6px;color:var(--text)}
+.benefit-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── LETTER ── */
+.letter{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:40px 44px;
+  font-size:15px;line-height:1.85;color:var(--text);
+  box-shadow:0 2px 20px rgba(0,0,0,.05);
+}
+.letter p{margin-bottom:1.2em}
+.letter p:last-child{margin-bottom:0}
+.letter .dialect{
+  font-style:italic;color:var(--text2);
+  border-left:3px solid var(--red);padding-left:16px;
+  margin-bottom:1.6em;font-size:15px;
+}
+.letter strong{color:var(--text);font-weight:700}
+.letter .signature{margin-top:2em;color:var(--text2);font-size:13px}
+.letter .signature strong{color:var(--red);font-family:var(--mono)}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:20px;padding:10px 18px;border-radius:10px;
+  background:var(--text);color:var(--bg);
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+  font-family:var(--font);transition:.15s;
+}
+.copy-btn:hover{background:#2a2820}
+
+/* ── TECH ── */
+.tech-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+.tech-table th{text-align:left;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.tech-table td{padding:12px 14px;border:1px solid var(--border);color:var(--text2);vertical-align:top}
+.tech-table td:first-child{font-weight:600;color:var(--text);width:160px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:28px 24px;text-align:center;font-size:12px;color:var(--text3)}
+footer a{color:var(--text2);text-decoration:none}
+footer a:hover{color:var(--text)}
+
+@media(max-width:600px){
+  .letter{padding:24px 20px}
+  .demo-frame-wrap{height:calc(100vh - 60px);min-height:500px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">architect-dna<span>.ch</span></a>
+    <span class="sbb-badge">SBB Initiative</span>
+    <a class="back" href="/">← Zurück</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="kicker">Privatinitiative · CH · 2026</div>
+  <h1>Civic Portal<br><span class="dim">für SBB-Billettautomaten</span></h1>
+  <p class="hero-sub">
+    Echtzeitabfahrten, lokales Wetter und 5 Minuten kostenloses WLAN —
+    direkt auf dem Automatenbildschirm. Kein App-Download. Kein Account. Kein Tracking.
+  </p>
+  <div class="chips">
+    <span class="chip red">Open Initiative</span>
+    <span class="chip">Keine Werbung</span>
+    <span class="chip">Kein Login</span>
+    <span class="chip">Offline-fähig</span>
+    <span class="chip">HTML / Webstandard</span>
+    <span class="chip">Belp → Pilot?</span>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div style="background:#F0FDF4;border-top:1px solid #BBF7D0;border-bottom:1px solid #BBF7D0;padding:12px 24px">
+  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:20px;font-size:12px;font-weight:600;color:#166534">
+    <span>🔒 Kein Server-Backend</span>
+    <span>📄 Reine HTML/JS-Datei</span>
+    <span>🚫 Keine Datenübertragung</span>
+    <span>🇨🇭 Hosted auf Vercel (Schweiz-nah)</span>
+    <a href="https://github.com/architect-dna-ch/sbb-civic-portal" target="_blank" style="margin-left:auto;color:#166534;text-decoration:none;display:flex;align-items:center;gap:6px;background:#DCFCE7;padding:5px 12px;border-radius:20px;border:1px solid #BBF7D0">⎇ Quellcode ansehen</a>
+  </div>
+</div>
+
+<!-- LIVE DEMO -->
+<div class="section">
+  <div class="section-label">Interaktiver Prototyp</div>
+  <h2>Live ausprobieren — QR-Code klicken</h2>
+  <div class="demo-frame-wrap">
+    <iframe src="/sbb-demo" title="SBB Civic Portal Demo" allowfullscreen></iframe>
+  </div>
+  <p class="demo-caption">Echtzeit-Daten via OpenTransport API &amp; wttr.in · Timer beschleunigt für Demo-Zwecke · Taste R = Reset</p>
+</div>
+
+<!-- BENEFITS -->
+<div class="section">
+  <div class="section-label">Nutzengruppen</div>
+  <h2>Wer profitiert?</h2>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">🌍</div>
+      <div class="benefit-title">Touristen & Ausländische Gäste</div>
+      <div class="benefit-desc">Ohne lokale SIM-Karte, ohne Roaming — sofortige Orientierung auf dem Automaten-Display. QR-Code gibt 5 Minuten WLAN für die erste Navigation.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">📶</div>
+      <div class="benefit-title">Sofort-WLAN ohne Account</div>
+      <div class="benefit-desc">QR-Scan → 5 Minuten offenes WLAN. Kein Login, kein Passwort. Reicht für Google Maps, eine WhatsApp oder den nächsten Anschluss zu finden.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">👦 👧</div>
+      <div class="benefit-title">Kinder & Familien</div>
+      <div class="benefit-desc">Wartezeit wird produktiv: Abfahrtsinformationen, Wetter, ein QR-Code der das Handy zum Reisebegleiter macht — spielerisch und sicher.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🚆</div>
+      <div class="benefit-title">Tägliche Pendler</div>
+      <div class="benefit-desc">Schnelle Orientierung auf einen Blick, ohne Handy herausnehmen zu müssen — vor allem morgens oder bei Verspätungen.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">🤝</div>
+      <div class="benefit-title">Gesellschaftliche Kohäsion</div>
+      <div class="benefit-desc">Ein stationärer, öffentlicher Infokanal ohne Paywall schafft einen gemeinsamen Erfahrungsraum — egal ob man ein Smartphone hat oder nicht.</div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-icon">💻</div>
+      <div class="benefit-title">Kein neues Hardware nötig</div>
+      <div class="benefit-desc">Funktioniert als Webseite im Kiosk-Modus auf bestehendem Display-Equipment. Webstandard, kein proprietäres System, offener Quellcode.</div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL TEMPLATE -->
+<div class="section">
+  <div class="section-label">E-Mail Vorlage</div>
+  <h2>Bereit zum Senden</h2>
+  <div style="background:#F8F8F6;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:14px">
+    <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:16px;font-size:12px;color:var(--text2)">
+      <span><strong style="color:var(--text)">An:</strong> innovation@sbb.ch</span>
+      <span><strong style="color:var(--text)">Betreff:</strong> Bürgeridee: Gratis-WLAN via QR an SBB-Billettautomaten — Demo anbei</span>
+    </div>
+    <div id="email-body" style="padding:20px 24px;line-height:1.8;color:var(--text)">
+      <p style="font-style:italic;color:var(--text2);margin-bottom:1em">«Grüezi mitenand — I schriibe üch us Belp, us em Bärner Mittelland.»</p>
+      <p>Ich habe in meiner Freizeit einen Prototypen gebaut: <strong>kostenloses Gast-WLAN an Billettautomaten via QR-Code</strong> — automatische Verbindung, kein Login, 5 Minuten, dann getrennt. Danach direkt zu <strong>sbb.ch/fahrplan</strong>, ab der aktuellen Station.</p>
+      <p><strong>Wer profitiert:</strong> Touristen ohne Roaming, Familien, alle ohne SBB-App.</p>
+      <p><strong>Was es braucht:</strong> Einen WLAN-Access-Point am Automaten + eine URL im Kiosk-Browser. Keine neue Hardware, kein proprietäres System.</p>
+      <p>→ <strong>Live-Demo:</strong> <a href="https://architect-dna.ch/sbb" style="color:var(--red)">architect-dna.ch/sbb</a><br>
+         → <strong>Beilage:</strong> sbb-demo.html — lokal im Browser öffnen, kein Internet nötig.</p>
+      <p>Ich freue mich über eine kurze Rückmeldung ob das Konzept für einen Piloten in Frage käme.</p>
+      <p style="color:var(--text2);margin-top:1.5em;font-size:13px">architect-dna.ch · Privatinitiative · Kanton Bern</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:14px">
+    <button class="copy-btn" onclick="copyEmail()">E-Mail kopieren</button>
+    <a href="/sbb-demo.html" download="sbb-demo.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;background:var(--bg2);color:var(--text2);border:1px solid var(--border2);font-size:13px;font-weight:700;text-decoration:none">⬇ Demo-Datei herunterladen</a>
+  </div>
+</div>
+
+<!-- LETTER -->
+<div class="section">
+  <div class="section-label">Anschreiben</div>
+  <h2>An das SBB-Innovationsteam</h2>
+  <div class="letter" id="pitch-letter">
+
+    <p class="dialect">
+      «Grüezi mitenand — I schriibe üch us em Bärner Mittelland, us Belp.
+      Nid als Firma, nid im Uftrag vo öpperem, eifach as Jemand wo täglich mit em Züg fahrt
+      und denkt: dä Automat chönnti meh chönne.»
+    </p>
+
+    <p>Ich habe in meiner Freizeit einen funktionierenden Prototypen gebaut — ein
+    <strong>Civic Portal-Konzept für SBB-Billettautomaten</strong>. Das Demo oben
+    läuft vollständig im Browser, bezieht Echtzeit-Abfahrten über die OpenTransport API
+    und Wetterdaten von wttr.in. Keine externe Infrastruktur, keine Lizenzkosten,
+    kein Vendor-Lock-in.</p>
+
+    <p>Die Idee: Der Automatenbildschirm hat <strong>Totzeiten</strong> — wenn niemand
+    ein Ticket kauft, zeigt er Werbung oder nichts. Diese Fläche kann öffentlichem Nutzen
+    dienen. Ein QR-Code gibt Reisenden 5 Minuten kostenloses WLAN für den ersten
+    Google-Maps-Aufruf oder die erste Abfrage. Der Screen selbst informiert auch ohne Scan.</p>
+
+    <p><strong>Wer besonders profitiert:</strong><br>
+    Touristen ohne Roaming, Kinder, Pendler unter Zeitdruck —
+    und alle, die sich an einem fremden Bahnhof orientieren müssen, ohne zuerst drei Apps
+    zu öffnen.</p>
+
+    <p><strong>Eine Frage an Ihr Team:</strong><br>
+    Welches Betriebssystem laufen die aktuellen Billettautomaten? Gibt es einen dedizierten
+    Display-Layer für Informations-Content, getrennt vom Ticketing-Interface? Wer ist intern
+    für Screen-Content verantwortlich — ist das ein internes Team oder ein Dienstleister?<br>
+    Diese Antworten würden helfen, eine präzise technische Integrationsskizze zu liefern.</p>
+
+    <p><strong>Mein Vorschlag:</strong><br>
+    Ein 3-monatiger Pilot an einem kleinen Standort —
+    <strong>Belp wäre ideal</strong>, da überschaubar und messbar.
+    Kein Budget, keine Verpflichtung, kein Vertrag. Einfach testen ob es Reisenden nützt.
+    Wenn nicht, kostet es nichts. Wenn ja, haben wir gemeinsam etwas Sinnvolles geschaffen.</p>
+
+    <p>Das Konzept ist <strong>nicht kommerziell motiviert</strong>. Es ist eine
+    Privatinitiative — ein Beitrag an den öffentlichen Raum der Schweiz.</p>
+
+    <p class="signature">
+      Mit freundlichen Grüssen und Dankeschön fürs Lesen<br><br>
+      <strong>architect-dna.ch</strong><br>
+      Privatinitiative · Belp · Kanton Bern
+    </p>
+
+  </div>
+
+  <button class="copy-btn" onclick="copyLetter()">Anschreiben kopieren</button>
+</div>
+
+<!-- TECH STACK -->
+<div class="section">
+  <div class="section-label">Technisches</div>
+  <h2>Stack & Integrationen</h2>
+  <table class="tech-table">
+    <thead>
+      <tr><th>Komponente</th><th>Technologie</th><th>Notiz</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Frontend</td><td>HTML5 / CSS3 / Vanilla JS</td><td>Kein Framework, maximale Kompatibilität, Kiosk-tauglich</td></tr>
+      <tr><td>Abfahrten</td><td>transport.opendata.ch v1</td><td>Offene SBB-Daten, kein API-Key nötig</td></tr>
+      <tr><td>Wetter</td><td>wttr.in JSON API</td><td>Open Source, keine Registrierung</td></tr>
+      <tr><td>WLAN-Portal</td><td>Captive Portal Redirect</td><td>Standard IEEE 802.11 — kompatibel mit jeder Hardware</td></tr>
+      <tr><td>Hosting</td><td>Statisches HTML</td><td>Läuft lokal auf dem Automaten oder via CDN, kein Server nötig</td></tr>
+      <tr><td>Datenschutz</td><td>Zero Tracking</td><td>Keine Cookies, keine Logs, keine personenbezogenen Daten</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>
+  <p>
+    <a href="/">architect-dna.ch</a> &nbsp;·&nbsp;
+    Privatinitiative · Kanton Bern · Schweiz &nbsp;·&nbsp;
+    <span>Kein Unternehmen · Kein kommerzielles Interesse</span>
+  </p>
+</footer>
+
+<script>
+function copyEmail(){
+  const el = document.getElementById('email-body');
+  navigator.clipboard.writeText(el.innerText).then(()=>{
+    const btn = event.target;
+    btn.textContent = '✓ Kopiert';
+    setTimeout(()=>{ btn.textContent = 'E-Mail kopieren'; }, 2000);
+  });
+}
+function copyLetter(){
+  const el = document.getElementById('pitch-letter');
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Kopiert';
+    setTimeout(()=>{ btn.textContent = 'Anschreiben kopieren'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>

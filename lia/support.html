@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Support — LIA · Architect-DNA Systems</title>
+<meta name="description" content="Support for LIA - Legal Intelligence, a zero-knowledge encrypted legal document vault for iOS.">
+<meta name="theme-color" content="#f7f5f0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;
+  --bg2:#F0EFEB;
+  --bg3:#E8E7E2;
+  --text:#1A1A1A;
+  --text2:#5A5A58;
+  --text3:#9A9A98;
+  --amber:#B5271E;
+  --amberD:rgba(181,39,30,.08);
+  --amberB:rgba(181,39,30,.18);
+  --border:#E0E0D8;
+  --border2:rgba(0,0,0,.13);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;height:56px;gap:20px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.header-nav{margin-left:auto;display:flex;gap:4px}
+.header-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s}
+.header-nav a:hover{background:var(--bg2);color:var(--text)}
+
+.page-wrap{max-width:720px;margin:0 auto;padding:64px 24px 80px}
+.page-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.page-kicker::before{content:'';display:inline-block;width:24px;height:2px;background:var(--amber);border-radius:1px}
+h1{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:16px}
+h1 .dim{color:var(--text3)}
+.page-sub{font-size:16px;color:var(--text2);line-height:1.75;margin-bottom:48px;max-width:560px}
+
+.support-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:14px}
+.support-card-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);font-family:var(--mono);margin-bottom:10px}
+.support-card-title{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.support-card-body{font-size:14px;color:var(--text2);line-height:1.75}
+
+.email-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:12px 20px;background:var(--text);color:var(--bg);border-radius:var(--radius);font-size:14px;font-weight:700;text-decoration:none;transition:.15s}
+.email-link:hover{background:#2a2820}
+.email-mono{font-family:var(--mono);font-weight:400;font-size:13px}
+
+.section-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin:48px 0 24px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.faq-item{border-bottom:1px solid var(--border);padding:18px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:15px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+.faq-a{font-size:14px;color:var(--text2);line-height:1.75}
+
+.privacy-link-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:inherit;transition:.15s;margin-top:32px}
+.privacy-link-card:hover{border-color:var(--border2);background:var(--bg3)}
+.privacy-link-card-body{}
+.privacy-link-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:4px}
+.privacy-link-title{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.privacy-link-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.privacy-link-arrow{font-size:18px;color:var(--text3);transition:.15s}
+.privacy-link-card:hover .privacy-link-arrow{color:var(--amber);transform:translate(2px,-2px)}
+
+footer{border-top:1px solid var(--border);padding:32px 24px}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text)}
+
+@media(max-width:600px){
+  .header-nav{display:none}
+  .page-wrap{padding:48px 20px 64px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/>
+          <path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="/lia/privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="page-wrap">
+
+    <div class="page-kicker">iOS App · Support</div>
+    <h1>LIA <span class="dim">Support</span></h1>
+    <p class="page-sub">LIA — Legal Intelligence is a zero-knowledge encrypted legal document vault for iOS. Your documents are encrypted on-device before they ever leave your hands.</p>
+
+    <div class="support-card">
+      <div class="support-card-label">Contact</div>
+      <div class="support-card-title">Get in touch</div>
+      <div class="support-card-body">
+        For questions, bug reports, or feature requests, email us directly. We typically respond within 1–2 business days.
+        <br>
+        <a class="email-link" href="mailto:systems@architect-dna.ch">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 4.5l6 4 6-4"/></svg>
+          <span class="email-mono">systems@architect-dna.ch</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="support-card">
+      <div class="support-card-label">About the App</div>
+      <div class="support-card-title">What is LIA?</div>
+      <div class="support-card-body">LIA is a secure document vault designed for legal professionals and individuals who need to store sensitive legal files. Documents are end-to-end encrypted using keys derived on your device — Architect-DNA Systems has no access to your files.</div>
+    </div>
+
+    <div class="section-label">Common Questions</div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens if I lose my device?</div>
+      <div class="faq-a">Your encryption keys are tied to your authenticated account. As long as you can log back in, your documents remain accessible after reinstalling the app.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can Architect-DNA Systems read my documents?</div>
+      <div class="faq-a">No. Documents are encrypted on-device before upload. We have no access to the encryption keys and cannot read your files.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What data does LIA collect?</div>
+      <div class="faq-a">Only your email address, used for authentication via Supabase. No analytics, no advertising, no tracking. See our Privacy Policy for full details.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Which law governs this service?</div>
+      <div class="faq-a">LIA is operated by Architect-DNA Systems, based in Switzerland. The service is governed by Swiss law.</div>
+    </div>
+
+    <a class="privacy-link-card" href="/lia/privacy">
+      <div class="privacy-link-card-body">
+        <div class="privacy-link-label">Legal</div>
+        <div class="privacy-link-title">Privacy Policy</div>
+        <div class="privacy-link-sub">How we handle your data — and why we barely touch it</div>
+      </div>
+      <span class="privacy-link-arrow">↗</span>
+    </a>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">&copy; 2025 Architect-DNA Systems · Switzerland</span>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/lia/support">Support</a>
+      <a href="/lia/privacy">Privacy</a>
+      <a href="mailto:systems@architect-dna.ch">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

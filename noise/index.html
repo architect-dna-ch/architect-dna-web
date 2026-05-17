@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noise — Focus Soundscapes · Architect-DNA</title>
+<meta name="description" content="Layer ambient sounds. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match. No account. No install.">
+<meta property="og:title" content="Noise — Focus Soundscapes">
+<meta property="og:description" content="Layer ambient sounds. Set a focus timer. Block everything out.">
+<meta property="og:url" content="https://architect-dna.ch/noise">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0c0e18">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e18;
+  --bg2:#10121e;
+  --surface:rgba(255,255,255,.04);
+  --surface2:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.13);
+  --text:#f0f0f8;
+  --text2:rgba(240,240,248,.55);
+  --text3:rgba(240,240,248,.28);
+  --accent:#7c6cfa;
+  --accent2:#00e5c0;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --r:16px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;transition:opacity .35s ease}
+body.leaving{opacity:0}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(12,14,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
+.logo{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-link{font-size:12px;color:var(--text3);text-decoration:none;letter-spacing:.04em;transition:color .15s}
+.nav-link:hover{color:var(--text2)}
+.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.04em;background:var(--accent);color:#fff;text-decoration:none;transition:filter .15s,box-shadow .15s;box-shadow:0 0 20px rgba(124,108,250,.3)}
+.cta-btn:hover{filter:brightness(1.12);box-shadow:0 0 32px rgba(124,108,250,.5)}
+
+/* ── HERO ── */
+.hero{position:relative;padding:100px 24px 80px;overflow:hidden;background:linear-gradient(160deg,rgba(124,108,250,.07) 0%,transparent 50%)}
+.hero-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+@media(max-width:720px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}}
+.hero-kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(124,108,250,.6);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-kicker::before{content:'';width:18px;height:1px;background:rgba(124,108,250,.5)}
+.hero-title{font-size:clamp(56px,10vw,100px);font-weight:900;letter-spacing:-.05em;line-height:.9;margin-bottom:24px}
+.hero-title .dot{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:17px;color:var(--text2);line-height:1.75;max-width:420px;margin-bottom:36px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:40px}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;border-radius:var(--r);font-size:14px;font-weight:800;letter-spacing:.04em;background:var(--accent);color:#fff;text-decoration:none;box-shadow:0 0 40px rgba(124,108,250,.35);transition:filter .15s,box-shadow .15s,transform .12s}
+.btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 60px rgba(124,108,250,.55);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:15px 24px;border-radius:var(--r);border:1px solid var(--border2);font-size:14px;font-weight:700;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s,background .15s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.25);color:var(--text);background:var(--surface)}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 10px}
+
+/* ── HERO VISUAL: emoji scene ── */
+.hero-visual{position:relative}
+.scene-box{
+  background:rgba(12,14,28,.8);border:1px solid var(--border2);border-radius:24px;
+  padding:32px;height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  position:relative;overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,.5);
+}
+.scene-box::before{
+  content:'';position:absolute;inset:0;border-radius:24px;
+  background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(124,108,250,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.scene-emojis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;position:relative;z-index:1}
+.scene-tile{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 8px;border-radius:12px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  transition:background .3s,border-color .3s,transform .3s;
+  cursor:default;
+}
+.scene-tile.lit{background:rgba(var(--tc),0.1);border-color:rgba(var(--tc),0.3);transform:scale(1.04)}
+.scene-tile .e{font-size:28px;filter:drop-shadow(0 0 8px rgba(var(--tc),.5));transition:filter .3s}
+.scene-tile .n{font-size:10px;color:var(--text3);letter-spacing:.06em;font-weight:600}
+.scene-tile.lit .n{color:var(--text2)}
+.scene-bar{height:2px;border-radius:1px;background:rgba(255,255,255,.06);margin-top:4px;width:100%;overflow:hidden}
+.scene-bar-fill{height:100%;border-radius:1px;background:rgba(var(--tc),0.8);transition:width .4s ease}
+
+/* ── SECTION COMMONS ── */
+section{padding:80px 24px}
+.section-inner{max-width:1040px;margin:0 auto}
+.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(124,108,250,.5);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:14px;height:1px;background:rgba(124,108,250,.4)}
+.section-title{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:48px}
+
+/* ── SOUND CARDS ── */
+.sounds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:760px){.sounds-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.sounds-grid{grid-template-columns:1fr}}
+
+.sound-card{
+  border-radius:var(--r);border:1px solid var(--border);
+  overflow:hidden;transition:border-color .25s,transform .2s;cursor:default;
+  background:var(--surface);
+}
+.sound-card:hover{border-color:var(--card-border);transform:translateY(-3px)}
+
+.sound-ill{
+  height:160px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:var(--card-bg);
+}
+/* per-card backgrounds */
+.sound-card.rain .sound-ill{background:linear-gradient(160deg,#0d1628 0%,#1a2840 100%)}
+.sound-card.cafe .sound-ill{background:linear-gradient(160deg,#1a0e06 0%,#2a1a0a 100%)}
+.sound-card.space .sound-ill{background:linear-gradient(160deg,#06060e 0%,#0d0820 100%)}
+.sound-card.forest .sound-ill{background:linear-gradient(160deg,#0a160a 0%,#142814 100%)}
+.sound-card.fire .sound-ill{background:linear-gradient(160deg,#180804 0%,#280e06 100%)}
+.sound-card.city .sound-ill{background:linear-gradient(160deg,#08101a 0%,#101828 100%)}
+
+/* borders */
+.sound-card.rain{--card-border:#4488ff88}
+.sound-card.cafe{--card-border:#f59e0b88}
+.sound-card.space{--card-border:#7c6cfa88}
+.sound-card.forest{--card-border:#10b98188}
+.sound-card.fire{--card-border:#ff6b3588}
+.sound-card.city{--card-border:#00e5c088}
+
+/* main emoji */
+.sound-emoji{
+  font-size:52px;position:relative;z-index:2;
+  filter:drop-shadow(0 0 20px var(--e-glow));
+  transition:transform .3s cubic-bezier(.34,1.36,.64,1),filter .3s;
+}
+.sound-card:hover .sound-emoji{transform:scale(1.15) translateY(-4px);filter:drop-shadow(0 0 36px var(--e-glow))}
+
+.sound-card.rain .sound-emoji{--e-glow:#4488ff}
+.sound-card.cafe .sound-emoji{--e-glow:#f59e0b}
+.sound-card.space .sound-emoji{--e-glow:#7c6cfa}
+.sound-card.forest .sound-emoji{--e-glow:#10b981}
+.sound-card.fire .sound-emoji{--e-glow:#ff6b35}
+.sound-card.city .sound-emoji{--e-glow:#00e5c0}
+
+/* ambient particles via pseudo + box-shadow trick */
+.sound-ill::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 80%,var(--e-floor) 0%,transparent 70%);
+  pointer-events:none;
+}
+.sound-card.rain .sound-ill::before{--e-floor:rgba(68,136,255,.08)}
+.sound-card.cafe .sound-ill::before{--e-floor:rgba(245,158,11,.1)}
+.sound-card.space .sound-ill::before{--e-floor:rgba(124,108,250,.08)}
+.sound-card.forest .sound-ill::before{--e-floor:rgba(16,185,129,.08)}
+.sound-card.fire .sound-ill::before{--e-floor:rgba(255,107,53,.14)}
+.sound-card.city .sound-ill::before{--e-floor:rgba(0,229,192,.06)}
+
+/* ambient dots for each scene */
+.sound-ill-dots{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+/* rain dots = vertical streaks */
+.rain .dot{position:absolute;width:1px;background:linear-gradient(to bottom,transparent,rgba(68,136,255,.4),transparent);border-radius:1px;opacity:.6}
+/* space = stars */
+.space .dot{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5}
+/* forest = small circles */
+.forest .dot{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(16,185,129,.4)}
+/* city = window lights */
+.city .dot{position:absolute;width:3px;height:2px;border-radius:1px;background:rgba(255,220,100,.5)}
+/* fire = spark dots */
+.fire .dot{position:absolute;border-radius:50%;background:rgba(255,140,60,.5)}
+/* cafe = dust motes */
+.cafe .dot{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(245,158,11,.35)}
+
+.sound-info{padding:16px 18px 18px}
+.sound-name{font-size:14px;font-weight:800;margin-bottom:4px}
+.sound-desc{font-size:12px;color:var(--text3);line-height:1.55}
+.sound-tech{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.2);margin-top:8px;letter-spacing:.04em}
+
+/* ── PRESETS ── */
+.presets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:640px){.presets-grid{grid-template-columns:1fr}}
+
+.preset-card{
+  border-radius:var(--r);border:1px solid var(--border);
+  overflow:hidden;background:var(--surface);
+  transition:border-color .2s,transform .2s;
+}
+.preset-card:hover{transform:translateY(-3px);border-color:var(--pc)}
+.preset-ill{
+  height:120px;display:flex;align-items:center;justify-content:center;gap:12px;
+  position:relative;overflow:hidden;
+}
+.preset-card.deepwork .preset-ill{background:linear-gradient(135deg,#0d1628,#1a2535)}
+.preset-card.cafeflow .preset-ill{background:linear-gradient(135deg,#1a0e06,#221408)}
+.preset-card.night .preset-ill{background:linear-gradient(135deg,#0d0820,#180e0a)}
+.preset-ill::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,var(--pf) 0%,transparent 70%)}
+.preset-card.deepwork{--pc:rgba(68,136,255,.5);--pf:rgba(68,136,255,.1)}
+.preset-card.cafeflow{--pc:rgba(245,158,11,.5);--pf:rgba(245,158,11,.12)}
+.preset-card.night{--pc:rgba(124,108,250,.5);--pf:rgba(255,107,53,.1)}
+.preset-emoji{font-size:36px;filter:drop-shadow(0 0 14px var(--pc));transition:transform .3s}
+.preset-card:hover .preset-emoji{transform:scale(1.12)}
+.preset-body{padding:16px 18px 20px}
+.preset-name{font-size:15px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.preset-desc{font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:12px}
+.preset-layers{display:flex;gap:6px;flex-wrap:wrap}
+.preset-layer{font-size:10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text2)}
+
+/* ── CARD DECK ── */
+.deck-wrap{display:flex;gap:64px;align-items:center;justify-content:center;flex-wrap:wrap}
+.deck-stage{
+  position:relative;width:340px;height:240px;flex-shrink:0;cursor:pointer;
+  overflow:visible;
+}
+.deck-card{
+  position:absolute;inset:0;
+  background:#181a2e; /* solid — no bleed-through */
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:32px 28px;
+  display:flex;flex-direction:column;gap:12px;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),box-shadow .5s;
+  will-change:transform;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  user-select:none;
+}
+/* front card: straight, glowing */
+.deck-card:nth-child(1){
+  transform:translateY(0) rotate(0deg) scale(1);z-index:6;
+  box-shadow:0 16px 56px rgba(0,0,0,.6),0 0 0 1px rgba(124,108,250,.15);
+  animation:deckPulse 2.4s ease-in-out infinite;
+}
+/* card 2: angled right, corner visible */
+.deck-card:nth-child(2){
+  transform:translate(10px,10px) rotate(4deg) scale(.97);z-index:5;background:#14162a;
+}
+/* card 3: more angle */
+.deck-card:nth-child(3){
+  transform:translate(18px,16px) rotate(7deg) scale(.94);z-index:4;background:#111326;
+}
+/* rest: hidden fully behind */
+.deck-card:nth-child(n+4){
+  transform:translate(20px,18px) rotate(8deg) scale(.92);z-index:3;background:#0f1122;
+}
+
+@keyframes deckPulse{
+  0%,100%{box-shadow:0 16px 56px rgba(0,0,0,.6),0 0 0 1px rgba(124,108,250,.15),0 0 0 0 rgba(124,108,250,0)}
+  50%{box-shadow:0 16px 56px rgba(0,0,0,.6),0 0 0 1px rgba(124,108,250,.5),0 0 32px 4px rgba(124,108,250,.18)}
+}
+
+/* ── FINGER HINT ── */
+.deck-finger{
+  position:absolute;top:-22px;right:-18px;
+  font-size:32px;z-index:20;pointer-events:none;
+  animation:fingerTap 2.2s ease-in-out infinite;
+  filter:drop-shadow(0 0 10px rgba(255,210,0,.8));
+  will-change:transform;
+}
+@keyframes fingerTap{
+  0%,100%{transform:rotate(135deg) translateX(0)}
+  30%    {transform:rotate(135deg) translateX(11px)}
+  45%    {transform:rotate(135deg) translateX(0)}
+  68%    {transform:rotate(135deg) translateX(8px)}
+  80%    {transform:rotate(135deg) translateX(0)}
+}
+
+/* send-to-back: fly off to the right */
+.deck-card.sending{
+  transform:translate(220px,-50px) rotate(18deg) scale(.88)!important;
+  opacity:0!important;
+  transition:transform .4s cubic-bezier(.4,0,1,1),opacity .22s .06s!important;
+  pointer-events:none;z-index:10;
+}
+
+.deck-icon{font-size:30px;line-height:1}
+.deck-title{font-size:17px;font-weight:900;letter-spacing:-.02em}
+.deck-desc{font-size:13px;color:var(--text2);line-height:1.6;flex:1}
+.deck-hint{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;margin-top:auto;display:flex;align-items:center;justify-content:space-between}
+.deck-counter{font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center;margin-top:14px}
+.deck-tap{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--accent);border:none;color:#fff;
+  font-size:16px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(124,108,250,.4);
+  transition:transform .15s,box-shadow .15s;
+}
+.deck-tap:hover{transform:scale(1.1);box-shadow:0 0 32px rgba(124,108,250,.6)}
+.deck-side{display:flex;flex-direction:column;gap:8px;max-width:280px}
+.deck-side-title{font-size:28px;font-weight:900;letter-spacing:-.04em;line-height:1}
+.deck-side-sub{font-size:14px;color:var(--text2);line-height:1.6}
+@media(max-width:640px){.deck-side{display:none}}
+
+/* ── PRIVACY ── */
+.privacy-band{
+  background:rgba(0,229,192,.03);
+  border-bottom:1px solid rgba(0,229,192,.08);
+  padding:56px 24px;
+  position:relative;
+}
+/* rainbow road top strip */
+.rainbow-road{
+  position:absolute;top:0;left:0;right:0;height:5px;overflow:visible;
+  background:linear-gradient(90deg,#ff0040,#ff6600,#ffcc00,#00ee44,#00aaff,#7744ff,#ff0040,#ff6600,#ffcc00,#00ee44,#00aaff,#7744ff);
+  background-size:400% 100%;
+  animation:rainbowMove 3s linear infinite;
+}
+@keyframes rainbowMove{0%{background-position:0% 0%}100%{background-position:100% 0%}}
+
+/* kart racing on top */
+.kart{
+  position:absolute;top:-18px;font-size:22px;
+  animation:kartRace 5s linear infinite;
+  line-height:1;pointer-events:none;
+  filter:drop-shadow(0 0 8px rgba(255,200,0,.8));
+}
+.kart:nth-child(2){animation-delay:-2s;font-size:16px;top:-14px;opacity:.6}
+@keyframes kartRace{
+  0%  {left:-40px;transform:scaleX(1)}
+  49% {left:calc(100% + 40px);transform:scaleX(1)}
+  50% {left:calc(100% + 40px);transform:scaleX(-1)}
+  99% {left:-40px;transform:scaleX(-1)}
+  100%{left:-40px;transform:scaleX(1)}
+}
+/* sparkle road dots */
+.road-dots{
+  position:absolute;top:0;left:0;right:0;height:5px;overflow:hidden;pointer-events:none;
+}
+.road-dot{
+  position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;
+  border-radius:50%;background:#fff;opacity:0;
+  animation:dotFlash 3s linear infinite;
+}
+@keyframes dotFlash{
+  0%,90%,100%{opacity:0}
+  45%,55%{opacity:.8}
+}
+.privacy-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+@media(max-width:640px){.privacy-inner{grid-template-columns:1fr}}
+.privacy-title{font-size:26px;font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+/* balloon list */
+.privacy-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.privacy-balloon{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(0,229,192,.07);border:1px solid rgba(0,229,192,.18);
+  border-radius:100px;padding:10px 18px;
+  font-size:13px;color:var(--text2);line-height:1;
+  transform:scale(.4) translateY(20px);
+  opacity:0;
+  transition:transform .5s cubic-bezier(.34,1.36,.64,1),opacity .35s ease;
+  transform-origin:left center;
+  will-change:transform,opacity;
+}
+.privacy-balloon.popped{transform:scale(1) translateY(0);opacity:1}
+.privacy-balloon::before{content:'🔒';font-size:14px;flex-shrink:0}
+
+/* ── ARCHIVE ── */
+.archive-section{padding:0 24px 64px}
+.archive-inner{max-width:1040px;margin:0 auto}
+details{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+details[open]{border-color:var(--border2)}
+summary{
+  padding:16px 20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--text2);
+  background:var(--surface);user-select:none;list-style:none;
+  transition:background .15s,color .15s;
+}
+summary:hover{background:var(--surface2);color:var(--text)}
+summary::-webkit-details-marker{display:none}
+.summary-right{font-family:var(--mono);font-size:10px;color:var(--text3);display:flex;align-items:center;gap:8px}
+.summary-chevron{transition:transform .2s;display:inline-block}
+details[open] .summary-chevron{transform:rotate(180deg)}
+.archive-body{padding:24px 20px;background:rgba(0,0,0,.2);border-top:1px solid var(--border)}
+.archive-version{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.archive-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 9px}
+.archive-date{font-size:12px;color:var(--text3)}
+.archive-changes{display:flex;flex-direction:column;gap:6px}
+.archive-change{font-size:12px;color:var(--text2);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+.archive-change span{color:var(--text3);flex-shrink:0;font-family:var(--mono);font-size:10px;margin-top:2px}
+
+/* ── CTA ── */
+.cta-band{padding:80px 24px;text-align:center;background:linear-gradient(160deg,rgba(124,108,250,.06) 0%,transparent 60%);border-top:1px solid var(--border)}
+.cta-band-title{font-size:clamp(32px,5vw,56px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px}
+.cta-band-sub{font-size:16px;color:var(--text2);margin-bottom:36px}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{padding:36px 24px;border-top:1px solid var(--border)}
+.footer-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-size:13px;font-weight:900;letter-spacing:-.02em}
+.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text2)}
+.footer-copy{font-size:11px;color:var(--text3)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="https://architect-dna.ch">Architect<span>-DNA</span></a>
+    <div class="header-right">
+      <a class="nav-link" href="https://architect-dna.ch">← Back</a>
+      <a class="cta-btn" href="https://noise.architect-dna.ch">Open App ↗</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">Architect-DNA · Focus Tools</div>
+      <h1 class="hero-title">Noise<span class="dot">.</span></h1>
+      <p class="hero-desc">Layer ambient soundscapes. Set a focus timer. Block the world out. Mix rain, café, deep space, fireplace and more — at exactly the right volume.</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="https://noise.architect-dna.ch">Open App ↗</a>
+        <a class="btn-ghost" href="#sounds">Explore Sounds</a>
+      </div>
+      <div class="hero-tags">
+        <span class="tag">No account</span>
+        <span class="tag">No install</span>
+        <span class="tag">Pure Web Audio</span>
+        <span class="tag">Pomodoro</span>
+        <span class="tag">Free forever</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="scene-box">
+        <div class="scene-emojis">
+          <div class="scene-tile lit" style="--tc:68,136,255">
+            <div class="e">🌧</div>
+            <div class="n">Rain</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:78%"></div></div>
+          </div>
+          <div class="scene-tile" style="--tc:245,158,11">
+            <div class="e">☕</div>
+            <div class="n">Café</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="scene-tile lit" style="--tc:124,108,250">
+            <div class="e">🌌</div>
+            <div class="n">Space</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:22%"></div></div>
+          </div>
+          <div class="scene-tile" style="--tc:16,185,129">
+            <div class="e">🌲</div>
+            <div class="n">Forest</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="scene-tile" style="--tc:255,107,53">
+            <div class="e">🔥</div>
+            <div class="n">Fire</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="scene-tile" style="--tc:0,229,192">
+            <div class="e">🏙</div>
+            <div class="n">City</div>
+            <div class="scene-bar"><div class="scene-bar-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HERO CTA ── -->
+<div style="padding:0 24px 64px;text-align:center;border-bottom:1px solid var(--border)">
+  <div class="section-inner" style="text-align:center">
+    <h2 class="cta-band-title" style="font-size:clamp(28px,4vw,48px)">Stop reading.<br>Start focusing.</h2>
+    <p class="cta-band-sub" style="margin-bottom:28px">Pick a preset. Start the timer. Ship something.</p>
+    <div class="cta-btns">
+      <a class="btn-primary" href="https://noise.architect-dna.ch">Open Noise ↗</a>
+      <a class="btn-ghost" href="#sounds">Or keep reading ↓</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── SOUNDS ── -->
+<section id="sounds">
+  <div class="section-inner">
+    <div class="section-label">Soundscapes</div>
+    <h2 class="section-title">Six environments.<br>Infinite combinations.</h2>
+    <p class="section-sub">Every layer synthesized live in the browser. No audio files. No loops. Each second sounds unique.</p>
+
+    <div class="sounds-grid">
+
+      <div class="sound-card rain">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-rain"></div>
+          <div class="sound-emoji">🌧</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">Rain on Glass</div>
+          <div class="sound-desc">Steady downpour with natural intensity variation. Close your eyes and you're inside.</div>
+          <div class="sound-tech">White noise · HP/LP filtered · LFO</div>
+        </div>
+      </div>
+
+      <div class="sound-card cafe">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-cafe"></div>
+          <div class="sound-emoji">☕</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">Café Murmur</div>
+          <div class="sound-desc">Warm mid-range chatter, just enough to feel alive without being distracting.</div>
+          <div class="sound-tech">Pink noise · Band pass · Peaks</div>
+        </div>
+      </div>
+
+      <div class="sound-card space">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-space"></div>
+          <div class="sound-emoji">🌌</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">Deep Space</div>
+          <div class="sound-desc">Sub-bass brown noise beneath a 42 Hz sine drone. The sound of nothing, everywhere.</div>
+          <div class="sound-tech">Brown noise · 42 Hz drone · LFO</div>
+        </div>
+      </div>
+
+      <div class="sound-card forest">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-forest"></div>
+          <div class="sound-emoji">🌲</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">Forest Wind</div>
+          <div class="sound-desc">Rustling leaves, slow wind gusts, open air. Feels like a clearing in the trees.</div>
+          <div class="sound-tech">Pink noise · Wind gust LFO</div>
+        </div>
+      </div>
+
+      <div class="sound-card fire">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-fire"></div>
+          <div class="sound-emoji">🔥</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">Fireplace</div>
+          <div class="sound-desc">Low warmth with high-frequency crackle. The coziest sound in existence.</div>
+          <div class="sound-tech">Brown noise · Crackle modulation</div>
+        </div>
+      </div>
+
+      <div class="sound-card city">
+        <div class="sound-ill">
+          <div class="sound-ill-dots" id="dots-city"></div>
+          <div class="sound-emoji">🏙</div>
+        </div>
+        <div class="sound-info">
+          <div class="sound-name">City Hum</div>
+          <div class="sound-desc">Urban noise at a distance. Traffic drift. Low rumble. The world going on without you.</div>
+          <div class="sound-tech">Pink noise · Traffic drift · Rumble</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PRESETS ── -->
+<section style="padding:0 24px 80px">
+  <div class="section-inner">
+    <div class="section-label">Presets</div>
+    <h2 class="section-title">Fine-tuned from the start.</h2>
+    <p class="section-sub">Three presets, each balanced by AI. One click and you're in the zone.</p>
+
+    <div class="presets-grid">
+      <div class="preset-card deepwork">
+        <div class="preset-ill">
+          <div class="preset-emoji">🌧</div>
+          <div class="preset-emoji" style="font-size:24px;opacity:.4">🌌</div>
+        </div>
+        <div class="preset-body">
+          <div class="preset-name">⚡ Deep Work</div>
+          <div class="preset-desc">Heavy rain blocks everything. A whisper of space fills the void. Zero distractions.</div>
+          <div class="preset-layers">
+            <span class="preset-layer">🌧 Rain 78%</span>
+            <span class="preset-layer">🌌 Space 22%</span>
+          </div>
+        </div>
+      </div>
+      <div class="preset-card cafeflow">
+        <div class="preset-ill">
+          <div class="preset-emoji">☕</div>
+          <div class="preset-emoji" style="font-size:20px;opacity:.5">🌧</div>
+          <div class="preset-emoji" style="font-size:16px;opacity:.35">🏙</div>
+        </div>
+        <div class="preset-body">
+          <div class="preset-name">☕ Café Flow</div>
+          <div class="preset-desc">Murmur in the foreground, rain at the window, city underneath. Energized, not anxious.</div>
+          <div class="preset-layers">
+            <span class="preset-layer">☕ Café 68%</span>
+            <span class="preset-layer">🌧 Rain 32%</span>
+            <span class="preset-layer">🏙 City 25%</span>
+          </div>
+        </div>
+      </div>
+      <div class="preset-card night">
+        <div class="preset-ill">
+          <div class="preset-emoji">🔥</div>
+          <div class="preset-emoji" style="font-size:22px;opacity:.5">🌲</div>
+          <div class="preset-emoji" style="font-size:16px;opacity:.3">🌌</div>
+        </div>
+        <div class="preset-body">
+          <div class="preset-name">🌙 Late Night</div>
+          <div class="preset-desc">Fireplace warmth, forest outside, space underneath. The world is asleep.</div>
+          <div class="preset-layers">
+            <span class="preset-layer">🔥 Fire 72%</span>
+            <span class="preset-layer">🌲 Forest 45%</span>
+            <span class="preset-layer">🌌 Space 38%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES CARD DECK ── -->
+<section style="padding:0 24px 80px">
+  <div class="section-inner">
+    <div class="section-label">Built different</div>
+    <h2 class="section-title">No files. No loops.<br>No compromise.</h2>
+
+    <div class="deck-wrap">
+      <div class="deck-side">
+        <div class="deck-side-title" id="deck-title">Real-time<br>synthesis</div>
+        <div class="deck-side-sub" id="deck-sub">Web Audio API only. No audio files, no loops. Every second sounds unique.</div>
+      </div>
+
+      <div>
+        <div class="deck-stage" id="deck" onclick="deckNext()">
+          <span class="deck-finger">👉</span>
+          <div class="deck-card">
+            <div class="deck-icon">🎛</div>
+            <div class="deck-title">Real-time synthesis</div>
+            <div class="deck-desc">Web Audio API only. No audio files, no loops. Every second sounds unique.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>1 / 6</span></div>
+          </div>
+          <div class="deck-card">
+            <div class="deck-icon">⏱</div>
+            <div class="deck-title">Pomodoro timer</div>
+            <div class="deck-desc">25/5 · 50/10 · 90/20. Timer runs in your tab title while you work in another tab.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>2 / 6</span></div>
+          </div>
+          <div class="deck-card">
+            <div class="deck-icon">⌨️</div>
+            <div class="deck-title">Keyboard first</div>
+            <div class="deck-desc">Space to start. 1–6 to toggle layers. M to mute. No mouse required.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>3 / 6</span></div>
+          </div>
+          <div class="deck-card">
+            <div class="deck-icon">🌐</div>
+            <div class="deck-title">Works offline</div>
+            <div class="deck-desc">After first load, no network needed. Pure client-side synthesis.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>4 / 6</span></div>
+          </div>
+          <div class="deck-card">
+            <div class="deck-icon">🎨</div>
+            <div class="deck-title">Living background</div>
+            <div class="deck-desc">The background very slowly shifts over an hour. You'll only notice if you look away and back.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>5 / 6</span></div>
+          </div>
+          <div class="deck-card">
+            <div class="deck-icon">⚡</div>
+            <div class="deck-title">Instant start</div>
+            <div class="deck-desc">Single HTML file. No framework, no bundler overhead. Loads in under a second.</div>
+            <div class="deck-hint"><span>Click to advance</span><span>6 / 6</span></div>
+          </div>
+        </div>
+        <div class="deck-counter" id="deck-counter">1 of 6</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRIVACY ── -->
+<div class="privacy-band">
+  <div class="rainbow-road">
+    <span class="kart">🏎️</span>
+    <span class="kart">🏎️</span>
+  </div>
+  <div class="privacy-inner">
+    <div>
+      <div class="section-label" style="margin-bottom:12px">Privacy</div>
+      <div class="privacy-title">Zero data.<br>Not even a cookie.</div>
+      <p style="font-size:14px;color:var(--text3);margin-top:10px;line-height:1.6">Noise runs entirely in your browser. There is no backend, no database, no analytics, no third-party SDK. Nothing leaves your device.</p>
+    </div>
+    <div>
+      <ul class="privacy-list" id="privacy-list">
+        <li><span class="privacy-balloon">No account or login required — ever</span></li>
+        <li><span class="privacy-balloon">No cookies, no localStorage tracking</span></li>
+        <li><span class="privacy-balloon">No analytics, no usage data collected</span></li>
+        <li><span class="privacy-balloon">No network requests after initial page load</span></li>
+        <li><span class="privacy-balloon">Audio generated locally via Web Audio API</span></li>
+        <li><span class="privacy-balloon">Source code is plain HTML — view it anytime</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── ARCHIVE ── -->
+<div class="archive-section" style="padding-top:48px">
+  <div class="archive-inner">
+    <details>
+      <summary>
+        <span>Version history</span>
+        <span class="summary-right">
+          <span>1 release</span>
+          <span class="summary-chevron">▾</span>
+        </span>
+      </summary>
+      <div class="archive-body">
+        <div class="archive-version">
+          <span class="archive-tag">v1.0</span>
+          <span class="archive-date">Released 2026-05-17</span>
+        </div>
+        <div class="archive-changes">
+          <div class="archive-change"><span>NEW</span>Six synthesized soundscapes: Rain, Café, Deep Space, Forest, Fireplace, City</div>
+          <div class="archive-change"><span>NEW</span>Pomodoro timer — 25/5 · 50/10 · 90/20 presets, tab title countdown, ding on session end</div>
+          <div class="archive-change"><span>NEW</span>Three hand-tuned presets: Deep Work, Café Flow, Late Night</div>
+          <div class="archive-change"><span>NEW</span>Living background — imperceptible 1-hour color drift from cold to warm</div>
+          <div class="archive-change"><span>NEW</span>Full keyboard control: Space / 1–6 / M</div>
+          <div class="archive-change"><span>NEW</span>Master volume + per-layer volume sliders</div>
+          <div class="archive-change"><span>ARCH</span>Single HTML file, zero dependencies, works offline after first load</div>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ── CTA ── -->
+<div class="cta-band">
+  <div class="section-inner" style="text-align:center">
+    <h2 class="cta-band-title">Stop reading.<br>Start focusing.</h2>
+    <p class="cta-band-sub">Pick a preset. Start the timer. Ship something.</p>
+    <div class="cta-btns">
+      <a class="btn-primary" href="https://noise.architect-dna.ch">Open Noise ↗</a>
+      <a class="btn-ghost" href="https://architect-dna.ch">More projects</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Architect<span>-DNA</span></div>
+    <div class="footer-links">
+      <a href="https://architect-dna.ch">Portfolio</a>
+      <a href="https://konnekt.architect-dna.ch">Konnekt</a>
+      <a href="https://architect-dna.ch/games">Games</a>
+    </div>
+    <div class="footer-copy">© 2026 Architect-DNA · No cookies · No tracking</div>
+  </div>
+</footer>
+
+<script>
+// Scatter static ambient dots per illustration
+function scatter(containerId, type){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  const W=el.offsetWidth||300, H=el.offsetHeight||160;
+  const configs={
+    rain:{n:30,make:()=>({
+      style:`left:${Math.random()*100}%;top:${Math.random()*80}%;width:1px;height:${12+Math.random()*20}px;opacity:${.15+Math.random()*.35}`
+    })},
+    space:{n:40,make:()=>({
+      style:`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()>0.9?3:2}px;height:${Math.random()>0.9?3:2}px;opacity:${.2+Math.random()*.6}`
+    })},
+    forest:{n:12,make:()=>({
+      style:`left:${Math.random()*100}%;top:${60+Math.random()*35}%;width:${2+Math.random()*3}px;height:${2+Math.random()*3}px;opacity:${.2+Math.random()*.4}`
+    })},
+    city:{n:18,make:()=>({
+      style:`left:${Math.random()*90}%;top:${20+Math.random()*60}%;width:${2+Math.random()*3}px;height:${1+Math.random()*2}px;opacity:${.25+Math.random()*.4}`
+    })},
+    fire:{n:14,make:()=>({
+      style:`left:${20+Math.random()*60}%;top:${40+Math.random()*50}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;opacity:${.15+Math.random()*.35};border-radius:50%`
+    })},
+    cafe:{n:10,make:()=>({
+      style:`left:${Math.random()*100}%;top:${Math.random()*80}%;width:2px;height:2px;opacity:${.1+Math.random()*.3};border-radius:50%`
+    })},
+  };
+  const cfg=configs[type];
+  if(!cfg) return;
+  for(let i=0;i<cfg.n;i++){
+    const d=document.createElement('div');
+    d.className='dot';
+    const s=cfg.make();
+    d.setAttribute('style',s.style);
+    el.appendChild(d);
+  }
+}
+
+scatter('dots-rain','rain');
+scatter('dots-space','space');
+scatter('dots-forest','forest');
+scatter('dots-city','city');
+scatter('dots-fire','fire');
+scatter('dots-cafe','cafe');
+
+// ── CARD DECK ────────────────────────────────────────────────────────────────
+const FEATURES=[
+  {icon:'🎛',title:'Real-time synthesis',desc:'Web Audio API only. No audio files, no loops. Every second sounds unique.'},
+  {icon:'⏱',title:'Pomodoro timer',desc:'25/5 · 50/10 · 90/20. Timer runs in your tab title while you work in another tab.'},
+  {icon:'⌨️',title:'Keyboard first',desc:'Space to start. 1–6 to toggle layers. M to mute. No mouse required.'},
+  {icon:'🌐',title:'Works offline',desc:'After first load, no network needed. Pure client-side synthesis.'},
+  {icon:'🎨',title:'Living background',desc:'The background very slowly shifts over an hour. You\'ll only notice if you look away and back.'},
+  {icon:'⚡',title:'Instant start',desc:'Single HTML file. No framework, no bundler overhead. Loads in under a second.'},
+];
+let deckIndex=0;
+
+function deckNext(){
+  const finger=document.querySelector('.deck-finger');
+  if(finger){finger.style.transition='opacity .3s';finger.style.opacity='0';setTimeout(()=>finger.remove(),300);}
+  const deck=document.getElementById('deck');
+  const cards=[...deck.querySelectorAll('.deck-card')];
+  if(!cards.length) return;
+  const front=cards[0];
+  // animate off
+  front.classList.add('sending');
+  setTimeout(()=>{
+    front.classList.remove('sending');
+    deck.appendChild(front); // move to back of DOM = back of stack
+    // update hint counter
+    deckIndex=(deckIndex+1)%FEATURES.length;
+    const allCards=[...deck.querySelectorAll('.deck-card')];
+    allCards.forEach((c,i)=>{
+      const feat=FEATURES[(deckIndex+i)%FEATURES.length];
+      c.querySelector('.deck-hint').lastElementChild.textContent=`${(deckIndex+i)%FEATURES.length+1} / ${FEATURES.length}`;
+    });
+    updateDeckSide();
+  },480);
+  updateDeckSide((deckIndex+1)%FEATURES.length);
+}
+
+function updateDeckSide(idx){
+  const i=idx!==undefined?idx:(deckIndex+1)%FEATURES.length;
+  const f=FEATURES[i];
+  const title=document.getElementById('deck-title');
+  const sub=document.getElementById('deck-sub');
+  const counter=document.getElementById('deck-counter');
+  if(title) title.textContent=f.title;
+  if(sub) sub.textContent=f.desc;
+  if(counter) counter.textContent=`${i+1} of ${FEATURES.length}`;
+}
+
+// ── PRIVACY BALLOONS ─────────────────────────────────────────────────────────
+const privacyList=document.getElementById('privacy-list');
+if(privacyList){
+  const balloons=[...privacyList.querySelectorAll('.privacy-balloon')];
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        balloons.forEach((b,i)=>{
+          setTimeout(()=>b.classList.add('popped'),i*120);
+        });
+        observer.disconnect();
+      }
+    });
+  },{threshold:.2});
+  observer.observe(privacyList);
+}
+
+// ── PAGE TRANSITION ───────────────────────────────────────────────────────────
+document.querySelectorAll('a[href]').forEach(a=>{
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('#')||href.startsWith('mailto')||a.target==='_blank') return;
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.body.classList.add('leaving');
+    setTimeout(()=>{location.href=href},340);
+  });
+});
+document.body.style.opacity='0';
+requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity='';}));
+</script>
+</body>
+</html>

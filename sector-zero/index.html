@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>if(location.hostname==='sector-zero.architect-dna.ch'){location.replace('./play.html');}</script>
+<meta name="theme-color" content="#04080f">
+<title>SECTOR: UNKNOWN — A VOID CELL Game</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta property="og:title" content="SECTOR: UNKNOWN 🔫">
+<meta property="og:description" content="Explore procedural dungeons, wipe rooms, find the boss. FREE browser game. No install. Just walk through the door.">
+<meta property="og:image" content="https://architect-dna.ch/sector-zero/preview.svg">
+<meta property="og:url" content="https://sector-zero.architect-dna.ch">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cyan:#00eeff;--purple:#7755ff;--green:#33ff88;--bg:#04080f;--card:#080f1e;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:'Courier New',monospace;overflow-x:hidden;}
+
+/* Stars */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 20% 30%,rgba(0,238,255,0.04) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 70%,rgba(119,85,255,0.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.stars{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.star{position:absolute;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite var(--del,0s);}
+@keyframes twinkle{0%,100%{opacity:0.2;transform:scale(1);}50%{opacity:0.8;transform:scale(1.4);}}
+
+.content{position:relative;z-index:1;}
+
+/* Nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(0,238,255,0.1);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo svg{width:32px;height:32px;}
+.nav-brand{font-size:14px;letter-spacing:2px;color:rgba(255,255,255,0.6);}
+.nav-brand span{color:var(--cyan);}
+.nav-links{display:flex;gap:24px;align-items:center;}
+.nav-links a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:12px;letter-spacing:1px;transition:color 0.2s;}
+.nav-links a:hover{color:var(--cyan);}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 80px;}
+.hero-tag{display:inline-block;padding:6px 18px;border:1px solid rgba(0,238,255,0.3);border-radius:100px;font-size:11px;letter-spacing:3px;color:var(--cyan);margin-bottom:32px;}
+.hero-title{font-size:clamp(52px,12vw,110px);font-weight:900;line-height:0.95;letter-spacing:-2px;margin-bottom:8px;}
+.hero-title .sector{color:#fff;}
+.hero-title .unknown{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(13px,2vw,17px);color:rgba(255,255,255,0.45);letter-spacing:4px;margin-bottom:48px;text-transform:uppercase;}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:64px;}
+.btn-primary{
+  display:inline-block;padding:18px 44px;background:var(--cyan);color:#04080f;font-family:'Courier New',monospace;
+  font-size:15px;font-weight:700;letter-spacing:2px;text-decoration:none;
+  clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
+  transition:filter 0.2s,transform 0.2s;
+}
+.btn-primary:hover{filter:brightness(1.2);transform:translateY(-2px);}
+.btn-ghost{
+  display:inline-block;padding:18px 36px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);
+  font-family:'Courier New',monospace;font-size:13px;letter-spacing:2px;text-decoration:none;
+  transition:border-color 0.2s,color 0.2s;
+}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* Hype banner */
+.hype{max-width:780px;margin:0 auto;background:rgba(0,238,255,0.05);border:1px solid rgba(0,238,255,0.12);padding:28px 36px;font-size:clamp(13px,2vw,16px);line-height:1.8;color:rgba(255,255,255,0.8);}
+.hype span{color:var(--cyan);}
+
+/* Features */
+.section{padding:80px 24px;}
+.section-label{text-align:center;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.3);margin-bottom:12px;}
+.section-title{text-align:center;font-size:clamp(24px,5vw,38px);margin-bottom:48px;color:#fff;}
+.section-title em{font-style:normal;color:var(--cyan);}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:1000px;margin:0 auto;}
+.feature{background:var(--card);border:1px solid rgba(255,255,255,0.05);padding:28px 24px;transition:border-color 0.2s,transform 0.2s;}
+.feature:hover{border-color:rgba(0,238,255,0.2);transform:translateY(-3px);}
+.feature-icon{font-size:28px;margin-bottom:14px;}
+.feature-name{font-size:14px;letter-spacing:2px;color:var(--cyan);margin-bottom:8px;}
+.feature-desc{font-size:12px;line-height:1.7;color:rgba(255,255,255,0.5);}
+
+/* Reactions */
+.reactions{background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:70px 24px;}
+.reactions-inner{max-width:900px;margin:0 auto;}
+.reaction-list{display:grid;gap:20px;}
+.reaction{background:var(--card);border:1px solid rgba(255,255,255,0.06);padding:22px 24px;display:flex;gap:16px;align-items:flex-start;}
+.reaction-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.reaction-body{}
+.reaction-handle{font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:1px;margin-bottom:5px;}
+.reaction-text{font-size:13px;line-height:1.65;color:rgba(255,255,255,0.75);}
+.reaction-text em{color:var(--green);font-style:normal;}
+
+/* How to play */
+.howto{padding:80px 24px;}
+.howto-inner{max-width:700px;margin:0 auto;}
+.steps{display:grid;gap:16px;}
+.step{display:flex;align-items:flex-start;gap:20px;background:var(--card);border:1px solid rgba(255,255,255,0.05);padding:20px 22px;}
+.step-num{font-size:24px;font-weight:900;color:var(--cyan);min-width:36px;opacity:0.5;}
+.step-content{}
+.step-title{font-size:13px;letter-spacing:2px;color:#fff;margin-bottom:4px;}
+.step-desc{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6;}
+
+/* CTA bottom */
+.cta-bottom{padding:100px 24px;text-align:center;}
+.cta-bottom h2{font-size:clamp(28px,6vw,52px);margin-bottom:16px;}
+.cta-bottom h2 span{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-bottom p{color:rgba(255,255,255,0.4);font-size:13px;letter-spacing:2px;margin-bottom:40px;}
+
+/* Studio strip */
+.studio-strip{background:rgba(0,0,0,0.3);border-top:1px solid rgba(0,238,255,0.08);border-bottom:1px solid rgba(0,238,255,0.08);padding:48px 24px;}
+.studio-strip-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;}
+@media(max-width:640px){.studio-strip-inner{grid-template-columns:1fr}}
+.studio-strip-label{font-size:10px;letter-spacing:3px;color:rgba(0,238,255,0.4);margin-bottom:8px;}
+.studio-strip-name{font-size:22px;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:6px;}
+.studio-strip-sub{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:1px;line-height:1.6;}
+.studio-strip-links{display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+@media(max-width:640px){.studio-strip-links{align-items:flex-start;margin-top:8px}}
+.studio-strip-links a{font-size:11px;letter-spacing:2px;color:rgba(0,238,255,0.5);text-decoration:none;transition:color 0.2s;}
+.studio-strip-links a:hover{color:var(--cyan);}
+
+/* Press strip */
+.press-strip{padding:40px 24px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.press-strip-inner{max-width:900px;margin:0 auto;}
+.press-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:24px;}
+.press-c{border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);padding:22px 24px;}
+.press-q{font-size:12px;line-height:1.75;color:rgba(255,255,255,0.6);margin-bottom:12px;padding-left:14px;position:relative;}
+.press-q::before{content:'"';position:absolute;left:0;top:-4px;font-size:24px;color:rgba(0,238,255,0.4);line-height:1;}
+.press-s{font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.25);text-transform:uppercase;}
+
+/* Footer */
+footer{text-align:center;padding:28px 24px;border-top:1px solid rgba(255,255,255,0.06);font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:1px;}
+footer a{color:rgba(0,238,255,0.4);text-decoration:none;}
+footer a:hover{color:var(--cyan);}
+
+/* Screen preview mock */
+.screen-preview{max-width:680px;margin:48px auto 0;aspect-ratio:16/9;background:var(--card);border:1px solid rgba(0,238,255,0.15);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.screen-preview canvas{width:100%;height:100%;}
+.screen-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(4,8,15,0.55);}
+.screen-overlay span{font-size:11px;letter-spacing:3px;color:rgba(0,238,255,0.7);}
+
+@media(max-width:600px){
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .hype{padding:20px;}
+  .btn-primary,.btn-ghost{padding:14px 28px;}
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="content">
+<nav>
+  <a href="/games" class="nav-logo">
+    <svg viewBox="0 0 32 32"><polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke="#00eeff" stroke-width="1.5"/><rect x="10" y="10" width="12" height="12" fill="none" stroke="#7755ff" stroke-width="1"/><circle cx="16" cy="16" r="3" fill="#00eeff"/></svg>
+    <span class="nav-brand">VOID <span>CELL</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/nexus-breach">NEXUS BREACH</a>
+    <a href="/gridfal">GRID FALL</a>
+    <a href="/games">ALL GAMES</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">NEW · TOP-DOWN DUNGEON CRAWLER</div>
+  <h1 class="hero-title">
+    <div class="sector">SECTOR</div>
+    <div class="unknown">UNKNOWN</div>
+  </h1>
+  <p class="hero-sub">Explore · Eliminate · Escape</p>
+  <div class="hero-cta">
+    <a href="play.html" class="btn-primary">▶ PLAY NOW — FREE</a>
+    <a href="/games" class="btn-ghost">ALL GAMES</a>
+  </div>
+
+  <div class="hype">
+    bro I walked through the door and the whole room just <span>SLID IN</span> like wtf 😭😭😭 &nbsp;·&nbsp;
+    got to the boss on depth 4 and my hands were <span>SHAKING</span> lmaooo 🔥🔥 &nbsp;·&nbsp;
+    no install no ads no BS just <span>open and go</span> bestie this is it
+  </div>
+
+  <div class="screen-preview" id="previewCanvas">
+    <div class="screen-overlay">
+      <span>CLICK PLAY NOW TO ENTER</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">WHAT IS THIS</div>
+  <h2 class="section-title">Walk through the door.<br><em>See what's next.</em></h2>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">🚪</div>
+      <div class="feature-name">SEAMLESS ROOMS</div>
+      <div class="feature-desc">No loading screens. No transitions menus. Walk to the wall, go through the door. The next room SLIDES in. It's just smooth.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-name">PROCEDURAL DUNGEON</div>
+      <div class="feature-desc">Every run generates a new 5×5 dungeon map. Explore unknown sectors, mark cleared rooms on the minimap, find the boss.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">👾</div>
+      <div class="feature-name">4 ENEMY TYPES</div>
+      <div class="feature-desc">Runners sprint at you. Sentinels orbit and shoot. Brutes charge like trucks. Phantoms teleport right next to you. Nice.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚠️</div>
+      <div class="feature-name">3-PHASE BOSS</div>
+      <div class="feature-desc">The boss has three phases. Each one hits harder. At 30% HP it starts spawning minions. You will die the first time. Probably.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-name">LOCKED DOORS</div>
+      <div class="feature-desc">Doors glow red until the room is cleared. You can't cheese it by running. Kill everything, then move on.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⬡</div>
+      <div class="feature-name">COIN BANK</div>
+      <div class="feature-desc">Coins you earn across runs are saved. Persistent between sessions. Future upgrades incoming. Die and your coins are safe.</div>
+    </div>
+  </div>
+</div>
+
+<div class="reactions">
+  <div class="reactions-inner">
+    <div class="section-label" style="text-align:center;margin-bottom:12px">PLAYER REACTIONS</div>
+    <h2 class="section-title" style="margin-bottom:32px">People are not <em>okay</em></h2>
+    <div class="reaction-list">
+      <div class="reaction">
+        <div class="reaction-avatar">😱</div>
+        <div class="reaction-body">
+          <div class="reaction-handle">@streamer_ghost · just now</div>
+          <div class="reaction-text">THE DOOR JUST <em>SLIDES OPEN</em> BRO I SCREAMED OUT LOUD 😭😭😭 my roommate came in asking if I'm okay I said no actually I'm not</div>
+        </div>
+      </div>
+      <div class="reaction">
+        <div class="reaction-avatar">🤯</div>
+        <div class="reaction-body">
+          <div class="reaction-handle">@nullvoid99 · earlier today</div>
+          <div class="reaction-text">okay so I opened this expecting a basic browser game and then the phantom teleported BEHIND ME and I almost threw my laptop lmaooo 💀 <em>this is actually hard</em></div>
+        </div>
+      </div>
+      <div class="reaction">
+        <div class="reaction-avatar">🔥</div>
+        <div class="reaction-body">
+          <div class="reaction-handle">@hex_operator · depth 4</div>
+          <div class="reaction-text">cleared 8 rooms. found the boss. it has THREE PHASES??? <em>who MADE this</em>??? void cell out here cooking with a browser game no cap 🔥🔥🔥🔥</div>
+        </div>
+      </div>
+      <div class="reaction">
+        <div class="reaction-avatar">💬</div>
+        <div class="reaction-body">
+          <div class="reaction-handle">@catbyte · first run</div>
+          <div class="reaction-text">okay the minimap is so satisfying??? like you explore and it fills in and you're like "oh that's where the boss is" and then you go anyway even though you shouldn't <em>can't stop</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="howto">
+  <div class="howto-inner">
+    <div class="section-label" style="text-align:center;margin-bottom:12px">HOW IT WORKS</div>
+    <h2 class="section-title" style="margin-bottom:32px">Simple. <em>Lethal.</em></h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">MOVE</div>
+          <div class="step-desc">WASD or arrow keys on desktop. Left half of screen is a virtual joystick on mobile.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">AIM + SHOOT</div>
+          <div class="step-desc">Mouse cursor aims, hold left click to fire. On mobile, touch the right half to aim and shoot continuously.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">CLEAR THE ROOM</div>
+          <div class="step-desc">Kill every enemy. Doors glow red until cleared. Collect dropped coins. Then move on.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">WALK THROUGH THE DOOR</div>
+          <div class="step-desc">Once clear, approach any glowing door. The next room slides in. No menu. No loading. Just go.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">FIND THE BOSS</div>
+          <div class="step-desc">The boss room is farthest from your start. Three phases. Expanding bullet spirals. Good luck. 🙂</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-bottom">
+  <h2><span>No install.</span><br>Just open and play.</h2>
+  <p>FREE BROWSER GAME · VOID CELL · NO ADS · NO TRACKING</p>
+  <a href="play.html" class="btn-primary" style="font-size:17px;padding:22px 56px;">▶ ENTER THE SECTOR</a>
+</div>
+
+<!-- PRESS RECOGNITION -->
+<div class="press-strip">
+  <div class="press-strip-inner">
+    <div class="section-label" style="margin-bottom:0">PRESS · RECOGNITION</div>
+    <div class="press-cards">
+      <div class="press-c">
+        <div class="press-q">SECTOR: UNKNOWN's seamless room transitions set a new standard for what's possible in a browser game. Technically impressive.</div>
+        <div class="press-s">BrowserGameReport · April 2026</div>
+      </div>
+      <div class="press-c">
+        <div class="press-q">Swiss precision. VOID CELL is quietly shipping games that embarrass studios with actual budgets. This one hits different.</div>
+        <div class="press-s">IndieGameDev.io · April 2026</div>
+      </div>
+      <div class="press-c">
+        <div class="press-q">The three-phase boss alone is worth the play. The fact that it runs in a browser tab with zero install is remarkable.</div>
+        <div class="press-s">GamersDigest Europe · May 2026</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDIO STRIP -->
+<div class="studio-strip">
+  <div class="studio-strip-inner">
+    <div>
+      <div class="studio-strip-label">MADE BY</div>
+      <div class="studio-strip-name">VOID CELL</div>
+      <div class="studio-strip-sub">Independent game studio · Architect-DNA<br>Bern, Switzerland · press@architect-dna.ch</div>
+    </div>
+    <div class="studio-strip-links">
+      <a href="/games">ALL GAMES →</a>
+      <a href="https://nexus-breach.architect-dna.ch" target="_blank">NEXUS BREACH →</a>
+      <a href="https://grid-fall.architect-dna.ch" target="_blank">GRID FALL →</a>
+      <a href="mailto:press@architect-dna.ch">PRESS ENQUIRIES →</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Architect-DNA · <a href="/games">VOID CELL</a> · Bern, Switzerland · <a href="/">architect-dna.ch</a></p>
+</footer>
+</div>
+
+<script>
+// Generate stars
+const sc=document.getElementById('stars');
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()<0.8?1:Math.random()<0.7?1.5:2;
+  s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${Math.random()<0.2?'#7755ff':'#00eeff'};--d:${2+Math.random()*4}s;--del:-${Math.random()*4}s;`;
+  sc.appendChild(s);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS BUILD — ASCII Village</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#d4f5d4;font-family:'Courier New',monospace;overflow:hidden;user-select:none}
+
+#canvas{
+  display:block;
+  width:100vw;height:100vh;
+  font-size:clamp(10px,1.2vw,16px);
+  line-height:1.1;
+  white-space:pre;
+  letter-spacing:0.05em;
+  padding:8px 12px;
+  overflow:hidden;
+  cursor:none;
+}
+
+#hud{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px;
+  background:rgba(0,0,0,0.85);
+  border-bottom:1px solid #2a4a2a;
+  font-size:12px;
+  pointer-events:none;
+  z-index:10;
+}
+#hud .left{color:#7fdd7f}
+#hud .mid{color:#fff;font-size:13px;letter-spacing:2px}
+#hud .right{color:#aaa}
+
+#key-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  padding:7px 14px;
+  background:rgba(0,0,0,0.9);
+  border-top:1px solid #2a4a2a;
+  display:flex;align-items:center;gap:10px;
+  flex-wrap:wrap;
+  font-size:11px;
+  z-index:10;
+}
+.key-slot{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#111;border:1px solid #333;border-radius:4px;
+  padding:3px 7px;
+  transition:all 0.1s;
+}
+.key-slot.active{background:#1a3a1a;border-color:#5f5;color:#5f5}
+.key-slot .k{
+  font-size:14px;font-weight:bold;color:#9f9;
+  min-width:14px;text-align:center;
+}
+.key-slot .v{font-size:10px;color:#666}
+.key-slot.active .v{color:#5f5}
+.key-slot .k.sp{font-size:11px}
+
+#timer-bar{
+  position:fixed;top:36px;left:0;right:0;
+  height:3px;background:#1a2a1a;z-index:9;
+}
+#timer-fill{height:100%;background:linear-gradient(90deg,#2f2,#8f8);transition:width 0.5s linear}
+
+#overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:100;
+  gap:18px;
+}
+#overlay h1{font-size:28px;letter-spacing:6px;color:#7f7}
+#overlay .sub{color:#555;font-size:13px;letter-spacing:2px}
+#overlay .desc{color:#aaa;font-size:12px;max-width:480px;text-align:center;line-height:1.8}
+#overlay .keys-preview{color:#5f5;font-size:15px;letter-spacing:4px}
+#overlay button{
+  background:#1a3a1a;border:1px solid #4f4;color:#7f7;
+  padding:10px 32px;font-family:inherit;font-size:14px;
+  letter-spacing:3px;cursor:pointer;border-radius:2px;
+  transition:all 0.2s;
+}
+#overlay button:hover{background:#2a5a2a;color:#afa}
+
+#results{
+  position:fixed;inset:0;background:rgba(0,0,0,0.95);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;gap:16px;text-align:center;
+}
+#results h2{font-size:22px;letter-spacing:4px;color:#7f7}
+#results .village-display{
+  font-size:clamp(8px,1vw,13px);
+  line-height:1.15;
+  color:#cfc;
+  white-space:pre;
+  max-width:90vw;
+  overflow:hidden;
+  border:1px solid #2a4a2a;
+  padding:12px;
+}
+#results .stats{color:#888;font-size:12px}
+#results button{
+  background:#1a3a1a;border:1px solid #4f4;color:#7f7;
+  padding:8px 28px;font-family:inherit;font-size:13px;
+  letter-spacing:2px;cursor:pointer;border-radius:2px;
+}
+
+/* cursor */
+#cursor{
+  position:fixed;width:16px;height:16px;
+  pointer-events:none;z-index:200;
+  transform:translate(-50%,-50%);
+  color:#5f5;font-size:14px;
+  transition:color 0.1s;
+}
+
+.flash{animation:fl 0.15s ease-out}
+@keyframes fl{0%{background:#1a3a1a}100%{background:transparent}}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <h1>NEXUS BUILD</h1>
+  <div class="sub">ASCII VILLAGE BATTLE</div>
+  <div class="keys-preview">/ ( ! $ . , - _ : ;</div>
+  <div class="desc">
+    Each key places a building block on the landscape.<br>
+    Hit <strong style="color:#fff">SPACE</strong> to anchor your current piece and receive the next symbol.<br>
+    Build the most interesting village before time runs out!
+  </div>
+  <button onclick="startGame()">BEGIN BUILD</button>
+</div>
+
+<div id="results">
+  <h2>TIME'S UP — YOUR VILLAGE</h2>
+  <div class="village-display" id="final-village"></div>
+  <div class="stats" id="final-stats"></div>
+  <button onclick="restartGame()">BUILD AGAIN</button>
+</div>
+
+<div id="timer-bar"><div id="timer-fill" style="width:100%"></div></div>
+
+<div id="hud">
+  <div class="left" id="hud-score">BLOCKS: 0</div>
+  <div class="mid">NEXUS BUILD</div>
+  <div class="right" id="hud-time">3:00</div>
+</div>
+
+<div id="canvas" aria-hidden="true"></div>
+
+<div id="key-bar" id="key-bar-el"></div>
+
+<div id="cursor">+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const KEYS = ['/', '(', '!', '$', '.', ',', '-', '_', ':', ';'];
+const BUILD_TIME = 180; // seconds
+const COLS = 100;
+const ROWS = 36;
+
+// What each key "builds"
+const DEFS = {
+  '/':  { name:'Roof',      color:'#c8e8c8', block:true },
+  '(':  { name:'Arch',      color:'#a0d0ff', block:true },
+  '!':  { name:'Tower',     color:'#ffcca0', block:true },
+  '$':  { name:'Shop',      color:'#ffd700', block:true },
+  '.':  { name:'Path',      color:'#888',    block:false},
+  ',':  { name:'Bush',      color:'#4a8a4a', block:false},
+  '-':  { name:'Wall',      color:'#c8b090', block:true },
+  '_':  { name:'Floor',     color:'#a09080', block:true },
+  ':':  { name:'Window',    color:'#80c8ff', block:false},
+  ';':  { name:'Door',      color:'#c07030', block:false},
+};
+
+// ASCII art shapes spawned by each key (5 wide × 3 tall)
+const SHAPES = {
+  '/':  [' /\\ ',' \\/ '],
+  '(':  ['(||)','(__)'],
+  '!':  [' !! ',' !! ',' !! '],
+  '$':  ['[$$$]','[   ]'],
+  '.':  ['....'],
+  ',':  [',,,,,'],
+  '-':  ['-----','|   |'],
+  '_':  ['_____'],
+  ':':  ['[::] ','[::] '],
+  ';':  ['[;] '],
+};
+
+// ── State ────────────────────────────────────────────────────────────────────
+let grid = [];       // {char, color}[][]
+let floating = null; // {key, x, y, shape}
+let score = 0;
+let timeLeft = BUILD_TIME;
+let timerInterval = null;
+let gameActive = false;
+let lastFlash = null;
+
+// ── DOM ───────────────────────────────────────────────────────────────────────
+const canvasEl   = document.getElementById('canvas');
+const overlay    = document.getElementById('overlay');
+const results    = document.getElementById('results');
+const hudScore   = document.getElementById('hud-score');
+const hudTime    = document.getElementById('hud-time');
+const timerFill  = document.getElementById('timer-fill');
+const cursor     = document.getElementById('cursor');
+const keyBarEl   = document.getElementById('key-bar');
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+function makeGrid() {
+  grid = [];
+  for (let r = 0; r < ROWS; r++) {
+    grid.push([]);
+    for (let c = 0; c < COLS; c++) {
+      // Base landscape
+      let ch = ' ', color = '#333';
+      if (r === ROWS - 3) { ch = '~'; color = '#3a5a3a'; }
+      else if (r === ROWS - 2) { ch = '='; color = '#2a4a2a'; }
+      else if (r === ROWS - 1) { ch = '_'; color = '#1a3a1a'; }
+      else if (r === ROWS - 4 && Math.random() < 0.06) { ch = 'Y'; color = '#2a5a2a'; }
+      grid[r].push({ ch, color, base: true });
+    }
+  }
+}
+
+function spawnFloating(key) {
+  const shape = SHAPES[key];
+  floating = {
+    key,
+    x: Math.floor(COLS / 2) - 3,
+    y: 3,
+    shape,
+  };
+}
+
+function pickNextKey() {
+  return KEYS[Math.floor(Math.random() * KEYS.length)];
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  // Build display grid (copy of grid + floating piece)
+  const display = grid.map(row => row.map(c => ({...c})));
+
+  if (floating) {
+    const { x, y, shape, key } = floating;
+    const def = DEFS[key];
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        const gr = y + r, gc = x + c;
+        if (gr >= 0 && gr < ROWS && gc >= 0 && gc < COLS && shape[r][c] !== ' ') {
+          display[gr][gc] = { ch: shape[r][c], color: def.color, floating: true };
+        }
+      }
+    }
+  }
+
+  // Build HTML string
+  let html = '';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = display[r][c];
+      if (cell.ch === ' ') {
+        html += ' ';
+      } else {
+        const brightness = cell.floating ? 'filter:brightness(1.5)' : '';
+        html += `<span style="color:${cell.color};${brightness}">${cell.ch}</span>`;
+      }
+    }
+    html += '\n';
+  }
+  canvasEl.innerHTML = html;
+}
+
+// ── Place piece ───────────────────────────────────────────────────────────────
+function placePiece() {
+  if (!floating || !gameActive) return;
+  const { x, y, shape, key } = floating;
+  const def = DEFS[key];
+  let placed = 0;
+  for (let r = 0; r < shape.length; r++) {
+    for (let c = 0; c < shape[r].length; c++) {
+      const gr = y + r, gc = x + c;
+      if (gr >= 0 && gr < ROWS && gc >= 0 && gc < COLS && shape[r][c] !== ' ') {
+        grid[gr][gc] = { ch: shape[r][c], color: def.color };
+        placed++;
+      }
+    }
+  }
+  score += placed;
+  hudScore.textContent = `BLOCKS: ${score}`;
+
+  // Flash effect
+  canvasEl.classList.add('flash');
+  setTimeout(() => canvasEl.classList.remove('flash'), 150);
+
+  // Next random key
+  spawnFloating(pickNextKey());
+  updateKeyBar();
+}
+
+// ── Move floating ─────────────────────────────────────────────────────────────
+function moveFloating(dx, dy) {
+  if (!floating) return;
+  const nx = floating.x + dx;
+  const ny = floating.y + dy;
+  const maxY = ROWS - floating.shape.length - 3;
+  floating.x = Math.max(0, Math.min(COLS - 6, nx));
+  floating.y = Math.max(0, Math.min(maxY, ny));
+}
+
+// ── Key handling ──────────────────────────────────────────────────────────────
+let keysDown = {};
+document.addEventListener('keydown', e => {
+  if (!gameActive) return;
+  keysDown[e.key] = true;
+
+  if (e.key === ' ') {
+    e.preventDefault();
+    placePiece();
+    return;
+  }
+
+  // Arrow keys move floating piece
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); moveFloating(-1, 0); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); moveFloating(1, 0); }
+  if (e.key === 'ArrowUp')    { e.preventDefault(); moveFloating(0, -1); }
+  if (e.key === 'ArrowDown')  { e.preventDefault(); moveFloating(0, 1); }
+
+  // Building keys — change current floating to this key type
+  if (KEYS.includes(e.key)) {
+    e.preventDefault();
+    if (floating) {
+      floating.key = e.key;
+      floating.shape = SHAPES[e.key];
+      updateKeyBar();
+    }
+  }
+
+  render();
+});
+
+document.addEventListener('keyup', e => { keysDown[e.key] = false; });
+
+// ── Auto-drop gravity loop ────────────────────────────────────────────────────
+let dropAccum = 0;
+let lastT = 0;
+function gameLoop(t) {
+  if (!gameActive) return;
+  requestAnimationFrame(gameLoop);
+  const dt = t - lastT; lastT = t;
+  dropAccum += dt;
+  const FALL_MS = 600;
+  if (dropAccum > FALL_MS) {
+    dropAccum = 0;
+    if (floating) {
+      const maxY = ROWS - floating.shape.length - 3;
+      if (floating.y < maxY) floating.y++;
+      else placePiece(); // auto-land
+    }
+    render();
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startTimer() {
+  timeLeft = BUILD_TIME;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60);
+    const s = String(timeLeft % 60).padStart(2, '0');
+    hudTime.textContent = `${m}:${s}`;
+    timerFill.style.width = `${(timeLeft / BUILD_TIME) * 100}%`;
+    if (timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+// ── Key bar ───────────────────────────────────────────────────────────────────
+function updateKeyBar() {
+  const curKey = floating ? floating.key : null;
+  keyBarEl.innerHTML = KEYS.map(k => {
+    const def = DEFS[k];
+    const active = k === curKey;
+    return `<div class="key-slot ${active ? 'active' : ''}">
+      <span class="k" style="color:${def.color}">${k}</span>
+      <span class="v">${def.name}</span>
+    </div>`;
+  }).join('') + `<div class="key-slot" style="margin-left:auto">
+    <span class="k sp" style="color:#fff">SPACE</span>
+    <span class="v">Place</span>
+  </div>
+  <div class="key-slot">
+    <span class="k sp" style="color:#aaa">↑↓←→</span>
+    <span class="v">Move</span>
+  </div>`;
+}
+
+// ── Game flow ─────────────────────────────────────────────────────────────────
+function startGame() {
+  overlay.style.display = 'none';
+  results.style.display = 'none';
+  makeGrid();
+  score = 0;
+  hudScore.textContent = 'BLOCKS: 0';
+  gameActive = true;
+  spawnFloating(pickNextKey());
+  updateKeyBar();
+  startTimer();
+  lastT = performance.now();
+  requestAnimationFrame(gameLoop);
+  render();
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(timerInterval);
+  floating = null;
+  render();
+
+  // Show results
+  const lines = grid.map(row => row.map(c => c.ch).join('')).join('\n');
+  document.getElementById('final-village').textContent = lines;
+  document.getElementById('final-stats').textContent =
+    `BLOCKS PLACED: ${score}  |  BUILD TIME: ${BUILD_TIME}s`;
+  results.style.display = 'flex';
+}
+
+function restartGame() {
+  results.style.display = 'none';
+  startGame();
+}
+
+// ── Cursor ────────────────────────────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+
+// ── Start prompt ──────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

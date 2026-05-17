@@ -1,0 +1,18 @@
+{
+  "name": "Sector: Unknown",
+  "short_name": "SECTOR",
+  "description": "Explore. Eliminate. Escape. A top-down dungeon crawler by VOID CELL.",
+  "start_url": "./play.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#04080f",
+  "theme_color": "#04080f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

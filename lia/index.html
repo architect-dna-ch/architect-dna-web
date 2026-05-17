@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LIA — Legal Intelligence · Architect-DNA Systems</title>
+<meta name="description" content="LIA is a zero-knowledge encrypted legal document vault for iOS. Your documents are encrypted on-device. We never see your files.">
+<meta property="og:title" content="LIA — Legal Intelligence">
+<meta property="og:description" content="Zero-knowledge encrypted legal document vault for iOS. Built in Switzerland.">
+<meta property="og:url" content="https://architect-dna.ch/lia">
+<meta name="theme-color" content="#f7f5f0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;
+  --bg2:#F0EFEB;
+  --bg3:#E8E7E2;
+  --text:#1A1A1A;
+  --text2:#5A5A58;
+  --text3:#9A9A98;
+  --amber:#B5271E;
+  --amberD:rgba(181,39,30,.08);
+  --amberB:rgba(181,39,30,.18);
+  --border:#E0E0D8;
+  --border2:rgba(0,0,0,.13);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --radius:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;height:56px;gap:20px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.header-nav{margin-left:auto;display:flex;gap:4px}
+.header-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s}
+.header-nav a:hover{background:var(--bg2);color:var(--text)}
+
+/* HERO */
+.hero{max-width:960px;margin:0 auto;padding:80px 24px 64px}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.hero-kicker::before{content:'';display:inline-block;width:24px;height:2px;background:var(--amber);border-radius:1px}
+h1{font-size:clamp(40px,7vw,72px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 .dim{color:var(--text3)}
+.hero-sub{font-size:clamp(15px,2.2vw,18px);color:var(--text2);max-width:520px;line-height:1.75;margin-bottom:32px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:40px}
+.meta-chip{font-size:12px;font-weight:600;padding:6px 13px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text2)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:var(--radius);font-size:14px;font-weight:700;text-decoration:none;transition:.15s;cursor:pointer;border:none;font-family:var(--font)}
+.btn-primary{background:var(--text);color:var(--bg)}
+.btn-primary:hover{background:#2a2820}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-outline:hover{background:var(--bg2);color:var(--text)}
+
+.appstore-btn{display:inline-flex;align-items:center;gap:10px;padding:11px 20px;background:var(--text);color:var(--bg);border-radius:var(--radius);text-decoration:none;transition:.15s}
+.appstore-btn:hover{background:#2a2820}
+.appstore-btn-label{display:flex;flex-direction:column;line-height:1.2}
+.appstore-btn-sub{font-size:10px;font-weight:400;opacity:.7;letter-spacing:.04em}
+.appstore-btn-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:0}
+
+/* FEATURES */
+section{max-width:960px;margin:0 auto;padding:64px 24px}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:32px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+h2{font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.section-sub{font-size:15px;color:var(--text2);line-height:1.75;margin-bottom:40px;max-width:480px}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.feature-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:10px}
+.feature-icon{font-size:22px;line-height:1}
+.feature-title{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* HOW IT WORKS */
+.steps{display:flex;flex-direction:column;gap:0;margin-top:40px}
+.step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--amber);width:28px;flex-shrink:0;padding-top:2px}
+.step-body{}
+.step-title{font-size:15px;font-weight:800;letter-spacing:-.01em;margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* TRUST */
+.trust-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.trust-item{display:flex;align-items:center;gap:10px;padding:14px 18px;background:#fff;border:1px solid var(--border);border-radius:10px;flex:1;min-width:200px}
+.trust-icon{font-size:18px;flex-shrink:0}
+.trust-body{}
+.trust-label{font-size:13px;font-weight:700}
+.trust-sub{font-size:11px;color:var(--text3)}
+
+/* CRACK SECTION */
+.crack-intro{font-size:15px;color:var(--text2);line-height:1.75;max-width:580px;margin-bottom:36px}
+.crack-intro code{font-family:var(--mono);font-size:13px;background:var(--bg2);padding:2px 6px;border-radius:5px;color:var(--text)}
+.crack-table{width:100%;border-collapse:collapse;margin-bottom:28px}
+.crack-table th{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:left;padding:0 16px 10px 0;border-bottom:1px solid var(--border)}
+.crack-table th:last-child{text-align:right;padding-right:0}
+.crack-table td{padding:14px 16px 14px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);vertical-align:top}
+.crack-table td:last-child{text-align:right;padding-right:0;font-family:var(--mono);font-size:12px;color:var(--text)}
+.crack-table tr:last-child td{border-bottom:none}
+.crack-attacker{font-weight:700;color:var(--text);font-size:13px}
+.crack-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.crack-speed{font-family:var(--mono);font-size:12px;color:var(--text2)}
+.crack-highlight td{background:var(--amberD)}
+.crack-highlight .crack-attacker{color:var(--amber)}
+.crack-verdict{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;display:flex;gap:16px;align-items:flex-start}
+.crack-verdict-icon{font-size:24px;flex-shrink:0}
+.crack-verdict-body{}
+.crack-verdict-title{font-size:15px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.crack-verdict-text{font-size:13px;color:var(--text2);line-height:1.75}
+.crack-verdict-text strong{color:var(--text)}
+
+/* FOOTER LINKS */
+.page-links{display:flex;gap:14px;margin-top:48px;flex-wrap:wrap}
+.page-link-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:inherit;transition:.15s;flex:1;min-width:200px}
+.page-link-card:hover{border-color:var(--border2);background:var(--bg3)}
+.page-link-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:4px}
+.page-link-title{font-size:14px;font-weight:800;letter-spacing:-.01em}
+.page-link-arrow{font-size:16px;color:var(--text3);transition:.15s}
+.page-link-card:hover .page-link-arrow{color:var(--amber);transform:translate(2px,-2px)}
+
+footer{border-top:1px solid var(--border);padding:32px 24px}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--text)}
+
+@media(max-width:600px){
+  .header-nav{display:none}
+  .hero{padding:52px 20px 48px}
+  section{padding:48px 20px}
+  .features-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/>
+          <path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="/lia/support">Support</a>
+      <a href="/lia/privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<div style="background:var(--amberD);border-bottom:1px solid var(--amberB);padding:10px 24px">
+  <div style="max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)">
+      <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 2s ease-in-out infinite"></span>
+      <strong style="color:var(--amber)">iOS</strong> — Under App Store review
+    </div>
+    <span style="width:1px;height:12px;background:var(--amberB);flex-shrink:0"></span>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)">
+      <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--text3)"></span>
+      <strong style="color:var(--text2)">Android</strong> — In development
+    </div>
+    <span style="width:1px;height:12px;background:var(--amberB);flex-shrink:0"></span>
+    <a href="https://lia.architect-dna.ch" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;color:var(--amber);text-decoration:none">Use the web app now ↗</a>
+  </div>
+</div>
+<style>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+
+<main>
+
+  <div class="hero">
+    <div class="hero-kicker">iOS · Android · Web · Switzerland</div>
+    <h1>LIA<br><span class="dim">Legal Intelligence</span></h1>
+    <p class="hero-sub">A zero-knowledge encrypted vault for your legal documents. Files are encrypted on your device before upload — we never see your data.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">🔐 End-to-end encrypted</span>
+      <span class="meta-chip">🇨🇭 Swiss law</span>
+      <span class="meta-chip">🌐 Web app live</span>
+      <span class="meta-chip">iOS · coming soon</span>
+      <span class="meta-chip">Android · coming soon</span>
+      <span class="meta-chip">Zero-knowledge</span>
+    </div>
+    <div class="hero-cta">
+      <a style="display:inline-flex;align-items:center;gap:10px;padding:11px 20px;background:var(--text);color:var(--bg);border-radius:var(--radius);text-decoration:none;transition:.15s;font-weight:700" href="https://lia.architect-dna.ch" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        <div style="display:flex;flex-direction:column;line-height:1.2">
+          <span style="font-size:10px;opacity:.7;letter-spacing:.04em">Use now on</span>
+          <span style="font-size:15px;font-weight:800;letter-spacing:-.01em">Web App</span>
+        </div>
+      </a>
+      <span style="display:inline-flex;align-items:center;gap:10px;padding:11px 20px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);cursor:default;opacity:.75">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text3)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <div style="display:flex;flex-direction:column;line-height:1.2">
+          <span style="font-size:10px;color:var(--text3);letter-spacing:.04em">Coming to the</span>
+          <span style="font-size:15px;font-weight:800;color:var(--text2);letter-spacing:-.01em">App Store</span>
+        </div>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:10px;padding:11px 20px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);cursor:default;opacity:.75">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text3)"><path d="M17.523 15.341a1 1 0 01-.887.54H7.364a1 1 0 01-.887-.54l-1.8-3.6A1 1 0 014.9 10.8l1.418-2.836A2 2 0 018.1 7h7.8a2 2 0 011.782 1.1L19.1 10.8a1 1 0 01-.141.941l-1.436 3.6zM12 3a1 1 0 011 1v1a1 1 0 01-2 0V4a1 1 0 011-1zm-5.657 1.757a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm11.314 0a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0z"/></svg>
+        <div style="display:flex;flex-direction:column;line-height:1.2">
+          <span style="font-size:10px;color:var(--text3);letter-spacing:.04em">Coming to</span>
+          <span style="font-size:15px;font-weight:800;color:var(--text2);letter-spacing:-.01em">Google Play</span>
+        </div>
+      </span>
+      <a class="btn btn-outline" href="/lia/support">Support</a>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FEATURES -->
+  <section>
+    <div class="section-label">Features</div>
+    <h2>Your documents, sealed.</h2>
+    <p class="section-sub">LIA is built for anyone who needs to store sensitive legal files — without trusting a third party with the contents.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔐</div>
+        <div class="feature-title">End-to-end encryption</div>
+        <div class="feature-desc">Documents are encrypted on your device using AES-256 before any data leaves it. The keys never leave your device.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <div class="feature-title">Legal document vault</div>
+        <div class="feature-desc">Store contracts, correspondence, evidence, and case files in one secure, organised place.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🕰</div>
+        <div class="feature-title">Timeline builder</div>
+        <div class="feature-desc">Attach documents to dated events and build a chronological timeline of your case — exportable to PDF.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">PDF export</div>
+        <div class="feature-desc">Generate structured PDF reports of your documents and timeline, ready to share with a lawyer or court.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👁‍🗨</div>
+        <div class="feature-title">Zero-knowledge architecture</div>
+        <div class="feature-desc">Architect-DNA Systems holds no encryption keys. Even if our servers were compromised, your files remain unreadable.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Web · iOS · Android</div>
+        <div class="feature-desc">Use it now at lia.architect-dna.ch. Native iOS and Android apps in development — same zero-knowledge encryption across all platforms.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="section-label">How it works</div>
+    <h2>Simple by design.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Create an account with your email</div>
+          <div class="step-desc">Only your email is stored — used for authentication via Supabase. No name, no phone, no personal details required.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Upload your documents</div>
+          <div class="step-desc">Select files from your device. LIA encrypts each file locally before uploading — the server receives only ciphertext.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Build your timeline</div>
+          <div class="step-desc">Tag documents with dates and add notes to construct an ordered account of events.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Export when you need it</div>
+          <div class="step-desc">Generate a PDF summary of your case — formatted and ready to hand to a lawyer, mediator, or authority.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CRACK SECTION -->
+  <section>
+    <div class="section-label">Go ahead, try</div>
+    <h2>How long would it take<br><span style="color:var(--text3)">to crack your vault?</span></h2>
+    <p class="crack-intro">
+      LIA encrypts your files with <code>AES-256</code>. That means an attacker must guess your key from
+      2<sup>256</sup> possibilities — a number with 77 digits. Here is what that looks like in practice,
+      assuming they get extraordinarily lucky and try <em>randomly</em> without ever repeating a guess.
+    </p>
+
+    <table class="crack-table">
+      <thead>
+        <tr>
+          <th>Attacker &amp; hardware</th>
+          <th>Speed</th>
+          <th>Time to crack</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="crack-attacker">💻 Your ex's MacBook Pro</div>
+            <div class="crack-sub">M3 Pro, AES-NI, 1 core</div>
+          </td>
+          <td><span class="crack-speed">~10⁹ keys/sec</span></td>
+          <td>3.7 × 10<sup>59</sup> years</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="crack-attacker">🎮 Serious gaming rig</div>
+            <div class="crack-sub">RTX 4090, full GPU assault</div>
+          </td>
+          <td><span class="crack-speed">~5 × 10¹⁰ keys/sec</span></td>
+          <td>7.3 × 10<sup>57</sup> years</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="crack-attacker">⚡ Frontier supercomputer</div>
+            <div class="crack-sub">World's fastest civilian machine, Oak Ridge, USA — 37,000 GPUs</div>
+          </td>
+          <td><span class="crack-speed">~1.85 × 10¹⁵ keys/sec</span></td>
+          <td>2 × 10<sup>52</sup> years</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="crack-attacker">🌍 All computers on Earth</div>
+            <div class="crack-sub">Every phone, server, and data centre, running in parallel</div>
+          </td>
+          <td><span class="crack-speed">~10¹⁸ keys/sec</span></td>
+          <td>3.7 × 10<sup>49</sup> years</td>
+        </tr>
+        <tr class="crack-highlight">
+          <td>
+            <div class="crack-attacker">🕵️ Every government on Earth combined</div>
+            <div class="crack-sub">NSA, GCHQ, FSB, MSS — all classified infrastructure, all cooperating (bold assumption)</div>
+          </td>
+          <td><span class="crack-speed">~10²⁰ keys/sec</span></td>
+          <td>3.7 × 10<sup>47</sup> years</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="crack-attacker">☀️ A computer powered by the Sun</div>
+            <div class="crack-sub">A Dyson sphere harvesting all solar output, converting it 100% to computation — purely theoretical</div>
+          </td>
+          <td><span class="crack-speed">~10⁴⁰ keys/sec</span></td>
+          <td>3.7 × 10<sup>27</sup> years</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="crack-verdict">
+      <div class="crack-verdict-icon">🌌</div>
+      <div class="crack-verdict-body">
+        <div class="crack-verdict-title">For context: the universe is 13.8 billion years old.</div>
+        <div class="crack-verdict-text">
+          Even if every government on Earth pooled their most classified supercomputing infrastructure and ran it
+          non-stop since the Big Bang, they would have checked roughly
+          <strong>0.000000000000000000000000000001%</strong> of possible keys by now.
+          <br><br>
+          The math is not on their side. It never will be.
+          <br><br>
+          <strong>Note on quantum computers:</strong> Even a perfect, large-scale fault-tolerant quantum computer
+          using Grover's algorithm — which does not exist and won't for decades — would reduce the problem to
+          2<sup>128</sup> operations. At any realistic speed, that is still
+          <strong>hundreds of times the age of the universe</strong>.
+          AES-256 was specifically chosen to remain secure in a post-quantum world.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- TRUST -->
+  <section>
+    <div class="section-label">Trust &amp; Privacy</div>
+    <h2>Built in Switzerland.<br><span style="color:var(--text3)">Governed by Swiss law.</span></h2>
+    <div class="trust-row">
+      <div class="trust-item">
+        <div class="trust-icon">🇨🇭</div>
+        <div class="trust-body"><div class="trust-label">Swiss jurisdiction</div><div class="trust-sub">Governed by Swiss law · revDSG compliant</div></div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🔑</div>
+        <div class="trust-body"><div class="trust-label">Zero-knowledge keys</div><div class="trust-sub">We hold no encryption keys</div></div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">📵</div>
+        <div class="trust-body"><div class="trust-label">No analytics</div><div class="trust-sub">No tracking, no ads, no third-party SDKs</div></div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">✉️</div>
+        <div class="trust-body"><div class="trust-label">Minimal data</div><div class="trust-sub">Only your email address, for auth only</div></div>
+      </div>
+    </div>
+
+    <div class="page-links">
+      <a class="page-link-card" href="/lia/privacy">
+        <div>
+          <div class="page-link-label">Legal</div>
+          <div class="page-link-title">Privacy Policy</div>
+        </div>
+        <span class="page-link-arrow">↗</span>
+      </a>
+      <a class="page-link-card" href="/lia/support">
+        <div>
+          <div class="page-link-label">Help</div>
+          <div class="page-link-title">Support &amp; FAQ</div>
+        </div>
+        <span class="page-link-arrow">↗</span>
+      </a>
+      <a class="page-link-card" href="mailto:systems@architect-dna.ch">
+        <div>
+          <div class="page-link-label">Contact</div>
+          <div class="page-link-title">systems@architect-dna.ch</div>
+        </div>
+        <span class="page-link-arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">&copy; 2025 Architect-DNA Systems · Switzerland</span>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/lia/support">Support</a>
+      <a href="/lia/privacy">Privacy</a>
+      <a href="mailto:systems@architect-dna.ch">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

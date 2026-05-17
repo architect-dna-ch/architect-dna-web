@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KART — Voice-Controlled Rainbow Road Racer</title>
+<meta name="description" content="Race on rainbow road. Scream to nitro boost. Browser-only F1 kart racer with voice control.">
+<meta property="og:title" content="KART — Voice Race">
+<meta property="og:description" content="Race on rainbow road. Scream to nitro boost.">
+<meta property="og:url" content="https://architect-dna.ch/kart">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;
+  --accent:#ff4466;
+  --accent2:#00e5c0;
+  --accent3:#7c6cfa;
+  --text:#fff;
+  --muted:rgba(255,255,255,.45);
+  --card:#111125;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height:1.5;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;
+  backdrop-filter:blur(16px);
+  background:rgba(8,8,16,.7);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-cta{
+  background:var(--accent);
+  color:#fff;
+  text-decoration:none;
+  padding:9px 22px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.04em;
+  transition:opacity .2s,transform .15s;
+}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(124,108,250,.12) 0%, transparent 70%),
+             radial-gradient(ellipse 50% 40% at 80% 70%, rgba(255,68,102,.08) 0%, transparent 60%),
+             radial-gradient(ellipse 40% 30% at 20% 60%, rgba(0,229,192,.07) 0%, transparent 60%);
+}
+
+/* rainbow road stripe across hero */
+.rainbow-stripe{
+  position:absolute;
+  top:50%;
+  left:-10%;
+  right:-10%;
+  height:4px;
+  transform:rotate(-2deg) translateY(-120px);
+  background:linear-gradient(90deg,#ff0040,#ff6600,#ffcc00,#00ee44,#00aaff,#7744ff,#ff0040,#ff6600,#ffcc00,#00ee44,#00aaff,#7744ff);
+  background-size:400% 100%;
+  animation:rainbowMove 3s linear infinite;
+  opacity:.5;
+  filter:blur(1px);
+}
+.rainbow-stripe:nth-child(2){
+  transform:rotate(-2deg) translateY(-115px);
+  height:12px;
+  opacity:.12;
+  filter:blur(6px);
+}
+@keyframes rainbowMove{0%{background-position:0% 50%}100%{background-position:-400% 50%}}
+
+/* animated kart in hero */
+.hero-kart{
+  font-size:64px;
+  margin-bottom:24px;
+  display:block;
+  position:relative;
+  z-index:1;
+  animation:kartBounce 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 0 24px rgba(255,68,102,.5));
+}
+@keyframes kartBounce{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-12px) rotate(2deg)}
+}
+
+.hero-tag{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);font-weight:700;margin-bottom:16px;
+  position:relative;z-index:1;
+}
+h1{
+  font-size:clamp(56px,12vw,108px);
+  font-weight:900;letter-spacing:-.04em;
+  line-height:.95;
+  margin-bottom:24px;
+  background:linear-gradient(135deg,#ff4466 0%,#ff9900 30%,#ffcc00 55%,#00e5c0 80%,#7c6cfa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  position:relative;z-index:1;
+}
+.hero-sub{
+  font-size:18px;color:var(--muted);
+  max-width:420px;margin:0 auto 40px;
+  position:relative;z-index:1;
+  line-height:1.6;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--accent);
+  color:#fff;text-decoration:none;
+  padding:16px 36px;border-radius:12px;
+  font-size:16px;font-weight:800;letter-spacing:.02em;
+  transition:transform .2s,box-shadow .2s;
+  position:relative;z-index:1;
+  box-shadow:0 0 40px rgba(255,68,102,.3);
+}
+.hero-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 60px rgba(255,68,102,.45)}
+
+/* ── FEATURES ── */
+.section{padding:96px 24px;max-width:960px;margin:0 auto}
+.section-label{
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent2);font-weight:700;margin-bottom:12px;
+}
+.section-title{
+  font-size:clamp(32px,6vw,56px);font-weight:900;letter-spacing:-.03em;
+  line-height:1;margin-bottom:48px;
+}
+
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.feat{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;
+  padding:28px 24px;
+  transition:transform .2s,border-color .2s;
+}
+.feat:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.14)}
+.feat-icon{font-size:32px;margin-bottom:14px;display:block}
+.feat-title{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+.feat-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ── HOW TO PLAY ── */
+.how{background:var(--card);border-radius:24px;padding:48px;margin-top:24px}
+.steps{display:flex;flex-direction:column;gap:20px;margin-top:28px}
+.step{display:flex;align-items:flex-start;gap:20px}
+.step-num{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,68,102,.15);border:1px solid rgba(255,68,102,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:var(--accent);flex-shrink:0;
+}
+.step-content{}
+.step-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ── SCREENSHOT / DEMO ── */
+.demo-section{
+  background:linear-gradient(180deg,transparent 0%,rgba(124,108,250,.05) 100%);
+  border-top:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  padding:80px 24px;
+  text-align:center;
+}
+.demo-canvas{
+  max-width:700px;
+  width:100%;
+  margin:40px auto 0;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 40px 80px rgba(0,0,0,.5);
+  position:relative;
+}
+.demo-preview{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#080810;
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;
+  position:relative;
+  overflow:hidden;
+}
+/* mini track preview */
+.track-preview-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(124,108,250,.08) 0%, transparent 70%);
+}
+.preview-road{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+}
+.preview-road svg{width:80%;height:80%;opacity:.35}
+.demo-emoji{position:relative;z-index:2;animation:kartBounce 1.8s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(255,68,102,.6))}
+.demo-label{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  padding:6px 14px;font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.6);
+  text-transform:uppercase;white-space:nowrap;
+}
+
+/* ── CTA SECTION ── */
+.cta-section{
+  text-align:center;
+  padding:100px 24px;
+  position:relative;
+  overflow:hidden;
+}
+.cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:300px;
+  background:radial-gradient(ellipse,rgba(255,68,102,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-title{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+.cta-sub{color:var(--muted);font-size:16px;margin-bottom:36px}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#ff4466,#ff9900);
+  color:#fff;text-decoration:none;
+  padding:18px 48px;border-radius:14px;
+  font-size:17px;font-weight:900;letter-spacing:.02em;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 0 50px rgba(255,68,102,.25);
+}
+.cta-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 80px rgba(255,68,102,.4)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:32px 24px;
+  text-align:center;
+  font-size:13px;color:var(--muted);
+}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+
+/* ── PAGE TRANSITION ── */
+body{transition:opacity .35s ease}
+body.leaving{opacity:0}
+
+@media(max-width:640px){
+  nav{padding:14px 20px}
+  .section{padding:64px 16px}
+  .how{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://architect-dna.ch" class="nav-logo">architect<span>·</span>dna</a>
+  <a href="https://kart.architect-dna.ch" class="nav-cta">Race Now →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="rainbow-stripe"></div>
+  <div class="rainbow-stripe"></div>
+  <span class="hero-kart">🏎️</span>
+  <p class="hero-tag">Browser Game · Free · No Install</p>
+  <h1>KART</h1>
+  <p class="hero-sub">Rainbow road. Top-down racing. Scream into your mic to trigger nitro boost. Three laps, one winner.</p>
+  <a href="https://kart.architect-dna.ch" class="hero-cta">Start Race 🏁</a>
+</section>
+
+<section class="section">
+  <p class="section-label">Built different</p>
+  <h2 class="section-title">Race with your voice.</h2>
+  <div class="features">
+    <div class="feat">
+      <span class="feat-icon">🎤</span>
+      <div class="feat-title">Voice-Controlled Nitro</div>
+      <div class="feat-desc">Make noise. Get boost. The louder you are, the faster you go. Your mic is the nitro button.</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🌈</span>
+      <div class="feat-title">Rainbow Road</div>
+      <div class="feat-desc">Animated six-stripe rainbow track with glowing center line, just like you remember it — but top-down.</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🏁</span>
+      <div class="feat-title">3-Lap Race</div>
+      <div class="feat-desc">Lap timer, best lap tracking, finish line. Beat your personal best or challenge a friend on the same device.</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">📱</span>
+      <div class="feat-title">Touch Controls</div>
+      <div class="feat-desc">Left third = turn left, right third = turn right, center = throttle. Top third = tap nitro. No hardware needed.</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">⚡</span>
+      <div class="feat-title">Physics Engine</div>
+      <div class="feat-desc">Smooth Catmull-Rom spline track, friction model, off-road slowdown, and nitro gauge that recharges.</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🌐</span>
+      <div class="feat-title">Zero Install</div>
+      <div class="feat-desc">Pure browser. No download, no account, no ads. Open the link and race.</div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-section">
+  <p class="section-label" style="text-align:center">How to play</p>
+  <h2 class="section-title" style="text-align:center">Simple. Fast. Loud.</h2>
+
+  <div class="demo-canvas">
+    <div class="demo-preview">
+      <div class="track-preview-bg"></div>
+      <div class="preview-road">
+        <svg viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="200" cy="125" rx="160" ry="90" stroke="url(#rg)" stroke-width="28" fill="none"/>
+          <ellipse cx="200" cy="125" rx="160" ry="90" stroke="rgba(255,255,255,.04)" stroke-width="2" fill="none" stroke-dasharray="12 8"/>
+          <defs>
+            <linearGradient id="rg" x1="0" y1="0" x2="400" y2="250" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff0040"/>
+              <stop offset="17%" stop-color="#ff6600"/>
+              <stop offset="34%" stop-color="#ffcc00"/>
+              <stop offset="51%" stop-color="#00ee44"/>
+              <stop offset="68%" stop-color="#00aaff"/>
+              <stop offset="85%" stop-color="#7744ff"/>
+              <stop offset="100%" stop-color="#ff0040"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="demo-emoji">🏎️</span>
+      <div class="demo-label">Live in your browser</div>
+    </div>
+  </div>
+
+  <div class="how" style="max-width:700px;margin:40px auto 0">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Open the link</div>
+          <div class="step-desc">Hit "Race Now". No account, no loading screen, no app store.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Allow microphone (optional)</div>
+          <div class="step-desc">Grant mic access for voice nitro — scream, clap, or whistle to boost. Keyboard Space also works.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Use arrow keys or touch</div>
+          <div class="step-desc">Up = throttle, Left/Right = steer. On mobile: tap screen thirds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Complete 3 laps</div>
+          <div class="step-desc">Race the clock. Beat your best lap time. Go loud for max nitro.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title">Ready to race?</h2>
+  <p class="cta-sub">Open the game. Scream. Win.</p>
+  <a href="https://kart.architect-dna.ch" class="cta-btn">Race Now 🏎️</a>
+</section>
+
+<footer>
+  <p>
+    <a href="https://architect-dna.ch">architect-dna.ch</a>
+    &nbsp;·&nbsp;
+    <a href="https://architect-dna.ch/games">All Games</a>
+    &nbsp;·&nbsp;
+    <a href="https://architect-dna.ch/privacy">Privacy</a>
+  </p>
+</footer>
+
+<script>
+document.querySelectorAll('a[href]').forEach(a=>{
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('http')||href.startsWith('#')||href.startsWith('mailto')||a.target==='_blank') return;
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.body.classList.add('leaving');
+    setTimeout(()=>{location.href=href},340);
+  });
+});
+document.body.style.opacity='0';
+requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity=''}));
+</script>
+</body>
+</html>

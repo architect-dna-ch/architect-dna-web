@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noise — Focus Soundscapes</title>
+<meta name="description" content="Ambient soundscapes for deep focus. No account. No install. Pure Web Audio.">
+<meta property="og:title" content="Noise — Focus Soundscapes">
+<meta property="og:description" content="Mix ambient layers. Set a timer. Get in the zone.">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080810;
+  --surface:rgba(255,255,255,.04);
+  --surface2:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.08);
+  --text1:#f0f0f8;
+  --text2:#a0a0b8;
+  --text3:#606078;
+  --accent:#7c6cfa;
+  --accent2:#00e5c0;
+  --danger:#ff4466;
+  --r:16px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text1);font-family:'SF Pro Display','Inter',system-ui,sans-serif;overflow:hidden}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+
+/* ── CANVAS BG ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;opacity:1;pointer-events:none}
+
+/* ── LAYOUT ── */
+.shell{position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:24px}
+
+/* ── HEADER ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+.logo{font-size:22px;font-weight:900;letter-spacing:-.04em;color:var(--text1)}
+.logo span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:12px}
+.back-link{font-size:12px;color:var(--text3);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.back-link:hover{color:var(--text2)}
+
+/* ── SOUND PRESETS ── */
+.sound-presets{display:flex;gap:10px;flex-wrap:wrap}
+.sound-preset-btn{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);border-radius:20px;padding:8px 18px;
+  font-size:12px;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;transition:all .18s;
+}
+.sound-preset-btn:hover{background:var(--surface2);color:var(--text1);border-color:rgba(255,255,255,.18)}
+.sound-preset-btn.active{background:rgba(124,108,250,.15);border-color:var(--accent);color:var(--accent)}
+
+/* ── LAYER GRID ── */
+.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:600px){.layers{grid-template-columns:repeat(2,1fr)}}
+
+.layer{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:20px 16px 16px;
+  display:flex;flex-direction:column;gap:12px;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .15s;
+  user-select:none;
+  position:relative;
+  overflow:hidden;
+}
+.layer::before{
+  content:'';position:absolute;inset:0;border-radius:var(--r);
+  background:var(--layer-color,var(--accent));
+  opacity:0;transition:opacity .25s;
+  pointer-events:none;
+}
+.layer.active::before{opacity:.08}
+.layer.active{border-color:var(--layer-color,var(--accent));background:var(--surface2)}
+.layer:hover{transform:translateY(-2px)}
+.layer:active{transform:translateY(0)}
+
+.layer-icon{font-size:28px;line-height:1}
+.layer-name{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--text1)}
+.layer-sub{font-size:11px;color:var(--text3);margin-top:1px}
+
+.layer-vol{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:3px;
+  border-radius:2px;
+  background:var(--border);
+  outline:none;cursor:pointer;
+  accent-color:var(--layer-color,var(--accent));
+}
+.layer-vol::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--layer-color,var(--accent));
+  cursor:pointer;
+  transition:transform .15s;
+}
+.layer-vol::-webkit-slider-thumb:hover{transform:scale(1.3)}
+.layer-vol::-moz-range-thumb{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--layer-color,var(--accent));
+  border:none;cursor:pointer;
+}
+.mute-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--layer-color,var(--accent));
+  opacity:0;transition:opacity .2s;
+  position:absolute;top:14px;right:14px;
+}
+.layer.active .mute-dot{opacity:1}
+
+/* ── TIMER + CONTROLS ── */
+.bottom{display:flex;gap:12px;align-items:stretch}
+@media(max-width:600px){.bottom{flex-direction:column}}
+
+.timer-card{
+  flex:0 0 220px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;
+  display:flex;flex-direction:column;gap:12px;
+  align-items:center;justify-content:center;
+}
+.timer-display{
+  font-size:52px;font-weight:900;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+  color:var(--text1);line-height:1;
+}
+.timer-display.running{color:var(--accent2)}
+.timer-display.break{color:var(--accent)}
+.timer-label{font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.timer-controls{display:flex;gap:8px}
+.timer-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text1);border-radius:8px;padding:7px 14px;
+  font-size:12px;font-weight:700;letter-spacing:.04em;
+  cursor:pointer;transition:background .15s,border-color .15s;
+}
+.timer-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+.timer-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.timer-btn.primary:hover{background:#6a5ae0}
+.timer-presets{display:flex;gap:6px}
+.preset-btn{
+  background:transparent;border:1px solid var(--border);
+  color:var(--text3);border-radius:6px;padding:4px 10px;
+  font-size:11px;cursor:pointer;transition:all .15s;
+}
+.preset-btn:hover,.preset-btn.sel{color:var(--text1);border-color:rgba(255,255,255,.2);background:var(--surface2)}
+.preset-btn.sel{color:var(--accent);border-color:var(--accent)}
+
+.info-card{
+  flex:1;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:20px;
+  display:flex;flex-direction:column;gap:10px;
+  justify-content:space-between;
+}
+.info-title{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.info-body{font-size:13px;color:var(--text2);line-height:1.6}
+.master-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+.master-label{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.master-vol{
+  flex:1;-webkit-appearance:none;appearance:none;
+  height:3px;border-radius:2px;background:var(--border);
+  outline:none;cursor:pointer;accent-color:var(--text1);
+}
+.master-vol::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--text1);cursor:pointer;
+}
+.master-vol::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--text1);border:none}
+.kbd{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:10px;color:var(--text3);font-family:monospace}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-size:11px;color:var(--text3);letter-spacing:.04em}
+.footer a{color:var(--text3);text-decoration:none}.footer a:hover{color:var(--text2)}
+
+/* ── SESSION TOAST ── */
+#session-toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);
+  background:rgba(10,10,20,.92);backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:12px;
+  padding:12px 20px;font-size:13px;color:var(--text1);
+  transition:transform .3s cubic-bezier(.34,1.36,.64,1);
+  z-index:100;white-space:nowrap;text-align:center;
+}
+#session-toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="shell">
+
+  <div class="header">
+    <div class="logo">Noise<span>.</span></div>
+    <div class="header-right">
+      <a class="back-link" href="https://architect-dna.ch">architect-dna.ch</a>
+    </div>
+  </div>
+
+  <div class="sound-presets">
+    <button class="sound-preset-btn" onclick="applyPreset('deepwork')">⚡ Deep Work</button>
+    <button class="sound-preset-btn" onclick="applyPreset('cafe')">☕ Café Flow</button>
+    <button class="sound-preset-btn" onclick="applyPreset('night')">🌙 Late Night</button>
+  </div>
+
+  <div class="layers" id="layers"></div>
+
+  <div class="bottom">
+    <div class="timer-card">
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-label" id="timer-label">FOCUS</div>
+      <div class="timer-controls">
+        <button class="timer-btn" id="btn-reset" onclick="resetTimer()">↺</button>
+        <button class="timer-btn primary" id="btn-play" onclick="toggleTimer()">▶ Start</button>
+      </div>
+      <div class="timer-presets">
+        <button class="preset-btn sel" onclick="setPreset(25,5,this)">25/5</button>
+        <button class="preset-btn" onclick="setPreset(50,10,this)">50/10</button>
+        <button class="preset-btn" onclick="setPreset(90,20,this)">90/20</button>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div>
+        <div class="info-title">Mix. Focus. Ship.</div>
+        <div class="info-body">Layer ambient sounds to block distractions. Start the timer. Get in the zone. No account. No install. Pure Web Audio.</div>
+      </div>
+      <div>
+        <div class="master-row">
+          <span class="master-label">Master</span>
+          <input type="range" class="master-vol" id="master-vol" min="0" max="100" value="80" oninput="setMaster(this.value)">
+        </div>
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--text3)">Keys:</span>
+          <span class="kbd">Space</span><span style="font-size:11px;color:var(--text3)">timer</span>
+          <span class="kbd">M</span><span style="font-size:11px;color:var(--text3)">mute all</span>
+          <span class="kbd">1–6</span><span style="font-size:11px;color:var(--text3)">toggle layers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Noise by <a href="https://architect-dna.ch">Architect-DNA</a> &nbsp;·&nbsp; Pure Web Audio · No data collected
+  </div>
+
+</div>
+
+<div id="session-toast"></div>
+
+<script>
+// ── AUDIO ENGINE ────────────────────────────────────────────────────────────
+let ctx, masterGain;
+
+function getCtx(){
+  if(!ctx){
+    ctx=new(window.AudioContext||window.webkitAudioContext)();
+    masterGain=ctx.createGain();
+    masterGain.gain.value=0.8;
+    masterGain.connect(ctx.destination);
+  }
+  return ctx;
+}
+
+function resume(){
+  const c=getCtx();
+  if(c.state==='suspended') c.resume();
+}
+
+// ── NOISE GENERATORS ────────────────────────────────────────────────────────
+function makeWhiteNoise(c){
+  const buf=c.createBuffer(1,c.sampleRate*2,c.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  const src=c.createBufferSource();
+  src.buffer=buf;src.loop=true;
+  return src;
+}
+
+function makeBrownNoise(c){
+  const buf=c.createBuffer(1,c.sampleRate*2,c.sampleRate);
+  const d=buf.getChannelData(0);
+  let last=0;
+  for(let i=0;i<d.length;i++){
+    const wh=Math.random()*2-1;
+    last=(last+0.02*wh)/1.02;
+    d[i]=last*3.5;
+  }
+  const src=c.createBufferSource();
+  src.buffer=buf;src.loop=true;
+  return src;
+}
+
+function makePinkNoise(c){
+  const buf=c.createBuffer(1,c.sampleRate*2,c.sampleRate);
+  const d=buf.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+  for(let i=0;i<d.length;i++){
+    const w=Math.random()*2-1;
+    b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;
+    b2=0.96900*b2+w*0.1538520;b3=0.86650*b3+w*0.3104856;
+    b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;
+    d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;
+    b6=w*0.115926;
+  }
+  const src=c.createBufferSource();
+  src.buffer=buf;src.loop=true;
+  return src;
+}
+
+function makeRain(c){
+  // layered noise + HP filter for rain texture
+  const chain=[];
+  const white=makeWhiteNoise(c);
+  chain.push(white);
+
+  const hp=c.createBiquadFilter();
+  hp.type='highpass';hp.frequency.value=1200;hp.Q.value=0.5;
+
+  const lp=c.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=8000;lp.Q.value=0.3;
+
+  // slow LFO for rain intensity fluctuation
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.08;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.18;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.82;
+  lfoGain.connect(modGain.gain);
+
+  white.connect(hp);hp.connect(lp);lp.connect(modGain);
+
+  lfo.start();white.start();
+  return{nodes:[white,lfo],out:modGain};
+}
+
+function makeCafe(c){
+  // layered pink noise + notch filters to simulate room murmur
+  const pink=makePinkNoise(c);
+
+  const lp=c.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=900;lp.Q.value=1.2;
+
+  const peak=c.createBiquadFilter();
+  peak.type='peaking';peak.frequency.value=300;peak.gain.value=4;peak.Q.value=0.7;
+
+  // slow LFO for chatter rhythm
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.25;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.3;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.7;
+  lfoGain.connect(modGain.gain);
+
+  pink.connect(lp);lp.connect(peak);peak.connect(modGain);
+
+  lfo.start();pink.start();
+  return{nodes:[pink,lfo],out:modGain};
+}
+
+function makeDeepSpace(c){
+  // very LP brown noise + slow pitch oscillation
+  const brown=makeBrownNoise(c);
+
+  const lp=c.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=120;lp.Q.value=1.8;
+
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.03;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.4;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.6;
+  lfoGain.connect(modGain.gain);
+
+  // sub drone
+  const drone=c.createOscillator();
+  drone.type='sine';drone.frequency.value=42;
+  const droneGain=c.createGain();
+  droneGain.gain.value=0.18;
+  drone.connect(droneGain);
+
+  brown.connect(lp);lp.connect(modGain);
+
+  lfo.start();brown.start();drone.start();
+  return{nodes:[brown,lfo,drone],out:modGain,extra:[droneGain]};
+}
+
+function makeForest(c){
+  // pink noise HP for leaves + very slow LFO for wind gusts
+  const pink=makePinkNoise(c);
+
+  const hp=c.createBiquadFilter();
+  hp.type='highpass';hp.frequency.value=600;hp.Q.value=0.4;
+
+  const lp=c.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=4000;lp.Q.value=0.5;
+
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.06;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.35;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.65;
+  lfoGain.connect(modGain.gain);
+
+  pink.connect(hp);hp.connect(lp);lp.connect(modGain);
+  lfo.start();pink.start();
+  return{nodes:[pink,lfo],out:modGain};
+}
+
+function makeFireplace(c){
+  // brown noise LP + crackle (white noise bursts via ring modulation)
+  const brown=makeBrownNoise(c);
+
+  const lp=c.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=500;lp.Q.value=2;
+
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.18;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.25;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.75;
+  lfoGain.connect(modGain.gain);
+
+  // crackle: white noise + fast envelope
+  const crackleNoise=makeWhiteNoise(c);
+  const crackleHP=c.createBiquadFilter();
+  crackleHP.type='highpass';crackleHP.frequency.value=2000;
+  const crackleLFO=c.createOscillator();
+  crackleLFO.frequency.value=3.7;
+  const crackleLFOG=c.createGain();
+  crackleLFOG.gain.value=0.08;
+  crackleLFO.connect(crackleLFOG);
+  const crackleG=c.createGain();
+  crackleG.gain.value=0.08;
+  crackleLFOG.connect(crackleG.gain);
+  crackleNoise.connect(crackleHP);crackleHP.connect(crackleG);
+
+  brown.connect(lp);lp.connect(modGain);
+
+  lfo.start();brown.start();crackleNoise.start();crackleLFO.start();
+  return{nodes:[brown,lfo,crackleNoise,crackleLFO],out:modGain,extra:[crackleG]};
+}
+
+function makeCity(c){
+  // mid-heavy pink noise + traffic-like LFOs
+  const pink=makePinkNoise(c);
+
+  const bp=c.createBiquadFilter();
+  bp.type='bandpass';bp.frequency.value=700;bp.Q.value=0.3;
+
+  const lfo=c.createOscillator();
+  lfo.frequency.value=0.12;
+  const lfoGain=c.createGain();
+  lfoGain.gain.value=0.28;
+  lfo.connect(lfoGain);
+
+  const modGain=c.createGain();
+  modGain.gain.value=0.72;
+  lfoGain.connect(modGain.gain);
+
+  // distant rumble
+  const brown=makeBrownNoise(c);
+  const blp=c.createBiquadFilter();
+  blp.type='lowpass';blp.frequency.value=200;
+  const brownG=c.createGain();
+  brownG.gain.value=0.35;
+  brown.connect(blp);blp.connect(brownG);
+
+  pink.connect(bp);bp.connect(modGain);
+  lfo.start();pink.start();brown.start();
+  return{nodes:[pink,lfo,brown],out:modGain,extra:[brownG]};
+}
+
+// ── LAYER DEFINITIONS ───────────────────────────────────────────────────────
+const LAYERS=[
+  {id:'rain',  name:'Rain on Glass',icon:'🌧',sub:'Steady downpour',  color:'#4488ff', make:makeRain,      vol:70},
+  {id:'cafe',  name:'Café Murmur',  icon:'☕',sub:'Warm background chatter', color:'#f59e0b', make:makeCafe, vol:45},
+  {id:'space', name:'Deep Space',   icon:'🌌',sub:'Sub-bass drone',   color:'#7c6cfa', make:makeDeepSpace,  vol:35},
+  {id:'forest',name:'Forest Wind',  icon:'🌲',sub:'Leaves & breeze',  color:'#10b981', make:makeForest,     vol:40},
+  {id:'fire',  name:'Fireplace',    icon:'🔥',sub:'Warm crackle',     color:'#ff6b35', make:makeFireplace,  vol:50},
+  {id:'city',  name:'City Hum',     icon:'🏙',sub:'Urban distance',   color:'#00e5c0', make:makeCity,       vol:30},
+];
+
+// layer state
+const state={};
+LAYERS.forEach(l=>{state[l.id]={active:false,vol:l.vol/100,gainNode:null,nodes:null,extra:null}});
+
+function toggleLayer(id){
+  resume();
+  const s=state[id];
+  const def=LAYERS.find(l=>l.id===id);
+  if(s.active){
+    // fade out
+    if(s.gainNode){
+      s.gainNode.gain.setTargetAtTime(0,ctx.currentTime,0.3);
+      setTimeout(()=>{
+        if(s.nodes) s.nodes.forEach(n=>{ try{n.stop()}catch(e){} });
+        if(s.extra) s.extra.forEach(n=>{ try{n.disconnect()}catch(e){} });
+        s.gainNode=null;s.nodes=null;s.extra=null;
+      },800);
+    }
+    s.active=false;
+  } else {
+    const {nodes,out,extra}=def.make(ctx);
+    const g=ctx.createGain();
+    g.gain.value=0;
+    out.connect(g);
+    if(extra) extra.forEach(n=>n.connect(g));
+    g.connect(masterGain);
+    g.gain.setTargetAtTime(s.vol,ctx.currentTime,0.4);
+    s.gainNode=g;s.nodes=nodes;s.extra=extra||null;s.active=true;
+  }
+  renderLayers();
+}
+
+function setLayerVol(id,val){
+  resume();
+  const s=state[id];
+  s.vol=val/100;
+  if(s.active&&s.gainNode){
+    s.gainNode.gain.setTargetAtTime(s.vol,ctx.currentTime,0.08);
+  }
+}
+
+function setMaster(val){
+  resume();
+  if(masterGain) masterGain.gain.setTargetAtTime(val/100,ctx.currentTime,0.05);
+}
+
+let globalMuted=false;
+function toggleMuteAll(){
+  resume();
+  globalMuted=!globalMuted;
+  if(masterGain) masterGain.gain.setTargetAtTime(globalMuted?0:document.getElementById('master-vol').value/100,ctx.currentTime,0.1);
+  toast(globalMuted?'🔇 Muted':'🔊 Unmuted');
+}
+
+// ── RENDER ──────────────────────────────────────────────────────────────────
+function renderLayers(){
+  const container=document.getElementById('layers');
+  container.innerHTML='';
+  LAYERS.forEach((l,i)=>{
+    const s=state[l.id];
+    const div=document.createElement('div');
+    div.className='layer'+(s.active?' active':'');
+    div.style.setProperty('--layer-color',l.color);
+    div.innerHTML=`
+      <div class="mute-dot"></div>
+      <div class="layer-icon">${l.icon}</div>
+      <div>
+        <div class="layer-name">${l.name}</div>
+        <div class="layer-sub">${l.sub}</div>
+      </div>
+      <input type="range" class="layer-vol" min="0" max="100" value="${Math.round(s.vol*100)}"
+        onclick="e=>e.stopPropagation()"
+        oninput="event.stopPropagation();setLayerVol('${l.id}',this.value)">
+    `;
+    div.addEventListener('click',e=>{
+      if(e.target.tagName==='INPUT') return;
+      toggleLayer(l.id);
+    });
+    container.appendChild(div);
+  });
+}
+
+// ── TIMER ───────────────────────────────────────────────────────────────────
+let timerInterval=null;
+let timerSeconds=25*60;
+let timerRunning=false;
+let focusSecs=25*60;
+let breakSecs=5*60;
+let isBreak=false;
+let sessionCount=0;
+
+function setPreset(f,b,el){
+  document.querySelectorAll('.preset-btn').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  focusSecs=f*60;breakSecs=b*60;
+  resetTimer();
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerRunning=false;
+  isBreak=false;
+  timerSeconds=focusSecs;
+  document.getElementById('btn-play').textContent='▶ Start';
+  renderTimer();
+}
+
+function toggleTimer(){
+  if(timerRunning){
+    clearInterval(timerInterval);
+    timerRunning=false;
+    document.getElementById('btn-play').textContent='▶ Start';
+  } else {
+    timerRunning=true;
+    document.getElementById('btn-play').textContent='⏸ Pause';
+    timerInterval=setInterval(tickTimer,1000);
+  }
+}
+
+function tickTimer(){
+  timerSeconds--;
+  if(timerSeconds<=0){
+    clearInterval(timerInterval);
+    timerRunning=false;
+    if(!isBreak){
+      sessionCount++;
+      isBreak=true;
+      timerSeconds=breakSecs;
+      toast(`Session ${sessionCount} done! Take a break.`);
+      playDing();
+    } else {
+      isBreak=false;
+      timerSeconds=focusSecs;
+      toast('Break over. Back to work.');
+      playDing();
+    }
+    timerInterval=setInterval(tickTimer,1000);
+    timerRunning=true;
+    document.getElementById('btn-play').textContent='⏸ Pause';
+  }
+  renderTimer();
+}
+
+function renderTimer(){
+  const m=Math.floor(timerSeconds/60);
+  const s=timerSeconds%60;
+  const d=document.getElementById('timer-display');
+  d.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  d.className='timer-display'+(timerRunning?(isBreak?' break':' running'):'');
+  document.getElementById('timer-label').textContent=isBreak?'BREAK':'FOCUS';
+
+  // update page title
+  document.title=timerRunning?`${d.textContent} ${isBreak?'Break':'Focus'} — Noise`:'Noise — Focus Soundscapes';
+}
+
+function playDing(){
+  if(!ctx) return;
+  const osc=ctx.createOscillator();
+  const g=ctx.createGain();
+  osc.type='sine';osc.frequency.value=880;
+  g.gain.value=0.18;
+  osc.connect(g);g.connect(masterGain);
+  osc.start();g.gain.setTargetAtTime(0,ctx.currentTime+0.05,0.4);
+  osc.stop(ctx.currentTime+2);
+}
+
+// ── BACKGROUND CANVAS ───────────────────────────────────────────────────────
+const bgCanvas=document.getElementById('bg-canvas');
+const bgCtx=bgCanvas.getContext('2d');
+let animFrame;
+
+// per-layer particle systems
+const layerParticles={
+  rain:[],cafe:[],space:[],forest:[],fire:[],city:[]
+};
+
+function resizeBg(){
+  bgCanvas.width=window.innerWidth;
+  bgCanvas.height=window.innerHeight;
+  initAllParticles();
+}
+
+function initAllParticles(){
+  const W=bgCanvas.width, H=bgCanvas.height;
+
+  // rain: vertical streaks
+  layerParticles.rain=Array.from({length:120},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    len:Math.random()*18+8, spd:Math.random()*300+200,
+    a:Math.random()*.5+.2, w:Math.random()*.8+.3
+  }));
+
+  // cafe: small floating dust motes
+  layerParticles.cafe=Array.from({length:50},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()*2+.5, vx:(Math.random()-.5)*.3, vy:-Math.random()*.4-.1,
+    a:Math.random()*.4+.1, drift:Math.random()*Math.PI*2
+  }));
+
+  // space: stars + nebula blobs
+  layerParticles.space=Array.from({length:160},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()*1.4+.2, twinkle:Math.random()*Math.PI*2,
+    speed:Math.random()*.8+.4, a:Math.random()*.8+.2
+  }));
+
+  // forest: leaf particles drifting sideways
+  layerParticles.forest=Array.from({length:60},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    size:Math.random()*6+3, vx:Math.random()*.6+.2, vy:(Math.random()-.5)*.2,
+    rot:Math.random()*Math.PI*2, rotV:(Math.random()-.5)*.02, a:Math.random()*.4+.1
+  }));
+
+  // fire: rising ember sparks
+  layerParticles.fire=Array.from({length:80},()=>({
+    x:W*.5+(Math.random()-.5)*W*.6, y:H,
+    r:Math.random()*2.5+.5, vy:-(Math.random()*60+40),
+    life:Math.random(), maxLife:Math.random()*.8+.4,
+    drift:Math.random()*Math.PI*2, driftSpd:(Math.random()-.5)*30
+  }));
+
+  // city: horizontal light streaks (traffic)
+  layerParticles.city=Array.from({length:25},()=>({
+    x:Math.random()*W, y:H*(0.55+Math.random()*.35),
+    len:Math.random()*80+30, spd:(Math.random()>.5?1:-1)*(Math.random()*120+60),
+    a:Math.random()*.4+.1, col:Math.random()>.5?'255,200,60':'200,220,255'
+  }));
+}
+
+// layer opacity targets (for smooth blend)
+const layerAlpha={rain:0,cafe:0,space:0,forest:0,fire:0,city:0};
+
+function drawBg(t){
+  const W=bgCanvas.width, H=bgCanvas.height;
+  const dt=1/60;
+  bgCtx.clearRect(0,0,W,H);
+
+  // smooth alpha transitions
+  LAYERS.forEach(l=>{
+    const target=state[l.id].active?state[l.id].vol:0;
+    layerAlpha[l.id]+=(target-layerAlpha[l.id])*0.04;
+  });
+
+  // ── RAIN ──
+  const ra=layerAlpha.rain;
+  if(ra>0.01){
+    const ps=layerParticles.rain;
+    ps.forEach(p=>{
+      p.y+=p.spd*dt;
+      if(p.y>H){p.y=-p.len;p.x=Math.random()*W;}
+      bgCtx.save();
+      bgCtx.globalAlpha=p.a*ra*.6;
+      bgCtx.strokeStyle='#88bbff';
+      bgCtx.lineWidth=p.w;
+      bgCtx.beginPath();bgCtx.moveTo(p.x,p.y);bgCtx.lineTo(p.x-p.len*.15,p.y+p.len);
+      bgCtx.stroke();bgCtx.restore();
+    });
+    // rain background tint
+    bgCtx.save();bgCtx.globalAlpha=ra*.12;
+    const rg=bgCtx.createLinearGradient(0,0,0,H);
+    rg.addColorStop(0,'#112244');rg.addColorStop(1,'#0a1830');
+    bgCtx.fillStyle=rg;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  // ── CAFE ──
+  const ca=layerAlpha.cafe;
+  if(ca>0.01){
+    const ps=layerParticles.cafe;
+    ps.forEach((p,i)=>{
+      p.drift+=0.01;
+      p.x+=p.vx+Math.sin(p.drift)*.3;p.y+=p.vy;
+      if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}
+      bgCtx.save();bgCtx.globalAlpha=p.a*ca*.5;
+      bgCtx.fillStyle='#f5c88a';
+      bgCtx.beginPath();bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);bgCtx.fill();bgCtx.restore();
+    });
+    // warm amber glow bottom
+    bgCtx.save();bgCtx.globalAlpha=ca*.15;
+    const cg=bgCtx.createRadialGradient(W*.5,H,0,W*.5,H,H*.7);
+    cg.addColorStop(0,'#7a4010');cg.addColorStop(1,'transparent');
+    bgCtx.fillStyle=cg;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  // ── SPACE ──
+  const sa=layerAlpha.space;
+  if(sa>0.01){
+    const ps=layerParticles.space;
+    ps.forEach(p=>{
+      p.twinkle+=p.speed*dt;
+      const brightness=.5+.5*Math.sin(p.twinkle);
+      bgCtx.save();bgCtx.globalAlpha=p.a*sa*brightness*.7;
+      bgCtx.fillStyle='#c8c0ff';
+      bgCtx.beginPath();bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);bgCtx.fill();bgCtx.restore();
+    });
+    // nebula
+    bgCtx.save();bgCtx.globalAlpha=sa*.18;
+    const ng=bgCtx.createRadialGradient(W*.3,H*.4,0,W*.3,H*.4,W*.4);
+    ng.addColorStop(0,'#2a1060');ng.addColorStop(1,'transparent');
+    bgCtx.fillStyle=ng;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+    bgCtx.save();bgCtx.globalAlpha=sa*.12;
+    const ng2=bgCtx.createRadialGradient(W*.7,H*.6,0,W*.7,H*.6,W*.35);
+    ng2.addColorStop(0,'#001840');ng2.addColorStop(1,'transparent');
+    bgCtx.fillStyle=ng2;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  // ── FOREST ──
+  const fa=layerAlpha.forest;
+  if(fa>0.01){
+    const ps=layerParticles.forest;
+    ps.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy+Math.sin(p.rot)*.15;
+      p.rot+=p.rotV;
+      if(p.x>W+20){p.x=-20;p.y=Math.random()*H;}
+      bgCtx.save();bgCtx.globalAlpha=p.a*fa*.55;
+      bgCtx.translate(p.x,p.y);bgCtx.rotate(p.rot);
+      bgCtx.fillStyle='#3d8b4f';
+      // simple leaf shape
+      bgCtx.beginPath();bgCtx.ellipse(0,0,p.size*.4,p.size,0,0,Math.PI*2);
+      bgCtx.fill();bgCtx.restore();
+    });
+    // green tint
+    bgCtx.save();bgCtx.globalAlpha=fa*.1;
+    const fg=bgCtx.createLinearGradient(0,H*.5,0,H);
+    fg.addColorStop(0,'transparent');fg.addColorStop(1,'#0d2a14');
+    bgCtx.fillStyle=fg;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  // ── FIRE ──
+  const fia=layerAlpha.fire;
+  if(fia>0.01){
+    const ps=layerParticles.fire;
+    ps.forEach(p=>{
+      p.life+=dt/p.maxLife;
+      if(p.life>=1){
+        p.life=0;p.x=W*.5+(Math.random()-.5)*W*.5;p.y=H;
+        p.vy=-(Math.random()*60+40);p.drift=Math.random()*Math.PI*2;
+        p.driftSpd=(Math.random()-.5)*30;
+      }
+      p.drift+=dt;
+      p.x+=Math.sin(p.drift)*p.driftSpd*dt;
+      p.y+=p.vy*dt;
+      const life1=1-p.life;
+      const col=p.life<.3?`255,${Math.floor(180+75*p.life/.3)},50`
+                         :`255,${Math.floor(180*(1-p.life)/.7)},0`;
+      bgCtx.save();bgCtx.globalAlpha=life1*life1*fia*.6;
+      bgCtx.fillStyle=`rgb(${col})`;
+      bgCtx.beginPath();bgCtx.arc(p.x,p.y,p.r*life1,0,Math.PI*2);bgCtx.fill();bgCtx.restore();
+    });
+    // fire glow bottom center
+    bgCtx.save();bgCtx.globalAlpha=fia*.2;
+    const fireg=bgCtx.createRadialGradient(W*.5,H,0,W*.5,H,H*.5);
+    fireg.addColorStop(0,'#ff4400');fireg.addColorStop(1,'transparent');
+    bgCtx.fillStyle=fireg;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  // ── CITY ──
+  const cya=layerAlpha.city;
+  if(cya>0.01){
+    const ps=layerParticles.city;
+    ps.forEach(p=>{
+      p.x+=p.spd*dt;
+      if(p.spd>0&&p.x>W+p.len){p.x=-p.len;p.y=H*(0.55+Math.random()*.35);}
+      if(p.spd<0&&p.x<-p.len){p.x=W+p.len;p.y=H*(0.55+Math.random()*.35);}
+      bgCtx.save();bgCtx.globalAlpha=p.a*cya*.5;
+      bgCtx.strokeStyle=`rgba(${p.col},1)`;
+      bgCtx.lineWidth=1.5;
+      bgCtx.beginPath();bgCtx.moveTo(p.x,p.y);bgCtx.lineTo(p.x+p.len*Math.sign(p.spd),p.y);
+      bgCtx.stroke();bgCtx.restore();
+    });
+    // city silhouette blocks
+    bgCtx.save();bgCtx.globalAlpha=cya*.22;
+    bgCtx.fillStyle='#0a1020';
+    const buildings=[
+      [0,.72,.08,.28],[.07,.65,.06,.35],[.12,.75,.05,.25],[.16,.60,.07,.40],
+      [.22,.68,.09,.32],[.30,.72,.06,.28],[.35,.58,.08,.42],[.42,.65,.07,.35],
+      [.48,.70,.10,.30],[.56,.62,.06,.38],[.61,.74,.09,.26],[.68,.68,.07,.32],
+      [.74,.60,.06,.40],[.79,.72,.08,.28],[.86,.65,.07,.35],[.92,.70,.08,.30],
+    ];
+    buildings.forEach(([bx,by,bw,bh])=>{
+      bgCtx.fillRect(bx*W,by*H,bw*W,bh*H);
+    });
+    bgCtx.restore();
+    // city haze
+    bgCtx.save();bgCtx.globalAlpha=cya*.08;
+    const cyg=bgCtx.createLinearGradient(0,H*.5,0,H);
+    cyg.addColorStop(0,'transparent');cyg.addColorStop(1,'#101828');
+    bgCtx.fillStyle=cyg;bgCtx.fillRect(0,0,W,H);bgCtx.restore();
+  }
+
+  animFrame=requestAnimationFrame(drawBg);
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('session-toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+// ── KEYBOARD ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA') return;
+  if(e.code==='Space'){e.preventDefault();toggleTimer();}
+  if(e.key==='m'||e.key==='M') toggleMuteAll();
+  const n=parseInt(e.key);
+  if(n>=1&&n<=LAYERS.length) toggleLayer(LAYERS[n-1].id);
+});
+
+// ── SOUND PRESETS ────────────────────────────────────────────────────────────
+const SOUND_PRESETS={
+  deepwork:{
+    label:'Deep Work',
+    // Heavy rain + whisper of deep space. No chatter, no distraction.
+    rain:78, cafe:0, space:22, forest:0, fire:0, city:0,
+  },
+  cafe:{
+    label:'Café Flow',
+    // Café murmur leads, rain at the window, distant city rumble.
+    rain:32, cafe:68, space:0, forest:0, fire:0, city:25,
+  },
+  night:{
+    label:'Late Night',
+    // Fireplace warmth, forest outside, deep space underneath. Zero caffeine.
+    rain:0, cafe:0, space:38, forest:45, fire:72, city:0,
+  },
+};
+
+let activePreset=null;
+
+function applyPreset(key){
+  resume();
+  const p=SOUND_PRESETS[key];
+  if(!p) return;
+
+  // stop all active layers first
+  LAYERS.forEach(l=>{
+    const s=state[l.id];
+    if(s.active){
+      if(s.gainNode) s.gainNode.gain.setTargetAtTime(0,ctx.currentTime,0.25);
+      setTimeout(()=>{
+        if(s.nodes) s.nodes.forEach(n=>{ try{n.stop()}catch(e){} });
+        if(s.extra) s.extra.forEach(n=>{ try{n.disconnect()}catch(e){} });
+        s.gainNode=null;s.nodes=null;s.extra=null;
+      },600);
+      s.active=false;
+    }
+  });
+
+  // apply new layers after brief fade
+  setTimeout(()=>{
+    LAYERS.forEach(l=>{
+      const vol=p[l.id]||0;
+      state[l.id].vol=vol/100;
+      if(vol>0){
+        const def=LAYERS.find(x=>x.id===l.id);
+        const {nodes,out,extra}=def.make(ctx);
+        const g=ctx.createGain();
+        g.gain.value=0;
+        out.connect(g);
+        if(extra) extra.forEach(n=>n.connect(g));
+        g.connect(masterGain);
+        g.gain.setTargetAtTime(vol/100,ctx.currentTime,0.5);
+        state[l.id].gainNode=g;state[l.id].nodes=nodes;state[l.id].extra=extra||null;state[l.id].active=true;
+      }
+    });
+    renderLayers();
+  },350);
+
+  activePreset=key;
+  document.querySelectorAll('.sound-preset-btn').forEach((b,i)=>{
+    b.classList.toggle('active',Object.keys(SOUND_PRESETS)[i]===key);
+  });
+  toast(`${p.label} loaded`);
+}
+
+// ── 1-HOUR BACKGROUND DRIFT ──────────────────────────────────────────────────
+// Start: cold dark blue #080810 → End: warm dark amber #100c08
+// Imperceptible per minute, noticeable after ~1 hour
+const _bgStart={r:8,g:8,b:16};
+const _bgEnd={r:16,g:10,b:8};
+const _bgDuration=3600000;
+const _bgT0=Date.now();
+function lerp(a,b,t){return a+(b-a)*t}
+function updateBgColor(){
+  const t=Math.min((Date.now()-_bgT0)/_bgDuration,1);
+  const r=Math.round(lerp(_bgStart.r,_bgEnd.r,t));
+  const g=Math.round(lerp(_bgStart.g,_bgEnd.g,t));
+  const b=Math.round(lerp(_bgStart.b,_bgEnd.b,t));
+  document.documentElement.style.setProperty('--bg',`rgb(${r},${g},${b})`);
+}
+updateBgColor();
+setInterval(updateBgColor,30000); // update every 30s
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+resizeBg();
+requestAnimationFrame(drawBg);
+window.addEventListener('resize',resizeBg);
+renderLayers();
+renderTimer();
+
+</script>
+</body>
+</html>
