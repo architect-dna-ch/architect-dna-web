@@ -215,14 +215,16 @@ section{padding:80px 24px}
 }
 .deck-card{
   position:absolute;inset:0;
-  background:#181a2e; /* solid — no bleed-through */
-  border:1px solid var(--border2);
+  background:rgba(18,20,44,0.82);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border:1px solid rgba(255,255,255,.13);
   border-radius:20px;
   padding:32px 28px;
   display:flex;flex-direction:column;gap:12px;
   transition:transform .5s cubic-bezier(.4,0,.2,1),box-shadow .5s;
   will-change:transform;
-  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
   user-select:none;
 }
 /* front card: straight, glowing */
@@ -311,11 +313,11 @@ section{padding:80px 24px}
 /* kart racing on top */
 .kart{
   position:absolute;top:-18px;font-size:22px;
-  animation:kartRace 5s linear infinite;
+  animation:kartRace 14s linear infinite;
   line-height:1;pointer-events:none;
   filter:drop-shadow(0 0 8px rgba(255,200,0,.8));
 }
-.kart:nth-child(2){animation-delay:-2s;font-size:16px;top:-14px;opacity:.6}
+.kart:nth-child(2){animation-delay:-6s;font-size:16px;top:-14px;opacity:.6}
 @keyframes kartRace{
   0%  {left:-40px;transform:scaleX(1)}
   49% {left:calc(100% + 40px);transform:scaleX(1)}

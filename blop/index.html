@@ -6,92 +6,72 @@
 <title>GRID — Light Cycles 2070</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--p:#00f5ff;--a1:#ff2d6b;--a2:#ffcc00;--a3:#7c6cfa;--bg:#020208}
+:root{--p:#00f5ff;--a1:#ff2d6b;--a2:#ffcc00;--a3:#7c6cfa;--ares:#ff6a00;--bg:#020208}
 body{background:var(--bg);overflow:hidden;font-family:'SF Mono','Fira Code',monospace;touch-action:none;color:#fff;user-select:none}
 canvas{display:block;position:fixed;inset:0;width:100%;height:100%}
 
 /* ── HUD ── */
-#hud{position:fixed;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px;pointer-events:none;z-index:5}
-.riders{display:flex;gap:10px}
-.rider-dot{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,.5);border-radius:4px;padding:6px 12px;
-  border:1px solid rgba(255,255,255,.06);font-size:11px;letter-spacing:.1em;
-}
+#hud{position:fixed;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:18px 24px;pointer-events:none;z-index:5}
+.riders{display:flex;gap:8px;flex-wrap:wrap}
+.rider-dot{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);border-radius:4px;padding:5px 11px;border:1px solid rgba(255,255,255,.06);font-size:11px;letter-spacing:.1em;transition:opacity .3s}
 .rd{width:8px;height:8px;border-radius:50%}
 .rscore{font-weight:900;font-size:14px;margin-left:2px}
-.round-info{text-align:right}
-.round-label{font-size:8px;letter-spacing:.28em;color:rgba(255,255,255,.3);text-transform:uppercase}
-.round-val{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em}
+.level-info{text-align:right}
+.level-label{font-size:8px;letter-spacing:.28em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.level-val{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em}
 
-/* ── OVERLAY ── */
-#overlay{
+/* ── BASE OVERLAY ── */
+.ov-base{
   position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   z-index:10;transition:opacity .5s;
   background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(0,10,30,.97),rgba(2,2,8,.99));
 }
-#overlay.gone{opacity:0;pointer-events:none}
-
+.ov-base.gone{opacity:0;pointer-events:none}
 .ov-eyebrow{font-size:9px;letter-spacing:.4em;color:rgba(0,245,255,.35);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:14px}
 .ov-eyebrow::before,.ov-eyebrow::after{content:'';display:block;width:40px;height:1px;background:rgba(0,245,255,.15)}
-.ov-title{
-  font-size:clamp(72px,15vw,140px);font-weight:900;letter-spacing:-.06em;line-height:.88;
-  margin-bottom:6px;position:relative;
-  background:linear-gradient(135deg,var(--p) 0%,rgba(0,245,255,.6) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.ov-glow{
-  position:absolute;inset:0;
-  background:linear-gradient(135deg,var(--p),transparent);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:blur(16px);opacity:.5;pointer-events:none;
-}
-.ov-sub{font-size:11px;color:rgba(255,255,255,.22);letter-spacing:.24em;text-transform:uppercase;margin-bottom:48px}
-
-.ov-riders{display:flex;gap:24px;margin-bottom:48px}
+.ov-title{font-size:clamp(72px,15vw,140px);font-weight:900;letter-spacing:-.06em;line-height:.88;margin-bottom:6px;position:relative;background:linear-gradient(135deg,var(--p) 0%,rgba(0,245,255,.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ov-glow{position:absolute;inset:0;background:linear-gradient(135deg,var(--p),transparent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:blur(16px);opacity:.5;pointer-events:none}
+.ov-sub{font-size:11px;color:rgba(255,255,255,.22);letter-spacing:.24em;text-transform:uppercase;margin-bottom:40px}
+.ov-riders{display:flex;gap:20px;margin-bottom:40px}
 .ov-rider{text-align:center}
-.ov-bike{font-size:32px;margin-bottom:6px;filter:drop-shadow(0 0 12px currentColor)}
+.ov-bike{font-size:28px;margin-bottom:5px;filter:drop-shadow(0 0 10px currentColor)}
 .ov-rname{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35)}
-
-.ov-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:48px;width:300px}
-.ctrl{background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.1);border-radius:4px;padding:10px 14px;display:flex;align-items:center;gap:10px}
-.ckey{background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.2);border-radius:3px;padding:3px 9px;font-size:10px;color:var(--p)}
+.ov-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:40px;width:280px}
+.ctrl{background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.1);border-radius:4px;padding:9px 12px;display:flex;align-items:center;gap:9px}
+.ckey{background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.2);border-radius:3px;padding:3px 8px;font-size:10px;color:var(--p)}
 .cdesc{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.06em}
+.ov-cta{background:transparent;border:1px solid var(--p);color:var(--p);font-size:10px;font-weight:700;letter-spacing:.25em;padding:15px 50px;border-radius:4px;cursor:pointer;transition:all .2s;font-family:inherit;text-transform:uppercase}
+.ov-cta:hover{background:rgba(0,245,255,.06);box-shadow:0 0 28px rgba(0,245,255,.18);transform:translateY(-1px)}
 
-.ov-cta{
-  background:transparent;border:1px solid var(--p);color:var(--p);
-  font-size:10px;font-weight:700;letter-spacing:.25em;padding:16px 56px;border-radius:4px;
-  cursor:pointer;transition:all .2s;font-family:inherit;text-transform:uppercase;
+/* ── LEVEL INTRO ── */
+#level-intro{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:11;opacity:0;pointer-events:none;transition:opacity .4s;
+  background:rgba(2,2,8,.92);backdrop-filter:blur(10px);text-align:center;gap:14px;
 }
-.ov-cta:hover{background:rgba(0,245,255,.06);box-shadow:0 0 32px rgba(0,245,255,.2);transform:translateY(-1px)}
+#level-intro.show{opacity:1}
+.li-num{font-size:10px;letter-spacing:.4em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.li-name{font-size:clamp(28px,6vw,56px);font-weight:900;letter-spacing:-.03em}
+.li-desc{font-size:12px;color:rgba(255,255,255,.35);letter-spacing:.12em;max-width:340px;line-height:1.7}
+.li-vs{display:flex;gap:18px;align-items:center;margin-top:6px}
+.li-rider{text-align:center}
+.li-bike{font-size:24px;filter:drop-shadow(0 0 8px currentColor)}
+.li-rname{font-size:8px;letter-spacing:.15em;color:rgba(255,255,255,.3);margin-top:3px}
 
 /* ── RESULT ── */
-#result{
-  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9;opacity:0;pointer-events:none;transition:opacity .45s;
-  background:rgba(2,2,8,.85);backdrop-filter:blur(8px);text-align:center;
-}
+#result{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9;opacity:0;pointer-events:none;transition:opacity .45s;background:rgba(2,2,8,.88);backdrop-filter:blur(8px);text-align:center;gap:10px}
 #result.show{opacity:1;pointer-events:all}
-.res-eyebrow{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,245,255,.4);margin-bottom:14px}
-#res-winner{font-size:clamp(36px,7vw,72px);font-weight:900;letter-spacing:-.04em;margin-bottom:6px}
-#res-sub{font-size:13px;color:rgba(255,255,255,.35);letter-spacing:.1em;margin-bottom:36px}
+.res-eyebrow{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,245,255,.4)}
+#res-winner{font-size:clamp(36px,7vw,72px);font-weight:900;letter-spacing:-.04em}
+#res-sub{font-size:12px;color:rgba(255,255,255,.35);letter-spacing:.1em;margin-bottom:18px}
 
 /* ── COUNTDOWN ── */
-#countdown{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  z-index:8;pointer-events:none;opacity:0;transition:opacity .2s;
-}
+#countdown{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:8;pointer-events:none;opacity:0;transition:opacity .2s}
 #countdown.show{opacity:1}
-.cdnum{font-size:clamp(120px,25vw,240px);font-weight:900;letter-spacing:-.06em;color:var(--p);
-  text-shadow:0 0 80px rgba(0,245,255,.5);animation:cdpop .6s cubic-bezier(.34,1.36,.64,1)}
+.cdnum{font-size:clamp(120px,25vw,220px);font-weight:900;letter-spacing:-.06em;color:var(--p);text-shadow:0 0 80px rgba(0,245,255,.5);animation:cdpop .6s cubic-bezier(.34,1.36,.64,1)}
 @keyframes cdpop{0%{transform:scale(1.4);opacity:0}100%{transform:scale(1);opacity:1}}
 
-/* ── TOUCH ZONES ── */
-#touch-hint{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.18);text-transform:uppercase;
-  pointer-events:none;
-}
+#touch-hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.18em;color:rgba(255,255,255,.15);text-transform:uppercase;pointer-events:none}
 </style>
 </head>
 <body>
@@ -99,38 +79,48 @@ canvas{display:block;position:fixed;inset:0;width:100%;height:100%}
 
 <div id="hud">
   <div class="riders" id="riders-hud"></div>
-  <div class="round-info">
-    <div class="round-label">Round</div>
-    <div class="round-val" id="round-val">1 / 5</div>
+  <div class="level-info">
+    <div class="level-label">Level</div>
+    <div class="level-val" id="level-val">1 / 5</div>
   </div>
 </div>
 
 <div id="countdown"><div class="cdnum" id="cdnum">3</div></div>
 
-<div id="overlay">
+<!-- MAIN MENU -->
+<div id="overlay" class="ov-base">
   <div class="ov-eyebrow">Light Cycles · 2070</div>
   <div class="ov-title">GRID<div class="ov-glow">GRID</div></div>
-  <div class="ov-sub">architect-dna.ch · last cycle standing</div>
+  <div class="ov-sub">architect-dna.ch · 5 levels · last cycle standing</div>
   <div class="ov-riders">
     <div class="ov-rider"><div class="ov-bike" style="color:var(--p)">🏍</div><div class="ov-rname" style="color:var(--p)">You</div></div>
     <div class="ov-rider"><div class="ov-bike" style="color:var(--a1)">🏍</div><div class="ov-rname" style="color:var(--a1)">Rinzler</div></div>
     <div class="ov-rider"><div class="ov-bike" style="color:var(--a2)">🏍</div><div class="ov-rname" style="color:var(--a2)">Clu</div></div>
-    <div class="ov-rider"><div class="ov-bike" style="color:var(--a3)">🏍</div><div class="ov-rname" style="color:var(--a3)">Sark</div></div>
+    <div class="ov-rider"><div class="ov-bike" style="color:var(--ares)">🏍</div><div class="ov-rname" style="color:var(--ares)">ARES</div></div>
   </div>
   <div class="ov-controls">
-    <div class="ctrl"><span class="ckey">↑ ↓ ← →</span><span class="cdesc">Turn</span></div>
+    <div class="ctrl"><span class="ckey">↑↓←→</span><span class="cdesc">Turn</span></div>
     <div class="ctrl"><span class="ckey">WASD</span><span class="cdesc">Turn</span></div>
-    <div class="ctrl"><span class="ckey">Swipe</span><span class="cdesc">Mobile turn</span></div>
+    <div class="ctrl"><span class="ckey">Swipe</span><span class="cdesc">Mobile</span></div>
     <div class="ctrl"><span class="ckey">Goal</span><span class="cdesc">Outlast all</span></div>
   </div>
-  <button class="ov-cta" onclick="startMatch()">Enter Grid</button>
+  <button class="ov-cta" onclick="startGame()">Enter Grid</button>
 </div>
 
+<!-- LEVEL INTRO -->
+<div id="level-intro">
+  <div class="li-num" id="li-num">LEVEL 1</div>
+  <div class="li-name" id="li-name" style="color:var(--p)">BASIC GRID</div>
+  <div class="li-desc" id="li-desc">One opponent. Learn the grid.</div>
+  <div class="li-vs" id="li-vs"></div>
+</div>
+
+<!-- RESULT -->
 <div id="result">
-  <div class="res-eyebrow">▸ Round Complete</div>
+  <div class="res-eyebrow" id="res-eyebrow">▸ Round Complete</div>
   <div id="res-winner">You Win</div>
   <div id="res-sub">Cycle derezzed</div>
-  <button class="ov-cta" onclick="nextRound()" id="res-btn" style="margin-top:0">Next Round</button>
+  <button class="ov-cta" id="res-btn" onclick="nextLevel()" style="margin-top:4px">Continue</button>
 </div>
 
 <div id="touch-hint">Swipe to turn · outlast all</div>
@@ -140,17 +130,13 @@ const canvas=document.getElementById('c');
 const ctx=canvas.getContext('2d');
 let W,H,CELL;
 
-function resize(){
-  W=canvas.width=window.innerWidth;
-  H=canvas.height=window.innerHeight;
-  CELL=Math.min(W,H)/60;
-}
-resize();window.addEventListener('resize',resize);
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;CELL=Math.min(W,H)/60;}
+resize();addEventListener('resize',resize);
 
 // ── AUDIO ──────────────────────────────────────────────────────────────────
 let aCtx;
-function ensureAudio(){if(!aCtx)aCtx=new(window.AudioContext||window.webkitAudioContext)();}
-function beep(freq,dur,vol=.2,type='square'){
+function ensureAudio(){if(!aCtx)aCtx=new(AudioContext||webkitAudioContext)();}
+function beep(freq,dur,vol=.18,type='square'){
   ensureAudio();
   const o=aCtx.createOscillator(),g=aCtx.createGain();
   o.type=type;o.frequency.value=freq;
@@ -159,213 +145,291 @@ function beep(freq,dur,vol=.2,type='square'){
   o.connect(g);g.connect(aCtx.destination);
   o.start();o.stop(aCtx.currentTime+dur);
 }
-function derezSound(){
+function derezSound(isAres=false){
   ensureAudio();
   const o=aCtx.createOscillator(),g=aCtx.createGain();
-  o.type='sawtooth';o.frequency.setValueAtTime(400,aCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(50,aCtx.currentTime+.3);
-  g.gain.setValueAtTime(.2,aCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001,aCtx.currentTime+.3);
+  o.type='sawtooth';
+  o.frequency.setValueAtTime(isAres?600:400,aCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(30,aCtx.currentTime+.5);
+  g.gain.setValueAtTime(.25,aCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,aCtx.currentTime+.5);
   o.connect(g);g.connect(aCtx.destination);
-  o.start();o.stop(aCtx.currentTime+.4);
+  o.start();o.stop(aCtx.currentTime+.6);
 }
 
-// ── GRID BACKGROUND ────────────────────────────────────────────────────────
-let gridPulse=0;
-function drawGrid(){
-  ctx.fillStyle='#020208';ctx.fillRect(0,0,W,H);
-
-  // perspective grid floor
-  const gs=CELL*2;
-  ctx.save();
-  ctx.globalAlpha=.06+Math.sin(gridPulse)*.015;
-  ctx.strokeStyle='#00f5ff';ctx.lineWidth=.8;
-
-  // horizontal lines
-  for(let y=0;y<H+gs;y+=gs){
-    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-  }
-  // vertical lines
-  for(let x=0;x<W+gs;x+=gs){
-    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-  }
-  ctx.restore();
-
-  // border walls
-  const bw=4;
-  ctx.strokeStyle='rgba(0,245,255,.5)';ctx.lineWidth=bw;
-  ctx.shadowColor='#00f5ff';ctx.shadowBlur=12;
-  ctx.strokeRect(bw/2,bw/2,W-bw,H-bw);
-  ctx.shadowBlur=0;
-}
-
-// ── CYCLES ────────────────────────────────────────────────────────────────
-const CONFIGS=[
-  {name:'You',  color:'#00f5ff',ai:false,startFn:()=>({x:W*.25,y:H*.5, dx:1,dy:0})},
-  {name:'Rinzler',color:'#ff2d6b',ai:true, startFn:()=>({x:W*.75,y:H*.5, dx:-1,dy:0})},
-  {name:'Clu',  color:'#ffcc00',ai:true, startFn:()=>({x:W*.5, y:H*.25,dx:0,dy:1})},
-  {name:'Sark', color:'#7c6cfa',ai:true, startFn:()=>({x:W*.5, y:H*.75,dx:0,dy:-1})},
+// ── LEVEL DEFINITIONS ──────────────────────────────────────────────────────
+const LEVELS=[
+  {
+    num:1, name:'BASIC GRID', color:'var(--p)',
+    desc:'One opponent. Learn the grid.',
+    stepMs:62, // ms per move step (lower = faster)
+    opponents:[
+      {name:'Rinzler',color:'#ff2d6b',startFn:()=>({x:W*.75,y:H*.5,dx:-1,dy:0}),lookAhead:4,applyProb:.65,trap:false},
+    ],
+  },
+  {
+    num:2, name:'DUAL THREAT', color:'var(--a2)',
+    desc:'Two AIs. Stay out of the crossfire.',
+    stepMs:55,
+    opponents:[
+      {name:'Rinzler',color:'#ff2d6b',startFn:()=>({x:W*.75,y:H*.5,dx:-1,dy:0}),lookAhead:6,applyProb:.78,trap:false},
+      {name:'Clu',    color:'#ffcc00',startFn:()=>({x:W*.5, y:H*.25,dx:0,dy:1}), lookAhead:6,applyProb:.75,trap:false},
+    ],
+  },
+  {
+    num:3, name:'TRIPLE THREAT', color:'var(--a3)',
+    desc:'Three AIs closing in. Pick your path.',
+    stepMs:50,
+    opponents:[
+      {name:'Rinzler',color:'#ff2d6b',startFn:()=>({x:W*.75,y:H*.5, dx:-1,dy:0}),lookAhead:8,applyProb:.85,trap:false},
+      {name:'Clu',    color:'#ffcc00',startFn:()=>({x:W*.5, y:H*.25,dx:0,dy:1}), lookAhead:8,applyProb:.82,trap:false},
+      {name:'Sark',   color:'#7c6cfa',startFn:()=>({x:W*.5, y:H*.75,dx:0,dy:-1}),lookAhead:8,applyProb:.82,trap:false},
+    ],
+  },
+  {
+    num:4, name:'GRID MASTER', color:'#ff9900',
+    desc:'Three elite AIs. Maximum speed. No mercy.',
+    stepMs:40,
+    opponents:[
+      {name:'Rinzler',color:'#ff2d6b',startFn:()=>({x:W*.75,y:H*.5, dx:-1,dy:0}),lookAhead:14,applyProb:.95,trap:false},
+      {name:'Clu',    color:'#ffcc00',startFn:()=>({x:W*.5, y:H*.25,dx:0,dy:1}), lookAhead:14,applyProb:.95,trap:false},
+      {name:'Sark',   color:'#7c6cfa',startFn:()=>({x:W*.5, y:H*.75,dx:0,dy:-1}),lookAhead:14,applyProb:.95,trap:false},
+    ],
+  },
+  {
+    num:5, name:'A R E S', color:'var(--ares)',
+    desc:'He does not race. He hunts. ARES will close your walls and seal your fate.',
+    stepMs:52,
+    opponents:[
+      {name:'ARES',   color:'#ff6a00',startFn:()=>({x:W*.75,y:H*.5, dx:-1,dy:0}),lookAhead:0,applyProb:1,trap:true},
+    ],
+  },
 ];
 
-let cycles=[],speed,gameRunning=false;
-const MARGIN=40;
+// ── STATE ──────────────────────────────────────────────────────────────────
+let cycles=[],gameRunning=false,currentLevel=0,stepMs=55;
+const MARGIN=36;
+let gridPulse=0,accum=0,last=0;
 
-function makeCycle(cfg){
-  const s=cfg.startFn();
-  return{
-    ...cfg,
-    x:s.x,y:s.y,dx:s.dx,dy:s.dy,
-    trail:[{x:s.x,y:s.y}],
-    alive:true,
-    derezParticles:[],
-  };
+// ── PLAYER CONFIG ──────────────────────────────────────────────────────────
+const PLAYER_CFG={name:'You',color:'#00f5ff',ai:false,startFn:()=>({x:W*.25,y:H*.5,dx:1,dy:0})};
+
+// ── GRID HELPERS FOR TRAP AI ───────────────────────────────────────────────
+const GW=80, GH=50; // flood fill grid dimensions
+
+function worldToGrid(wx,wy){
+  return{gx:Math.round(wx/(W/GW)), gy:Math.round(wy/(H/GH))};
 }
 
-function initCycles(){
-  speed=CELL*1.2;
-  cycles=CONFIGS.map(makeCycle);
+function buildOccGrid(){
+  const g=[];
+  for(let y=0;y<GH;y++){g.push(new Uint8Array(GW));}
+  // walls
+  for(let x=0;x<GW;x++){g[0][x]=1;g[GH-1][x]=1;}
+  for(let y=0;y<GH;y++){g[y][0]=1;g[y][GW-1]=1;}
+  // margin
+  const mx=Math.round(MARGIN/(W/GW)), my=Math.round(MARGIN/(H/GH));
+  for(let x=0;x<GW;x++){for(let ym=0;ym<my;ym++){g[ym][x]=1;g[GH-1-ym][x]=1;}}
+  for(let y=0;y<GH;y++){for(let xm=0;xm<mx;xm++){g[y][xm]=1;g[y][GW-1-xm]=1;}}
+  // trails
+  for(const c of cycles){
+    for(const tp of c.trail){
+      const{gx,gy}=worldToGrid(tp.x,tp.y);
+      if(gx>=0&&gx<GW&&gy>=0&&gy<GH) g[gy][gx]=1;
+    }
+  }
+  return g;
+}
+
+function floodCount(g, sx, sy){
+  if(sx<0||sx>=GW||sy<0||sy>=GH||g[sy][sx]) return 0;
+  const vis=new Uint8Array(GW*GH);
+  const q=[[sx,sy]];
+  let cnt=0;
+  while(q.length){
+    const[x,y]=q.pop();
+    const k=y*GW+x;
+    if(x<0||x>=GW||y<0||y>=GH||g[y][x]||vis[k]) continue;
+    vis[k]=1; cnt++;
+    q.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
+  }
+  return cnt;
 }
 
 // ── AI ─────────────────────────────────────────────────────────────────────
-function aiTurn(c){
-  // look ahead and pick safest turn
+function aiTurn(c,cfg){
+  if(cfg.trap){
+    // ARES: flood-fill trap strategy — minimize player's reachable space
+    const dirs=[
+      {dx:c.dx,dy:c.dy},
+      {dx:-c.dy,dy:c.dx},
+      {dx:c.dy,dy:-c.dx},
+    ];
+    const player=cycles[0];
+    const pg=worldToGrid(player.x,player.y);
+    const g=buildOccGrid();
+
+    let bestDir=dirs[0], bestScore=-Infinity;
+    for(const d of dirs){
+      const nx=c.x+d.dx*CELL, ny=c.y+d.dy*CELL;
+      if(nx<MARGIN||nx>W-MARGIN||ny<MARGIN||ny>H-MARGIN) continue;
+      // simulate placing Ares there
+      const ng=g.map(row=>new Uint8Array(row));
+      const{gx,gy}=worldToGrid(nx,ny);
+      if(gx>=0&&gx<GW&&gy>=0&&gy<GH) ng[gy][gx]=1;
+      // player reachable space after this move
+      const playerSpace=floodCount(ng,pg.gx,pg.gy);
+      // ares own space
+      const{gx:agx,gy:agy}=worldToGrid(nx+d.dx*CELL,ny+d.dy*CELL);
+      const aresSpace=floodCount(ng,agx,agy);
+      // score: minimize player space, maximize own
+      const score = -playerSpace*2 + aresSpace;
+      if(score>bestScore){bestScore=score;bestDir=d;}
+    }
+    c.dx=bestDir.dx; c.dy=bestDir.dy;
+    return;
+  }
+
+  // Standard look-ahead AI
   const dirs=[{dx:c.dx,dy:c.dy},{dx:-c.dy,dy:c.dx},{dx:c.dy,dy:-c.dx}];
-  // don't go backward
   const scored=dirs.map(d=>{
-    let score=0;
-    // simulate 8 steps
-    let nx=c.x,ny=c.y;
-    for(let i=1;i<=8;i++){
+    let sc=0,nx=c.x,ny=c.y;
+    for(let i=1;i<=cfg.lookAhead;i++){
       nx+=d.dx*CELL;ny+=d.dy*CELL;
-      if(nx<MARGIN||nx>W-MARGIN||ny<MARGIN||ny>H-MARGIN){score-=10;break;}
+      if(nx<MARGIN||nx>W-MARGIN||ny<MARGIN||ny>H-MARGIN){sc-=12;break;}
       for(const oc of cycles){
         for(const tp of oc.trail){
-          if(Math.abs(tp.x-nx)<CELL*.7&&Math.abs(tp.y-ny)<CELL*.7){score-=8;break;}
+          if(Math.abs(tp.x-nx)<CELL*.7&&Math.abs(tp.y-ny)<CELL*.7){sc-=9;break;}
         }
       }
-      score+=i; // prefer longer paths
+      sc+=i;
     }
-    return{d,score};
+    return{d,sc};
   });
-  scored.sort((a,b)=>b.score-a.score);
-  const best=scored[0].d;
-  // apply with some randomness to keep AI imperfect
-  if(Math.random()<.88){c.dx=best.dx;c.dy=best.dy;}
+  scored.sort((a,b)=>b.sc-a.sc);
+  if(Math.random()<cfg.applyProb){const b=scored[0].d;c.dx=b.dx;c.dy=b.dy;}
 }
 
 // ── COLLISION ──────────────────────────────────────────────────────────────
 function checkCollisions(){
   for(const c of cycles){
     if(!c.alive) continue;
-    // wall
-    if(c.x<MARGIN||c.x>W-MARGIN||c.y<MARGIN||c.y>H-MARGIN){
-      derez(c);continue;
-    }
-    // trails
-    for(const oc of cycles){
-      const trail=oc.trail;
-      const skipLast=oc===c?8:0;
-      for(let i=0;i<trail.length-skipLast;i++){
-        const t=trail[i];
-        if(Math.abs(t.x-c.x)<CELL*.55&&Math.abs(t.y-c.y)<CELL*.55){
-          derez(c);break;
-        }
+    if(c.x<MARGIN||c.x>W-MARGIN||c.y<MARGIN||c.y>H-MARGIN){derez(c);continue;}
+    outer:for(const oc of cycles){
+      const skip=oc===c?8:0;
+      for(let i=0;i<oc.trail.length-skip;i++){
+        const t=oc.trail[i];
+        if(Math.abs(t.x-c.x)<CELL*.55&&Math.abs(t.y-c.y)<CELL*.55){derez(c);break outer;}
       }
     }
   }
 }
 
 function derez(c){
+  if(!c.alive) return;
   c.alive=false;
-  derezSound();
-  // spawn particles
-  for(let i=0;i<40;i++){
-    const ang=Math.random()*Math.PI*2;
-    const spd=Math.random()*CELL*2+CELL;
-    c.derezParticles.push({x:c.x,y:c.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:1,r:Math.random()*CELL*.6+CELL*.2});
+  derezSound(c.name==='ARES');
+  for(let i=0;i<50;i++){
+    const ang=Math.random()*Math.PI*2,spd=Math.random()*CELL*2.5+CELL;
+    c.derezParticles.push({x:c.x,y:c.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,life:1,r:Math.random()*CELL*.7+CELL*.2});
   }
   checkRoundEnd();
 }
-
-// ── SCORING ────────────────────────────────────────────────────────────────
-let scores=[0,0,0,0],round=1,totalRounds=5,matchRunning=false;
 
 function checkRoundEnd(){
   const alive=cycles.filter(c=>c.alive);
   if(alive.length<=1){
     gameRunning=false;
-    const winner=alive[0]||cycles[cycles.length-1];
-    const widx=cycles.indexOf(winner);
-    if(widx>=0) scores[widx]++;
-    setTimeout(()=>showRoundResult(winner),800);
+    const winner=alive[0]||null;
+    setTimeout(()=>showResult(winner),900);
   }
 }
 
-function showRoundResult(winner){
+// ── RESULT ─────────────────────────────────────────────────────────────────
+function showResult(winner){
   const el=document.getElementById('result');
-  const isPlayer=winner&&!winner.ai;
-  const isFinal=round>=totalRounds;
+  const lvl=LEVELS[currentLevel];
+  const playerWon=winner&&!winner.ai;
+  const finalLevel=currentLevel>=4;
 
-  if(isFinal){
-    const maxScore=Math.max(...scores);
-    const playerWon=scores[0]===maxScore;
-    document.getElementById('res-winner').textContent=playerWon?'🏆 VICTORY':'GAME OVER';
-    document.getElementById('res-winner').style.color=playerWon?'#00f5ff':'#ff2d6b';
-    document.getElementById('res-sub').textContent=`Final score: ${scores[0]}-${Math.max(...scores.slice(1))}`;
+  document.getElementById('res-eyebrow').textContent=playerWon?'▸ Cycle Survived':'▸ Derezzed';
+
+  if(playerWon&&finalLevel){
+    document.getElementById('res-winner').textContent='🏆 GRID MASTER';
+    document.getElementById('res-winner').style.color='#00f5ff';
+    document.getElementById('res-sub').textContent='ARES has been defeated. You are free.';
     document.getElementById('res-btn').textContent='Play Again';
-    document.getElementById('res-btn').onclick=startMatch;
+    document.getElementById('res-btn').onclick=startGame;
+  } else if(playerWon){
+    document.getElementById('res-winner').textContent='Level Clear';
+    document.getElementById('res-winner').style.color='#00f5ff';
+    document.getElementById('res-sub').textContent=`Level ${lvl.num} complete · ${LEVELS[currentLevel+1].name} awaits`;
+    document.getElementById('res-btn').textContent='Next Level';
+    document.getElementById('res-btn').onclick=advanceLevel;
   } else {
-    document.getElementById('res-winner').textContent=winner?(winner.ai?`${winner.name} Wins`:'You Win'):'Draw';
-    document.getElementById('res-winner').style.color=winner?winner.color:'#fff';
-    document.getElementById('res-sub').textContent=`Round ${round} of ${totalRounds} · Score: ${scores[0]}-${Math.max(...scores.slice(1))}`;
-    document.getElementById('res-btn').textContent='Next Round';
-    document.getElementById('res-btn').onclick=nextRound;
+    document.getElementById('res-winner').textContent=winner?`${winner.name} Wins`:'DEREZZED';
+    document.getElementById('res-winner').style.color=winner?winner.color:'#ff2d6b';
+    document.getElementById('res-sub').textContent=`Level ${lvl.num} — ${lvl.name} · Try again`;
+    document.getElementById('res-btn').textContent='Retry Level';
+    document.getElementById('res-btn').onclick=retryLevel;
   }
   el.classList.add('show');
   updateHUD();
 }
 
+// ── HUD ────────────────────────────────────────────────────────────────────
 function updateHUD(){
-  const hudEl=document.getElementById('riders-hud');
-  hudEl.innerHTML=cycles.map((c,i)=>`
-    <div class="rider-dot" style="border-color:${c.color}22;opacity:${c.alive||!gameRunning?1:.4}">
+  document.getElementById('riders-hud').innerHTML=cycles.map(c=>`
+    <div class="rider-dot" style="border-color:${c.color}33;opacity:${c.alive||!gameRunning?1:.35}">
       <div class="rd" style="background:${c.color};box-shadow:0 0 6px ${c.color}"></div>
       <span style="color:${c.color};font-size:10px">${c.name}</span>
-      <span class="rscore" style="color:${c.color}">${scores[i]}</span>
     </div>
   `).join('');
-  document.getElementById('round-val').textContent=`${round} / ${totalRounds}`;
+  document.getElementById('level-val').textContent=`${currentLevel+1} / 5`;
 }
 
 // ── DRAW ───────────────────────────────────────────────────────────────────
+let gridPulsePhase=0;
+function drawGrid(){
+  ctx.fillStyle='#020208';ctx.fillRect(0,0,W,H);
+  const gs=CELL*2;
+  ctx.save();
+  // level 5: slightly reddish grid
+  const gridColor=currentLevel===4?'255,60,0':'0,245,255';
+  ctx.globalAlpha=.055+Math.sin(gridPulsePhase)*.012;
+  ctx.strokeStyle=`rgb(${gridColor})`;ctx.lineWidth=.7;
+  for(let y=0;y<H+gs;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  for(let x=0;x<W+gs;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  ctx.restore();
+  const bw=4;
+  ctx.strokeStyle=currentLevel===4?'rgba(255,100,0,.7)':'rgba(0,245,255,.5)';
+  ctx.lineWidth=bw;
+  ctx.shadowColor=currentLevel===4?'#ff6a00':'#00f5ff';
+  ctx.shadowBlur=14;
+  ctx.strokeRect(bw/2,bw/2,W-bw,H-bw);
+  ctx.shadowBlur=0;
+}
+
 function drawCycles(){
   for(const c of cycles){
-    // trail
     if(c.trail.length>1){
-      ctx.shadowColor=c.color;ctx.shadowBlur=8;
-      ctx.strokeStyle=c.color+'cc';ctx.lineWidth=CELL*.55;
-      ctx.lineCap='square';
-      ctx.beginPath();
-      ctx.moveTo(c.trail[0].x,c.trail[0].y);
+      ctx.shadowColor=c.color;ctx.shadowBlur=9;
+      ctx.strokeStyle=c.color+'cc';ctx.lineWidth=CELL*.55;ctx.lineCap='square';
+      ctx.beginPath();ctx.moveTo(c.trail[0].x,c.trail[0].y);
       for(let i=1;i<c.trail.length;i++) ctx.lineTo(c.trail[i].x,c.trail[i].y);
       ctx.stroke();
-      // inner bright line
-      ctx.strokeStyle=c.color;ctx.lineWidth=CELL*.2;ctx.shadowBlur=4;
-      ctx.beginPath();
-      ctx.moveTo(c.trail[0].x,c.trail[0].y);
+      ctx.strokeStyle=c.color;ctx.lineWidth=CELL*.18;ctx.shadowBlur=4;
+      ctx.beginPath();ctx.moveTo(c.trail[0].x,c.trail[0].y);
       for(let i=1;i<c.trail.length;i++) ctx.lineTo(c.trail[i].x,c.trail[i].y);
       ctx.stroke();
       ctx.shadowBlur=0;ctx.lineCap='butt';
     }
-
     if(!c.alive){
-      // derez particles
       c.derezParticles=c.derezParticles.filter(p=>{
-        p.x+=p.vx*.06;p.y+=p.vy*.06;p.life-=.025;p.vx*=.96;p.vy*=.96;
+        p.x+=p.vx*.055;p.y+=p.vy*.055;p.life-=.022;p.vx*=.96;p.vy*=.96;
         if(p.life<=0) return false;
         ctx.globalAlpha=p.life;
-        ctx.fillStyle=c.color;
-        ctx.shadowColor=c.color;ctx.shadowBlur=4;
+        ctx.fillStyle=c.color;ctx.shadowColor=c.color;ctx.shadowBlur=5;
         ctx.fillRect(p.x-p.r/2,p.y-p.r/2,p.r,p.r);
         ctx.shadowBlur=0;
         return true;
@@ -373,127 +437,152 @@ function drawCycles(){
       ctx.globalAlpha=1;
       continue;
     }
-
-    // cycle head
+    // bike head
     ctx.save();
-    ctx.translate(c.x,c.y);
-    ctx.rotate(Math.atan2(c.dy,c.dx));
-
-    const sz=CELL*.9;
-    ctx.shadowColor=c.color;ctx.shadowBlur=20;
-    ctx.fillStyle=c.color+'33';
-    ctx.beginPath();ctx.ellipse(0,0,sz*1.4,sz*.7,0,0,Math.PI*2);ctx.fill();
-
-    // bike body
+    ctx.translate(c.x,c.y);ctx.rotate(Math.atan2(c.dy,c.dx));
+    const sz=CELL*.88;
+    ctx.shadowColor=c.color;ctx.shadowBlur=22;
+    ctx.fillStyle=c.color+'28';
+    ctx.beginPath();ctx.ellipse(0,0,sz*1.5,sz*.7,0,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#000';
     ctx.beginPath();ctx.roundRect(-sz*.6,-sz*.35,sz*1.2,sz*.7,sz*.15);ctx.fill();
     ctx.strokeStyle=c.color;ctx.lineWidth=2;ctx.stroke();
-
-    // headlight
-    ctx.fillStyle=c.color;ctx.shadowBlur=12;
-    ctx.beginPath();ctx.ellipse(sz*.5,0,sz*.2,sz*.15,0,0,Math.PI*2);ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.restore();
+    ctx.fillStyle=c.color;ctx.shadowBlur=14;
+    ctx.beginPath();ctx.ellipse(sz*.5,0,sz*.22,sz*.15,0,0,Math.PI*2);ctx.fill();
+    // ARES has extra glow ring
+    if(c.name==='ARES'){
+      ctx.strokeStyle='#ff6a0088';ctx.lineWidth=1.5;ctx.shadowBlur=18;
+      ctx.beginPath();ctx.ellipse(0,0,sz*1.8,sz*.9,0,0,Math.PI*2);ctx.stroke();
+    }
+    ctx.shadowBlur=0;ctx.restore();
   }
 }
 
 // ── CONTROLS ──────────────────────────────────────────────────────────────
-const keys={};
-window.addEventListener('keydown',e=>{keys[e.code]=true;e.preventDefault&&handleKey(e.code);},{passive:false});
-window.addEventListener('keyup',e=>{delete keys[e.code];});
-
+window.addEventListener('keydown',e=>{handleKey(e.code);e.preventDefault&&e.preventDefault();},{passive:false});
 function handleKey(code){
-  const p=cycles[0];
-  if(!p||!p.alive||!gameRunning) return;
+  const p=cycles[0];if(!p||!p.alive||!gameRunning) return;
   if((code==='ArrowUp'||code==='KeyW')&&p.dy===0){p.dx=0;p.dy=-1;}
   if((code==='ArrowDown'||code==='KeyS')&&p.dy===0){p.dx=0;p.dy=1;}
   if((code==='ArrowLeft'||code==='KeyA')&&p.dx===0){p.dx=-1;p.dy=0;}
   if((code==='ArrowRight'||code==='KeyD')&&p.dx===0){p.dx=1;p.dy=0;}
 }
-
-// touch swipe
 let tx0=0,ty0=0;
-window.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;},{passive:true});
-window.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-tx0;
-  const dy=e.changedTouches[0].clientY-ty0;
-  if(Math.abs(dx)<20&&Math.abs(dy)<20) return;
-  const p=cycles[0];
-  if(!p||!p.alive||!gameRunning) return;
-  if(Math.abs(dx)>Math.abs(dy)){
-    if(dx>0&&p.dx===0){p.dx=1;p.dy=0;}
-    if(dx<0&&p.dx===0){p.dx=-1;p.dy=0;}
+addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;},{passive:true});
+addEventListener('touchend',e=>{
+  const ddx=e.changedTouches[0].clientX-tx0,ddy=e.changedTouches[0].clientY-ty0;
+  if(Math.abs(ddx)<18&&Math.abs(ddy)<18) return;
+  const p=cycles[0];if(!p||!p.alive||!gameRunning) return;
+  if(Math.abs(ddx)>Math.abs(ddy)){
+    if(ddx>0&&p.dx===0){p.dx=1;p.dy=0;} if(ddx<0&&p.dx===0){p.dx=-1;p.dy=0;}
   } else {
-    if(dy>0&&p.dy===0){p.dx=0;p.dy=1;}
-    if(dy<0&&p.dy===0){p.dx=0;p.dy=-1;}
+    if(ddy>0&&p.dy===0){p.dx=0;p.dy=1;} if(ddy<0&&p.dy===0){p.dx=0;p.dy=-1;}
   }
 },{passive:true});
 
-// ── MAIN LOOP ──────────────────────────────────────────────────────────────
-let last=0,accum=0;
-const STEP=1000/20; // 20 moves/sec
-
-function loop(ts){
-  requestAnimationFrame(loop);
-  const dt=Math.min(ts-last,100);last=ts;
-  gridPulse+=dt*.001;
-
-  drawGrid();
-  drawCycles();
-
-  if(gameRunning){
-    accum+=dt;
-    while(accum>=STEP){
-      accum-=STEP;
-      moveCycles();
-    }
-    checkCollisions();
-    updateHUD();
-  }
-}
-
+// ── MOVE ───────────────────────────────────────────────────────────────────
 function moveCycles(){
+  const lvl=LEVELS[currentLevel];
   for(const c of cycles){
     if(!c.alive) continue;
-    if(c.ai) aiTurn(c);
-    c.x+=c.dx*CELL;c.y+=c.dy*CELL;
+    if(c.ai){
+      const cfg=lvl.opponents.find(o=>o.name===c.name)||lvl.opponents[0];
+      aiTurn(c,cfg);
+    }
+    c.x+=c.dx*CELL; c.y+=c.dy*CELL;
     c.trail.push({x:c.x,y:c.y});
   }
 }
 
-// ── COUNTDOWN + ROUND ──────────────────────────────────────────────────────
+// ── INIT LEVEL ─────────────────────────────────────────────────────────────
+function initCycles(){
+  const lvl=LEVELS[currentLevel];
+  stepMs=lvl.stepMs;
+  const player={...PLAYER_CFG};
+  const ps=player.startFn();
+  cycles=[{
+    name:'You',color:'#00f5ff',ai:false,
+    x:ps.x,y:ps.y,dx:ps.dx,dy:ps.dy,
+    trail:[{x:ps.x,y:ps.y}],alive:true,derezParticles:[],
+  }];
+  for(const cfg of lvl.opponents){
+    const s=cfg.startFn();
+    cycles.push({
+      name:cfg.name,color:cfg.color,ai:true,
+      x:s.x,y:s.y,dx:s.dx,dy:s.dy,
+      trail:[{x:s.x,y:s.y}],alive:true,derezParticles:[],
+    });
+  }
+}
+
+// ── COUNTDOWN ──────────────────────────────────────────────────────────────
 function countdown(n,then){
-  const el=document.getElementById('countdown');
-  const numEl=document.getElementById('cdnum');
+  const el=document.getElementById('countdown'),numEl=document.getElementById('cdnum');
   if(n<=0){el.classList.remove('show');then();return;}
   el.classList.add('show');
   numEl.textContent=n>1?n:'GO!';
   numEl.style.color=n>1?'#00f5ff':'#ffcc00';
-  beep(n>1?440:880,.15,.3);
-  // re-trigger animation
-  numEl.style.animation='none';
-  numEl.offsetHeight;
-  numEl.style.animation='';
+  beep(n>1?440:880,.15,.25);
+  numEl.style.animation='none';numEl.offsetHeight;numEl.style.animation='';
   setTimeout(()=>countdown(n-1,then),900);
 }
 
-function nextRound(){
-  document.getElementById('result').classList.remove('show');
-  round++;
-  initCycles();
-  updateHUD();
-  accum=0;
-  countdown(3,()=>{gameRunning=true;});
+// ── LEVEL INTRO SCREEN ─────────────────────────────────────────────────────
+function showLevelIntro(then){
+  const lvl=LEVELS[currentLevel];
+  const el=document.getElementById('level-intro');
+  document.getElementById('li-num').textContent=`LEVEL ${lvl.num}`;
+  document.getElementById('li-name').textContent=lvl.name;
+  document.getElementById('li-name').style.color=lvl.color;
+  document.getElementById('li-desc').textContent=lvl.desc;
+
+  const vsEl=document.getElementById('li-vs');
+  vsEl.innerHTML='<div class="li-rider"><div class="li-bike" style="color:#00f5ff">🏍</div><div class="li-rname" style="color:#00f5ff">You</div></div>'
+    +lvl.opponents.map(o=>`<div class="li-rider"><div class="li-bike" style="color:${o.color}">🏍</div><div class="li-rname" style="color:${o.color}">${o.name}</div></div>`).join('')
+
+  el.classList.add('show');
+  setTimeout(()=>{el.classList.remove('show');setTimeout(then,400);},1800);
 }
 
-function startMatch(){
-  scores=[0,0,0,0];round=1;
-  document.getElementById('result').classList.remove('show');
+// ── FLOW ───────────────────────────────────────────────────────────────────
+function startGame(){
+  currentLevel=0;
   document.getElementById('overlay').classList.add('gone');
+  document.getElementById('result').classList.remove('show');
+  launchLevel();
+}
+
+function launchLevel(){
   initCycles();
   updateHUD();
   accum=0;
-  countdown(3,()=>{gameRunning=true;ensureAudio();});
+  showLevelIntro(()=>{countdown(3,()=>{gameRunning=true;ensureAudio();});});
+}
+
+function advanceLevel(){
+  document.getElementById('result').classList.remove('show');
+  currentLevel=Math.min(currentLevel+1,4);
+  launchLevel();
+}
+
+function retryLevel(){
+  document.getElementById('result').classList.remove('show');
+  launchLevel();
+}
+
+// ── MAIN LOOP ──────────────────────────────────────────────────────────────
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min(ts-last,100);last=ts;
+  gridPulsePhase+=dt*.001;
+  drawGrid();
+  drawCycles();
+  if(gameRunning){
+    accum+=dt;
+    while(accum>=stepMs){accum-=stepMs;moveCycles();}
+    checkCollisions();
+    updateHUD();
+  }
 }
 
 requestAnimationFrame(loop);

@@ -167,15 +167,16 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 }
 #bubble{
   position:relative;
-  width:min(70vw,860px);
-  min-height:min(66vh,600px);
-  background:rgba(255,255,255,.9);
+  width:min(88vw,860px);
+  max-height:85vh;
+  overflow-y:auto;
+  background:rgba(255,255,255,.92);
   backdrop-filter:blur(40px) saturate(180%);
   -webkit-backdrop-filter:blur(40px) saturate(180%);
   border:1.5px solid rgba(255,255,255,.95);
   border-radius:50%;
   box-shadow:0 24px 80px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,1);
-  padding:52px 60px;
+  padding:clamp(24px,5vw,52px) clamp(22px,5vw,60px);
   display:flex;flex-direction:column;gap:16px;
   transform:scale(0);opacity:0;
   transition:
@@ -217,8 +218,9 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   background:rgba(0,0,0,.06);color:var(--text2);
   border:1px solid rgba(0,0,0,.07);
 }
-.stack-pill{cursor:pointer;transition:transform .18s,box-shadow .18s}
+.stack-pill{cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent}
 .stack-pill:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
+@media(max-width:700px){.stack-pill{padding:14px 16px}.stack-pill-icon{font-size:22px}.stack-pill-label{font-size:13px}}
 </style>
 </head>
 <body>
@@ -302,12 +304,24 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 
       <a class="proj-card" href="/games" style="--card-accent:#0ea5e9">
         <div class="proj-card-icon">🕹</div>
-        <div class="proj-card-tag">Game Studio · 3 Titles · Browser</div>
+        <div class="proj-card-tag">Game Studio · 5 Titles · Browser</div>
         <div class="proj-card-name">VOID CELL</div>
-        <div class="proj-card-desc">Three skill-based browser games. Nexus Breach, Grid Fall, Sector Zero. 5k+ players. 40+ countries. Pure canvas.</div>
+        <div class="proj-card-desc">Five browser games. Nexus Breach, KART Light Cycles, BLOOM Garden, NEXUS BUILD, Sector Zero. Pure canvas. No install.</div>
         <div class="proj-card-footer">
           <span class="proj-card-url">architect-dna.ch/games</span>
-          <span class="proj-card-status s-live">3 Live</span>
+          <span class="proj-card-status s-live">5 Live</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="https://bloom.architect-dna.ch" target="_blank" style="--card-accent:#10b981">
+        <div class="proj-card-icon">🌸</div>
+        <div class="proj-card-tag">Garden Game · Social · iOS Soon</div>
+        <div class="proj-card-name">BLOOM</div>
+        <div class="proj-card-desc">Plant, grow, harvest, cook and share with neighbors. Hay Day meets pixel garden. Real-time crop timers, recipes, gift codes.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">bloom.architect-dna.ch</span>
+          <span class="proj-card-status s-new">New</span>
           <span class="proj-card-arrow">↗</span>
         </div>
       </a>
@@ -345,6 +359,7 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
     <button class="dot" onclick="goTo(1)"></button>
     <button class="dot" onclick="goTo(2)"></button>
     <button class="dot" onclick="goTo(3)"></button>
+    <button class="dot" onclick="goTo(4)"></button>
   </div>
 
   <div class="expand-wrap">
