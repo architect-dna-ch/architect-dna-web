@@ -151,6 +151,82 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   .proj-card{width:280px}
 }
 
+/* ── VOID CELL THEME ──────────────────────────────────────── */
+body.vc-mode{
+  --bg:#060810;--bg2:#0c0f1a;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.16);
+  --text:#f0f0f8;--text2:rgba(240,240,248,.55);--text3:rgba(240,240,248,.28);
+  --red:#ff6b00;
+}
+body.vc-mode header{background:rgba(6,8,16,.93);border-color:rgba(255,255,255,.08)}
+body.vc-mode .logo-mark{border-color:#00e87a}
+body.vc-mode .logo-mark svg{stroke:#00e87a}
+body.vc-mode .nav-arrow{background:#0c0f1a;border-color:rgba(255,255,255,.14);color:var(--text)}
+body.vc-mode .nav-arrow:hover{background:#ff6b00;border-color:#ff6b00;color:#000}
+body.vc-mode .btn-dark{background:#ff6b00;color:#000;box-shadow:0 0 28px rgba(255,107,0,.3)}
+body.vc-mode .btn-dark:hover{background:#ff8c33}
+body.vc-mode .btn-ghost{border-color:rgba(255,255,255,.16);color:var(--text2)}
+body.vc-mode .btn-ghost:hover{background:rgba(255,255,255,.06);color:var(--text)}
+body.vc-mode .proj-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+body.vc-mode .proj-card.active{box-shadow:0 8px 40px rgba(0,0,0,.5)}
+body.vc-mode .proj-card:nth-child(2){border-color:rgba(255,107,0,.4);background:rgba(255,107,0,.05)}
+body.vc-mode .proj-card:nth-child(2)::before{background:linear-gradient(90deg,#ff6b00,#00e87a)}
+body.vc-mode .proj-card:nth-child(2).active{box-shadow:0 8px 60px rgba(255,107,0,.22)}
+body.vc-mode .dot{background:rgba(255,255,255,.14)}
+body.vc-mode .dot.active{background:#ff6b00;width:20px}
+body.vc-mode #btn-expand{border-color:rgba(255,255,255,.13);color:var(--text2)}
+body.vc-mode #btn-expand:hover{background:rgba(255,255,255,.06);color:var(--text)}
+body.vc-mode .chip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--text2)}
+body.vc-mode .stack-pill{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+body.vc-mode .mini-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+body.vc-mode .mini-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.35)}
+body.vc-mode .privacy-box{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+body.vc-mode .section-label::after{background:rgba(255,255,255,.09)}
+body.vc-mode footer{border-color:rgba(255,255,255,.07)}
+body.vc-mode #privacy{border-color:rgba(255,255,255,.07)}
+body.vc-mode #bubble{background:rgba(6,8,16,.96);border-color:rgba(255,255,255,.1)}
+body.vc-mode #bubble-overlay.open{background:rgba(0,0,0,.55)}
+body.vc-mode #bubble-close{background:rgba(255,255,255,.08);color:var(--text2)}
+body.vc-mode #bubble-close:hover{background:rgba(255,255,255,.14);color:var(--text)}
+body.vc-mode .b-tag{background:rgba(255,255,255,.06);color:var(--text2);border-color:rgba(255,255,255,.1)}
+body.vc-mode .header-nav a{color:var(--text3)}
+body.vc-mode .header-nav a:hover{background:rgba(255,255,255,.06);color:var(--text)}
+body.vc-mode .header-nav .nav-cta{background:#ff6b00;color:#000}
+body.vc-mode .header-nav .nav-cta:hover{background:#ff8c33}
+body.vc-mode #email-toast{background:#0c0f1a;border:1px solid rgba(255,255,255,.1)}
+
+/* VC hero content coloring */
+.vc-void{color:#ff6b00}
+.vc-cell{color:#00e87a}
+
+/* ── RIPPLE OVERLAY ── */
+#ripple-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;will-change:clip-path,opacity}
+
+/* ── VC TOGGLE BUTTON ── */
+#vc-toggle{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  border:1.5px solid rgba(0,0,0,.18);background:transparent;
+  color:var(--text2);cursor:pointer;transition:border-color .18s,color .18s,background .18s;
+  font-family:var(--mono);white-space:nowrap;margin-left:8px;
+}
+#vc-toggle:hover{border-color:var(--text);color:var(--text);background:var(--bg2)}
+body.vc-mode #vc-toggle{border-color:rgba(0,232,122,.4);color:#00e87a;background:rgba(0,232,122,.07)}
+body.vc-mode #vc-toggle:hover{border-color:#00e87a;background:rgba(0,232,122,.14)}
+
+/* VC studio badge (appears next to logo in vc-mode) */
+.vc-badge{
+  font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  font-family:var(--mono);padding:2px 8px;
+  border:1px solid rgba(255,107,0,.4);border-radius:4px;
+  background:rgba(255,107,0,.08);color:#ff6b00;
+  opacity:0;transform:translateX(-4px);
+  transition:opacity .3s,transform .3s;pointer-events:none;
+  flex-shrink:0;
+}
+body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
+
 /* ── TECH BUBBLE ── */
 #bubble-overlay{
   position:fixed;inset:0;z-index:600;
@@ -218,12 +294,13 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   background:rgba(0,0,0,.06);color:var(--text2);
   border:1px solid rgba(0,0,0,.07);
 }
-.stack-pill{cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent}
+.stack-pill{cursor:pointer;transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .stack-pill:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09)}
 @media(max-width:700px){.stack-pill{padding:14px 16px}.stack-pill-icon{font-size:22px}.stack-pill-label{font-size:13px}}
 </style>
 </head>
 <body>
+<div id="ripple-overlay"></div>
 <div id="bubble-overlay" aria-hidden="true">
   <div id="bubble">
     <button id="bubble-close" aria-label="Close">×</button>
@@ -246,12 +323,17 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
       </div>
       <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
     </a>
+    <span class="vc-badge">VOID CELL STUDIO</span>
     <nav class="header-nav">
       <a href="#projects">Work</a>
       <a href="/games">Games</a>
       <a href="#about">About</a>
       <a href="#" onclick="copyEmail(event)" class="nav-cta">Contact →</a>
     </nav>
+    <button id="vc-toggle" onclick="switchTheme(event)" title="Switch identity">
+      <span id="vc-toggle-icon">🕹</span>
+      <span id="vc-toggle-label">VOID CELL</span>
+    </button>
   </div>
 </header>
 
@@ -259,18 +341,18 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 
 <!-- ── HERO ── -->
 <div class="hero">
-  <div class="hero-eyebrow">Software Studio · Switzerland</div>
-  <h1>Architect<br><em>DNA</em></h1>
-  <p class="hero-line">Privacy-first apps for web, iOS & Android. Free tier on everything. No accounts where not needed.</p>
-  <div class="hero-chips">
+  <div class="hero-eyebrow" id="hero-eyebrow">Software Studio · Switzerland</div>
+  <h1 id="hero-h1">Architect<br><em>DNA</em></h1>
+  <p class="hero-line" id="hero-line">Privacy-first apps for web, iOS & Android. Free tier on everything. No accounts where not needed.</p>
+  <div class="hero-chips" id="hero-chips">
     <span class="chip">🇨🇭 Bern, Switzerland</span>
     <span class="chip">WebAuthn · Passkeys</span>
     <span class="chip">iOS · Android · Web</span>
     <span class="chip">Zero tracking</span>
   </div>
-  <div class="hero-cta">
-    <a class="btn btn-dark" href="#projects">See our work</a>
-    <a class="btn btn-ghost" href="#" onclick="copyEmail(event)">Contact</a>
+  <div class="hero-cta" id="hero-cta">
+    <a class="btn btn-dark" href="#projects" id="hero-btn-primary">See our work</a>
+    <a class="btn btn-ghost" href="#" onclick="copyEmail(event)" id="hero-btn-secondary">Contact</a>
   </div>
 </div>
 
@@ -278,10 +360,10 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 <section id="projects">
   <div class="projects-head">
     <div>
-      <div class="section-label">Work</div>
-      <h2>What we ship</h2>
+      <div class="section-label" id="proj-label">Work</div>
+      <h2 id="proj-h2">What we ship</h2>
     </div>
-    <p>← Move mouse or use arrows →</p>
+    <p id="proj-hint">← Move mouse or use arrows →</p>
   </div>
 
   <div class="scroll-zone">
@@ -290,19 +372,19 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   <div class="scroll-outer" id="scroll-outer">
     <div class="scroll-track" id="scroll-track">
 
-      <a class="proj-card" href="https://freq.architect-dna.ch" target="_blank" style="--card-accent:#00c8b4">
+      <a class="proj-card" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
         <div class="proj-card-icon">🎧</div>
         <div class="proj-card-tag">Focus · Ambient · iOS · Web</div>
         <div class="proj-card-name">VOID FREQ</div>
         <div class="proj-card-desc">Live ambient sound for deep work. Brown noise, binaural beats, lo-fi. No streaming. Brain.fm — but free.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">freq.architect-dna.ch</span>
+          <span class="proj-card-url">architect-dna.ch/void-freq</span>
           <span class="proj-card-status s-new">iOS in Review</span>
           <span class="proj-card-arrow">↗</span>
         </div>
       </a>
 
-      <a class="proj-card" href="/games" style="--card-accent:#0ea5e9">
+      <a class="proj-card" href="/games" target="_blank" style="--card-accent:#0ea5e9">
         <div class="proj-card-icon">🕹</div>
         <div class="proj-card-tag">Game Studio · 5 Titles · Browser</div>
         <div class="proj-card-name">VOID CELL</div>
@@ -314,37 +396,73 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
         </div>
       </a>
 
-      <a class="proj-card" href="https://bloom.architect-dna.ch" target="_blank" style="--card-accent:#10b981">
+      <a class="proj-card" href="/bloom" target="_blank" style="--card-accent:#10b981">
         <div class="proj-card-icon">🌸</div>
         <div class="proj-card-tag">Garden Game · Social · iOS Soon</div>
         <div class="proj-card-name">BLOOM</div>
         <div class="proj-card-desc">Plant, grow, harvest, cook and share with neighbors. Hay Day meets pixel garden. Real-time crop timers, recipes, gift codes.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">bloom.architect-dna.ch</span>
+          <span class="proj-card-url">architect-dna.ch/bloom</span>
           <span class="proj-card-status s-new">New</span>
           <span class="proj-card-arrow">↗</span>
         </div>
       </a>
 
-      <a class="proj-card" href="https://konnekt.architect-dna.ch" target="_blank" style="--card-accent:#10b981">
+      <a class="proj-card" href="/konnekt" target="_blank" style="--card-accent:#f59e0b">
         <div class="proj-card-icon">🔗</div>
         <div class="proj-card-tag">Networking · NFC · QR</div>
         <div class="proj-card-name">Konnekt</div>
         <div class="proj-card-desc">Share your contact with one tap. NFC & QR. Profile lives in your browser. No app needed on the other end.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">konnekt.architect-dna.ch</span>
+          <span class="proj-card-url">architect-dna.ch/konnekt</span>
           <span class="proj-card-status s-live">Live</span>
           <span class="proj-card-arrow">↗</span>
         </div>
       </a>
 
-      <a class="proj-card" href="https://noise.architect-dna.ch" target="_blank" style="--card-accent:#7c6cfa">
+      <a class="proj-card" href="/noise" target="_blank" style="--card-accent:#7c6cfa">
         <div class="proj-card-icon">🎛</div>
         <div class="proj-card-tag">Focus · Ambient · Pomodoro · Web</div>
         <div class="proj-card-name">Noise</div>
         <div class="proj-card-desc">Layer ambient soundscapes. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">noise.architect-dna.ch</span>
+          <span class="proj-card-url">architect-dna.ch/noise</span>
+          <span class="proj-card-status s-new">New</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="/clyedo" target="_blank" style="--card-accent:#f5a623">
+        <div class="proj-card-icon">😂</div>
+        <div class="proj-card-tag">Comedy · Curated · No Algorithm</div>
+        <div class="proj-card-name">Clyedo</div>
+        <div class="proj-card-desc">Quality comedy, zero distraction. Curated standup, sketches, classics — no YouTube rabbit holes, no recommendations, no ads.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">architect-dna.ch/clyedo</span>
+          <span class="proj-card-status s-new">New</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="/rida" target="_blank" style="--card-accent:#22c55e">
+        <div class="proj-card-icon">🕌</div>
+        <div class="proj-card-tag">Muslim Lifestyle · PWA · Offline</div>
+        <div class="proj-card-name">Rida <span style="font-weight:400;font-size:16px;color:var(--text3)">رِضا</span></div>
+        <div class="proj-card-desc">Salah planner, Dhikr counter, Hifz tracker, Halal nutrition — your complete Muslim companion. 100% offline, no account.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">rida.architect-dna.ch</span>
+          <span class="proj-card-status s-new">New</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" href="/calm" target="_blank" style="--card-accent:#6366f1">
+        <div class="proj-card-icon">🧠</div>
+        <div class="proj-card-tag">Biology · Regulation · Mental Health</div>
+        <div class="proj-card-name">Calm</div>
+        <div class="proj-card-desc">Biology-first emotional regulation. Physiological sigh, dive reflex, cognitive defusion — cortisol down, amygdala calm, thoughts clear.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">calm.architect-dna.ch</span>
           <span class="proj-card-status s-new">New</span>
           <span class="proj-card-arrow">↗</span>
         </div>
@@ -360,6 +478,9 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
     <button class="dot" onclick="goTo(2)"></button>
     <button class="dot" onclick="goTo(3)"></button>
     <button class="dot" onclick="goTo(4)"></button>
+    <button class="dot" onclick="goTo(5)"></button>
+    <button class="dot" onclick="goTo(6)"></button>
+    <button class="dot" onclick="goTo(7)"></button>
   </div>
 
   <div class="expand-wrap">
@@ -367,6 +488,11 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   </div>
 
   <div class="extra-grid" id="extra-grid">
+    <a class="mini-card" href="/fly" target="_blank" style="border-color:rgba(30,100,255,.25)">
+      <div class="mini-name">City from Above 🌆</div>
+      <div class="mini-desc">Real-data 3D bird flight over NYC & Sydney. 44+ landmark buildings, bloom rendering, live HUD.</div>
+      <div class="mini-foot"><span>architect-dna.ch/fly</span><span class="proj-card-status s-new">New</span></div>
+    </a>
     <a class="mini-card" href="https://vault.architect-dna.ch" target="_blank">
       <div class="mini-name">Prompt Vault</div>
       <div class="mini-desc">Precision AI prompt templates. Fill, copy, launch.</div>
@@ -402,19 +528,19 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 
 <!-- ── ABOUT ── -->
 <section id="about">
-  <div class="section-label">About</div>
+  <div class="section-label" id="about-label">About</div>
   <div class="about-inner">
     <div>
-      <p class="about-text">Independent. Privacy-first. Built in Switzerland.</p>
-      <p class="about-sub">We build tools at the intersection of AI, law, and human expression. Everything runs on-device or in the browser — no tracking, no compromise.</p>
+      <p class="about-text" id="about-text">Independent. Privacy-first. Built in Switzerland.</p>
+      <p class="about-sub" id="about-sub">We build tools at the intersection of AI, law, and human expression. Everything runs on-device or in the browser — no tracking, no compromise.</p>
     </div>
-    <div class="stack-icons">
-      <div class="stack-pill"><div class="stack-pill-icon">🔐</div><div><div class="stack-pill-label">WebAuthn</div><div class="stack-pill-sub">Passkeys · PRF</div></div></div>
-      <div class="stack-pill"><div class="stack-pill-icon">🤖</div><div><div class="stack-pill-label">Claude AI</div><div class="stack-pill-sub">Anthropic</div></div></div>
-      <div class="stack-pill"><div class="stack-pill-icon">▲</div><div><div class="stack-pill-label">Vercel</div><div class="stack-pill-sub">Edge deploy</div></div></div>
-      <div class="stack-pill"><div class="stack-pill-icon">📱</div><div><div class="stack-pill-label">iOS · Android</div><div class="stack-pill-sub">App Store · Play</div></div></div>
-      <div class="stack-pill"><div class="stack-pill-icon">⚡</div><div><div class="stack-pill-label">Python · Flask</div><div class="stack-pill-sub">FastAPI · SQLite</div></div></div>
-      <div class="stack-pill"><div class="stack-pill-icon">🗺</div><div><div class="stack-pill-label">Leaflet · OSM</div><div class="stack-pill-sub">GPS · Canvas</div></div></div>
+    <div class="stack-icons" id="stack-icons">
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🔐</div><div><div class="stack-pill-label">WebAuthn</div><div class="stack-pill-sub">Passkeys · PRF</div></div></div>
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🤖</div><div><div class="stack-pill-label">Claude AI</div><div class="stack-pill-sub">Anthropic</div></div></div>
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">▲</div><div><div class="stack-pill-label">Vercel</div><div class="stack-pill-sub">Edge deploy</div></div></div>
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">📱</div><div><div class="stack-pill-label">iOS · Android</div><div class="stack-pill-sub">App Store · Play</div></div></div>
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">⚡</div><div><div class="stack-pill-label">Python · Flask</div><div class="stack-pill-sub">FastAPI · SQLite</div></div></div>
+      <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🗺</div><div><div class="stack-pill-label">Leaflet · OSM</div><div class="stack-pill-sub">GPS · Canvas</div></div></div>
     </div>
   </div>
 </section>
@@ -517,18 +643,14 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-// mouse follow — zone defined by actual card scroll span, centered in viewport
+// mouse follow — full viewport width maps linearly to full card range
 outer.addEventListener('mouseenter', () => { hovering = true; });
 outer.addEventListener('mouseleave', () => { hovering = false; snapNearest(); });
 outer.addEventListener('mousemove', e => {
   const n = cards.length;
-  // The scroll range spans from cardCenter(0) to cardCenter(n-1).
-  // This range is always 680px (card widths + gaps) regardless of viewport size.
-  // Center that zone in the viewport so the mouse maps to where cards visually appear.
-  const span     = cardCenter(n - 1) - cardCenter(0);          // e.g. 680px
-  const zoneLeft = window.innerWidth / 2 - span / 2;
-  const ratio    = Math.max(0, Math.min(1, (e.clientX - zoneLeft) / span));
-  const pos = ratio * (n - 1);
+  const ratio = e.clientX / window.innerWidth;
+  // shift by -0.5 so each card owns exactly 1/n of the viewport
+  const pos = Math.max(0, Math.min(n - 1, ratio * n - 0.5));
   const lo  = Math.min(Math.floor(pos), n - 2);
   const t   = pos - lo;
   targetX   = cardCenter(lo) + t * (cardCenter(lo + 1) - cardCenter(lo));
@@ -626,6 +748,15 @@ function togglePrivacy(){
 }
 
 // ── Tech bubble ───────────────────────────────────────────────────────────────
+const VC_BUBBLE_DATA = [
+  {icon:'🎮',name:'Canvas 2D',sub:'Raw API · 60fps rendering',desc:'All five games render directly to an HTML5 Canvas element — no game engine, no framework. requestAnimationFrame drives the loop. Each game targets 60fps and runs in under 500KB total, including assets.',tags:['HTML5 Canvas','60fps','requestAnimationFrame','Zero-dep','Lightweight']},
+  {icon:'⚛️',name:'WebGL · Three.js',sub:'3D · Bloom · Post-Processing',desc:'City from Above and ARES Race use Three.js r161 over WebGL for real-time 3D rendering. UnrealBloomPass gives the neon glow effect. Building data comes from real open datasets — NYC Open Data and Australian Bureau of Statistics.',tags:['WebGL','Three.js','Bloom','GLSL','Real building data']},
+  {icon:'🔊',name:'Web Audio API',sub:'Procedural sound effects',desc:'Sound effects in Grid Fall, KART, and Sector Zero are generated procedurally via the Web Audio API — no audio files to load. Oscillators, filters, and gain envelopes create explosion booms, engine hums, and collision crunches at runtime.',tags:['WebAudio','Procedural','OscillatorNode','BiquadFilter','Zero assets']},
+  {icon:'🧮',name:'Grid Systems',sub:'Collision · Pathfinding',desc:'Grid Fall uses a full-width integer grid for piece collision and line-clear detection. KART uses a tile-based track system with waypoint pathfinding for AI opponents. All collision is AABB on integer grid coordinates — fast and deterministic.',tags:['AABB','Grid collision','Pathfinding','Deterministic','Integer math']},
+  {icon:'✨',name:'Particle Engine',sub:'Bloom · Trails · FX',desc:'A hand-written particle system handles explosions, Tron light trails, bloom halos, and BLOOM\'s flower growth animations. Each particle is a plain object updated per-frame — no allocations mid-loop, no GC pressure.',tags:['Particles','Object pooling','Bloom','Light trails','GC-free']},
+  {icon:'🚀',name:'Pure JavaScript',sub:'Zero frameworks · Zero build',desc:'Every game is a single HTML file with one script block. No npm, no bundler, no build step. Open in a browser and it runs. This keeps load times under 200ms on 3G and means the games work offline once cached.',tags:['Vanilla JS','No npm','No build','Offline','<200ms load']},
+];
+
 const BUBBLE_DATA = [
   {
     icon:'🔐', name:'WebAuthn', sub:'FIDO2 · PRF Extension · Passkeys',
@@ -665,7 +796,8 @@ let _bTimer = null;
 
 function openBubble(idx, originEl){
   clearTimeout(_bTimer);
-  const d = BUBBLE_DATA[idx];
+  const isVC = document.body.classList.contains('vc-mode');
+  const d = (isVC ? VC_BUBBLE_DATA : BUBBLE_DATA)[idx] || BUBBLE_DATA[idx];
   document.getElementById('bubble-icon').textContent = d.icon;
   document.getElementById('bubble-name').textContent = d.name;
   document.getElementById('bubble-sub').textContent  = d.sub;
@@ -690,10 +822,16 @@ function closeBubble(){
 const _isTouchDevice = () => window.matchMedia('(hover:none)').matches;
 
 document.querySelectorAll('.stack-pill').forEach((pill, i) => {
-  // desktop: hover opens
   pill.addEventListener('mouseenter', () => { if(!_isTouchDevice()) openBubble(i, pill); });
-  // mobile + desktop fallback: tap/click opens
   pill.addEventListener('click', e => { e.stopPropagation(); openBubble(i, pill); });
+  // iOS: touchend is more reliable than click on non-interactive divs
+  pill.addEventListener('touchend', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    openBubble(i, pill);
+  }, {passive: false});
+  // keyboard
+  pill.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openBubble(i, pill); }});
 });
 
 // Close: tap overlay, close button, or Escape
@@ -721,6 +859,134 @@ function copyEmail(e){
   copyEmail._timer = setTimeout(()=>{
     t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(12px)';
   }, 2200);
+}
+
+// ── VOID CELL Theme Switcher ──────────────────────────────────────────────────
+const VC_PILLS = `
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🎮</div><div><div class="stack-pill-label">Canvas 2D</div><div class="stack-pill-sub">Raw API · 60fps</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">⚛️</div><div><div class="stack-pill-label">WebGL · Three.js</div><div class="stack-pill-sub">3D · Bloom · Post-FX</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🔊</div><div><div class="stack-pill-label">Web Audio API</div><div class="stack-pill-sub">Procedural SFX</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🧮</div><div><div class="stack-pill-label">Grid Systems</div><div class="stack-pill-sub">Collision · Pathfind</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">✨</div><div><div class="stack-pill-label">Particle Engine</div><div class="stack-pill-sub">Bloom · Trails · FX</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🚀</div><div><div class="stack-pill-label">Pure JavaScript</div><div class="stack-pill-sub">Zero frameworks</div></div></div>
+`;
+const ADNA_PILLS = `
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🔐</div><div><div class="stack-pill-label">WebAuthn</div><div class="stack-pill-sub">Passkeys · PRF</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🤖</div><div><div class="stack-pill-label">Claude AI</div><div class="stack-pill-sub">Anthropic</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">▲</div><div><div class="stack-pill-label">Vercel</div><div class="stack-pill-sub">Edge deploy</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">📱</div><div><div class="stack-pill-label">iOS · Android</div><div class="stack-pill-sub">App Store · Play</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">⚡</div><div><div class="stack-pill-label">Python · Flask</div><div class="stack-pill-sub">FastAPI · SQLite</div></div></div>
+  <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🗺</div><div><div class="stack-pill-label">Leaflet · OSM</div><div class="stack-pill-sub">GPS · Canvas</div></div></div>
+`;
+
+const VC_CONTENT = {
+  eyebrow: 'Game Studio · 5 Titles · Browser',
+  h1: '<span class="vc-void">VOID</span><br><span class="vc-cell">CELL</span>',
+  line: 'Five browser games. Pure canvas. No install. Nexus Breach, Grid Fall, Sector Zero, KART, BLOOM.',
+  chips: ['🕹 5 Titles Live','Canvas Engine','No Install','Free Forever'],
+  btnPrimary: {text:'Enter Studio →', href:'/games'},
+  btnSecondary: {text:'Play Now ↗', href:'/games', blank:true},
+  projLabel: 'TITLES',
+  projH2: 'The Lineup',
+  projHint: '5 canvas games · all live · no install',
+  aboutLabel: 'ENGINE',
+  aboutText: 'Hand-rolled. Canvas-first. Zero frameworks.',
+  aboutSub: 'Six games built on raw Canvas 2D and WebGL — no Unity, no engines. Grid Fall processes 1000+ particles per frame. KART runs genuine friction physics with drift and momentum. Everything under 500KB. Play in your browser right now.',
+  pills: VC_PILLS,
+};
+const ADNA_CONTENT = {
+  eyebrow: 'Software Studio · Switzerland',
+  h1: 'Architect<br><em>DNA</em>',
+  line: 'Privacy-first apps for web, iOS & Android. Free tier on everything. No accounts where not needed.',
+  chips: ['🇨🇭 Bern, Switzerland','WebAuthn · Passkeys','iOS · Android · Web','Zero tracking'],
+  btnPrimary: {text:'See our work', href:'#projects'},
+  btnSecondary: {text:'Contact', href:'#', onclick:'copyEmail(event)'},
+  projLabel: 'Work',
+  projH2: 'What we ship',
+  projHint: '← Move mouse or use arrows →',
+  aboutLabel: 'About',
+  aboutText: 'Independent. Privacy-first. Built in Switzerland.',
+  aboutSub: 'We build tools at the intersection of AI, law, and human expression. Everything runs on-device or in the browser — no tracking, no compromise.',
+  pills: ADNA_PILLS,
+};
+
+function switchTheme(e){
+  const btn = document.getElementById('vc-toggle');
+  const rect = btn.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const toVC = !document.body.classList.contains('vc-mode');
+  const ripple = document.getElementById('ripple-overlay');
+
+  // prep ripple
+  ripple.style.opacity = '1';
+  ripple.style.background = toVC ? '#060810' : '#FAFAF8';
+  ripple.style.transition = 'none';
+  ripple.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+
+  void ripple.offsetWidth; // reflow
+
+  // phase 1: expand ripple to cover screen
+  ripple.style.transition = 'clip-path 0.62s cubic-bezier(.4,0,.2,1)';
+  ripple.style.clipPath = `circle(150vmax at ${x}px ${y}px)`;
+
+  // phase 2: swap content + class at peak, start fade-out
+  setTimeout(()=>{
+    document.body.classList.toggle('vc-mode', toVC);
+    const content = toVC ? VC_CONTENT : ADNA_CONTENT;
+
+    document.getElementById('hero-eyebrow').textContent = content.eyebrow;
+    document.getElementById('hero-h1').innerHTML = content.h1;
+    document.getElementById('hero-line').textContent = content.line;
+    document.getElementById('hero-chips').innerHTML = content.chips.map(c=>`<span class="chip">${c}</span>`).join('');
+
+    const pb = document.getElementById('hero-btn-primary');
+    pb.textContent = content.btnPrimary.text;
+    pb.href = content.btnPrimary.href;
+
+    const sb = document.getElementById('hero-btn-secondary');
+    sb.textContent = content.btnSecondary.text;
+    sb.href = content.btnSecondary.href;
+    if(content.btnSecondary.blank){ sb.target='_blank'; sb.removeAttribute('onclick'); }
+    else { sb.removeAttribute('target'); sb.setAttribute('onclick','copyEmail(event)'); }
+
+    // Projects section
+    document.getElementById('proj-label').textContent = content.projLabel;
+    document.getElementById('proj-h2').textContent = content.projH2;
+    document.getElementById('proj-hint').textContent = content.projHint;
+
+    // About section
+    document.getElementById('about-label').textContent = content.aboutLabel;
+    document.getElementById('about-text').textContent = content.aboutText;
+    document.getElementById('about-sub').textContent = content.aboutSub;
+    document.getElementById('stack-icons').innerHTML = content.pills;
+
+    // Re-attach bubble listeners to new pills
+    document.querySelectorAll('.stack-pill').forEach((pill, i) => {
+      const bubbleIdx = toVC ? [0,1,2,3,4,5][i] ?? i : i;
+      pill.addEventListener('mouseenter', () => { if(!_isTouchDevice()) openBubble(bubbleIdx, pill); });
+      pill.addEventListener('click', e => { e.stopPropagation(); openBubble(bubbleIdx, pill); });
+      pill.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); openBubble(bubbleIdx, pill); }, {passive:false});
+      pill.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();openBubble(bubbleIdx,pill);}});
+    });
+
+    // toggle label
+    document.getElementById('vc-toggle-icon').textContent = toVC ? '⬡' : '🕹';
+    document.getElementById('vc-toggle-label').textContent = toVC ? 'ARCHITECT·DNA' : 'VOID CELL';
+
+    // navigate carousel to VOID CELL card when entering VC mode
+    if(toVC) goTo(1);
+
+    // fade ripple out
+    ripple.style.transition = 'opacity 0.4s ease';
+    ripple.style.opacity = '0';
+  }, 520);
+
+  // phase 3: reset clip-path after fade done
+  setTimeout(()=>{
+    ripple.style.transition = 'none';
+    ripple.style.clipPath = `circle(0px at ${x}px ${y}px)`;
+  }, 960);
 }
 
 // page transitions
