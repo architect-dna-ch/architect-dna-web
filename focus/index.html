@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FOCUS — Reading & Hobby Tracker</title>
+<meta name="description" content="Local-first reading and hobby tracker. Zero server. 100% private.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>[x-cloak]{display:none!important}</style>
+</head>
+
+<body class="bg-zinc-950 text-white min-h-screen antialiased" x-data="app()">
+
+<!-- ── HEADER ──────────────────────────────────────────────────────── -->
+<header class="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur border-b border-zinc-800/80">
+  <div class="max-w-3xl mx-auto px-4 h-14 flex items-center gap-3">
+
+    <div class="flex items-center gap-2.5 shrink-0">
+      <div class="w-7 h-7 bg-orange-500 rounded-lg flex items-center justify-center font-black text-black text-xs select-none">F</div>
+      <span class="font-black tracking-tight">FOCUS</span>
+    </div>
+
+    <!-- Live stats pill -->
+    <div class="hidden sm:flex items-center gap-2 text-xs text-zinc-600 font-mono ml-1">
+      <span x-text="`${totalHours}h`" class="text-zinc-400"></span>
+      <span>·</span>
+      <span x-text="`${totalSessions} sessions`"></span>
+      <template x-if="streak > 0">
+        <span class="flex items-center gap-1 ml-1 text-amber-500">
+          <span>🔥</span><span x-text="`${streak}d`" class="font-bold"></span>
+        </span>
+      </template>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="flex ml-auto gap-0.5">
+      <button @click="tab='books'"
+        :class="tab==='books' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-200'"
+        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors">📚 Books</button>
+      <button @click="tab='hobbies'"
+        :class="tab==='hobbies' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-200'"
+        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors">🎯 Hobbies</button>
+      <button @click="tab='export'"
+        :class="tab==='export' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-200'"
+        class="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors">⬡ Export</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ── MAIN ─────────────────────────────────────────────────────────── -->
+<main class="max-w-3xl mx-auto px-4 py-7 pb-24">
+
+
+  <!-- ════════════ BOOKS TAB ════════════ -->
+  <div x-show="tab==='books'" x-cloak>
+
+    <div class="flex items-end justify-between mb-5">
+      <div>
+        <h1 class="text-xl font-black tracking-tight">Reading Log</h1>
+        <p class="text-zinc-500 text-sm mt-0.5"
+           x-text="`${activeBooks.length} reading · ${stats.readHours}h · ${stats.pages.toLocaleString()} pages`"></p>
+      </div>
+      <button @click="showAddBook=!showAddBook"
+        :class="showAddBook ? 'bg-zinc-700 text-zinc-300' : 'bg-orange-500 text-black hover:bg-orange-400'"
+        class="text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+        <span x-text="showAddBook ? '✕ Cancel' : '+ Book'"></span>
+      </button>
+    </div>
+
+    <!-- Add book form -->
+    <div x-show="showAddBook"
+      x-transition:enter="transition ease-out duration-150"
+      x-transition:enter-start="opacity-0 -translate-y-1"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-5">
+      <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">New Book</p>
+      <div class="grid sm:grid-cols-2 gap-2.5">
+        <input x-model="nb.title" @keydown.enter="addBook()"
+          placeholder="Title *"
+          class="sm:col-span-2 bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/80 transition-colors">
+        <input x-model="nb.author" placeholder="Author"
+          class="bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/80 transition-colors">
+        <input x-model="nb.totalPages" type="number" min="1" placeholder="Total pages"
+          class="bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/80 transition-colors">
+        <input x-model="nb.tags" placeholder="Tags — philosophy, tech, fiction…"
+          class="sm:col-span-2 bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/80 transition-colors">
+      </div>
+      <button @click="addBook()"
+        class="mt-4 bg-orange-500 hover:bg-orange-400 text-black text-sm font-bold px-5 py-2 rounded-xl transition-colors">
+        Add →
+      </button>
+    </div>
+
+    <!-- Book list -->
+    <div class="space-y-3">
+      <template x-for="book in activeBooks" :key="book.id">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+          <div class="p-5">
+            <!-- Title row -->
+            <div class="flex items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <h3 class="font-black text-base leading-tight truncate" x-text="book.title"></h3>
+                <p class="text-zinc-500 text-xs mt-0.5"
+                   x-text="[book.author, book.totalPages ? `${book.totalPages} pages` : ''].filter(Boolean).join(' · ')"></p>
+              </div>
+              <div class="flex items-center gap-1 shrink-0 mt-0.5">
+                <button @click="toggleBookLog(book.id)"
+                  :class="logBook===book.id ? 'bg-orange-500 text-black' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'"
+                  class="text-xs font-bold px-2.5 py-1.5 rounded-lg transition-colors">
+                  <span x-text="logBook===book.id ? '✕' : '+ Log'"></span>
+                </button>
+                <button @click="markDone(book.id)"
+                  title="Mark done"
+                  class="text-zinc-600 hover:text-emerald-400 px-2 py-1.5 text-xs transition-colors">✓</button>
+                <button @click="removeBook(book.id)"
+                  class="text-zinc-700 hover:text-red-400 px-1.5 py-1.5 text-xs transition-colors">✕</button>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div x-show="book.totalPages > 0" class="mt-4">
+              <div class="flex justify-between text-xs text-zinc-500 mb-1.5">
+                <span x-text="`p. ${book.currentPage} / ${book.totalPages}`"></span>
+                <span class="font-mono text-orange-400" x-text="`${bookPct(book)}%`"></span>
+              </div>
+              <div class="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div class="h-full bg-orange-500 rounded-full transition-all duration-700"
+                     :style="`width:${bookPct(book)}%`"></div>
+              </div>
+            </div>
+
+            <!-- Meta + tags -->
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3">
+              <span x-show="book.totalMinutes>0" class="text-xs text-zinc-500 font-mono"
+                    x-text="`${(book.totalMinutes/60).toFixed(1)}h read`"></span>
+              <span x-show="book.sessions?.length>0" class="text-xs text-zinc-600"
+                    x-text="`${book.sessions.length} sessions`"></span>
+              <template x-for="(tag,ti) in book.tags" :key="ti">
+                <span class="text-xs px-2 py-0.5 rounded-full border" :class="tagColor(ti)" x-text="tag"></span>
+              </template>
+            </div>
+          </div>
+
+          <!-- Inline log form -->
+          <div x-show="logBook===book.id"
+            x-transition:enter="transition duration-100"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            class="border-t border-zinc-800 bg-black/25 px-5 py-3.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider w-full sm:w-auto">Log session</span>
+              <input x-model="bl.pages" type="number" min="0" placeholder="Pages read"
+                class="w-28 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/60 transition-colors">
+              <input x-model="bl.minutes" type="number" min="0" @keydown.enter="logBookSession(book)"
+                placeholder="Minutes"
+                class="w-24 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:border-orange-500/60 transition-colors">
+              <button @click="logBookSession(book)"
+                class="bg-orange-500 hover:bg-orange-400 text-black text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                Log
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Empty state -->
+      <div x-show="activeBooks.length===0 && books.length===0"
+           class="text-center py-16 text-zinc-600">
+        <div class="text-5xl mb-3">📚</div>
+        <p class="font-bold text-zinc-400">No books yet</p>
+        <p class="text-sm mt-1">Hit <strong class="text-zinc-300">+ Book</strong> to start your log</p>
+      </div>
+    </div>
+
+    <!-- Done books (collapsed) -->
+    <div x-show="doneBooks.length>0" class="mt-6">
+      <button @click="showDone=!showDone"
+        class="flex items-center gap-2 text-xs text-zinc-600 hover:text-zinc-400 font-bold uppercase tracking-widest transition-colors mb-3">
+        <span x-text="showDone ? '▼' : '▶'"></span>
+        <span x-text="`Finished (${doneBooks.length})`"></span>
+      </button>
+      <div x-show="showDone" class="space-y-2">
+        <template x-for="book in doneBooks" :key="book.id">
+          <div class="bg-zinc-900/50 border border-zinc-800/50 rounded-xl px-4 py-3 flex items-center gap-3 opacity-55">
+            <span class="text-emerald-500 text-xs">✓</span>
+            <span class="text-sm font-semibold truncate flex-1" x-text="book.title"></span>
+            <span class="text-xs font-mono text-zinc-600"
+                  x-text="`${(book.totalMinutes/60).toFixed(1)}h`"></span>
+            <button @click="markDone(book.id)"
+              class="text-zinc-600 hover:text-zinc-400 text-xs transition-colors">↩</button>
+            <button @click="removeBook(book.id)"
+              class="text-zinc-700 hover:text-red-400 text-xs transition-colors">✕</button>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════ HOBBIES TAB ════════════ -->
+  <div x-show="tab==='hobbies'" x-cloak>
+
+    <div class="flex items-end justify-between mb-5">
+      <div>
+        <h1 class="text-xl font-black tracking-tight">Hobby Tracker</h1>
+        <p class="text-zinc-500 text-sm mt-0.5"
+           x-text="`${hobbies.length} active · ${stats.hobbyHours}h total`"></p>
+      </div>
+      <button @click="showAddHobby=!showAddHobby"
+        :class="showAddHobby ? 'bg-zinc-700 text-zinc-300' : 'bg-emerald-500 text-black hover:bg-emerald-400'"
+        class="text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+        <span x-text="showAddHobby ? '✕ Cancel' : '+ Hobby'"></span>
+      </button>
+    </div>
+
+    <!-- Add hobby form -->
+    <div x-show="showAddHobby"
+      x-transition:enter="transition ease-out duration-150"
+      x-transition:enter-start="opacity-0 -translate-y-1"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-5">
+      <p class="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">New Hobby</p>
+      <div class="grid sm:grid-cols-2 gap-2.5">
+        <input x-model="nh.name" @keydown.enter="addHobby()" placeholder="Hobby name *"
+          class="bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500/80 transition-colors">
+        <input x-model="nh.category" placeholder="Category — music, sport, art…"
+          class="bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500/80 transition-colors">
+        <input x-model="nh.nextMilestone" @keydown.enter="addHobby()"
+          placeholder="First milestone — e.g. 10 hours logged"
+          class="sm:col-span-2 bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500/80 transition-colors">
+      </div>
+      <button @click="addHobby()"
+        class="mt-4 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold px-5 py-2 rounded-xl transition-colors">
+        Add →
+      </button>
+    </div>
+
+    <!-- Hobby list -->
+    <div class="space-y-3">
+      <template x-for="hobby in hobbies" :key="hobby.id">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+          <div class="p-5">
+            <div class="flex items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <h3 class="font-black text-base leading-tight" x-text="hobby.name"></h3>
+                <p class="text-zinc-500 text-xs mt-0.5" x-text="hobby.category"></p>
+              </div>
+              <div class="flex items-center gap-1 shrink-0 mt-0.5">
+                <button @click="toggleHobbyLog(hobby.id)"
+                  :class="logHobby===hobby.id ? 'bg-emerald-500 text-black' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'"
+                  class="text-xs font-bold px-2.5 py-1.5 rounded-lg transition-colors">
+                  <span x-text="logHobby===hobby.id ? '✕' : '+ Log'"></span>
+                </button>
+                <button @click="updateMilestone(hobby)"
+                  title="Update milestone"
+                  class="text-zinc-600 hover:text-amber-400 px-2 py-1.5 text-xs transition-colors">✎</button>
+                <button @click="removeHobby(hobby.id)"
+                  class="text-zinc-700 hover:text-red-400 px-1.5 py-1.5 text-xs transition-colors">✕</button>
+              </div>
+            </div>
+
+            <!-- Hours + last session -->
+            <div class="flex flex-wrap items-end gap-x-5 gap-y-1 mt-4">
+              <div>
+                <span class="text-3xl font-black font-mono text-emerald-400"
+                      x-text="`${(hobby.totalMinutes/60).toFixed(1)}`"></span>
+                <span class="text-xs text-zinc-500 ml-1.5">hours</span>
+              </div>
+              <div class="text-xs text-zinc-600 pb-1">
+                <span x-text="hobby.sessions?.length ? `${hobby.sessions.length} sessions` : 'No sessions yet'"></span>
+                <span x-show="hobby.sessions?.length>0"
+                      x-text="` · last ${hobby.sessions.at(-1)?.date}`"></span>
+              </div>
+            </div>
+
+            <!-- Milestone -->
+            <div x-show="hobby.nextMilestone" class="mt-3 flex items-start gap-2">
+              <span class="text-xs mt-0.5">🎯</span>
+              <span class="text-xs text-zinc-500 leading-relaxed" x-text="hobby.nextMilestone"></span>
+            </div>
+          </div>
+
+          <!-- Inline log -->
+          <div x-show="logHobby===hobby.id"
+            x-transition:enter="transition duration-100"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            class="border-t border-zinc-800 bg-black/25 px-5 py-3.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider w-full sm:w-auto">Log session</span>
+              <input x-model="hl.minutes" type="number" min="1" @keydown.enter="logHobbySession(hobby)"
+                placeholder="Minutes"
+                class="w-24 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500/60 transition-colors">
+              <input x-model="hl.note" @keydown.enter="logHobbySession(hobby)"
+                placeholder="Note — optional"
+                class="flex-1 min-w-32 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm placeholder-zinc-600 focus:outline-none focus:border-emerald-500/60 transition-colors">
+              <button @click="logHobbySession(hobby)"
+                class="bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                Log
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <div x-show="hobbies.length===0" class="text-center py-16 text-zinc-600">
+        <div class="text-5xl mb-3">🎯</div>
+        <p class="font-bold text-zinc-400">No hobbies tracked yet</p>
+        <p class="text-sm mt-1">Hit <strong class="text-zinc-300">+ Hobby</strong> to log what you love</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════ EXPORT TAB ════════════ -->
+  <div x-show="tab==='export'" x-cloak>
+
+    <div class="mb-6">
+      <h1 class="text-xl font-black tracking-tight">Export & Backup</h1>
+      <p class="text-zinc-500 text-sm mt-0.5">All data lives in this browser. Zero server. Back up whenever.</p>
+    </div>
+
+    <!-- Stats overview -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+        <p class="text-2xl font-black text-orange-400" x-text="books.length"></p>
+        <p class="text-xs text-zinc-500 mt-1">Books</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+        <p class="text-2xl font-black text-emerald-400" x-text="hobbies.length"></p>
+        <p class="text-xs text-zinc-500 mt-1">Hobbies</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+        <p class="text-2xl font-black font-mono" x-text="totalHours"></p>
+        <p class="text-xs text-zinc-500 mt-1">Hours total</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-center">
+        <p class="text-2xl font-black" x-text="totalSessions"></p>
+        <p class="text-xs text-zinc-500 mt-1">Sessions</p>
+      </div>
+    </div>
+
+    <!-- Free JSON export -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-4">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-bold text-sm">JSON Backup — Free</p>
+          <p class="text-zinc-500 text-xs mt-1 max-w-xs">Full data dump — books, hobbies, all sessions. Reload anytime via import.</p>
+        </div>
+        <button @click="exportJSON()"
+          class="shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+          Download ↓
+        </button>
+      </div>
+    </div>
+
+    <!-- Import -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-bold text-sm">Import JSON</p>
+          <p class="text-zinc-500 text-xs mt-1">Restore from a previous export. Merges with existing data.</p>
+        </div>
+        <label class="shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors cursor-pointer">
+          Import ↑
+          <input type="file" accept=".json" @change="importJSON($event)" class="hidden">
+        </label>
+      </div>
+    </div>
+
+    <!-- Premium section -->
+    <div class="relative rounded-2xl overflow-hidden">
+
+      <!-- Lock overlay -->
+      <div x-show="!premiumUnlocked"
+        class="absolute inset-0 z-10 backdrop-blur-sm bg-zinc-950/70 flex flex-col items-center justify-center gap-3 rounded-2xl">
+        <div class="text-center px-6">
+          <div class="text-4xl mb-3">⬡</div>
+          <p class="font-black text-base">Premium Export</p>
+          <p class="text-zinc-400 text-xs mt-1.5 max-w-48 mx-auto leading-relaxed">
+            PDF reading report · Yearly stats sheet · Habit streak calendar
+          </p>
+        </div>
+        <button @click="unlockPremium()"
+          class="mt-1 bg-violet-500 hover:bg-violet-400 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors">
+          Unlock Preview — CHF 2
+        </button>
+        <p class="text-zinc-600 text-xs">One-time · No subscription</p>
+      </div>
+
+      <!-- Premium content -->
+      <div class="bg-zinc-900 border border-violet-900/40 rounded-2xl p-5 space-y-4"
+           :class="!premiumUnlocked ? 'pointer-events-none select-none' : ''">
+        <p class="text-xs font-bold text-violet-400 uppercase tracking-widest">Premium</p>
+
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="font-bold text-sm">Reading Report — PDF</p>
+            <p class="text-zinc-500 text-xs mt-1">All books, hours logged, tags breakdown, yearly overview.</p>
+          </div>
+          <button @click="exportPDF()"
+            class="shrink-0 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+            Export PDF ↓
+          </button>
+        </div>
+
+        <div class="border-t border-zinc-800"></div>
+
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="font-bold text-sm">Yearly Stats — CSV</p>
+            <p class="text-zinc-500 text-xs mt-1">Hours per month, pages/day average, session frequency.</p>
+          </div>
+          <button @click="exportCSV()"
+            class="shrink-0 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+            Export CSV ↓
+          </button>
+        </div>
+
+        <div class="border-t border-zinc-800"></div>
+
+        <div class="flex items-start justify-between gap-4 opacity-50">
+          <div>
+            <p class="font-bold text-sm">Habit Streak Calendar</p>
+            <p class="text-zinc-500 text-xs mt-1">GitHub-style heatmap of your reading and hobby activity.</p>
+          </div>
+          <button disabled class="shrink-0 bg-zinc-800 text-zinc-500 text-xs font-bold px-4 py-2 rounded-xl cursor-not-allowed">
+            Soon
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="mt-6 border border-red-900/30 rounded-2xl p-5 bg-red-950/10">
+      <p class="text-xs font-bold text-red-400 uppercase tracking-widest mb-3">Danger Zone</p>
+      <div class="flex items-center justify-between gap-4">
+        <p class="text-zinc-400 text-sm">Clear all data from this browser</p>
+        <button @click="clearAll()"
+          class="shrink-0 text-xs font-bold px-4 py-2 rounded-xl border border-red-800/50 text-red-400 hover:bg-red-900/30 transition-colors">
+          Clear all
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────── -->
+<footer class="fixed bottom-0 inset-x-0 bg-zinc-950/90 backdrop-blur border-t border-zinc-800/40 py-2.5">
+  <div class="max-w-3xl mx-auto px-4 flex items-center justify-between">
+    <a href="https://architect-dna.ch" class="text-xs text-zinc-700 hover:text-zinc-500 transition-colors font-mono">
+      architect-dna.ch
+    </a>
+    <span class="text-xs text-zinc-700 font-mono"
+          x-text="`${books.length + hobbies.length} items · local-first · 0 servers`"></span>
+  </div>
+</footer>
+
+
+<!-- ── SCRIPT ─────────────────────────────────────────────────────── -->
+<script>
+function app() {
+  const ls = {
+    get: k => JSON.parse(localStorage.getItem(k) || '[]'),
+    set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+  };
+
+  return {
+    tab: 'books',
+    books:   ls.get('focus_books'),
+    hobbies: ls.get('focus_hobbies'),
+
+    showAddBook:  false,
+    nb: { title:'', author:'', totalPages:'', tags:'' },
+
+    showAddHobby: false,
+    nh: { name:'', category:'', nextMilestone:'' },
+
+    logBook:  null,
+    bl: { pages:'', minutes:'' },
+    logHobby: null,
+    hl: { minutes:'', note:'' },
+
+    showDone: false,
+    premiumUnlocked: localStorage.getItem('focus_premium') === '1',
+
+    // ── Computed ──────────────────────────────
+    get activeBooks() { return this.books.filter(b => b.status !== 'done'); },
+    get doneBooks()   { return this.books.filter(b => b.status === 'done'); },
+
+    get stats() {
+      const readMin  = this.books.reduce((s, b) => s + (b.totalMinutes || 0), 0);
+      const hobbyMin = this.hobbies.reduce((s, h) => s + (h.totalMinutes || 0), 0);
+      return {
+        readHours:  (readMin  / 60).toFixed(1),
+        hobbyHours: (hobbyMin / 60).toFixed(1),
+        pages: this.books.reduce((s, b) => s + (b.currentPage || 0), 0),
+      };
+    },
+
+    get totalHours() {
+      const mins = [...this.books, ...this.hobbies].reduce((s, x) => s + (x.totalMinutes || 0), 0);
+      return (mins / 60).toFixed(1);
+    },
+
+    get totalSessions() {
+      return [...this.books, ...this.hobbies].reduce((s, x) => s + (x.sessions?.length || 0), 0);
+    },
+
+    get streak() {
+      const dates = new Set();
+      [...this.books, ...this.hobbies].forEach(x => x.sessions?.forEach(s => dates.add(s.date)));
+      const sorted = [...dates].sort().reverse();
+      if (!sorted.length) return 0;
+      let streak = 0;
+      let d = new Date(); d.setHours(0,0,0,0);
+      for (const dateStr of sorted) {
+        const check = d.toISOString().slice(0, 10);
+        if (dateStr === check) { streak++; d.setDate(d.getDate() - 1); }
+        else if (dateStr < check) break;
+      }
+      return streak;
+    },
+
+    // ── Helpers ───────────────────────────────
+    _uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); },
+
+    _save() {
+      ls.set('focus_books', this.books);
+      ls.set('focus_hobbies', this.hobbies);
+    },
+
+    tagColor(i) {
+      const palette = [
+        'border-indigo-700/50 bg-indigo-900/30 text-indigo-300',
+        'border-violet-700/50 bg-violet-900/30 text-violet-300',
+        'border-sky-700/50    bg-sky-900/30    text-sky-300',
+        'border-teal-700/50   bg-teal-900/30   text-teal-300',
+        'border-emerald-700/50 bg-emerald-900/30 text-emerald-300',
+        'border-amber-700/50  bg-amber-900/30  text-amber-300',
+        'border-rose-700/50   bg-rose-900/30   text-rose-300',
+      ];
+      return palette[i % palette.length];
+    },
+
+    bookPct(book) {
+      if (!book.totalPages) return 0;
+      return Math.min(100, Math.round((book.currentPage / book.totalPages) * 100));
+    },
+
+    // ── Books ─────────────────────────────────
+    addBook() {
+      if (!this.nb.title.trim()) return;
+      this.books.unshift({
+        id: this._uid(),
+        title:      this.nb.title.trim(),
+        author:     this.nb.author.trim(),
+        totalPages: parseInt(this.nb.totalPages) || 0,
+        currentPage: 0,
+        totalMinutes: 0,
+        tags:    this.nb.tags.split(',').map(t => t.trim()).filter(Boolean),
+        sessions: [],
+        status:  'reading',
+        added:   new Date().toISOString(),
+      });
+      this.nb = { title:'', author:'', totalPages:'', tags:'' };
+      this.showAddBook = false;
+      this._save();
+    },
+
+    toggleBookLog(id) {
+      this.logBook = this.logBook === id ? null : id;
+      this.bl = { pages:'', minutes:'' };
+    },
+
+    logBookSession(book) {
+      const pages   = parseInt(this.bl.pages)   || 0;
+      const minutes = parseInt(this.bl.minutes) || 0;
+      if (!pages && !minutes) return;
+      book.currentPage  = Math.min(book.totalPages || Infinity, (book.currentPage || 0) + pages);
+      book.totalMinutes = (book.totalMinutes || 0) + minutes;
+      book.sessions.push({ date: today(), pages, minutes });
+      if (book.totalPages && book.currentPage >= book.totalPages) book.status = 'done';
+      this.bl = { pages:'', minutes:'' };
+      this.logBook = null;
+      this._save();
+    },
+
+    markDone(id) {
+      const b = this.books.find(b => b.id === id);
+      if (b) { b.status = b.status === 'done' ? 'reading' : 'done'; this._save(); }
+    },
+
+    removeBook(id) {
+      if (!confirm('Remove this book?')) return;
+      this.books = this.books.filter(b => b.id !== id);
+      if (this.logBook === id) this.logBook = null;
+      this._save();
+    },
+
+    // ── Hobbies ───────────────────────────────
+    addHobby() {
+      if (!this.nh.name.trim()) return;
+      this.hobbies.unshift({
+        id:            this._uid(),
+        name:          this.nh.name.trim(),
+        category:      this.nh.category.trim(),
+        nextMilestone: this.nh.nextMilestone.trim(),
+        totalMinutes:  0,
+        sessions:      [],
+        added:         new Date().toISOString(),
+      });
+      this.nh = { name:'', category:'', nextMilestone:'' };
+      this.showAddHobby = false;
+      this._save();
+    },
+
+    toggleHobbyLog(id) {
+      this.logHobby = this.logHobby === id ? null : id;
+      this.hl = { minutes:'', note:'' };
+    },
+
+    logHobbySession(hobby) {
+      const minutes = parseInt(this.hl.minutes) || 0;
+      if (!minutes) return;
+      hobby.totalMinutes = (hobby.totalMinutes || 0) + minutes;
+      hobby.sessions.push({ date: today(), minutes, note: this.hl.note.trim() });
+      this.hl = { minutes:'', note:'' };
+      this.logHobby = null;
+      this._save();
+    },
+
+    updateMilestone(hobby) {
+      const m = prompt('Next milestone:', hobby.nextMilestone || '');
+      if (m !== null) { hobby.nextMilestone = m.trim(); this._save(); }
+    },
+
+    removeHobby(id) {
+      if (!confirm('Remove this hobby?')) return;
+      this.hobbies = this.hobbies.filter(h => h.id !== id);
+      if (this.logHobby === id) this.logHobby = null;
+      this._save();
+    },
+
+    // ── Export ────────────────────────────────
+    exportJSON() {
+      const data = { version:1, exported: new Date().toISOString(), books: this.books, hobbies: this.hobbies };
+      dl(JSON.stringify(data, null, 2), `focus-${today()}.json`, 'application/json');
+    },
+
+    importJSON(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (data.books)   this.books   = [...(data.books   || []), ...this.books];
+          if (data.hobbies) this.hobbies = [...(data.hobbies || []), ...this.hobbies];
+          // Deduplicate by id
+          this.books   = [...new Map(this.books.map(b => [b.id, b])).values()];
+          this.hobbies = [...new Map(this.hobbies.map(h => [h.id, h])).values()];
+          this._save();
+          alert(`Imported ${data.books?.length || 0} books, ${data.hobbies?.length || 0} hobbies.`);
+        } catch { alert('Invalid JSON file.'); }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    },
+
+    exportPDF() {
+      if (!this.premiumUnlocked) return;
+      // Placeholder — will integrate jsPDF or Puppeteer in production
+      window.print();
+    },
+
+    exportCSV() {
+      if (!this.premiumUnlocked) return;
+      const rows = [['Type','Name','Date','Minutes','Pages','Note']];
+      this.books.forEach(b => b.sessions.forEach(s =>
+        rows.push(['book', b.title, s.date, s.minutes, s.pages, ''])));
+      this.hobbies.forEach(h => h.sessions.forEach(s =>
+        rows.push(['hobby', h.name, s.date, s.minutes, '', s.note || ''])));
+      dl(rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'),
+         `focus-stats-${today()}.csv`, 'text/csv');
+    },
+
+    unlockPremium() {
+      // Production: replace alert + flag with Stripe Checkout → webhook sets localStorage
+      alert('Stripe payment flow coming soon.\nDemo unlock activated.');
+      this.premiumUnlocked = true;
+      localStorage.setItem('focus_premium', '1');
+    },
+
+    clearAll() {
+      if (!confirm('Delete ALL data? This cannot be undone.')) return;
+      this.books = []; this.hobbies = [];
+      localStorage.removeItem('focus_books');
+      localStorage.removeItem('focus_hobbies');
+    },
+  };
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────
+const today = () => new Date().toISOString().slice(0, 10);
+
+function dl(content, filename, type) {
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([content], { type })),
+    download: filename,
+  });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+</script>
+</body>
+</html>
