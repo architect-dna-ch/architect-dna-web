@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPRINT — Grid Runner</title>
+<meta name="description" content="Navigate a shifting grid at breakneck speed. Browser game, no install, pure reflex.">
+<meta property="og:title" content="SPRINT — Grid Runner">
+<meta property="og:description" content="Shifting grid. Max speed. Navigate or crash. Free browser game by VOID CELL.">
+<meta property="og:url" content="https://architect-dna.ch/sprint">
+<meta name="theme-color" content="#08080f">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08080f;--accent:#00ff9d;--text:#fff;--muted:rgba(255,255,255,.45);--card:#111118}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 32px;backdrop-filter:blur(16px);background:rgba(8,8,15,.7);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-cta{background:var(--accent);color:#000;text-decoration:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;transition:opacity .2s,transform .15s}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px)}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(0,255,157,.07) 0%,transparent 70%)}
+.hero-icon{font-size:64px;margin-bottom:24px;position:relative;z-index:1;animation:iconRun .6s ease-in-out infinite alternate;filter:drop-shadow(0 0 24px rgba(0,255,157,.5))}
+@keyframes iconRun{0%{transform:translateX(-8px) rotate(-5deg)}100%{transform:translateX(8px) rotate(5deg)}}
+.hero-tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+h1{font-size:clamp(56px,12vw,108px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:24px;background:linear-gradient(135deg,#00ff9d 0%,#00e5ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+.hero-sub{font-size:18px;color:var(--muted);max-width:400px;margin:0 auto 40px;position:relative;z-index:1;line-height:1.6}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#000;text-decoration:none;padding:16px 36px;border-radius:12px;font-size:16px;font-weight:800;transition:transform .2s,box-shadow .2s;position:relative;z-index:1;box-shadow:0 0 40px rgba(0,255,157,.25)}
+.hero-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 60px rgba(0,255,157,.4)}
+.section{padding:80px 24px;max-width:920px;margin:0 auto}
+.section-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:12px}
+.section-title{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-.03em;line-height:1;margin-bottom:40px}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.feat{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;transition:transform .2s,border-color .2s}
+.feat:hover{transform:translateY(-3px);border-color:rgba(0,255,157,.2)}
+.feat-icon{font-size:28px;margin-bottom:12px;display:block}
+.feat-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.cta-section{text-align:center;padding:100px 24px;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:300px;background:radial-gradient(ellipse,rgba(0,255,157,.1) 0%,transparent 70%);pointer-events:none}
+.cta-title{font-size:clamp(26px,5vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:32px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#00ff9d,#00e5ff);color:#000;text-decoration:none;padding:16px 44px;border-radius:12px;font-size:16px;font-weight:900;transition:transform .2s,box-shadow .2s;box-shadow:0 0 40px rgba(0,255,157,.2)}
+.cta-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 70px rgba(0,255,157,.35)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 24px;text-align:center;font-size:13px;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+body{transition:opacity .35s ease}
+body.leaving{opacity:0}
+@media(max-width:640px){nav{padding:14px 20px}.section{padding:56px 16px}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="https://architect-dna.ch" class="nav-logo">architect<span>·</span>dna</a>
+  <a href="https://sprint.architect-dna.ch" class="nav-cta">Play Now →</a>
+</nav>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <span class="hero-icon">🏃</span>
+  <p class="hero-tag">Browser Game · Free · No Install</p>
+  <h1>SPRINT</h1>
+  <p class="hero-sub">Navigate a shifting grid at breakneck speed. React. Survive. Go faster.</p>
+  <a href="https://sprint.architect-dna.ch" class="hero-cta">Play Now ▶</a>
+</section>
+<section class="section">
+  <p class="section-label">Maximum velocity</p>
+  <h2 class="section-title">Grid. Speed. Survive.</h2>
+  <div class="features">
+    <div class="feat"><span class="feat-icon">🏃</span><div class="feat-title">Grid Navigation</div><div class="feat-desc">Move through a procedurally generated grid. Every run is different. Every run is faster.</div></div>
+    <div class="feat"><span class="feat-icon">⚡</span><div class="feat-title">Escalating Speed</div><div class="feat-desc">The longer you sprint, the harder it gets. There's no ceiling — just a higher score.</div></div>
+    <div class="feat"><span class="feat-icon">📱</span><div class="feat-title">Touch & Keyboard</div><div class="feat-desc">Swipe on mobile, arrow keys on desktop. Instant response, no input lag.</div></div>
+    <div class="feat"><span class="feat-icon">🌐</span><div class="feat-title">Zero Install</div><div class="feat-desc">Pure browser. No download, no account. Open the link and start sprinting.</div></div>
+  </div>
+</section>
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title">How far can you sprint?</h2>
+  <p class="cta-sub">No checkpoint. No mercy. Just speed.</p>
+  <a href="https://sprint.architect-dna.ch" class="cta-btn">Play SPRINT 🏃</a>
+</section>
+<footer>
+  <p><a href="https://architect-dna.ch">architect-dna.ch</a> &nbsp;·&nbsp; <a href="https://architect-dna.ch/privacy">Privacy</a></p>
+</footer>
+<script>
+document.querySelectorAll('a[href]').forEach(a=>{
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('http')||href.startsWith('#')||a.target==='_blank') return;
+  a.addEventListener('click',e=>{e.preventDefault();document.body.classList.add('leaving');setTimeout(()=>{location.href=href},340)});
+});
+document.body.style.opacity='0';
+requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity=''}));
+</script>
+</body>
+</html>

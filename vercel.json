@@ -2,6 +2,14 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/game-studio", "destination": "/games", "permanent": true }
+    { "source": "/game-studio", "destination": "/", "permanent": true },
+    { "source": "/games", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/", "has": [{"type": "host", "value": "clyedo.architect-dna.ch"}], "destination": "/clyedo" },
+    { "source": "/", "has": [{"type": "host", "value": "calm.architect-dna.ch"}], "destination": "/calm" },
+    { "source": "/", "has": [{"type": "host", "value": "gridfal.architect-dna.ch"}], "destination": "/gridfal/play.html" },
+    { "source": "/", "has": [{"type": "host", "value": "sprint.architect-dna.ch"}], "destination": "/sprint/play.html" },
+    { "source": "/", "has": [{"type": "host", "value": "fly.architect-dna.ch"}], "destination": "/fly/play.html" }
   ]
 }

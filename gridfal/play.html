@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>GRID FALL — VOID CELL</title>
+<meta name="theme-color" content="#04080f">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#04080f;overflow:hidden;touch-action:none;font-family:'Courier New',monospace}
+canvas{display:block;position:fixed;top:0;left:0}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+'use strict';
+const c=document.getElementById('c');
+const ctx=c.getContext('2d');
+let W,H,COLS,CELL;
+
+// ── resize ──────────────────────────────────────────────────────────────────
+function resize(){
+  W=c.width=window.innerWidth;
+  H=c.height=window.innerHeight;
+  COLS=8;
+  CELL=Math.floor(W/COLS);
+}
+resize();
+window.addEventListener('resize',resize);
+
+// ── state ────────────────────────────────────────────────────────────────────
+const STATE={TITLE:0,PLAYING:1,DEAD:2};
+let state=STATE.TITLE;
+let score,best=parseInt(localStorage.getItem('gf_best')||'0');
+let speed,rows,playerCol,playerY,playerPulse;
+let deathTimer;
+let particles;
+
+// ── row object ───────────────────────────────────────────────────────────────
+// {y, gap: col index with no block, passed: bool}
+function makeRow(y){
+  const gap=Math.floor(Math.random()*COLS);
+  return {y,gap,passed:false,flash:0};
+}
+
+function startGame(){
+  score=0;
+  speed=180; // px/sec
+  rows=[];
+  playerCol=Math.floor(COLS/2);
+  playerY=H*0.72;
+  playerPulse=0;
+  particles=[];
+  // seed a few rows above screen
+  for(let i=0;i<8;i++) rows.push(makeRow(-CELL*2 - i*CELL*2.2));
+  state=STATE.PLAYING;
+}
+
+// ── input ─────────────────────────────────────────────────────────────────────
+const keys={};
+window.addEventListener('keydown',e=>{
+  if(e.code==='ArrowLeft'||e.code==='KeyA') movePlayer(-1);
+  if(e.code==='ArrowRight'||e.code==='KeyD') movePlayer(1);
+  if((e.code==='Space'||e.code==='Enter')&&state!==STATE.PLAYING){
+    startGame();
+  }
+  keys[e.code]=true;
+});
+window.addEventListener('keyup',e=>{keys[e.code]=false;});
+
+// touch: swipe left/right or tap sides
+let touchStartX=null;
+c.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  touchStartX=e.touches[0].clientX;
+  if(state!==STATE.PLAYING){startGame();return;}
+},{passive:false});
+c.addEventListener('touchend',e=>{
+  e.preventDefault();
+  if(state!==STATE.PLAYING)return;
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  if(Math.abs(dx)>18) movePlayer(dx>0?1:-1);
+  else{
+    // tap: left half → left, right half → right
+    movePlayer(e.changedTouches[0].clientX<W/2?-1:1);
+  }
+},{passive:false});
+
+// mouse click: left half / right half
+c.addEventListener('click',e=>{
+  if(state!==STATE.PLAYING){startGame();return;}
+  movePlayer(e.clientX<W/2?-1:1);
+});
+
+function movePlayer(dir){
+  if(state!==STATE.PLAYING)return;
+  playerCol=Math.max(0,Math.min(COLS-1,playerCol+dir));
+  burst(playerCol*CELL+CELL/2,playerY,6,80,3,'#00eeff');
+}
+
+// ── particles ─────────────────────────────────────────────────────────────────
+function burst(x,y,n,spd,r,col){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2;
+    const s=spd*(0.4+Math.random()*0.6);
+    particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r,col,life:1,maxLife:1});
+  }
+}
+function updateParticles(dt){
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt;
+    p.vy+=120*dt; p.vx*=0.92;
+    p.life-=dt*1.8;
+    if(p.life<=0)particles.splice(i,1);
+  }
+}
+function drawParticles(){
+  for(const p of particles){
+    ctx.globalAlpha=Math.max(0,p.life)*0.9;
+    ctx.fillStyle=p.col;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+// ── update ────────────────────────────────────────────────────────────────────
+let last=0;
+function update(ts){
+  const dt=Math.min((ts-last)/1000,0.05); last=ts;
+  playerPulse+=dt*3;
+
+  if(state===STATE.DEAD){
+    deathTimer-=dt;
+    updateParticles(dt);
+    return;
+  }
+  if(state!==STATE.PLAYING)return;
+
+  // speed ramp
+  speed=180+score*8;
+
+  // move rows down
+  for(const r of rows) r.y+=speed*dt;
+  if(r=>r.flash>0) rows.forEach(r=>r.flash=Math.max(0,r.flash-dt*4));
+
+  // spawn new rows at top when needed
+  const topmost=rows.reduce((m,r)=>r.y<m?r.y:m, Infinity);
+  if(topmost>-CELL*0.5){
+    rows.push(makeRow(topmost-CELL*2.2));
+  }
+
+  // remove off-screen rows
+  rows=rows.filter(r=>r.y<H+CELL*2);
+
+  // check pass & collision
+  const px=playerCol*CELL;
+  const py=playerY;
+  for(const r of rows){
+    const ry=r.y;
+    // row occupies ry to ry+CELL
+    if(ry+CELL>py-2 && ry<py+CELL-2){
+      // player is in this row's zone
+      if(r.gap!==playerCol){
+        // HIT — player is in a filled block
+        doDie();
+        return;
+      } else if(!r.passed){
+        r.passed=true;
+        r.flash=1;
+        score++;
+        if(score>best){best=score;localStorage.setItem('gf_best',best);}
+        burst(px+CELL/2,py,12,120,4,'#ff2233');
+      }
+    }
+  }
+
+  updateParticles(dt);
+}
+
+function doDie(){
+  state=STATE.DEAD;
+  deathTimer=1.8;
+  burst(playerCol*CELL+CELL/2,playerY,22,200,5,'#ff2233');
+  burst(playerCol*CELL+CELL/2,playerY,10,100,3,'#ffffff');
+}
+
+// ── draw ──────────────────────────────────────────────────────────────────────
+function draw(){
+  ctx.fillStyle='#04080f';
+  ctx.fillRect(0,0,W,H);
+
+  // background grid lines
+  ctx.strokeStyle='rgba(0,238,255,0.04)';ctx.lineWidth=1;
+  for(let x=0;x<=W;x+=CELL){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=CELL){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  if(state===STATE.TITLE){drawTitle();return;}
+  if(state===STATE.DEAD){
+    drawRows();
+    drawParticles();
+    drawDead();
+    return;
+  }
+
+  // playing
+  drawRows();
+  drawPlayer();
+  drawParticles();
+  drawHUD();
+  drawControls();
+}
+
+function drawRows(){
+  for(const r of rows){
+    for(let col=0;col<COLS;col++){
+      if(col===r.gap) continue;
+      const x=col*CELL, y=r.y;
+      const flash=r.flash||0;
+      const alpha=0.75+flash*0.25;
+      ctx.globalAlpha=alpha;
+      // block fill
+      ctx.fillStyle=flash>0.1?`rgba(255,34,51,${0.3+flash*0.5})`:'rgba(255,34,51,0.22)';
+      ctx.fillRect(x+2,y+2,CELL-4,CELL-4);
+      // block border
+      ctx.strokeStyle=flash>0.1?`rgba(255,34,51,${0.7+flash*0.3})`:'rgba(255,34,51,0.55)';
+      ctx.lineWidth=1.5;
+      ctx.strokeRect(x+2,y+2,CELL-4,CELL-4);
+      ctx.globalAlpha=1;
+    }
+    // draw gap indicator (subtle arrow / opening)
+    const gx=r.gap*CELL;
+    ctx.globalAlpha=0.18;
+    ctx.fillStyle='#00eeff';
+    ctx.fillRect(gx+2,r.y+2,CELL-4,CELL-4);
+    ctx.globalAlpha=1;
+  }
+}
+
+function drawPlayer(){
+  const x=playerCol*CELL+CELL/2;
+  const y=playerY+CELL/2;
+  const pulse=Math.sin(playerPulse)*4;
+
+  // glow
+  const gr=ctx.createRadialGradient(x,y,0,x,y,CELL*0.9+pulse);
+  gr.addColorStop(0,'rgba(0,238,255,0.18)');
+  gr.addColorStop(1,'transparent');
+  ctx.fillStyle=gr;
+  ctx.beginPath();ctx.arc(x,y,CELL*0.9+pulse,0,Math.PI*2);ctx.fill();
+
+  // ship shape
+  ctx.save();ctx.translate(x,y);
+  ctx.shadowColor='#00eeff';ctx.shadowBlur=18;
+  ctx.fillStyle='#00eeff';
+  ctx.beginPath();
+  ctx.moveTo(0,-(CELL*0.38));
+  ctx.lineTo(CELL*0.28,CELL*0.28);
+  ctx.lineTo(0,CELL*0.14);
+  ctx.lineTo(-CELL*0.28,CELL*0.28);
+  ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.restore();
+
+  // column highlight strip
+  ctx.globalAlpha=0.06;
+  ctx.fillStyle='#00eeff';
+  ctx.fillRect(playerCol*CELL,0,CELL,H);
+  ctx.globalAlpha=1;
+}
+
+function drawHUD(){
+  ctx.fillStyle='rgba(4,8,15,0.7)';
+  ctx.fillRect(0,0,W,44);
+  ctx.fillStyle='rgba(0,238,255,0.8)';
+  ctx.font='bold 14px Courier New';
+  ctx.textAlign='left';
+  ctx.fillText(`SCORE  ${score}`,14,28);
+  ctx.textAlign='right';
+  ctx.fillStyle='rgba(255,34,51,0.7)';
+  ctx.fillText(`BEST  ${best}`,W-14,28);
+  ctx.textAlign='center';
+  ctx.fillStyle='rgba(255,255,255,0.2)';
+  ctx.font='9px Courier New';
+  ctx.fillText(`SPEED  ${Math.round(speed)}`,W/2,28);
+}
+
+function drawControls(){
+  // left/right tap zones (subtle)
+  ctx.globalAlpha=0.035;
+  ctx.fillStyle='#00eeff';
+  ctx.fillRect(0,44,W/2,H-44);
+  ctx.fillRect(W/2,44,W/2,H-44);
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle='rgba(0,238,255,0.12)';
+  ctx.font='10px Courier New';
+  ctx.textAlign='left';
+  ctx.fillText('◀',14,H-20);
+  ctx.textAlign='right';
+  ctx.fillText('▶',W-14,H-20);
+}
+
+function drawTitle(){
+  ctx.textAlign='center';
+  ctx.fillStyle='#fff';
+  ctx.font=`bold ${Math.min(64,W*0.12)}px Courier New`;
+  ctx.shadowColor='#ff2233';ctx.shadowBlur=30;
+  ctx.fillText('GRID',W/2,H*0.32);
+  ctx.fillStyle='#ff2233';
+  ctx.font=`bold ${Math.min(64,W*0.12)}px Courier New`;
+  ctx.fillText('FALL',W/2,H*0.32+Math.min(70,W*0.13));
+  ctx.shadowBlur=0;
+
+  // animated row preview
+  const t=Date.now()/1000;
+  const demoY=(t*60)%120;
+  for(let col=0;col<COLS;col++){
+    if(col===3)continue;
+    ctx.globalAlpha=0.15;
+    ctx.fillStyle='#ff2233';
+    ctx.fillRect(col*CELL+2,H*0.5+demoY+2,CELL-4,CELL-4);
+    ctx.globalAlpha=1;
+  }
+
+  ctx.fillStyle='rgba(0,238,255,0.9)';
+  ctx.font='13px Courier New';
+  ctx.fillText('TAP LEFT or RIGHT to dodge the gap',W/2,H*0.72);
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.font='11px Courier New';
+  ctx.fillText('← → keys or tap sides of screen',W/2,H*0.72+22);
+  ctx.fillStyle='rgba(0,238,255,0.6)';
+  ctx.font='bold 12px Courier New';
+  const blink=Math.sin(t*3)>0;
+  if(blink)ctx.fillText('[ TAP / PRESS SPACE TO START ]',W/2,H*0.86);
+  ctx.fillStyle='rgba(255,170,0,0.5)';
+  ctx.font='10px Courier New';
+  ctx.fillText(`BEST  ${best}`,W/2,H*0.92);
+}
+
+function drawDead(){
+  ctx.fillStyle='rgba(4,8,15,0.75)';
+  ctx.fillRect(0,0,W,H);
+  ctx.textAlign='center';
+  ctx.fillStyle='#ff2233';
+  ctx.shadowColor='#ff2233';ctx.shadowBlur=24;
+  ctx.font=`bold ${Math.min(52,W*0.1)}px Courier New`;
+  ctx.fillText('DEAD',W/2,H*0.38);
+  ctx.shadowBlur=0;
+  ctx.font='14px Courier New';
+  ctx.fillStyle='rgba(255,255,255,0.8)';
+  ctx.fillText(`SCORE  ${score}    BEST  ${best}`,W/2,H*0.52);
+  const blink=Math.sin(Date.now()/300)>0;
+  ctx.fillStyle='rgba(0,238,255,0.8)';
+  ctx.font='12px Courier New';
+  if(blink)ctx.fillText('[ TAP / PRESS SPACE TO RETRY ]',W/2,H*0.66);
+}
+
+// ── loop ──────────────────────────────────────────────────────────────────────
+function loop(ts){
+  update(ts);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(ts=>{last=ts;requestAnimationFrame(loop);});
+</script>
+</body>
+</html>

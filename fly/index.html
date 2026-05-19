@@ -2,636 +2,106 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>ARES RACE — architect-dna.ch</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARES RACE — City from Above</title>
+<meta name="description" content="3D bird-flight over NYC and Sydney. 44+ landmark buildings, bloom rendering, live HUD. Free browser game by VOID CELL.">
+<meta property="og:title" content="ARES RACE — City from Above">
+<meta property="og:description" content="Real-data 3D flight over NYC & Sydney. 44 landmark buildings, bloom glow, live altitude HUD. No install.">
+<meta property="og:url" content="https://architect-dna.ch/fly">
+<meta name="theme-color" content="#000814">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;overflow:hidden}
-canvas{display:block}
-#hud{position:fixed;top:20px;left:20px;pointer-events:none;display:flex;flex-direction:column;gap:6px}
-.cycle-row{display:flex;align-items:center;gap:8px;font:700 10px 'SF Mono','Fira Code','Courier New',monospace;letter-spacing:.1em;text-transform:uppercase}
-.cycle-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.cycle-name{min-width:52px}
-.cycle-status{opacity:.55;font-size:9px}
-#scene-label{position:fixed;top:20px;right:20px;pointer-events:none;color:rgba(60,140,255,.4);font:600 9px 'SF Mono',monospace;letter-spacing:.08em;text-align:right;line-height:2;text-transform:uppercase}
-#ctrl{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px}
-.btn{background:rgba(4,10,32,.88);border:1px solid rgba(30,100,255,.3);color:rgba(100,190,255,.9);padding:8px 14px;border-radius:7px;font:700 10px 'SF Mono',monospace;cursor:pointer;letter-spacing:.08em;transition:border-color .2s,color .2s;backdrop-filter:blur(12px);white-space:nowrap}
-.btn:hover,.btn.active{border-color:rgba(60,180,255,.8);color:#fff}
-#round-badge{position:fixed;bottom:62px;left:50%;transform:translateX(-50%);color:rgba(60,140,255,.35);font:600 9px 'SF Mono',monospace;letter-spacing:.1em;pointer-events:none;white-space:nowrap}
-#map-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;color:rgba(60,180,255,.28);font:600 10px 'SF Mono',monospace;letter-spacing:.12em;text-align:center;line-height:2;text-transform:uppercase;transition:opacity .4s;opacity:0}
-#map-hint.show{opacity:1}
-.btn.map-active{border-color:rgba(0,255,200,.7);color:#00ffc8;background:rgba(0,255,200,.06)}
-#lm{position:fixed;bottom:94px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .6s;white-space:nowrap}
-#lm-name{color:#fff;font:900 15px/1.3 -apple-system,sans-serif;letter-spacing:-.02em;text-shadow:0 0 28px rgba(60,180,255,.9)}
-#lm-sub{color:rgba(120,200,255,.7);font:500 10px 'SF Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000814;--accent:#1e64ff;--accent2:#00c8ff;--text:#fff;--muted:rgba(255,255,255,.45);--card:#060f20}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 32px;backdrop-filter:blur(16px);background:rgba(0,8,20,.7);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-decoration:none}
+.nav-logo span{color:var(--accent2)}
+.nav-cta{background:var(--accent);color:#fff;text-decoration:none;padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;transition:opacity .2s,transform .15s}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px)}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(30,100,255,.1) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 80% 70%,rgba(0,200,255,.07) 0%,transparent 60%)}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1px 1px at 60% 20%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 80% 50%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 40% 70%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 10% 80%,rgba(255,255,255,.3) 0%,transparent 100%);pointer-events:none}
+.hero-icon{font-size:64px;margin-bottom:24px;position:relative;z-index:1;animation:fly 3s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(30,100,255,.6))}
+@keyframes fly{0%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}100%{transform:translateY(0) rotate(-3deg)}}
+.hero-tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+h1{font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:8px;background:linear-gradient(135deg,#1e64ff 0%,#00c8ff 50%,#ffffff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+.hero-sub-title{font-size:clamp(20px,4vw,36px);font-weight:300;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:24px;position:relative;z-index:1;text-transform:uppercase}
+.hero-sub{font-size:17px;color:var(--muted);max-width:440px;margin:0 auto 40px;position:relative;z-index:1;line-height:1.6}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;text-decoration:none;padding:16px 36px;border-radius:12px;font-size:16px;font-weight:800;transition:transform .2s,box-shadow .2s;position:relative;z-index:1;box-shadow:0 0 40px rgba(30,100,255,.3)}
+.hero-cta:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 60px rgba(30,100,255,.5)}
+.section{padding:80px 24px;max-width:920px;margin:0 auto}
+.section-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:12px}
+.section-title{font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-.03em;line-height:1;margin-bottom:40px}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.feat{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;transition:transform .2s,border-color .2s}
+.feat:hover{transform:translateY(-3px);border-color:rgba(0,200,255,.2)}
+.feat-icon{font-size:28px;margin-bottom:12px;display:block}
+.feat-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.cities{display:flex;gap:16px;justify-content:center;margin-top:48px;flex-wrap:wrap}
+.city-badge{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px 28px;text-align:center;min-width:160px}
+.city-name{font-size:18px;font-weight:900;letter-spacing:-.01em;margin-bottom:4px}
+.city-count{font-size:12px;color:var(--muted)}
+.cta-section{text-align:center;padding:100px 24px;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(30,100,255,.12) 0%,transparent 70%);pointer-events:none}
+.cta-title{font-size:clamp(26px,5vw,44px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:32px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1e64ff,#00c8ff);color:#fff;text-decoration:none;padding:16px 44px;border-radius:12px;font-size:16px;font-weight:900;transition:transform .2s,box-shadow .2s;box-shadow:0 0 40px rgba(30,100,255,.2)}
+.cta-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 70px rgba(30,100,255,.4)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:28px 24px;text-align:center;font-size:13px;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--text)}
+body{transition:opacity .35s ease}
+body.leaving{opacity:0}
+@media(max-width:640px){nav{padding:14px 20px}.section{padding:56px 16px}}
 </style>
 </head>
 <body>
-
-<div id="hud"></div>
-
-<div id="scene-label">
-  <div>REAL BUILDING DATA</div>
-  <div id="badge-src">NYC OPEN DATA</div>
-  <div id="round-num" style="margin-top:4px;color:rgba(0,255,255,.3)">ROUND 1</div>
-</div>
-
-<div id="lm"><div id="lm-name"></div><div id="lm-sub"></div></div>
-
-<div id="map-hint">DRAG TO ORBIT · SCROLL TO ZOOM<br>DOUBLE-CLICK TO RESET</div>
-<div id="ctrl">
-  <button class="btn active" id="btn-nyc" onclick="switchCity('nyc')">🏙 NEW YORK</button>
-  <button class="btn" id="btn-syd" onclick="switchCity('syd')">🦘 SYDNEY</button>
-  <button class="btn" id="btn-map" onclick="toggleMapMode()">📡 MAP MODE</button>
-</div>
-
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"}}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-
-function mkRng(seed){
-  let s=seed>>>0;
-  return()=>{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
-}
-
-// ── CITY DATA ──────────────────────────────────────────────────────────────
-const CITIES={
-  nyc:{
-    name:'NEW YORK',src:'NYC OPEN DATA',
-    center:{lat:40.7484,lon:-73.9967},latScale:111320,lonScale:84390,
-    bg:0x000208,fog:0x000412,fogD:0.000115,grid:0x051530,
-    landmarks:[
-      [40.71262,-74.01317,541,65,65,'One World Trade Center','541m · Tallest in Western Hemisphere'],
-      [40.71183,-74.01155,329,55,45,'3 World Trade Center','329m · Rogers Stirk Harbour + Partners'],
-      [40.71250,-74.01177,298,55,55,'4 World Trade Center','298m · Fumihiko Maki · 2013'],
-      [40.71310,-74.01146,226,40,40,'7 World Trade Center','226m · Skidmore Owings & Merrill · 2006'],
-      [40.70760,-74.00904,283,37,37,'40 Wall Street','283m · 1930 · Walter Chrysler\'s "revenge"'],
-      [40.70620,-74.00736,290,34,34,'70 Pine Street','290m · Art Deco 1932'],
-      [40.70769,-74.01165,248,52,52,'28 Liberty Street','248m · SOM · 1961'],
-      [40.70950,-74.00820,226,45,45,'One Liberty Plaza','226m · Skidmore Owings & Merrill · 1973'],
-      [40.71817,-74.00855,250,27,22,'56 Leonard Street','250m · Jenga Tower · Herzog & de Meuron'],
-      [40.70283,-74.01122,188,85,55,'55 Water Street','188m · Emery Roth & Sons · 1972'],
-      [40.70850,-74.01039,164,40,40,'140 Broadway','164m · Skidmore Owings & Merrill · 1967'],
-      [40.71006,-74.01084,130,50,50,'195 Broadway','130m · AT&T Long Lines · 1922'],
-      [40.75387,-74.00196,387,55,55,'30 Hudson Yards','387m · KPF · Edge observation deck'],
-      [40.75329,-74.00127,310,55,55,'One Manhattan West','310m · Skidmore Owings & Merrill · 2021'],
-      [40.75427,-74.00023,310,50,50,'50 Hudson Yards','310m · Foster + Partners · 2023'],
-      [40.75385,-74.00083,240,50,50,'55 Hudson Yards','240m · KPF · 2019'],
-      [40.75660,-73.98608,366,52,52,'Bank of America Tower','366m · Cook + Fox · 2009 · LEED Platinum'],
-      [40.75857,-73.98588,222,40,40,'Marriott Marquis','222m · John Portman · 1985'],
-      [40.75680,-73.98669,248,50,50,'4 Times Square','248m · Skidmore Owings & Merrill · 2000'],
-      [40.76030,-73.98673,216,45,45,'1 Worldwide Plaza','216m · Skidmore Owings & Merrill · 1989'],
-      [40.74844,-73.99566,443,57,57,'Empire State Building','443m · Art Deco · Shreve Lamb Harmon · 1931'],
-      [40.75283,-73.97640,246,55,55,'MetLife Building','246m · Walter Gropius · Formerly Pan Am · 1963'],
-      [40.75274,-73.97821,427,57,57,'One Vanderbilt','427m · KPF · 2020 · Summit observation'],
-      [40.75161,-73.97552,319,34,34,'Chrysler Building','319m · William Van Alen · Art Deco 1930'],
-      [40.75714,-73.97278,279,49,49,'Citigroup Center','279m · Hugh Stubbins · Stilts · 1977'],
-      [40.75587,-73.97870,260,55,55,'30 Rockefeller Plaza','260m · Raymond Hood · NBC HQ · 1933'],
-      [40.75556,-73.97441,423,52,52,'270 Park Avenue','423m · JPMorgan Chase HQ · 2025'],
-      [40.75479,-73.97256,214,45,45,'277 Park Avenue','214m · Emery Roth & Sons · 1963'],
-      [40.75618,-73.97260,187,40,40,'345 Park Avenue','187m · Emery Roth & Sons · 1969'],
-      [40.75329,-73.97237,208,45,45,'245 Park Avenue','208m · Shreve Lamb Harmon · 1967'],
-      [40.75254,-73.97591,166,50,50,'230 Park Avenue','166m · Helmsley Building · 1929'],
-      [40.75854,-73.97729,172,35,35,'1221 Ave of Americas','172m · News Corp · Fox · 1971'],
-      [40.75509,-73.98701,220,45,45,'1440 Broadway','220m · Times Square tower'],
-      [40.76190,-73.97245,426,28,28,'432 Park Avenue','426m · Rafael Viñoly · Slimmest supertall ever'],
-      [40.76447,-73.97886,435,18,18,'111 W 57th — Steinway Tower','435m · SHoP Architects · 1:24 slenderness ratio'],
-      [40.76565,-73.98042,472,37,37,'Central Park Tower','472m · Adrian Smith + Gordon Gill · 2021'],
-      [40.76547,-73.97913,306,44,44,'One57','306m · Christian de Portzamparc · 2014'],
-      [40.76706,-73.98060,290,42,42,'220 Central Park South','290m · Robert A.M. Stern · 2019'],
-      [40.76489,-73.96983,243,38,38,'520 Park Avenue','243m · Robert A.M. Stern · 2018'],
-      [40.76048,-73.96830,249,40,40,'252 East 57th','249m · Skidmore Owings & Merrill · 2016'],
-      [40.76357,-73.97230,213,50,50,'GM Building','213m · Edward Durell Stone · 1968'],
-      [40.76243,-73.97437,202,46,46,'Trump Tower','202m · Der Scutt · 1983'],
-      [40.76506,-73.97971,230,32,32,'Carnegie Hall Tower','230m · César Pelli · 1991'],
-    ],
-    gridCfg:{avSp:260,stSp:80,x0:-2400,x1:2200,z0:-2700,z1:5400,seed:42},
-    hFn:(x,z,r)=>{
-      if(z>3000) return 20+r()*230;
-      if(Math.abs(z)<1400&&Math.abs(x)<1300) return 18+r()*160;
-      if(Math.abs(z)<2200&&Math.abs(x)<1700) return 14+r()*90;
-      if(z<-1200) return 12+r()*55;
-      return 10+r()*45;
-    },
-    inBounds:(x,z)=>{
-      if(z>4900&&(x<-1400||x>800)) return false;
-      if(z>3900&&(x<-1800||x>1100)) return false;
-      if(z>2600&&x<-2100) return false;
-      return x>-2500&&x<2300&&z>-2800;
-    },
-  },
-  syd:{
-    name:'SYDNEY',src:'AUSTRALIAN BUREAU OF STATISTICS',
-    center:{lat:-33.8688,lon:151.2093},latScale:111320,lonScale:92380,
-    bg:0x00060c,fog:0x000f18,fogD:0.000200,grid:0x041520,
-    landmarks:[
-      [-33.8715,151.2069,305,20,20,'Sydney Tower Eye','305m · Crown landmark · Tallest structure in Sydney'],
-      [-33.8695,151.2090,228,40,40,'MLC Centre','228m · Harry Seidler · 1978 · Brutalist'],
-      [-33.8673,151.2099,226,45,45,'Governor Phillip Tower','226m · Denton Corker Marshall · 1993'],
-      [-33.8667,151.2096,208,40,40,'One Farrer Place','208m · Denton Corker Marshall · 1988'],
-      [-33.8660,151.2087,244,38,38,'Chifley Tower','244m · KPF · 1992'],
-      [-33.8651,151.2087,226,45,45,'Grosvenor Place','226m · Harry Seidler · 1988'],
-      [-33.8661,151.2082,237,40,40,'Liberty Place','237m · Bates Smart · 2014'],
-      [-33.8672,151.2093,205,38,38,'Deutsche Bank Place','205m · Foster + Partners · 2005'],
-      [-33.8694,151.2090,182,40,40,'Citigroup Centre','182m · CBD · 2000'],
-      [-33.8647,151.2110,144,35,35,'1 Bligh Street','144m · Architectus · 6 Green Star · 2011'],
-      [-33.8680,151.2060,216,42,42,'200 George Street','216m · Fitzpatrick + Partners · 2016'],
-      [-33.8689,151.2050,193,40,40,'255 George Street','193m · NAB Headquarters · 1988'],
-      [-33.8652,151.2104,214,38,38,'Aurora Place','214m · Renzo Piano · 2000'],
-      [-33.8627,151.2094,183,36,36,'8 Chifley Square','183m · Rogers Stirk Harbour · 2013'],
-      [-33.8618,151.2001,217,55,55,'International Tower 1','217m · Rogers Stirk Harbour + Partners · 2016'],
-      [-33.8624,151.2007,168,50,50,'International Tower 2','168m · Rogers Stirk Harbour + Partners · 2015'],
-      [-33.8624,151.2003,185,50,50,'International Tower 3','185m · Rogers Stirk Harbour + Partners · 2016'],
-      [-33.8600,151.1975,340,55,55,'Crown Sydney','340m · Wilkinson Eyre · 2021 · Barangaroo'],
-      [-33.8568,151.2153,67,190,100,'Sydney Opera House','67m · Jørn Utzon · 1973 · UNESCO World Heritage'],
-      [-33.8608,151.2136,55,500,80,'Sydney Harbour Bridge','134m arch · Dorman Long · 1932 · Coat hanger'],
-    ],
-    gridCfg:{avSp:160,stSp:100,x0:-1500,x1:1500,z0:-1600,z1:1600,seed:77},
-    hFn:(x,z,r)=>{const d=Math.sqrt(x*x+z*z);if(d<400)return 22+r()*180;if(d<800)return 14+r()*80;return 8+r()*35;},
-    inBounds:(x,z)=>Math.sqrt(x*x+z*z)<1400,
-  },
-};
-
-// ── RENDERER ──────────────────────────────────────────────────────────────
-const W=innerWidth,H=innerHeight;
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
-document.body.appendChild(renderer.domElement);
-
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(68,W/H,1,150000);
-
-const composer=new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(W,H),1.6,0.42,0.08);
-composer.addPass(bloom);
-
-// Stars
-(()=>{
-  const v=[];
-  for(let i=0;i<4000;i++){
-    const r=80000,theta=Math.random()*Math.PI*2,phi=Math.acos(2*Math.random()-1);
-    v.push(r*Math.sin(phi)*Math.cos(theta),Math.abs(r*Math.cos(phi))+800,r*Math.sin(phi)*Math.sin(theta));
-  }
-  const g=new THREE.BufferGeometry();
-  g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));
-  scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x6080a0,size:22,transparent:true,opacity:.45,blending:THREE.AdditiveBlending,sizeAttenuation:true})));
-})();
-
-// ── STATE ──────────────────────────────────────────────────────────────────
-let landmarkMeshes=[],procMesh=null,gridMesh=null;
-let buildingBoxes=[];
-let drone=null;
-let currentCity='nyc',frame=0,round=1;
-const clock=new THREE.Clock();
-
-function ll2xz(city,lat,lon){return{x:(lon-city.center.lon)*city.lonScale,z:-(lat-city.center.lat)*city.latScale};}
-
-function bCol(h,bright){
-  const t=Math.min(h/500,1);
-  return bright
-    ?new THREE.Color(0.04+t*0.7,0.22+t*0.68,1.0)
-    :new THREE.Color(0.01+t*0.07,0.04+t*0.18,0.18+t*0.35);
-}
-
-function clearCity(){
-  for(const m of landmarkMeshes){m.geometry.dispose();m.material.dispose();scene.remove(m);}
-  landmarkMeshes=[];
-  if(procMesh){procMesh.geometry.dispose();procMesh.material.dispose();scene.remove(procMesh);procMesh=null;}
-  if(gridMesh){gridMesh.material.dispose();scene.remove(gridMesh);gridMesh=null;}
-  buildingBoxes=[];
-  if(drone){drone.dispose();drone=null;}
-}
-
-// ── DRONE ──────────────────────────────────────────────────────────────────
-class Drone{
-  constructor(){
-    this.pos=new THREE.Vector3();
-    this.vel=new THREE.Vector3();
-    this.waypoint=new THREE.Vector3();
-    this.speed=5.5;
-    this._spawn();
-    this._pickWaypoint();
-    const mat=new THREE.MeshBasicMaterial({color:0x00ffcc,blending:THREE.AdditiveBlending,transparent:true,opacity:.95});
-    this.body=new THREE.Mesh(new THREE.BoxGeometry(9,3,18),mat);
-    scene.add(this.body);
-    const gm=new THREE.MeshBasicMaterial({color:0x00ffcc,blending:THREE.AdditiveBlending,transparent:true,opacity:.13});
-    this.glow=new THREE.Mesh(new THREE.SphereGeometry(24,8,6),gm);
-    scene.add(this.glow);
-    const d=this.waypoint.clone().sub(this.pos);d.y=0;
-    this.vel.copy(d.length()>0?d.normalize().multiplyScalar(this.speed):new THREE.Vector3(this.speed,0,0));
-  }
-  _spawn(){
-    const C=CITIES[currentCity],{x0,x1,z0,z1}=C.gridCfg;
-    this.pos.set(x0+(x1-x0)*0.1+(Math.random()-.5)*(x1-x0)*0.2,180+Math.random()*80,z0+(z1-z0)*0.15);
-  }
-  _clearAt(x,z,y){
-    for(const b of buildingBoxes)
-      if(x>b.minX-10&&x<b.maxX+10&&z>b.minZ-10&&z<b.maxZ+10&&y<b.h+15) return false;
-    return true;
-  }
-  _pickWaypoint(){
-    const C=CITIES[currentCity],{x0,x1,z0,z1}=C.gridCfg;
-    for(let i=0;i<40;i++){
-      const x=x0+Math.random()*(x1-x0),z=z0+Math.random()*(z1-z0),y=60+Math.random()*280;
-      if(this._clearAt(x,z,y)){this.waypoint.set(x,y,z);return;}
-    }
-    this.waypoint.set(0,300,0);
-  }
-  update(){
-    const toWp=this.waypoint.clone().sub(this.pos);
-    if(toWp.length()<90) this._pickWaypoint();
-    const desired=toWp.clone().normalize().multiplyScalar(this.speed);
-    const avoid=new THREE.Vector3();
-    const RDIST=75;
-    for(const b of buildingBoxes){
-      const bcx=(b.minX+b.maxX)*.5,bcz=(b.minZ+b.maxZ)*.5;
-      if(Math.abs(this.pos.x-bcx)+Math.abs(this.pos.z-bcz)>RDIST*4) continue;
-      const cx=Math.max(b.minX,Math.min(this.pos.x,b.maxX));
-      const cy=Math.max(0,Math.min(this.pos.y,b.h));
-      const cz=Math.max(b.minZ,Math.min(this.pos.z,b.maxZ));
-      const dx=this.pos.x-cx,dy=this.pos.y-cy,dz=this.pos.z-cz;
-      const dist=Math.sqrt(dx*dx+dy*dy+dz*dz);
-      if(dist<RDIST&&dist>0.1){
-        const s=(RDIST-dist)/RDIST;
-        avoid.x+=dx/dist*s*this.speed*5;
-        avoid.y+=dy/dist*s*this.speed*2.5;
-        avoid.z+=dz/dist*s*this.speed*5;
-      }
-    }
-    avoid.y+=(this.waypoint.y-this.pos.y)*0.025;
-    if(this.pos.y<38) avoid.y+=(38-this.pos.y)*0.8;
-    // Hard push-out if actually inside a building
-    for(const b of buildingBoxes){
-      if(this.pos.x>b.minX&&this.pos.x<b.maxX&&this.pos.z>b.minZ&&this.pos.z<b.maxZ&&this.pos.y<b.h){
-        // Push toward nearest exit — quickest is over the top
-        const overTop=b.h-this.pos.y+20;
-        const outX=Math.min(this.pos.x-b.minX,b.maxX-this.pos.x);
-        const outZ=Math.min(this.pos.z-b.minZ,b.maxZ-this.pos.z);
-        if(overTop<=outX&&overTop<=outZ){avoid.y+=overTop*1.8;}
-        else if(outX<=outZ){avoid.x+=this.pos.x<(b.minX+b.maxX)*.5?-outX*2:outX*2;}
-        else{avoid.z+=this.pos.z<(b.minZ+b.maxZ)*.5?-outZ*2:outZ*2;}
-        break;
-      }
-    }
-    const C=CITIES[currentCity],{x0,x1,z0,z1}=C.gridCfg;
-    const PAD=120;
-    if(this.pos.x<x0+PAD) avoid.x+=(x0+PAD-this.pos.x)*0.12;
-    if(this.pos.x>x1-PAD) avoid.x-=(this.pos.x-(x1-PAD))*0.12;
-    if(this.pos.z<z0+PAD) avoid.z+=(z0+PAD-this.pos.z)*0.12;
-    if(this.pos.z>z1-PAD) avoid.z-=(this.pos.z-(z1-PAD))*0.12;
-    const steer=desired.add(avoid);
-    const hSteer=new THREE.Vector3(steer.x,0,steer.z);
-    const vSteer=Math.max(-this.speed*.5,Math.min(this.speed*.5,steer.y));
-    const tVel=new THREE.Vector3();
-    if(hSteer.length()>0.01){hSteer.normalize();tVel.x=hSteer.x*this.speed;tVel.z=hSteer.z*this.speed;}
-    tVel.y=vSteer;
-    this.vel.lerp(tVel,0.07);
-    this.pos.addScaledVector(this.vel,1);
-    if(this.pos.y<35) this.pos.y=35;
-    this.body.position.copy(this.pos);
-    this.glow.position.copy(this.pos);
-    const hv=new THREE.Vector3(this.vel.x,0,this.vel.z);
-    if(hv.length()>0.1) this.body.rotation.y=Math.atan2(-hv.x,-hv.z);
-    this.body.rotation.x=Math.atan2(-this.vel.y,hv.length())*0.4;
-  }
-  dispose(){
-    scene.remove(this.body);scene.remove(this.glow);
-    this.body.geometry.dispose();this.body.material.dispose();
-    this.glow.geometry.dispose();this.glow.material.dispose();
-  }
-}
-
-function buildCity(key){
-  const C=CITIES[key];currentCity=key;
-  clearCity();
-
-  scene.background=new THREE.Color(C.bg);
-  scene.fog=new THREE.FogExp2(C.fog,C.fogD);
-
-  for(const [lat,lon,h,w,d,name,detail] of C.landmarks){
-    const{x,z}=ll2xz(C,lat,lon);
-    const geo=new THREE.BoxGeometry(w,h,d);
-    const edges=new THREE.EdgesGeometry(geo);
-    const mat=new THREE.LineBasicMaterial({color:bCol(h,true),transparent:true,opacity:1,blending:THREE.AdditiveBlending});
-    const m=new THREE.LineSegments(edges,mat);
-    m.position.set(x,h/2,z);
-    m.userData={name,detail,h};
-    scene.add(m);landmarkMeshes.push(m);
-    geo.dispose();
-    buildingBoxes.push({minX:x-w/2,maxX:x+w/2,minZ:z-d/2,maxZ:z+d/2,h});
-  }
-
-  const rng=mkRng(C.gridCfg.seed);
-  const{avSp,stSp,x0,x1,z0,z1}=C.gridCfg;
-  const pos=[],col=[];
-
-  for(let ax=x0;ax<x1;ax+=avSp){
-    for(let az=z0;az<z1;az+=stSp){
-      const nb=1+Math.floor(rng()*3);
-      for(let bi=0;bi<nb;bi++){
-        const bx=ax+12+rng()*(avSp-24);
-        const bz=az+8+rng()*(stSp-16);
-        if(!C.inBounds(bx,bz)) continue;
-        let skip=false;
-        for(const lm of landmarkMeshes){const dx=lm.position.x-bx,dz=lm.position.z-bz;if(dx*dx+dz*dz<75*75){skip=true;break;}}
-        if(skip) continue;
-        const bw=14+rng()*32,bd=14+rng()*28,bh=C.hFn(bx,bz,rng);
-        const by=bh/2,hw=bw/2,hh=bh/2,hd=bd/2;
-        buildingBoxes.push({minX:bx-hw,maxX:bx+hw,minZ:bz-hd,maxZ:bz+hd,h:bh});
-        const corners=[[bx-hw,by-hh,bz-hd],[bx+hw,by-hh,bz-hd],[bx+hw,by-hh,bz+hd],[bx-hw,by-hh,bz+hd],[bx-hw,by+hh,bz-hd],[bx+hw,by+hh,bz-hd],[bx+hw,by+hh,bz+hd],[bx-hw,by+hh,bz+hd]];
-        const ep=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
-        const c=bCol(bh,false);
-        for(const[a,b]of ep){pos.push(...corners[a],...corners[b]);col.push(c.r,c.g,c.b,c.r,c.g,c.b);}
-      }
-    }
-  }
-
-  const pg=new THREE.BufferGeometry();
-  pg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-  pg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
-  procMesh=new THREE.LineSegments(pg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.6,blending:THREE.AdditiveBlending}));
-  scene.add(procMesh);
-
-  const span=Math.max(x1-x0,z1-z0)*1.6;
-  gridMesh=new THREE.GridHelper(span,Math.floor(span/130),new THREE.Color(C.grid),new THREE.Color(C.grid));
-  gridMesh.material.transparent=true;gridMesh.material.opacity=.28;gridMesh.material.blending=THREE.AdditiveBlending;
-  scene.add(gridMesh);
-
-  document.getElementById('badge-src').textContent=C.src;
-  document.getElementById('btn-nyc').classList.toggle('active',key==='nyc');
-  document.getElementById('btn-syd').classList.toggle('active',key==='syd');
-  bloom.strength=key==='syd'?1.3:1.6;
-
-  drone=new Drone();
-}
-
-// ── TRON RACE ──────────────────────────────────────────────────────────────
-const RACE_COLS=22,RACE_ROWS=52,RACE_CELL=40,TRAIL_H=34,RACE_TICK=7;
-let raceGrid,raceCycles=[],raceMeshes=[],raceFrame=0,raceOver=false,restartIn=0;
-
-const RIDERS=[
-  {hex:0xff6b00,css:'#ff6b00',name:'ARES',  col:11,row:4,  dir:[0,1]},
-  {hex:0x00ffff,css:'#00ffff',name:'CYAN',  col:11,row:47, dir:[0,-1]},
-  {hex:0xff00ff,css:'#ff00ff',name:'CYLON', col:2, row:26, dir:[1,0]},
-  {hex:0x00ff44,css:'#00ff44',name:'UNIT',  col:19,row:26, dir:[-1,0]},
-];
-
-function gw(col,row){return{x:(col-RACE_COLS/2+.5)*RACE_CELL,z:(row-RACE_ROWS/2+.5)*RACE_CELL};}
-
-class RaceCycle{
-  constructor(cfg){
-    this.col=cfg.col;this.row=cfg.row;this.dir=[...cfg.dir];
-    this.hex=cfg.hex;this.css=cfg.css;this.name=cfg.name;
-    this.alive=true;this.qDir=null;this.px=null;this.pz=null;
-    const bm=new THREE.MeshBasicMaterial({color:cfg.hex,blending:THREE.AdditiveBlending,transparent:true,opacity:1});
-    this.body=new THREE.Mesh(new THREE.BoxGeometry(10,7,22),bm);
-    scene.add(this.body);raceMeshes.push(this.body);
-    const gm=new THREE.MeshBasicMaterial({color:cfg.hex,blending:THREE.AdditiveBlending,transparent:true,opacity:.18});
-    this.glow=new THREE.Mesh(new THREE.SphereGeometry(20,8,6),gm);
-    scene.add(this.glow);raceMeshes.push(this.glow);
-    raceGrid[cfg.row*RACE_COLS+cfg.col]=1;
-    this._sync(0);
-  }
-  _sync(interp){
-    const w=gw(this.col,this.row);
-    const x=this.px!==null&&interp>0?this.px+(w.x-this.px)*interp:w.x;
-    const z=this.pz!==null&&interp>0?this.pz+(w.z-this.pz)*interp:w.z;
-    const y=TRAIL_H/2+5;
-    this.body.position.set(x,y,z);this.glow.position.set(x,y,z);
-    this.body.rotation.y=Math.atan2(-this.dir[0],this.dir[1]);
-  }
-  _wall(x0,z0,x1,z1){
-    const mx=(x0+x1)/2,mz=(z0+z1)/2,dx=x1-x0,dz=z1-z0;
-    const wm=new THREE.MeshBasicMaterial({color:this.hex,blending:THREE.AdditiveBlending,transparent:true,opacity:.75,side:THREE.DoubleSide});
-    const wall=new THREE.Mesh(new THREE.PlaneGeometry(Math.sqrt(dx*dx+dz*dz)+1,TRAIL_H),wm);
-    wall.position.set(mx,TRAIL_H/2,mz);wall.rotation.y=Math.atan2(dz,dx);
-    scene.add(wall);raceMeshes.push(wall);
-  }
-  step(){
-    if(!this.alive) return;
-    if(this.qDir){this.dir=[...this.qDir];this.qDir=null;}
-    const w0=gw(this.col,this.row);
-    this.px=w0.x;this.pz=w0.z;
-    const nc=this.col+this.dir[0],nr=this.row+this.dir[1];
-    if(nc<0||nc>=RACE_COLS||nr<0||nr>=RACE_ROWS||raceGrid[nr*RACE_COLS+nc]!==0){this.kill();return;}
-    this._wall(w0.x,w0.z,gw(nc,nr).x,gw(nc,nr).z);
-    this.col=nc;this.row=nr;raceGrid[nr*RACE_COLS+nc]=1;
-    this.aiDecide();
-  }
-  aiDecide(){
-    // Weighted look-ahead: prefer moves with more open space
-    const ds=[[1,0],[-1,0],[0,1],[0,-1]];
-    let best=null,bestScore=-1;
-    for(const[dc,dr]of ds){
-      if(dc===-this.dir[0]&&dr===-this.dir[1]) continue;
-      let c=this.col+dc,r=this.row+dr,score=0;
-      for(let i=0;i<8;i++){
-        if(c<0||c>=RACE_COLS||r<0||r>=RACE_ROWS||raceGrid[r*RACE_COLS+c]!==0) break;
-        score++;c+=dc;r+=dr;
-      }
-      if(score>bestScore||(score===bestScore&&Math.random()<.4)){bestScore=score;best=[dc,dr];}
-    }
-    if(best) this.qDir=best;
-  }
-  kill(){
-    this.alive=false;this.body.visible=false;this.glow.visible=false;
-    // explosion flash
-    const fm=new THREE.MeshBasicMaterial({color:this.hex,blending:THREE.AdditiveBlending,transparent:true,opacity:.6});
-    const flash=new THREE.Mesh(new THREE.SphereGeometry(35,10,8),fm);
-    const w=gw(this.col,this.row);flash.position.set(w.x,TRAIL_H/2+5,w.z);
-    scene.add(flash);raceMeshes.push(flash);
-    let age=0;
-    const fade=setInterval(()=>{fm.opacity=Math.max(0,.6-age*.04);age++;if(age>15)clearInterval(fade);},16);
-  }
-  tick(interp){if(this.alive)this._sync(interp);}
-}
-
-function startRace(){
-  for(const m of raceMeshes){if(m.geometry)m.geometry.dispose();if(m.material)m.material.dispose();scene.remove(m);}
-  raceMeshes=[];raceCycles=[];raceOver=false;raceFrame=0;restartIn=0;
-  raceGrid=new Uint8Array(RACE_COLS*RACE_ROWS);
-  for(const cfg of RIDERS) raceCycles.push(new RaceCycle(cfg));
-  updateHUD();
-  document.getElementById('round-num').textContent='ROUND '+round;
-}
-
-function updateHUD(){
-  const hud=document.getElementById('hud');
-  hud.innerHTML='';
-  for(const c of raceCycles){
-    const row=document.createElement('div');
-    row.className='cycle-row';
-    row.innerHTML=`<div class="cycle-dot" style="background:${c.css};box-shadow:0 0 6px ${c.css}"></div><span class="cycle-name" style="color:${c.css}">${c.name}</span><span class="cycle-status">${c.alive?'ALIVE':'CRASHED'}</span>`;
-    hud.appendChild(row);
-  }
-}
-
-// Camera orbit state
-let camAngle=0.4,camPhi=0.62,camRadius=1600;
-const CAM_CENTER=new THREE.Vector3(0,TRAIL_H/2,0);
-
-// Map mode (user-controlled orbit)
-let mapMode=false;
-let mapDragging=false,mapLastX=0,mapLastY=0;
-let mapAngle=0.4,mapPhi=0.62,mapRadius=1600;
-
-window.toggleMapMode=function(){
-  mapMode=!mapMode;
-  const btn=document.getElementById('btn-map');
-  const hint=document.getElementById('map-hint');
-  if(mapMode){
-    // snapshot current cinematic angles
-    mapAngle=camAngle;mapPhi=camPhi;mapRadius=camRadius;
-    btn.classList.add('map-active');btn.textContent='🎬 CINEMATIC';
-    hint.classList.add('show');
-    setTimeout(()=>hint.classList.remove('show'),2800);
-  } else {
-    btn.classList.remove('map-active');btn.textContent='📡 MAP MODE';
-    hint.classList.remove('show');
-  }
-};
-
-// Mouse drag orbit
-renderer.domElement.addEventListener('mousedown',e=>{
-  if(!mapMode) return;
-  mapDragging=true;mapLastX=e.clientX;mapLastY=e.clientY;
+<nav>
+  <a href="https://architect-dna.ch" class="nav-logo">architect<span>·</span>dna</a>
+  <a href="https://fly.architect-dna.ch" class="nav-cta">Fly Now →</a>
+</nav>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="stars"></div>
+  <span class="hero-icon">✈️</span>
+  <p class="hero-tag">Browser Game · Free · 3D Canvas</p>
+  <h1>ARES RACE</h1>
+  <div class="hero-sub-title">City from Above</div>
+  <p class="hero-sub">Real-data 3D bird flight over NYC and Sydney. 44+ landmark buildings, bloom rendering, live altitude HUD. Pure canvas — no WebGL, no engine.</p>
+  <a href="https://fly.architect-dna.ch" class="hero-cta">Take Flight ✈️</a>
+</section>
+<section class="section">
+  <p class="section-label">Real cities</p>
+  <h2 class="section-title">Two cities. One wingspan.</h2>
+  <div class="features">
+    <div class="feat"><span class="feat-icon">🏙️</span><div class="feat-title">Real Landmark Data</div><div class="feat-desc">44+ iconic buildings across NYC and Sydney, positioned and scaled from real-world data. Empire State, Opera House, and more.</div></div>
+    <div class="feat"><span class="feat-icon">✨</span><div class="feat-title">Bloom Rendering</div><div class="feat-desc">Neon bloom glow on buildings at night. Multi-pass canvas compositing — no WebGL required.</div></div>
+    <div class="feat"><span class="feat-icon">🛩️</span><div class="feat-title">Live HUD</div><div class="feat-desc">Altitude, heading, airspeed, and city indicators overlaid on the canvas in real time.</div></div>
+    <div class="feat"><span class="feat-icon">🌐</span><div class="feat-title">Pure Browser</div><div class="feat-desc">No WebGL, no Unity, no app. Built entirely on 2D canvas. Runs everywhere instantly.</div></div>
+  </div>
+  <div class="cities">
+    <div class="city-badge"><div class="city-name">🗽 NYC</div><div class="city-count">26 landmarks</div></div>
+    <div class="city-badge"><div class="city-name">🦘 Sydney</div><div class="city-count">18 landmarks</div></div>
+  </div>
+</section>
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <h2 class="cta-title">Ready for takeoff?</h2>
+  <p class="cta-sub">No passport. No boarding pass. Just fly.</p>
+  <a href="https://fly.architect-dna.ch" class="cta-btn">Take Flight ✈️</a>
+</section>
+<footer>
+  <p><a href="https://architect-dna.ch">architect-dna.ch</a> &nbsp;·&nbsp; <a href="https://architect-dna.ch/privacy">Privacy</a></p>
+</footer>
+<script>
+document.querySelectorAll('a[href]').forEach(a=>{
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('http')||href.startsWith('#')||a.target==='_blank') return;
+  a.addEventListener('click',e=>{e.preventDefault();document.body.classList.add('leaving');setTimeout(()=>{location.href=href},340)});
 });
-renderer.domElement.addEventListener('mousemove',e=>{
-  if(!mapMode||!mapDragging) return;
-  const dx=e.clientX-mapLastX,dy=e.clientY-mapLastY;
-  mapAngle-=dx*0.006;
-  mapPhi=Math.max(0.08,Math.min(1.45,mapPhi-dy*0.005));
-  mapLastX=e.clientX;mapLastY=e.clientY;
-});
-window.addEventListener('mouseup',()=>{mapDragging=false;});
-
-// Scroll zoom
-renderer.domElement.addEventListener('wheel',e=>{
-  if(!mapMode) return;
-  mapRadius=Math.max(300,Math.min(6000,mapRadius+e.deltaY*1.5));
-},{passive:true});
-
-// Touch orbit (pinch-zoom + drag)
-let _tPrev=null,_tPinchDist=null;
-renderer.domElement.addEventListener('touchstart',e=>{
-  if(!mapMode) return;
-  if(e.touches.length===1){_tPrev={x:e.touches[0].clientX,y:e.touches[0].clientY};_tPinchDist=null;}
-  if(e.touches.length===2){
-    const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
-    _tPinchDist=Math.sqrt(dx*dx+dy*dy);_tPrev=null;
-  }
-},{passive:true});
-renderer.domElement.addEventListener('touchmove',e=>{
-  if(!mapMode) return;
-  if(e.touches.length===1&&_tPrev){
-    const dx=e.touches[0].clientX-_tPrev.x,dy=e.touches[0].clientY-_tPrev.y;
-    mapAngle-=dx*0.006;mapPhi=Math.max(0.08,Math.min(1.45,mapPhi-dy*0.005));
-    _tPrev={x:e.touches[0].clientX,y:e.touches[0].clientY};
-  }
-  if(e.touches.length===2&&_tPinchDist!==null){
-    const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    mapRadius=Math.max(300,Math.min(6000,mapRadius*(_tPinchDist/dist)));
-    _tPinchDist=dist;
-  }
-},{passive:true});
-renderer.domElement.addEventListener('touchend',()=>{_tPrev=null;_tPinchDist=null;},{passive:true});
-
-// Double-click reset
-renderer.domElement.addEventListener('dblclick',()=>{
-  if(!mapMode) return;
-  mapAngle=0.4;mapPhi=0.62;mapRadius=1600;
-});
-
-function updateRace(){
-  raceFrame++;
-
-  // Wait before restart
-  if(restartIn>0){
-    restartIn--;
-    if(restartIn===0){round++;startRace();}
-    return;
-  }
-
-  const interp=(raceFrame%RACE_TICK)/RACE_TICK;
-
-  if(!raceOver&&raceFrame%RACE_TICK===0){
-    for(const c of raceCycles) c.step();
-    const alive=raceCycles.filter(c=>c.alive);
-    if(alive.length<=1){
-      raceOver=true;
-      updateHUD();
-      restartIn=180; // 3s then new round
-    }
-  }
-
-  for(const c of raceCycles) c.tick(interp);
-}
-
-// ── CAMERA ─────────────────────────────────────────────────────────────────
-function updateCamera(){
-  let angle,phi,radius;
-  if(mapMode){
-    angle=mapAngle;phi=mapPhi;radius=mapRadius;
-    // Persist cinematic angles so switching back is seamless
-    camAngle=angle;camPhi=phi;camRadius=radius;
-  } else {
-    const t=clock.getElapsedTime();
-    camAngle=t*0.04;
-    camPhi=0.58+Math.sin(t*0.07)*0.12;
-    camRadius=1500+Math.sin(t*0.05)*200;
-    // Sync map state so toggling into map mode starts from current view
-    mapAngle=camAngle;mapPhi=camPhi;mapRadius=camRadius;
-    angle=camAngle;phi=camPhi;radius=camRadius;
-  }
-  const x=radius*Math.sin(phi)*Math.sin(angle);
-  const y=radius*Math.cos(phi)+TRAIL_H;
-  const z=radius*Math.sin(phi)*Math.cos(angle);
-  camera.position.set(x,y,z);
-  camera.lookAt(CAM_CENTER);
-}
-
-// ── ANIMATE ────────────────────────────────────────────────────────────────
-function animate(){
-  requestAnimationFrame(animate);
-  frame++;
-
-  updateRace();
-  updateCamera();
-  if(drone) drone.update();
-
-  // Pulse landmark buildings
-  const pulse=0.82+Math.sin(Date.now()*0.0009)*0.18;
-  for(const lm of landmarkMeshes){
-    lm.material.opacity=(0.65+Math.min(lm.userData.h/500,1)*0.35)*pulse;
-  }
-
-  composer.render();
-}
-
-// ── CONTROLS ───────────────────────────────────────────────────────────────
-window.switchCity=key=>{
-  buildCity(key);
-  startRace();
-};
-
-window.addEventListener('resize',()=>{
-  const W=innerWidth,H=innerHeight;
-  camera.aspect=W/H;camera.updateProjectionMatrix();
-  renderer.setSize(W,H);composer.setSize(W,H);bloom.resolution.set(W,H);
-});
-
-// ── INIT ───────────────────────────────────────────────────────────────────
-buildCity('nyc');
-startRace();
-animate();
+document.body.style.opacity='0';
+requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity=''}));
 </script>
 </body>
 </html>

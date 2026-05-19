@@ -27,7 +27,8 @@ let W,H,DPR;
 
 // Constants
 const WALL=20;         // wall thickness
-const MX=60;           // horizontal room margin (shrinks room from full-width)
+const MX=120;          // horizontal room margin (shrinks room from full-width)
+const MY=60;           // vertical room margin (shrinks room height)
 const HUD_H=48;        // top HUD strip height
 const DOOR_HALF=50;    // half-width of door gap
 const TRANS_DUR=0.36;  // room slide seconds
@@ -45,7 +46,7 @@ function resize(){
   c.width=Math.round(W*DPR);c.height=Math.round(H*DPR);
   c.style.width=W+'px';c.style.height=H+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  RX=MX+WALL;RY=HUD_H;RW=W-2*(MX+WALL);RH=H-HUD_H-WALL;
+  RX=MX+WALL;RY=HUD_H+MY;RW=W-2*(MX+WALL);RH=H-HUD_H-MY-WALL;
 }
 window.addEventListener('resize',()=>{resize();});
 resize();
@@ -310,6 +311,9 @@ class Enemy{
           hitPlayer(this.dmg);
           const ang=Math.atan2(dy,dx);
           player.vx=-Math.cos(ang)*380;player.vy=-Math.sin(ang)*380;
+          // push brute away so it can't park inside player
+          this.x-=Math.cos(ang)*(this.r+player.r+6-d);
+          this.y-=Math.sin(ang)*(this.r+player.r+6-d);
         }
       }else{
         if(d>2){this.x+=dx/d*spd*dt;this.y+=dy/d*spd*dt;}
@@ -317,6 +321,8 @@ class Enemy{
           hitPlayer(this.dmg);
           const ang=Math.atan2(dy,dx);
           player.vx=-Math.cos(ang)*280;player.vy=-Math.sin(ang)*280;
+          this.x-=Math.cos(ang)*(this.r+player.r+6-d);
+          this.y-=Math.sin(ang)*(this.r+player.r+6-d);
         }
       }
     }else if(this.type==='phantom'){
@@ -333,6 +339,10 @@ class Enemy{
         hitPlayer(this.dmg);
         const ang=Math.atan2(dy,dx);
         player.vx=-Math.cos(ang)*220;player.vy=-Math.sin(ang)*220;
+        // phantom: teleport away after hit so it can't chain-hit
+        const tAng=Math.random()*TAU;
+        this.x=clamp(player.x+Math.cos(tAng)*160,RX+25,RX+RW-25);
+        this.y=clamp(player.y+Math.sin(tAng)*160,RY+25,RY+RH-25);
       }
     }else if(this.type==='boss'){
       if(this.hp/this.maxHp<0.6&&this.phase===1){
@@ -368,6 +378,9 @@ class Enemy{
         hitPlayer(this.dmg*1.4);
         const ang=Math.atan2(dy,dx);
         player.vx=-Math.cos(ang)*320;player.vy=-Math.sin(ang)*320;
+        // push boss away so it can't stay inside player
+        this.x-=Math.cos(ang)*(this.r+player.r+5-d);
+        this.y-=Math.sin(ang)*(this.r+player.r+5-d);
       }
     }
 
@@ -430,7 +443,7 @@ let player;
 function initPlayer(){
   const up=loadUpgrades();
   player={
-    x:W/2,y:(HUD_H+(H-WALL))/2,
+    x:W/2,y:(RY+(RY+RH))/2,
     vx:0,vy:0,r:9,
     hp:100+up.hp*25,maxHp:100+up.hp*25,
     speed:190+up.speed*15,
@@ -496,12 +509,12 @@ function finishTransition(){
   mapGX=pendingGX;mapGY=pendingGY;
   currentRoom.visited=true;
   // Place player at opposite door
-  const cy=(HUD_H+(H-WALL))/2;
+  const pcy=(RY+(RY+RH))/2;
   switch(transDir){
-    case'N':player.x=W/2;player.y=H-WALL-30;break;
-    case'S':player.x=W/2;player.y=HUD_H+30;break;
-    case'E':player.x=RX+30;player.y=cy;break;
-    case'W':player.x=RX+RW-30;player.y=cy;break;
+    case'N':player.x=W/2;player.y=RY+RH-30;break;
+    case'S':player.x=W/2;player.y=RY+30;break;
+    case'E':player.x=RX+30;player.y=pcy;break;
+    case'W':player.x=RX+RW-30;player.y=pcy;break;
   }
   player.vx=0;player.vy=0;
 }
@@ -535,11 +548,11 @@ function spawnEnemies(room){
 
 function checkDoors(){
   if(!currentRoom.cleared)return;
-  const cy=(HUD_H+(H-WALL))/2;
+  const dcy=(RY+(RY+RH))/2;
   if(currentRoom.exits.N&&player.y<RY+12&&Math.abs(player.x-W/2)<DOOR_HALF)startTransition('N');
-  else if(currentRoom.exits.S&&player.y>H-WALL-12&&Math.abs(player.x-W/2)<DOOR_HALF)startTransition('S');
-  else if(currentRoom.exits.E&&player.x>RX+RW-12&&Math.abs(player.y-cy)<DOOR_HALF)startTransition('E');
-  else if(currentRoom.exits.W&&player.x<RX+12&&Math.abs(player.y-cy)<DOOR_HALF)startTransition('W');
+  else if(currentRoom.exits.S&&player.y>RY+RH-12&&Math.abs(player.x-W/2)<DOOR_HALF)startTransition('S');
+  else if(currentRoom.exits.E&&player.x>RX+RW-12&&Math.abs(player.y-dcy)<DOOR_HALF)startTransition('E');
+  else if(currentRoom.exits.W&&player.x<RX+12&&Math.abs(player.y-dcy)<DOOR_HALF)startTransition('W');
 }
 
 // ── Hit / death ────────────────────────────────────────────────────────────────
@@ -570,7 +583,7 @@ function startGame(){
   pBullets=[];particles.length=0;floats.length=0;
   currentRoom=startRoom;currentRoom.visited=true;
   roomsCleared=0;gameState='playing';
-  player.x=W/2;player.y=(HUD_H+(H-WALL))/2;
+  player.x=W/2;player.y=(RY+(RY+RH))/2;
 }
 
 // ── Input ─────────────────────────────────────────────────────────────────────
@@ -702,15 +715,15 @@ function update(dt){
     }
 
     // Wall collision with door openings
-    const cy=(HUD_H+(H-WALL))/2;
+    const wcy=(RY+(RY+RH))/2;
     const atN=Math.abs(player.x-W/2)<DOOR_HALF&&currentRoom.exits.N&&currentRoom.cleared;
     const atS=Math.abs(player.x-W/2)<DOOR_HALF&&currentRoom.exits.S&&currentRoom.cleared;
-    const atE=Math.abs(player.y-cy)<DOOR_HALF&&currentRoom.exits.E&&currentRoom.cleared;
-    const atW=Math.abs(player.y-cy)<DOOR_HALF&&currentRoom.exits.W&&currentRoom.cleared;
+    const atE=Math.abs(player.y-wcy)<DOOR_HALF&&currentRoom.exits.E&&currentRoom.cleared;
+    const atW=Math.abs(player.y-wcy)<DOOR_HALF&&currentRoom.exits.W&&currentRoom.cleared;
 
     // Clamp to room, allow through active doors
     if(!(atN&&player.y<RY))player.y=Math.max(player.y,RY+player.r);
-    if(!(atS&&player.y>H-WALL))player.y=Math.min(player.y,H-WALL-player.r);
+    if(!(atS&&player.y>RY+RH))player.y=Math.min(player.y,RY+RH-player.r);
     if(!(atE&&player.x>RX+RW))player.x=Math.min(player.x,RX+RW-player.r);
     if(!(atW&&player.x<RX))player.x=Math.max(player.x,RX+player.r);
 
@@ -792,13 +805,18 @@ function update(dt){
 
 // ── Draw room ──────────────────────────────────────────────────────────────────
 function drawMargins(){
-  // Static margin panels drawn once per frame, never slide with rooms
   ctx.fillStyle='#020407';
+  // Left/right strips
   ctx.fillRect(0,HUD_H,MX,H-HUD_H);
   ctx.fillRect(W-MX,HUD_H,MX,H-HUD_H);
+  // Top/bottom MY strips (inside the side margins)
+  ctx.fillRect(MX,HUD_H,W-2*MX,MY);
+  ctx.fillRect(MX,H-MY,W-2*MX,MY);
   ctx.strokeStyle='rgba(0,238,255,0.07)';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(MX,HUD_H);ctx.lineTo(MX,H);ctx.stroke();
   ctx.beginPath();ctx.moveTo(W-MX,HUD_H);ctx.lineTo(W-MX,H);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(MX,RY);ctx.lineTo(W-MX,RY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(MX,RY+RH+WALL);ctx.lineTo(W-MX,RY+RH+WALL);ctx.stroke();
 }
 
 function drawRoom(room,ox=0,oy=0){
@@ -819,39 +837,39 @@ function drawRoom(room,ox=0,oy=0){
 
   ctx.fillStyle=wallFill;ctx.shadowColor=wallGlow;ctx.shadowBlur=10;
 
-  const cy=(HUD_H+(H-WALL))/2;
+  const cy=(RY+(RY+RH))/2; // vertical center of play area
   // Top wall
   if(room.exits.N){
-    ctx.fillRect(RX,HUD_H,RW/2-DOOR_HALF,WALL);
-    ctx.fillRect(RX+RW/2+DOOR_HALF,HUD_H,RW/2-DOOR_HALF,WALL);
+    ctx.fillRect(RX,RY,RW/2-DOOR_HALF,WALL);
+    ctx.fillRect(RX+RW/2+DOOR_HALF,RY,RW/2-DOOR_HALF,WALL);
     ctx.fillStyle=doorFill;ctx.shadowColor=doorGlow;ctx.shadowBlur=14;
-    ctx.fillRect(W/2-DOOR_HALF,HUD_H,DOOR_HALF*2,WALL);
+    ctx.fillRect(W/2-DOOR_HALF,RY,DOOR_HALF*2,WALL);
     ctx.fillStyle=wallFill;ctx.shadowColor=wallGlow;ctx.shadowBlur=10;
-  }else ctx.fillRect(RX,HUD_H,RW,WALL);
+  }else ctx.fillRect(RX,RY,RW,WALL);
   // Bottom wall
   if(room.exits.S){
-    ctx.fillRect(RX,H-WALL,RW/2-DOOR_HALF,WALL);
-    ctx.fillRect(RX+RW/2+DOOR_HALF,H-WALL,RW/2-DOOR_HALF,WALL);
+    ctx.fillRect(RX,RY+RH,RW/2-DOOR_HALF,WALL);
+    ctx.fillRect(RX+RW/2+DOOR_HALF,RY+RH,RW/2-DOOR_HALF,WALL);
     ctx.fillStyle=doorFill;ctx.shadowColor=doorGlow;ctx.shadowBlur=14;
-    ctx.fillRect(W/2-DOOR_HALF,H-WALL,DOOR_HALF*2,WALL);
+    ctx.fillRect(W/2-DOOR_HALF,RY+RH,DOOR_HALF*2,WALL);
     ctx.fillStyle=wallFill;ctx.shadowColor=wallGlow;ctx.shadowBlur=10;
-  }else ctx.fillRect(RX,H-WALL,RW,WALL);
-  // Left wall (at x=MX, not x=0)
+  }else ctx.fillRect(RX,RY+RH,RW,WALL);
+  // Left wall (at x=MX)
   if(room.exits.W){
-    ctx.fillRect(MX,HUD_H,WALL,cy-DOOR_HALF-HUD_H);
-    ctx.fillRect(MX,cy+DOOR_HALF,WALL,H-cy-DOOR_HALF);
+    ctx.fillRect(MX,RY,WALL,cy-DOOR_HALF-RY);
+    ctx.fillRect(MX,cy+DOOR_HALF,WALL,RY+RH-cy-DOOR_HALF+WALL);
     ctx.fillStyle=doorFill;ctx.shadowColor=doorGlow;ctx.shadowBlur=14;
     ctx.fillRect(MX,cy-DOOR_HALF,WALL,DOOR_HALF*2);
     ctx.fillStyle=wallFill;ctx.shadowColor=wallGlow;ctx.shadowBlur=10;
-  }else ctx.fillRect(MX,HUD_H,WALL,H-HUD_H);
-  // Right wall (at x=W-MX-WALL, not x=W-WALL)
+  }else ctx.fillRect(MX,RY,WALL,RH+WALL);
+  // Right wall (at x=W-MX-WALL)
   if(room.exits.E){
-    ctx.fillRect(W-MX-WALL,HUD_H,WALL,cy-DOOR_HALF-HUD_H);
-    ctx.fillRect(W-MX-WALL,cy+DOOR_HALF,WALL,H-cy-DOOR_HALF);
+    ctx.fillRect(W-MX-WALL,RY,WALL,cy-DOOR_HALF-RY);
+    ctx.fillRect(W-MX-WALL,cy+DOOR_HALF,WALL,RY+RH-cy-DOOR_HALF+WALL);
     ctx.fillStyle=doorFill;ctx.shadowColor=doorGlow;ctx.shadowBlur=14;
     ctx.fillRect(W-MX-WALL,cy-DOOR_HALF,WALL,DOOR_HALF*2);
     ctx.fillStyle=wallFill;ctx.shadowColor=wallGlow;ctx.shadowBlur=10;
-  }else ctx.fillRect(W-MX-WALL,HUD_H,WALL,H-HUD_H);
+  }else ctx.fillRect(W-MX-WALL,RY,WALL,RH+WALL);
 
   ctx.shadowBlur=0;
 

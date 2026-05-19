@@ -2,844 +2,215 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>BLOOM — Garden & Market</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BLOOM — Garden Game · Social · iOS Soon · Architect-DNA</title>
+<meta name="description" content="Plant, grow, harvest and share with neighbors. A calm social garden game with real-time crops, recipes, and gift codes.">
+<meta property="og:title" content="BLOOM — Garden & Market">
+<meta property="og:url" content="https://architect-dna.ch/bloom">
+<meta name="theme-color" content="#fce8d5">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --sky1:#fce8d5;--sky2:#f9d5e5;--ground:#7ab648;--ground2:#5a9e2f;
-  --wood:#c8883a;--wood2:#a0662a;--cream:#fef9f0;
-  --accent:#e8547a;--gold:#f5a623;--green:#4caf50;
-  --panel:#fff8f0;--border:#e8d5b8;
-  --shadow:rgba(80,40,10,.12);
+  --bg:#0c0e18;--bg2:#10121e;
+  --text:#f0f0f8;--text2:rgba(240,240,248,.55);--text3:rgba(240,240,248,.28);
+  --accent:#10b981;--accent2:#34d399;--pink:#f472b6;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --r:16px;
 }
-html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
 
-body{
-  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 40%,#c5e88a 60%,var(--ground) 100%);
-  display:flex;flex-direction:column;
-}
+header{position:sticky;top:0;z-index:100;background:rgba(12,14,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
+.logo{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-right{margin-left:auto;display:flex;gap:12px;align-items:center}
+.nav-link{font-size:12px;color:var(--text3);text-decoration:none;transition:color .15s}
+.nav-link:hover{color:var(--text2)}
+.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--accent));color:#fff;text-decoration:none;transition:filter .15s}
+.cta-btn:hover{filter:brightness(1.1)}
 
-/* ── TOP BAR ── */
-#topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px;
-  background:rgba(255,255,255,.7);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);flex-shrink:0;
-  z-index:10;
-}
-.game-title{font-size:20px;font-weight:900;letter-spacing:-.03em;color:#4a1a2c}
-.game-title span{color:var(--accent)}
-.stats{display:flex;gap:12px;align-items:center}
-.stat{display:flex;align-items:center;gap:5px;background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 12px}
-.stat-icon{font-size:16px}
-.stat-val{font-size:14px;font-weight:800;color:#4a1a2c}
-.stat-label{font-size:10px;color:rgba(74,26,44,.5);font-weight:600}
-.level-badge{
-  background:linear-gradient(135deg,var(--accent),#c04070);
-  color:#fff;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;letter-spacing:.04em;
-}
+.hero{padding:100px 24px 80px;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(244,114,182,.07) 0%,rgba(16,185,129,.05) 60%,transparent 100%)}
+.hero-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+@media(max-width:720px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}}
+.hero-kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,114,182,.6);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-kicker::before{content:'';width:18px;height:1px;background:rgba(244,114,182,.5)}
+.hero-title{font-size:clamp(56px,11vw,110px);font-weight:900;letter-spacing:-.05em;line-height:.88;margin-bottom:24px}
+.bloom-grad{background:linear-gradient(135deg,var(--pink),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:17px;color:var(--text2);line-height:1.75;max-width:420px;margin-bottom:36px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;border-radius:var(--r);font-size:14px;font-weight:800;letter-spacing:.04em;background:linear-gradient(135deg,var(--pink),var(--accent));color:#fff;text-decoration:none;box-shadow:0 0 40px rgba(244,114,182,.3);transition:filter .15s,transform .12s}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:15px 24px;border-radius:var(--r);border:1px solid var(--border2);font-size:14px;font-weight:700;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.25);color:var(--text)}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px}
 
-/* ── GAME AREA ── */
-#game-area{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;padding:16px 12px 0}
+.hero-visual{display:flex;align-items:center;justify-content:center}
+.garden-card{background:rgba(255,248,240,.05);border:1px solid rgba(244,114,182,.2);border-radius:24px;padding:32px 28px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.4);position:relative;overflow:hidden}
+.garden-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(244,114,182,.08) 0%,transparent 70%);pointer-events:none}
+.garden-scene{font-size:36px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.garden-tile{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px 8px;text-align:center;transition:transform .3s}
+.garden-tile:hover{transform:scale(1.08)}
+.garden-tile .emoji{font-size:28px;display:block;margin-bottom:6px}
+.garden-tile .label{font-size:9px;color:var(--text3);letter-spacing:.08em;font-family:var(--mono)}
+.garden-tile.ripe{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06)}
+.garden-stats{display:flex;gap:12px}
+.garden-stat{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
+.garden-stat .val{font-size:18px;font-weight:900;color:var(--accent)}
+.garden-stat .lbl{font-size:9px;color:var(--text3);letter-spacing:.08em;font-family:var(--mono)}
 
-/* ── GARDEN ── */
-#garden-wrap{
-  width:100%;max-width:500px;
-  background:rgba(255,255,255,.15);
-  border:2px solid rgba(255,255,255,.4);
-  border-radius:16px;backdrop-filter:blur(4px);
-  padding:12px;
-}
-.garden-label{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.7);text-transform:uppercase;text-align:center;margin-bottom:10px;font-weight:700}
-#garden-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-}
-.plot{
-  aspect-ratio:1;border-radius:12px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;transition:transform .15s;
-  background:linear-gradient(135deg,#8b6340 0%,#6b4a28 100%);
-  border:2px solid #5a3a1a;
-  box-shadow:0 2px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.1);
-  overflow:hidden;
-}
-.plot:active{transform:scale(.94)}
-.plot.empty{background:linear-gradient(135deg,#9b7350 0%,#7b5330 100%)}
-.plot.empty::after{content:'+';font-size:22px;color:rgba(255,255,255,.3);font-weight:300}
-.plot.growing{background:linear-gradient(135deg,#5a8a30 0%,#3a6a18 100%);border-color:#2a5010}
-.plot.ready{background:linear-gradient(135deg,#6ab840 0%,#4a9820 100%);border-color:#3a7810;
-  animation:readyPulse 1.5s ease-in-out infinite}
-@keyframes readyPulse{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.2),0 0 0 0 rgba(100,200,50,.4)}50%{box-shadow:0 2px 8px rgba(0,0,0,.2),0 0 0 8px rgba(100,200,50,0)}}
-.plot.locked{background:linear-gradient(135deg,#6b5340 0%,#4b3320 100%);border-color:#3a2010;opacity:.6;cursor:default}
+section{padding:80px 24px}
+.section-inner{max-width:1040px;margin:0 auto}
+.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,114,182,.5);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:14px;height:1px;background:rgba(244,114,182,.4)}
+.section-title{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:48px}
 
-.plot-emoji{font-size:26px;line-height:1;z-index:2;position:relative}
-.plot-timer{
-  font-size:9px;font-weight:700;color:rgba(255,255,255,.9);
-  background:rgba(0,0,0,.35);border-radius:10px;padding:2px 6px;
-  position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
-  white-space:nowrap;z-index:3;
-}
-.plot-lock{font-size:14px;color:rgba(255,255,255,.3)}
-.plot-lock-cost{font-size:8px;color:rgba(255,255,255,.4);margin-top:2px;font-weight:700}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:720px){.features-grid{grid-template-columns:1fr}}
+.feature-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:border-color .2s,transform .2s}
+.feature-card:hover{border-color:rgba(244,114,182,.3);transform:translateY(-3px)}
+.feature-icon{font-size:32px;margin-bottom:16px}
+.feature-title{font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.6}
 
-/* ── BOTTOM TABS ── */
-#bottom-tabs{
-  width:100%;max-width:500px;
-  display:flex;gap:0;margin-top:12px;
-  background:rgba(255,255,255,.2);border-radius:14px;overflow:hidden;
-  border:1px solid rgba(255,255,255,.3);flex-shrink:0;
-}
-.tab-btn{
-  flex:1;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;
-  background:transparent;border:none;cursor:pointer;transition:background .2s;
-  font-family:inherit;
-}
-.tab-btn.active{background:rgba(255,255,255,.5)}
-.tab-icon{font-size:20px}
-.tab-label{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(74,26,44,.7);text-transform:uppercase}
-.tab-btn.active .tab-label{color:var(--accent)}
+.ios-band{background:rgba(244,114,182,.04);border-top:1px solid rgba(244,114,182,.1);border-bottom:1px solid rgba(244,114,182,.1);padding:60px 24px}
+.ios-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap}
+.ios-text{flex:1;min-width:260px}
+.ios-text h2{font-size:clamp(24px,3.5vw,36px);font-weight:900;letter-spacing:-.04em;margin-bottom:12px}
+.ios-text p{font-size:15px;color:var(--text2);line-height:1.7}
+.ios-badge{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:1px solid rgba(244,114,182,.3);border-radius:14px;margin-top:24px;font-size:13px;color:var(--text2)}
+.ios-badge .big{font-size:28px}
 
-/* ── PANELS ── */
-.panel{
-  display:none;width:100%;max-width:500px;flex:1;overflow-y:auto;
-  padding:12px 0;
-}
-.panel.active{display:block}
+.cta-band{padding:80px 24px;text-align:center}
+.cta-band h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin-bottom:12px}
+.cta-band p{font-size:16px;color:var(--text2);margin-bottom:36px}
+.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-/* shop */
-.section-head{font-size:11px;font-weight:800;letter-spacing:.12em;color:rgba(74,26,44,.5);text-transform:uppercase;padding:0 4px;margin-bottom:8px;margin-top:12px}
-.section-head:first-child{margin-top:0}
-.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.shop-item{
-  background:var(--cream);border:1.5px solid var(--border);border-radius:12px;
-  padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;
-  transition:transform .15s,box-shadow .15s;
-}
-.shop-item:active{transform:scale(.97)}
-.shop-item:hover{box-shadow:0 4px 12px var(--shadow)}
-.shop-emoji{font-size:28px}
-.shop-info{flex:1;min-width:0}
-.shop-name{font-size:13px;font-weight:800;color:#4a1a2c;margin-bottom:2px}
-.shop-desc{font-size:10px;color:rgba(74,26,44,.5)}
-.shop-price{
-  background:var(--gold);color:#fff;border-radius:20px;padding:4px 10px;
-  font-size:11px;font-weight:800;display:flex;align-items:center;gap:3px;white-space:nowrap;
-}
-.shop-price.green{background:var(--green)}
-
-/* inventory */
-.inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.inv-item{
-  background:var(--cream);border:1.5px solid var(--border);border-radius:12px;
-  padding:10px 8px;text-align:center;position:relative;
-}
-.inv-emoji{font-size:28px;display:block;margin-bottom:4px}
-.inv-name{font-size:10px;font-weight:700;color:#4a1a2c}
-.inv-qty{
-  position:absolute;top:6px;right:6px;
-  background:var(--accent);color:#fff;border-radius:10px;padding:2px 6px;font-size:10px;font-weight:800;
-}
-.inv-sell{
-  margin-top:6px;background:var(--accent);color:#fff;border:none;border-radius:8px;
-  padding:5px 10px;font-size:10px;font-weight:800;cursor:pointer;width:100%;font-family:inherit;
-}
-
-/* workshop */
-.recipe-card{
-  background:var(--cream);border:1.5px solid var(--border);border-radius:12px;
-  padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;
-  transition:transform .15s;
-}
-.recipe-card:active{transform:scale(.97)}
-.recipe-out{font-size:32px}
-.recipe-info{flex:1}
-.recipe-name{font-size:14px;font-weight:800;color:#4a1a2c;margin-bottom:4px}
-.recipe-needs{font-size:11px;color:rgba(74,26,44,.5);display:flex;gap:6px;flex-wrap:wrap}
-.recipe-need{background:var(--border);border-radius:8px;padding:2px 7px}
-.recipe-value{background:var(--gold);color:#fff;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:800}
-
-/* stall */
-.stall-wrap{
-  background:linear-gradient(135deg,#c8883a,#a0662a);border-radius:16px;
-  padding:16px;margin-bottom:12px;
-  border:2px solid #8a4e1a;
-  box-shadow:0 4px 16px rgba(100,50,0,.25);
-}
-.stall-title{font-size:14px;font-weight:900;color:#fff8f0;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.stall-listing{
-  background:rgba(255,255,255,.15);border-radius:10px;padding:10px;
-  display:flex;align-items:center;gap:10px;margin-bottom:6px;
-}
-.stall-emoji{font-size:24px}
-.stall-info{flex:1}
-.stall-name{font-size:12px;font-weight:700;color:#fff8f0}
-.stall-price{font-size:11px;color:rgba(255,248,240,.6)}
-.stall-remove{background:rgba(255,255,255,.2);border:none;border-radius:8px;padding:5px 10px;color:#fff;font-size:10px;cursor:pointer;font-family:inherit;font-weight:700}
-.stall-empty{text-align:center;color:rgba(255,248,240,.5);font-size:12px;padding:12px 0}
-
-/* share */
-.share-card{
-  background:linear-gradient(135deg,var(--accent),#c04070);
-  border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;color:#fff;
-}
-.share-title{font-size:16px;font-weight:900;margin-bottom:6px}
-.share-sub{font-size:12px;opacity:.8;margin-bottom:16px}
-.share-btn{
-  background:#fff;color:var(--accent);border:none;border-radius:10px;
-  padding:10px 24px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
-}
-.visit-card{background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:14px}
-.visit-title{font-size:13px;font-weight:800;color:#4a1a2c;margin-bottom:8px}
-.visit-input{
-  width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;
-  font-size:13px;font-family:inherit;background:#fff;color:#4a1a2c;margin-bottom:8px;
-}
-.visit-go{
-  width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;
-  padding:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;
-}
-
-/* ── MODALS ── */
-.modal-bg{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .25s;
-}
-.modal-bg.open{opacity:1;pointer-events:all}
-.modal{
-  width:100%;max-width:500px;background:var(--panel);
-  border-radius:24px 24px 0 0;padding:20px 16px 32px;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.36,.64,1);
-  max-height:85vh;overflow-y:auto;
-}
-.modal-bg.open .modal{transform:translateY(0)}
-.modal-title{font-size:16px;font-weight:900;color:#4a1a2c;margin-bottom:16px;text-align:center}
-.modal-drag{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
-.seed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.seed-opt{
-  background:var(--cream);border:1.5px solid var(--border);border-radius:12px;
-  padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;
-}
-.seed-opt:active{transform:scale(.95);background:#fff0e8}
-.seed-opt.locked{opacity:.4;cursor:default}
-.seed-icon{font-size:30px;margin-bottom:6px}
-.seed-name{font-size:13px;font-weight:800;color:#4a1a2c;margin-bottom:2px}
-.seed-time{font-size:10px;color:rgba(74,26,44,.5);margin-bottom:6px}
-.seed-price{
-  background:var(--gold);color:#fff;border-radius:12px;padding:4px 12px;
-  font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:3px;
-}
-
-/* ── TOAST ── */
-#toast{
-  position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-8px);
-  background:#4a1a2c;color:#fff;padding:8px 20px;border-radius:20px;
-  font-size:12px;font-weight:700;letter-spacing:.04em;opacity:0;
-  transition:all .25s;pointer-events:none;z-index:200;white-space:nowrap;
-}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── COIN FLOAT ── */
-.coin-float{
-  position:fixed;font-size:14px;font-weight:900;color:#f5a623;
-  pointer-events:none;z-index:201;animation:floatUp .8s ease-out forwards;
-}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
-
-/* ── VISITOR VIEW ── */
-#visitor-overlay{
-  position:fixed;inset:0;background:rgba(252,232,213,.95);z-index:300;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-  overflow-y:auto;padding:20px 16px;
-  opacity:0;pointer-events:none;transition:opacity .4s;
-}
-#visitor-overlay.show{opacity:1;pointer-events:all}
-.visitor-header{text-align:center;margin-bottom:20px}
-.visitor-title{font-size:22px;font-weight:900;color:#4a1a2c;margin-bottom:4px}
-.visitor-sub{font-size:12px;color:rgba(74,26,44,.5)}
-.visitor-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:340px;margin-bottom:20px}
-.visitor-plot{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,#8b6340,#6b4a28);border:2px solid #5a3a1a}
-.visitor-plot.ready{background:linear-gradient(135deg,#6ab840,#4a9820);border-color:#3a7810}
-.gift-btn{background:var(--accent);color:#fff;border:none;border-radius:14px;padding:14px 36px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:12px}
-.visitor-close{background:transparent;border:1.5px solid var(--border);border-radius:12px;padding:10px 28px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:#4a1a2c}
+footer{padding:32px 24px;text-align:center;border-top:1px solid var(--border)}
+footer p{font-size:12px;color:var(--text3)}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--text2)}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div id="topbar">
-  <div class="game-title">🌸 <span>BLOOM</span></div>
-  <div class="stats">
-    <div class="stat"><span class="stat-icon">⭐</span><span class="stat-val" id="stars-val">0</span></div>
-    <div class="stat"><span class="stat-icon">🌾</span><span class="stat-val" id="inv-count">0</span></div>
-    <div class="level-badge" id="level-badge">Lv 1</div>
-  </div>
-</div>
-
-<!-- GAME AREA -->
-<div id="game-area">
-
-  <!-- GARDEN -->
-  <div id="garden-wrap">
-    <div class="garden-label">🌿 Your Garden</div>
-    <div id="garden-grid"></div>
-  </div>
-
-  <!-- TABS -->
-  <div id="bottom-tabs">
-    <button class="tab-btn active" onclick="switchTab('shop')"><span class="tab-icon">🛒</span><span class="tab-label">Shop</span></button>
-    <button class="tab-btn" onclick="switchTab('inv')"><span class="tab-icon">🎒</span><span class="tab-label">Basket</span></button>
-    <button class="tab-btn" onclick="switchTab('workshop')"><span class="tab-icon">🧁</span><span class="tab-label">Kitchen</span></button>
-    <button class="tab-btn" onclick="switchTab('stall')"><span class="tab-icon">🏪</span><span class="tab-label">Stall</span></button>
-    <button class="tab-btn" onclick="switchTab('social')"><span class="tab-icon">🌍</span><span class="tab-label">Neighbors</span></button>
-  </div>
-
-  <!-- SHOP PANEL -->
-  <div class="panel active" id="panel-shop">
-    <div class="section-head">Seeds</div>
-    <div class="shop-grid" id="seed-shop-list"></div>
-    <div class="section-head" style="margin-top:14px">Expand Garden</div>
-    <div class="shop-grid" id="expand-shop-list"></div>
-  </div>
-
-  <!-- INVENTORY PANEL -->
-  <div class="panel" id="panel-inv">
-    <div class="section-head">Harvested Crops</div>
-    <div class="inv-grid" id="inv-grid"></div>
-  </div>
-
-  <!-- WORKSHOP PANEL -->
-  <div class="panel" id="panel-workshop">
-    <div class="section-head">Recipes</div>
-    <div id="recipe-list"></div>
-  </div>
-
-  <!-- STALL PANEL -->
-  <div class="panel" id="panel-stall">
-    <div class="stall-wrap">
-      <div class="stall-title">🏪 Your Market Stall</div>
-      <div id="stall-list"></div>
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/"><span>Architect</span>-DNA</a>
+    <div class="header-right">
+      <a class="nav-link" href="/">Home</a>
+      <a class="cta-btn" href="https://bloom.architect-dna.ch" target="_blank">Open Garden ↗</a>
     </div>
-    <div class="section-head">List an Item</div>
-    <div class="inv-grid" id="stall-inv-grid"></div>
   </div>
+</header>
 
-  <!-- SOCIAL PANEL -->
-  <div class="panel" id="panel-social">
-    <div class="share-card">
-      <div class="share-title">🌸 Share Your Garden</div>
-      <div class="share-sub">Friends can visit and water your crops!</div>
-      <button class="share-btn" onclick="shareGarden()">Copy Garden Link</button>
-    </div>
-    <div class="visit-card">
-      <div class="visit-title">🚪 Visit a Neighbor</div>
-      <input class="visit-input" id="visit-code" placeholder="Paste garden link or code…" type="text">
-      <button class="visit-go" onclick="visitGarden()">Visit Garden →</button>
-    </div>
-    <div class="section-head" style="margin-top:14px">Leaderboard</div>
-    <div id="leaderboard-list"></div>
-  </div>
-
-</div>
-
-<!-- SEED PICKER MODAL -->
-<div class="modal-bg" id="seed-modal" onclick="closeModal()">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-drag"></div>
-    <div class="modal-title">🌱 Plant a Seed</div>
-    <div class="seed-grid" id="seed-picker"></div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
-<!-- VISITOR OVERLAY -->
-<div id="visitor-overlay">
-  <div class="visitor-header">
-    <div class="visitor-title" id="visitor-name">🌸 Neighbor's Garden</div>
-    <div class="visitor-sub" id="visitor-stats">Level 1 · 0 crops ready</div>
-  </div>
-  <div class="visitor-grid" id="visitor-grid"></div>
-  <button class="gift-btn" onclick="leaveGift()">💝 Leave a Gift</button>
-  <button class="visitor-close" onclick="closeVisitor()">← Back to My Garden</button>
-</div>
-
-<script>
-// ── DATA ───────────────────────────────────────────────────────────────────
-const CROPS={
-  tulip:   {name:'Tulip',  emoji:'🌷',time:60,     yield:3,  seedCost:1,  unlockLv:1},
-  sunflower:{name:'Sunflower',emoji:'🌻',time:180,  yield:8,  seedCost:3,  unlockLv:1},
-  strawberry:{name:'Strawberry',emoji:'🍓',time:480,yield:20, seedCost:8,  unlockLv:2},
-  rose:    {name:'Rose',   emoji:'🌹',time:1200,   yield:50, seedCost:20, unlockLv:3},
-  blueberry:{name:'Blueberry',emoji:'🫐',time:2700, yield:120,seedCost:50, unlockLv:4},
-  lavender:{name:'Lavender',emoji:'💜',time:600,   yield:35, seedCost:15, unlockLv:5},
-};
-
-const RECIPES=[
-  {id:'bouquet', name:'Flower Bouquet',emoji:'💐',needs:{rose:3},          value:200,unlockLv:3},
-  {id:'cake',    name:'Berry Cake',    emoji:'🍰',needs:{strawberry:1,blueberry:1},value:180,unlockLv:4},
-  {id:'juice',   name:'Berry Juice',   emoji:'🧃',needs:{strawberry:3},     value:70, unlockLv:2},
-  {id:'jam',     name:'Rose Jam',      emoji:'🍯',needs:{rose:2,strawberry:2},value:220,unlockLv:4},
-  {id:'perfume', name:'Lavender Perfume',emoji:'🌿',needs:{lavender:4},    value:300,unlockLv:5},
-  {id:'honey',   name:'Honey Jar',     emoji:'🍯',needs:{sunflower:5},     value:60, unlockLv:2},
-];
-
-const EXPAND_COSTS=[0,0,0,0,80,150,280,450]; // cost to unlock plot index
-
-// ── STATE ──────────────────────────────────────────────────────────────────
-let state;
-const SAVE_KEY='bloom_save_v2';
-
-function defaultState(){
-  return{
-    stars:15,
-    level:1,
-    xp:0,
-    plots:Array.from({length:8},(_,i)=>({
-      crop:null,plantedAt:null,state:'empty',locked:i>=4
-    })),
-    inventory:{},
-    stall:[],
-    giftReceived:0,
-    gardenName:'My Garden',
-  };
-}
-
-function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(state));}
-function load(){
-  try{
-    const s=localStorage.getItem(SAVE_KEY);
-    if(s){state={...defaultState(),...JSON.parse(s)};}
-    else state=defaultState();
-  }catch(e){state=defaultState();}
-}
-
-function addStars(n,x,y){
-  state.stars+=n;
-  addXP(n);
-  if(x&&y) floatCoin(`+${n}⭐`,x,y);
-  save();
-}
-function addXP(n){
-  state.xp+=n;
-  const needed=state.level*50;
-  if(state.xp>=needed){state.xp-=needed;state.level++;toast(`🎉 Level ${state.level}!`);updateTopbar();}
-}
-function addInv(crop,n=1){
-  state.inventory[crop]=(state.inventory[crop]||0)+n;
-  save();
-}
-function useInv(crop,n=1){
-  if((state.inventory[crop]||0)<n) return false;
-  state.inventory[crop]-=n;
-  if(state.inventory[crop]===0) delete state.inventory[crop];
-  save();return true;
-}
-function invCount(){return Object.values(state.inventory).reduce((a,b)=>a+b,0);}
-
-// ── UI HELPERS ─────────────────────────────────────────────────────────────
-function toast(msg,dur=2000){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>el.classList.remove('show'),dur);
-}
-function floatCoin(txt,x,y){
-  const el=document.createElement('div');
-  el.className='coin-float';el.textContent=txt;
-  el.style.left=x+'px';el.style.top=y+'px';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),900);
-}
-function updateTopbar(){
-  document.getElementById('stars-val').textContent=state.stars;
-  document.getElementById('inv-count').textContent=invCount();
-  document.getElementById('level-badge').textContent=`Lv ${state.level}`;
-}
-function fmtTime(sec){
-  if(sec<60) return`${sec}s`;
-  if(sec<3600) return`${Math.ceil(sec/60)}m`;
-  return`${Math.ceil(sec/3600)}h`;
-}
-
-// ── GARDEN ─────────────────────────────────────────────────────────────────
-let selectedPlot=null;
-
-function renderGarden(){
-  const grid=document.getElementById('garden-grid');
-  grid.innerHTML='';
-  const now=Date.now();
-  state.plots.forEach((plot,i)=>{
-    const div=document.createElement('div');
-    div.className='plot';
-
-    if(plot.locked){
-      div.classList.add('locked');
-      const cost=EXPAND_COSTS[i]||200;
-      div.innerHTML=`<span class="plot-lock">🔒</span><span class="plot-lock-cost">${cost}⭐</span>`;
-      div.onclick=()=>unlockPlot(i,cost);
-    } else if(plot.state==='empty'||!plot.crop){
-      div.classList.add('empty');
-      div.onclick=()=>openSeedPicker(i);
-    } else {
-      const crop=CROPS[plot.crop];
-      const elapsed=(now-plot.plantedAt)/1000;
-      const remaining=Math.max(0,crop.time-elapsed);
-      if(remaining<=0){
-        div.classList.add('ready');
-        div.innerHTML=`<span class="plot-emoji">${crop.emoji}</span><span class="plot-timer">READY!</span>`;
-        div.onclick=(e)=>harvest(i,e);
-      } else {
-        div.classList.add('growing');
-        const pct=Math.min(1,(crop.time-remaining)/crop.time);
-        const growEmoji=pct<.3?'🌱':pct<.7?'🌿':crop.emoji;
-        div.innerHTML=`<span class="plot-emoji">${growEmoji}</span><span class="plot-timer">${fmtTime(Math.ceil(remaining))}</span>`;
-        div.onclick=()=>toast(`${crop.name} ready in ${fmtTime(Math.ceil(remaining))}`);
-      }
-    }
-    grid.appendChild(div);
-  });
-}
-
-function harvest(i,e){
-  const plot=state.plots[i];
-  if(!plot.crop) return;
-  const crop=CROPS[plot.crop];
-  addInv(plot.crop);
-  const rect=e.target.closest('.plot').getBoundingClientRect();
-  addStars(Math.floor(crop.yield*.3),rect.left+rect.width/2,rect.top);
-  toast(`Harvested ${crop.emoji} ${crop.name}!`);
-  plot.crop=null;plot.plantedAt=null;plot.state='empty';
-  save();renderGarden();updateTopbar();renderInv();renderStallInv();
-}
-
-function unlockPlot(i,cost){
-  if(state.stars<cost){toast('Not enough ⭐');return;}
-  state.stars-=cost;
-  state.plots[i].locked=false;
-  save();renderGarden();updateTopbar();
-  toast('🌿 New plot unlocked!');
-}
-
-// ── SEED PICKER ───────────────────────────────────────────────────────────
-function openSeedPicker(i){
-  selectedPlot=i;
-  const picker=document.getElementById('seed-picker');
-  picker.innerHTML='';
-  Object.entries(CROPS).forEach(([id,c])=>{
-    const locked=c.unlockLv>state.level;
-    const div=document.createElement('div');
-    div.className='seed-opt'+(locked?' locked':'');
-    div.innerHTML=`
-      <div class="seed-icon">${c.emoji}</div>
-      <div class="seed-name">${c.name}</div>
-      <div class="seed-time">⏱ ${fmtTime(c.time)}</div>
-      <div class="seed-price">${c.seedCost}⭐ · +${c.yield}⭐</div>
-      ${locked?`<div style="font-size:10px;margin-top:4px;color:rgba(74,26,44,.4)">Lv ${c.unlockLv}</div>`:''}
-    `;
-    if(!locked) div.onclick=()=>plantSeed(id);
-    picker.appendChild(div);
-  });
-  document.getElementById('seed-modal').classList.add('open');
-}
-function closeModal(){document.getElementById('seed-modal').classList.remove('open');}
-
-function plantSeed(cropId){
-  const crop=CROPS[cropId];
-  if(state.stars<crop.seedCost){toast('Not enough ⭐');return;}
-  state.stars-=crop.seedCost;
-  const plot=state.plots[selectedPlot];
-  plot.crop=cropId;plot.plantedAt=Date.now();plot.state='growing';
-  save();closeModal();renderGarden();updateTopbar();
-  toast(`${crop.emoji} ${crop.name} planted!`);
-}
-
-// ── SHOP ──────────────────────────────────────────────────────────────────
-function renderShop(){
-  const list=document.getElementById('seed-shop-list');
-  list.innerHTML='';
-  Object.entries(CROPS).forEach(([id,c])=>{
-    const locked=c.unlockLv>state.level;
-    const div=document.createElement('div');
-    div.className='shop-item';
-    if(locked) div.style.opacity='.5';
-    div.innerHTML=`
-      <span class="shop-emoji">${c.emoji}</span>
-      <div class="shop-info"><div class="shop-name">${c.name}</div><div class="shop-desc">⏱ ${fmtTime(c.time)} · ${locked?`Lv ${c.unlockLv}`:'Ready to plant'}</div></div>
-      <div class="shop-price">${c.seedCost}⭐</div>
-    `;
-    if(!locked) div.onclick=()=>{
-      const empty=state.plots.findIndex(p=>!p.locked&&(p.state==='empty'||!p.crop));
-      if(empty===-1){toast('No empty plots!');return;}
-      selectedPlot=empty;plantSeed(id);renderGarden();
-    };
-    list.appendChild(div);
-  });
-
-  // expand
-  const expList=document.getElementById('expand-shop-list');
-  expList.innerHTML='';
-  state.plots.forEach((p,i)=>{
-    if(!p.locked) return;
-    const cost=EXPAND_COSTS[i]||200;
-    const div=document.createElement('div');
-    div.className='shop-item';
-    div.innerHTML=`<span class="shop-emoji">🌿</span><div class="shop-info"><div class="shop-name">Garden Plot ${i+1}</div><div class="shop-desc">Unlock a new plot</div></div><div class="shop-price green">${cost}⭐</div>`;
-    div.onclick=()=>{unlockPlot(i,cost);renderShop();};
-    expList.appendChild(div);
-  });
-}
-
-// ── INVENTORY ─────────────────────────────────────────────────────────────
-function renderInv(){
-  const grid=document.getElementById('inv-grid');
-  grid.innerHTML='';
-  const hasItems=Object.keys(state.inventory).length>0;
-  if(!hasItems){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:rgba(74,26,44,.4);font-size:13px;padding:20px">Harvest crops to fill your basket!</div>';return;}
-  Object.entries(state.inventory).forEach(([id,qty])=>{
-    const crop=CROPS[id];if(!crop) return;
-    const div=document.createElement('div');
-    div.className='inv-item';
-    div.innerHTML=`<span class="inv-emoji">${crop.emoji}</span><div class="inv-name">${crop.name}</div><span class="inv-qty">${qty}</span><button class="inv-sell" onclick="sellCrop('${id}')">Sell +${crop.yield}⭐</button>`;
-    grid.appendChild(div);
-  });
-  document.getElementById('inv-count').textContent=invCount();
-}
-
-function sellCrop(id){
-  const crop=CROPS[id];
-  if(!useInv(id)){toast('None left!');return;}
-  const ev=event;
-  addStars(crop.yield,ev.clientX,ev.clientY);
-  toast(`Sold ${crop.emoji} for ${crop.yield}⭐`);
-  renderInv();renderStallInv();updateTopbar();
-}
-
-// ── WORKSHOP ──────────────────────────────────────────────────────────────
-function renderWorkshop(){
-  const list=document.getElementById('recipe-list');
-  list.innerHTML='';
-  RECIPES.forEach(r=>{
-    const locked=r.unlockLv>state.level;
-    const canMake=!locked&&Object.entries(r.needs).every(([id,n])=>(state.inventory[id]||0)>=n);
-    const div=document.createElement('div');
-    div.className='recipe-card';
-    if(locked) div.style.opacity='.4';
-    const needs=Object.entries(r.needs).map(([id,n])=>{
-      const c=CROPS[id];const have=state.inventory[id]||0;
-      return`<span class="recipe-need" style="${have>=n?'background:#c8e6c9':'background:#ffcdd2'}">${c?c.emoji:'?'}×${n}(${have})</span>`;
-    }).join('');
-    div.innerHTML=`
-      <span class="recipe-out">${r.emoji}</span>
-      <div class="recipe-info">
-        <div class="recipe-name">${r.name} ${locked?`· Lv ${r.unlockLv}`:''}</div>
-        <div class="recipe-needs">${needs}</div>
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">Garden Game · Social · iOS Soon</div>
+      <h1 class="hero-title"><span class="bloom-grad">BLOOM</span></h1>
+      <p class="hero-desc">Plant seeds, tend your garden, harvest crops and cook recipes. Share gifts with neighbors. A calm, living world that grows even when you're away.</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="https://bloom.architect-dna.ch" target="_blank">🌸 Open Garden ↗</a>
+        <a class="btn-ghost" href="/">← All Projects</a>
       </div>
-      <div class="recipe-value">${r.value}⭐</div>
-    `;
-    if(!locked&&canMake) div.onclick=(ev)=>craft(r,ev);
-    else if(!locked&&!canMake) div.onclick=()=>toast('Need more ingredients!');
-    list.appendChild(div);
-  });
-}
-
-function craft(r,ev){
-  const ok=Object.entries(r.needs).every(([id,n])=>useInv(id,n));
-  if(!ok){toast('Missing ingredients!');return;}
-  addInv(r.id);
-  addStars(Math.floor(r.value*.1),ev.clientX,ev.clientY);
-  toast(`${r.emoji} ${r.name} crafted!`);
-  renderWorkshop();renderInv();renderStallInv();updateTopbar();
-  save();
-}
-
-// ── STALL ─────────────────────────────────────────────────────────────────
-function renderStall(){
-  const list=document.getElementById('stall-list');
-  list.innerHTML='';
-  if(!state.stall.length){list.innerHTML='<div class="stall-empty">Your stall is empty — add items from your basket!</div>';return;}
-  state.stall.forEach((item,i)=>{
-    const r=RECIPES.find(r=>r.id===item.id);
-    const c=CROPS[item.id];
-    const info=r||c;
-    if(!info) return;
-    const div=document.createElement('div');
-    div.className='stall-listing';
-    div.innerHTML=`<span class="stall-emoji">${info.emoji||'?'}</span><div class="stall-info"><div class="stall-name">${info.name}</div><div class="stall-price">Listed for ${item.price}⭐</div></div><button class="stall-remove" onclick="removeStall(${i})">Remove</button>`;
-    list.appendChild(div);
-  });
-}
-
-function renderStallInv(){
-  const grid=document.getElementById('stall-inv-grid');
-  grid.innerHTML='';
-  const items={...state.inventory};
-  RECIPES.forEach(r=>{if(items[r.id]) items[r.id]=items[r.id];});
-  const allItems={...state.inventory};
-  RECIPES.forEach(r=>{if(allItems[r.id]===undefined&&state.inventory[r.id]) allItems[r.id]=state.inventory[r.id];});
-
-  const allKeys=Object.keys(allItems);
-  if(!allKeys.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:rgba(74,26,44,.4);font-size:12px;padding:12px">Craft or harvest items to sell!</div>';return;}
-  allKeys.forEach(id=>{
-    const qty=allItems[id];if(!qty) return;
-    const r=RECIPES.find(rc=>rc.id===id);
-    const c=CROPS[id];
-    const info=r||c;if(!info) return;
-    const price=r?r.value:c.yield;
-    const div=document.createElement('div');
-    div.className='inv-item';
-    div.innerHTML=`<span class="inv-emoji">${info.emoji}</span><div class="inv-name">${info.name}</div><span class="inv-qty">${qty}</span><button class="inv-sell" onclick="addToStall('${id}',${price})">List ${price}⭐</button>`;
-    grid.appendChild(div);
-  });
-}
-
-function addToStall(id,price){
-  if(!useInv(id)){toast('None in basket!');return;}
-  state.stall.push({id,price});save();
-  toast('Added to stall!');renderStall();renderStallInv();renderInv();
-}
-function removeStall(i){
-  const item=state.stall[i];
-  addInv(item.id);
-  state.stall.splice(i,1);save();
-  toast('Removed from stall');renderStall();renderStallInv();renderInv();
-}
-
-// ── SOCIAL ────────────────────────────────────────────────────────────────
-function shareGarden(){
-  const encoded=btoa(JSON.stringify({
-    name:state.gardenName||'A Neighbor',
-    level:state.level,
-    plots:state.plots.map(p=>({crop:p.crop,state:p.state,plantedAt:p.plantedAt,locked:p.locked})),
-    stall:state.stall,
-    stars:state.stars,
-  }));
-  const url=`${location.origin}${location.pathname}?visit=${encoded}`;
-  navigator.clipboard?.writeText(url).then(()=>toast('🌸 Garden link copied!')).catch(()=>{
-    prompt('Copy your garden link:',url);
-  });
-}
-
-function visitGarden(){
-  const input=document.getElementById('visit-code').value.trim();
-  let code=input;
-  if(input.includes('?visit=')) code=input.split('?visit=')[1];
-  try{
-    const data=JSON.parse(atob(code));
-    showVisitor(data);
-  }catch(e){toast('Invalid garden code!');}
-}
-
-let visitingData=null;
-function showVisitor(data){
-  visitingData=data;
-  document.getElementById('visitor-name').textContent=`🌸 ${data.name}`;
-  document.getElementById('visitor-stats').textContent=`Level ${data.level} · ${data.plots.filter(p=>p.state==='ready'||!p.locked&&p.crop&&Date.now()-p.plantedAt>=(CROPS[p.crop]?.time||0)*1000).length} crops ready`;
-  const now=Date.now();
-  const grid=document.getElementById('visitor-grid');
-  grid.innerHTML='';
-  data.plots.forEach(p=>{
-    const div=document.createElement('div');div.className='visitor-plot';
-    if(p.locked){div.textContent='🔒';}
-    else if(!p.crop){div.textContent='🌱';}
-    else{
-      const crop=CROPS[p.crop];
-      const remaining=Math.max(0,(crop?.time||0)-((now-p.plantedAt)/1000));
-      div.textContent=remaining<=0?crop?.emoji||'🌿':crop?.emoji||'🌿';
-      if(remaining<=0) div.classList.add('ready');
-    }
-    grid.appendChild(div);
-  });
-  document.getElementById('visitor-overlay').classList.add('show');
-}
-
-function leaveGift(){
-  if(!visitingData) return;
-  // encode a gift back
-  const gift=btoa(JSON.stringify({from:'A neighbor',stars:10,msg:'💝'}));
-  const giftUrl=`${location.origin}${location.pathname}?gift=${gift}`;
-  navigator.clipboard?.writeText(giftUrl).then(()=>{
-    toast('💝 Gift link copied! Send to your neighbor.');
-    closeVisitor();
-  }).catch(()=>{
-    prompt('Send this gift link to your neighbor:',giftUrl);
-    closeVisitor();
-  });
-}
-
-function closeVisitor(){
-  document.getElementById('visitor-overlay').classList.remove('show');
-  visitingData=null;
-}
-
-function checkGift(){
-  const params=new URLSearchParams(location.search);
-  const visitCode=params.get('visit');
-  const giftCode=params.get('gift');
-  if(visitCode){
-    try{const data=JSON.parse(atob(visitCode));setTimeout(()=>showVisitor(data),600);}catch(e){}
-    history.replaceState({},''  ,location.pathname);
-  }
-  if(giftCode){
-    try{
-      const g=JSON.parse(atob(giftCode));
-      addStars(g.stars||5);
-      toast(`${g.msg||'💝'} You received a gift! +${g.stars||5}⭐`);
-      updateTopbar();
-    }catch(e){}
-    history.replaceState({},document.title,location.pathname);
-  }
-}
-
-function renderLeaderboard(){
-  const el=document.getElementById('leaderboard-list');
-  // local only - show own score
-  el.innerHTML=`
-    <div class="recipe-card" style="cursor:default">
-      <span style="font-size:28px">🏆</span>
-      <div style="flex:1"><div class="recipe-name">${state.gardenName}</div><div class="recipe-needs"><span class="recipe-need">Lv ${state.level}</span><span class="recipe-need">${state.stars}⭐</span></div></div>
+      <div class="hero-tags">
+        <span class="tag">Garden</span>
+        <span class="tag">Social</span>
+        <span class="tag">Real-Time Crops</span>
+        <span class="tag">iOS Soon</span>
+        <span class="tag">Free</span>
+      </div>
     </div>
-    <div style="text-align:center;font-size:11px;color:rgba(74,26,44,.4);padding:8px">Share your garden link to appear on neighbors' boards!</div>
-  `;
-}
+    <div class="hero-visual">
+      <div class="garden-card">
+        <div class="garden-scene">
+          <div class="garden-tile ripe"><span class="emoji">🍅</span><span class="label">Ready</span></div>
+          <div class="garden-tile"><span class="emoji">🌽</span><span class="label">2h left</span></div>
+          <div class="garden-tile ripe"><span class="emoji">🫐</span><span class="label">Ready</span></div>
+          <div class="garden-tile"><span class="emoji">🌻</span><span class="label">Growing</span></div>
+          <div class="garden-tile"><span class="emoji">🥕</span><span class="label">4h left</span></div>
+          <div class="garden-tile ripe"><span class="emoji">🍓</span><span class="label">Ready</span></div>
+          <div class="garden-tile"><span class="emoji">🌿</span><span class="label">Planted</span></div>
+          <div class="garden-tile"><span class="emoji">🍋</span><span class="label">1h left</span></div>
+        </div>
+        <div class="garden-stats">
+          <div class="garden-stat"><div class="val">🌸 12</div><div class="lbl">Flowers</div></div>
+          <div class="garden-stat"><div class="val">🪙 480</div><div class="lbl">Coins</div></div>
+          <div class="garden-stat"><div class="val">👥 3</div><div class="lbl">Neighbors</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-// ── TABS ──────────────────────────────────────────────────────────────────
-const PANELS={shop:'panel-shop',inv:'panel-inv',workshop:'panel-workshop',stall:'panel-stall',social:'panel-social'};
-function switchTab(id){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(PANELS[id]).classList.add('active');
-  event.currentTarget.classList.add('active');
-  if(id==='shop') renderShop();
-  if(id==='inv') renderInv();
-  if(id==='workshop') renderWorkshop();
-  if(id==='stall'){renderStall();renderStallInv();}
-  if(id==='social') renderLeaderboard();
-}
+<section>
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">A garden that lives with you</h2>
+    <p class="section-sub">No grinding. No pay-to-win. Just a calm growing world that moves at real time.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🌱</div>
+        <div class="feature-title">Real-Time Crops</div>
+        <div class="feature-desc">Plant seeds and come back when they're ready. Tomatoes in 2 hours, sunflowers overnight. No fake acceleration.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧁</div>
+        <div class="feature-title">Recipes & Kitchen</div>
+        <div class="feature-desc">Combine harvested crops to cook recipes. Strawberry jam, carrot soup, blueberry muffins — unlock new dishes as you grow.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏪</div>
+        <div class="feature-title">Market Stall</div>
+        <div class="feature-desc">Sell your produce and cooked goods. Set your own prices. Neighbors browse your stall and leave coins.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💝</div>
+        <div class="feature-title">Gift Your Neighbors</div>
+        <div class="feature-desc">Leave gift boxes in friends' gardens. Share rare seeds, surplus crops, or cooked goods with a personal note.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-title">Visit Anyone</div>
+        <div class="feature-desc">Walk through your neighbors' gardens. See how they've designed their space. Leave a reaction. Build a community.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">Your Own Space</div>
+        <div class="feature-desc">Decorate with paths, fences, benches and flowers. Every garden looks different. Yours reflects you.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-// ── TICK ──────────────────────────────────────────────────────────────────
-setInterval(()=>{
-  renderGarden();
-  // check for newly ready crops
-  const now=Date.now();
-  state.plots.forEach(p=>{
-    if(p.crop&&p.plantedAt){
-      const crop=CROPS[p.crop];
-      if(crop&&(now-p.plantedAt)/1000>=crop.time&&p.state!=='ready'){
-        p.state='ready';save();
-      }
-    }
-  });
-},2000);
+<div class="ios-band">
+  <div class="ios-inner">
+    <div class="ios-text">
+      <h2>iOS app coming soon</h2>
+      <p>BLOOM is live on the web now. The native iOS app with push notifications for harvest timers, Apple Sign-In, and home screen widget is in development.</p>
+      <div class="ios-badge"><span class="big">🍎</span> iOS App — In Development</div>
+    </div>
+    <div style="font-size:72px;opacity:.4">🌸</div>
+  </div>
+</div>
 
-// ── INIT ──────────────────────────────────────────────────────────────────
-load();
-updateTopbar();
-renderGarden();
-renderShop();
-checkGift();
-</script>
+<div class="cta-band">
+  <h2>Your garden is waiting</h2>
+  <p>Free to play. No account needed to start. Web app — runs in any browser.</p>
+  <div class="cta-buttons">
+    <a class="btn-primary" href="https://bloom.architect-dna.ch" target="_blank">🌸 Open Garden ↗</a>
+    <a class="btn-ghost" href="/">← Back to Architect-DNA</a>
+  </div>
+</div>
+
+<footer>
+  <p>BLOOM by <a href="/">Architect-DNA</a> · Bern, Switzerland · <a href="/privacy">Privacy</a></p>
+</footer>
+
 </body>
 </html>

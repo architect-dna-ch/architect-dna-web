@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SUMMIT — architect-dna.ch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000;overflow:hidden;font-family:'SF Mono','Fira Code','Courier New',monospace;touch-action:none}
+canvas{display:block;width:100vw;height:100vh}
+#ui{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column}
+#hud{padding:18px 22px;display:flex;justify-content:space-between;align-items:flex-start}
+.hud-block{display:flex;flex-direction:column;gap:2px}
+.hud-label{font-size:9px;letter-spacing:.15em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.hud-val{font-size:22px;font-weight:900;letter-spacing:-.03em;color:#fff;line-height:1}
+.hud-combo{color:#ffd700;font-size:18px}
+#overlay{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(8,6,20,.92);backdrop-filter:blur(4px);transition:opacity .4s;
+  pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none
+}
+#overlay.hidden{opacity:0;pointer-events:none}
+.ov-tag{font-size:10px;letter-spacing:.22em;color:rgba(255,200,100,.7);text-transform:uppercase;margin-bottom:16px}
+.ov-title{font-size:clamp(52px,12vw,110px);font-weight:900;letter-spacing:-.05em;line-height:.9;color:#fff;text-align:center;margin-bottom:8px}
+.ov-title em{color:#ffd700;font-style:normal;display:block}
+.ov-sub{font-size:13px;color:rgba(255,255,255,.45);margin:18px 0 0;letter-spacing:.04em}
+.ov-score{font-size:40px;font-weight:900;color:#ffd700;margin:10px 0 2px;letter-spacing:-.03em}
+.ov-best{font-size:11px;color:rgba(255,220,100,.5);letter-spacing:.1em;margin-bottom:24px}
+.ov-hint{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.08em;margin-top:28px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:.6}}
+.ov-stats{display:flex;gap:28px;margin-top:8px}
+.stat{text-align:center}
+.stat-n{font-size:22px;font-weight:900;color:#fff}
+.stat-l{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;margin-top:1px}
+.back-btn{
+  position:fixed;top:16px;left:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.45);font:600 10px 'SF Mono',monospace;letter-spacing:.08em;
+  padding:7px 13px;border-radius:6px;text-decoration:none;pointer-events:auto;
+  transition:.15s;z-index:10
+}
+.back-btn:hover{color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.25)}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="ui">
+  <div id="hud">
+    <div class="hud-block">
+      <div class="hud-label">Distance</div>
+      <div class="hud-val" id="h-dist">0</div>
+    </div>
+    <div class="hud-block" style="align-items:center">
+      <div class="hud-label">Combo</div>
+      <div class="hud-val hud-combo" id="h-combo" style="opacity:0">x1</div>
+    </div>
+    <div class="hud-block" style="align-items:flex-end">
+      <div class="hud-label">Best</div>
+      <div class="hud-val" id="h-best">0</div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <div class="ov-tag" id="ov-tag">Mountain Explorer</div>
+  <div class="ov-title"><em>SUMMIT</em></div>
+  <div id="ov-score-block" style="display:none">
+    <div class="ov-score" id="ov-score">0</div>
+    <div class="ov-best" id="ov-best-line"></div>
+    <div class="ov-stats">
+      <div class="stat"><div class="stat-n" id="ov-peaks">0</div><div class="stat-l">Peaks</div></div>
+      <div class="stat"><div class="stat-n" id="ov-best-combo">0</div><div class="stat-l">Best Combo</div></div>
+    </div>
+  </div>
+  <div class="ov-sub" id="ov-sub">Peak hopping · Swing jazz · Go the distance</div>
+  <div class="ov-hint" id="ov-hint">TAP · HOLD · RELEASE</div>
+</div>
+
+<a class="back-btn" href="/games">← Games</a>
+
+<script>
+// ── CANVAS ────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); if (state !== 'PLAYING') drawBg(0); });
+
+// ── SEEDED RNG ────────────────────────────────────────────────────────────
+function mkRng(seed) {
+  let s = seed >>> 0;
+  return () => { s=(s+0x6D2B79F5)|0; let t=Math.imul(s^s>>>15,1|s); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+}
+
+// ── AUDIO ENGINE — SWING JAZZ ─────────────────────────────────────────────
+let audio = null;
+let band = null;
+
+class SwingBand {
+  constructor(actx) {
+    this.a = actx;
+    this.bpm = 174;
+    this.beat = 60 / this.bpm;
+    this.next = actx.currentTime + 0.05;
+    this.tick = 0; // 0-15 (4 bars × 4 beats)
+    this.running = false;
+    this.vol = actx.createGain();
+    this.vol.gain.value = 0.72;
+    this.vol.connect(actx.destination);
+    this.S = 0.64; // swing ratio
+
+    // Walking bass: G7 → C7 → G7 → D7 (jazz standard I-IV-I-V)
+    this.bass = [
+      [98.0, 123.5, 146.8, 185.0],  // G2 B2 D3 F#3
+      [130.8, 164.8, 196.0, 233.1], // C3 E3 G3 Bb3
+      [98.0, 123.5, 174.6, 220.0],  // G2 B2 F3 A3
+      [146.8, 185.0, 220.0, 261.6], // D3 F#3 A3 C4
+    ];
+    // Chord voicings (top 3 notes)
+    this.chords = [
+      [196, 246.9, 293.7],  // G B D  (G7)
+      [261.6, 329.6, 392],  // C E G  (C7)
+      [196, 246.9, 311.1],  // G B Eb (G7 alt)
+      [146.8, 185, 233.1],  // D F# Bb (D7)
+    ];
+  }
+
+  start() { this.running = true; this._loop(); }
+  stop()  { this.running = false; }
+
+  _loop() {
+    if (!this.running) return;
+    while (this.next < this.a.currentTime + 0.2) {
+      const t = this.next;
+      const bar  = Math.floor(this.tick / 4) % 4;
+      const beat = this.tick % 4;
+
+      // Kick: beats 1 & 3
+      if (beat === 0 || beat === 2) this._kick(t);
+
+      // Snare: beats 2 & 4
+      if (beat === 1 || beat === 3) this._snare(t);
+
+      // Walking bass: every beat
+      this._bass(t, this.bass[bar][beat]);
+
+      // Ride cymbal: downbeat + swung upbeat (quintessential swing)
+      this._hihat(t, 0.38);
+      this._hihat(t + this.beat * this.S, 0.20);
+
+      // Chord stab: beats 2 & 4
+      if (beat === 1 || beat === 3) this._chord(t, bar);
+
+      this.next += this.beat;
+      this.tick = (this.tick + 1) % 16;
+    }
+    setTimeout(() => this._loop(), 40);
+  }
+
+  _bass(t, freq) {
+    const o = this.a.createOscillator();
+    const g = this.a.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.55, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.01, t + this.beat * 0.88);
+    o.connect(g).connect(this.vol);
+    o.start(t); o.stop(t + this.beat);
+  }
+
+  _kick(t) {
+    const o = this.a.createOscillator();
+    const g = this.a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(110, t);
+    o.frequency.exponentialRampToValueAtTime(38, t + 0.18);
+    g.gain.setValueAtTime(0.75, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + 0.22);
+    o.connect(g).connect(this.vol);
+    o.start(t); o.stop(t + 0.22);
+  }
+
+  _snare(t) {
+    // Tone
+    const o = this.a.createOscillator();
+    const og = this.a.createGain();
+    o.type = 'triangle';
+    o.frequency.value = 185;
+    og.gain.setValueAtTime(0.25, t);
+    og.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+    o.connect(og).connect(this.vol);
+    o.start(t); o.stop(t + 0.1);
+    // Noise
+    const buf = this.a.createBuffer(1, Math.floor(this.a.sampleRate * 0.12), this.a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = this.a.createBufferSource(); src.buffer = buf;
+    const bp = this.a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 3200;
+    const ng = this.a.createGain();
+    ng.gain.setValueAtTime(0.22, t);
+    ng.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+    src.connect(bp).connect(ng).connect(this.vol);
+    src.start(t);
+  }
+
+  _hihat(t, vol) {
+    const n = Math.floor(this.a.sampleRate * 0.09);
+    const buf = this.a.createBuffer(1, n, this.a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const src = this.a.createBufferSource(); src.buffer = buf;
+    const hp = this.a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7500;
+    const g = this.a.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + 0.07);
+    src.connect(hp).connect(g).connect(this.vol);
+    src.start(t);
+  }
+
+  _chord(t, bar) {
+    for (const freq of this.chords[bar % 4]) {
+      const o = this.a.createOscillator();
+      const lp = this.a.createBiquadFilter();
+      const g = this.a.createGain();
+      o.type = 'sawtooth';
+      o.frequency.value = freq;
+      lp.type = 'lowpass'; lp.frequency.value = 1600;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.055, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+      o.connect(lp).connect(g).connect(this.vol);
+      o.start(t); o.stop(t + 0.32);
+    }
+  }
+
+  // Sound effects (bypass band vol)
+  sfx_jump() {
+    const o = this.a.createOscillator();
+    const g = this.a.createGain();
+    const t = this.a.currentTime;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(280, t);
+    o.frequency.exponentialRampToValueAtTime(560, t + 0.12);
+    g.gain.setValueAtTime(0.18, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+    o.connect(g).connect(this.a.destination);
+    o.start(t); o.stop(t + 0.2);
+  }
+
+  sfx_land(combo) {
+    const t = this.a.currentTime;
+    const freqs = [392, 494, 587];
+    const n = Math.min(combo, 3);
+    for (let i = 0; i < n; i++) {
+      const o = this.a.createOscillator();
+      const g = this.a.createGain();
+      o.type = 'sine';
+      o.frequency.value = freqs[i] * (combo > 3 ? 2 : 1);
+      g.gain.setValueAtTime(0, t + i * 0.07);
+      g.gain.linearRampToValueAtTime(0.22, t + i * 0.07 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.01, t + i * 0.07 + 0.22);
+      o.connect(g).connect(this.a.destination);
+      o.start(t + i * 0.07); o.stop(t + i * 0.07 + 0.25);
+    }
+  }
+
+  sfx_die() {
+    const t = this.a.currentTime;
+    const o = this.a.createOscillator();
+    const g = this.a.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(440, t);
+    o.frequency.exponentialRampToValueAtTime(55, t + 0.6);
+    g.gain.setValueAtTime(0.3, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + 0.6);
+    o.connect(g).connect(this.a.destination);
+    o.start(t); o.stop(t + 0.65);
+  }
+}
+
+function initAudio() {
+  if (audio) return;
+  audio = new (window.AudioContext || window.webkitAudioContext)();
+  band = new SwingBand(audio);
+  band.start();
+}
+
+// ── BACKGROUND MOUNTAINS ──────────────────────────────────────────────────
+const BG_LAYERS = [
+  { color: '#0d0a22', scale: 0.08, amp: 0.18, speed: 0.02 },
+  { color: '#110e30', scale: 0.12, amp: 0.24, speed: 0.05 },
+  { color: '#141240', scale: 0.18, amp: 0.32, speed: 0.10 },
+  { color: '#181650', scale: 0.25, amp: 0.42, speed: 0.18 },
+];
+
+function mountainY(x, layerIdx, camX) {
+  const L = BG_LAYERS[layerIdx];
+  const ox = (x + camX * L.speed) * L.scale;
+  // Sum of sines for natural mountain silhouette
+  return H * (0.55 + L.amp * (
+    Math.sin(ox * 0.7) * 0.4 +
+    Math.sin(ox * 1.3 + 1.1) * 0.3 +
+    Math.sin(ox * 2.1 + 2.3) * 0.2 +
+    Math.sin(ox * 0.3 + 0.7) * 0.35
+  ));
+}
+
+function drawBg(camX) {
+  // Sky gradient
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0,    '#08061a');
+  sky.addColorStop(0.35, '#12092e');
+  sky.addColorStop(0.65, '#200d40');
+  sky.addColorStop(0.82, '#381530');
+  sky.addColorStop(1.0,  '#4a1e18');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Stars
+  const starRng = mkRng(99);
+  for (let i = 0; i < 180; i++) {
+    const sx = ((starRng() * 8000 - camX * 0.005) % W + W) % W;
+    const sy = starRng() * H * 0.6;
+    const sr = starRng() * 1.4;
+    const sa = 0.3 + starRng() * 0.7;
+    ctx.beginPath();
+    ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${sa})`;
+    ctx.fill();
+  }
+
+  // Mountain layers (back to front)
+  for (let li = 0; li < BG_LAYERS.length; li++) {
+    const L = BG_LAYERS[li];
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 3) {
+      ctx.lineTo(x, mountainY(x, li, camX));
+    }
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fillStyle = L.color;
+    ctx.fill();
+  }
+}
+
+// ── GAME STATE ────────────────────────────────────────────────────────────
+let state = 'START'; // START | PLAYING | DEAD
+let peaks = [];
+let char = {};
+let camX = 0;
+let score = 0;
+let combo = 0;
+let bestCombo = 0;
+let bestScore = parseInt(localStorage.getItem('summitBest') || '0');
+let peakCount = 0;
+let particles = [];
+let holding = false;
+let holdStart = 0;
+let chargeT = 0;
+let deathTimer = 0;
+let pRng;
+
+// ── PLATFORM GENERATION ───────────────────────────────────────────────────
+const PEAK_BASE_H = () => H * 0.52 + H * 0.22 * Math.sin(peakCount * 0.38 + 1.2);
+const CHAR_W = 18, CHAR_H = 26;
+
+function genPeak(prev) {
+  const prog = peakCount / 50; // 0→1 progression factor
+  const minGap = 180 + prog * 120;
+  const maxGap = 300 + prog * 200;
+  const gap = minGap + pRng() * (maxGap - minGap);
+  const x = prev.x + prev.w + gap;
+  const w = Math.max(45, 100 - prog * 40 + pRng() * 30);
+  const y = H * 0.3 + pRng() * H * 0.38;
+  const icy = prog > 0.5 && pRng() < 0.3;
+  return { x, y, w, h: 28 + pRng() * 20, icy, id: peakCount++ };
+}
+
+function initGame() {
+  pRng = mkRng(Date.now() & 0xffff);
+  peakCount = 0;
+  peaks = [];
+  particles = [];
+  combo = 0; bestCombo = 0;
+  score = 0; camX = 0;
+
+  // Starting peak
+  const start = { x: W * 0.15, y: H * 0.58, w: 140, h: 32, icy: false, id: peakCount++ };
+  peaks.push(start);
+  while (peaks.length < 8) peaks.push(genPeak(peaks[peaks.length - 1]));
+
+  // Character on starting peak
+  char = {
+    x: start.x + start.w / 2,
+    y: start.y - CHAR_H,
+    vx: 0, vy: 0,
+    onGround: true,
+    peak: 0,
+    rot: 0, rotV: 0,
+    squish: 1, squishT: 0,
+    dead: false,
+  };
+
+  document.getElementById('h-dist').textContent = '0';
+  document.getElementById('h-combo').style.opacity = '0';
+  updateBestDisplay();
+}
+
+// ── PARTICLES ─────────────────────────────────────────────────────────────
+function spawnLandParticles(x, y, color) {
+  for (let i = 0; i < 12; i++) {
+    const a = -Math.PI + Math.random() * Math.PI;
+    const s = 2 + Math.random() * 4;
+    particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 3, life: 1, color });
+  }
+}
+
+function spawnTrailParticle(x, y) {
+  particles.push({ x, y, vx: (Math.random() - 0.5) * 0.8, vy: -Math.random() * 1.5, life: 0.8, color: 'rgba(255,230,100,0.6)', trail: true });
+}
+
+// ── PHYSICS ───────────────────────────────────────────────────────────────
+const GRAVITY = 0.48;
+const MAX_CHARGE = 1.8;
+const JUMP_ANGLE = Math.PI / 4; // 45° — adjustable with up/down arrows
+let jumpAngle = JUMP_ANGLE;
+
+function jump() {
+  if (!char.onGround || char.dead) return;
+  const t = Math.min((Date.now() - holdStart) / 1000, MAX_CHARGE);
+  const power = t / MAX_CHARGE; // 0→1, no minimum: tiny taps = tiny hops
+  const speed = 6 + power * 18; // 6 → 24 px/frame
+
+  // Fixed-angle projectile — charge determines distance AND height
+  char.vx = Math.cos(jumpAngle) * speed;
+  char.vy = -Math.sin(jumpAngle) * speed; // negative = upward in canvas
+  char.onGround = false;
+  char.rotV = 0.03 + power * 0.06;
+  chargeT = 0;
+  if (band) band.sfx_jump();
+}
+
+// Draw parabolic arc preview while charging
+function drawArcPreview() {
+  if (!holding || !char.onGround || chargeT < 0.03) return;
+  const power = chargeT;
+  const speed = 6 + power * 18;
+  let pvx = Math.cos(jumpAngle) * speed;
+  let pvy = -Math.sin(jumpAngle) * speed;
+  let px = char.x - camX;
+  let py = char.y + CHAR_H * 0.4;
+
+  ctx.save();
+  ctx.setLineDash([4, 9]);
+  ctx.lineWidth = 1.5;
+  const alpha = 0.25 + power * 0.45;
+  ctx.strokeStyle = `rgba(255,220,80,${alpha})`;
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  for (let i = 0; i < 120; i++) {
+    pvy += GRAVITY;
+    px += pvx;
+    py += pvy;
+    if (py > H + 40) break;
+    ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  // Landing dot
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.arc(px, Math.min(py, H - 10), 5, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255,220,80,${alpha + 0.2})`;
+  ctx.fill();
+  ctx.restore();
+}
+
+function update(dt) {
+  if (state !== 'PLAYING' || char.dead) {
+    if (char.dead) {
+      deathTimer -= dt;
+      if (deathTimer <= 0) showDead();
+    }
+    return;
+  }
+
+  // Charge display
+  if (holding && char.onGround) {
+    chargeT = Math.min((Date.now() - holdStart) / 1000 / MAX_CHARGE, 1);
+  }
+
+  // Physics
+  if (!char.onGround) {
+    char.vy += GRAVITY;
+    char.x += char.vx;
+    char.y += char.vy;
+    char.rot += char.rotV;
+    char.rotV *= 0.98;
+
+    // Trail
+    if (Math.random() < 0.4) spawnTrailParticle(char.x, char.y + CHAR_H * 0.5);
+
+    // Check landing on any peak (search all visible, not just next)
+    for (let i = Math.max(0, char.peak - 1); i < peaks.length; i++) {
+      const p = peaks[i];
+      if (char.x > p.x - 4 && char.x < p.x + p.w + 4) {
+        const topY = p.y;
+        if (char.y + CHAR_H >= topY && char.y + CHAR_H <= topY + 30 && char.vy > 0) {
+          // Landed
+          char.y = topY - CHAR_H;
+          char.vy = 0; char.vx = 0;
+          char.rot = 0; char.rotV = 0;
+          char.onGround = true;
+          char.squish = 0.55; char.squishT = 0;
+
+          if (i > char.peak) {
+            combo++;
+            bestCombo = Math.max(bestCombo, combo);
+            const pts = Math.round(100 * (1 + combo * 0.3) * (1 + peakCount / 60));
+            score += pts;
+            spawnLandParticles(char.x, char.y + CHAR_H, combo > 4 ? '#ffd700' : '#fff');
+            if (band) band.sfx_land(combo);
+            showCombo();
+          }
+          char.peak = i;
+          break;
+        }
+      }
+    }
+
+    // Fell off bottom
+    if (char.y > H + 80) {
+      char.dead = true;
+      deathTimer = 1.4;
+      if (band) band.sfx_die();
+    }
+  } else {
+    // Slide on icy platforms
+    if (peaks[char.peak]?.icy) char.x += 0.4;
+    // Fall off edge
+    const p = peaks[char.peak];
+    if (p && (char.x < p.x - 4 || char.x > p.x + p.w + 4)) {
+      char.onGround = false;
+      char.vy = 0.5;
+    }
+  }
+
+  // Squish recovery
+  if (char.squishT < 1) {
+    char.squishT = Math.min(1, char.squishT + dt * 6);
+    char.squish = 0.55 + (1 - 0.55) * char.squishT;
+  }
+
+  // Score HUD
+  document.getElementById('h-dist').textContent = Math.round(score).toLocaleString();
+
+  // Camera: smooth follow
+  const targetCam = char.x - W * 0.3;
+  camX += (targetCam - camX) * 0.07;
+
+  // Generate more peaks
+  while (peaks[peaks.length - 1].x < camX + W + 800)
+    peaks.push(genPeak(peaks[peaks.length - 1]));
+
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p2 = particles[i];
+    p2.x += p2.vx; p2.y += p2.vy;
+    if (!p2.trail) p2.vy += 0.12;
+    p2.life -= dt * (p2.trail ? 2.5 : 1.8);
+    if (p2.life <= 0) particles.splice(i, 1);
+  }
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function drawPeak(p) {
+  const sx = p.x - camX, sy = p.y;
+  if (sx > W + 100 || sx + p.w < -100) return;
+
+  // Rocky peak silhouette
+  ctx.beginPath();
+  ctx.moveTo(sx - 18, H);
+  ctx.lineTo(sx - 18, sy + 6);
+  ctx.lineTo(sx + p.w * 0.5, sy - 14);
+  ctx.lineTo(sx + p.w + 18, sy + 6);
+  ctx.lineTo(sx + p.w + 18, H);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(sx, sy - 20, sx, sy + p.h + 40);
+  grad.addColorStop(0, p.icy ? '#2a3a7a' : '#1a2060');
+  grad.addColorStop(1, '#0d1030');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Top surface
+  ctx.beginPath();
+  ctx.moveTo(sx - 18, sy + 6);
+  ctx.lineTo(sx + p.w * 0.5, sy - 14);
+  ctx.lineTo(sx + p.w + 18, sy + 6);
+  ctx.strokeStyle = p.icy ? 'rgba(120,200,255,0.7)' : 'rgba(100,140,255,0.5)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Icy label
+  if (p.icy) {
+    ctx.fillStyle = 'rgba(150,220,255,0.6)';
+    ctx.font = '9px SF Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ICY', sx + p.w / 2, sy - 22);
+  }
+
+  // Snow cap on current peak
+  if (p.id === char.peak) {
+    ctx.beginPath();
+    ctx.arc(sx + p.w / 2, sy - 12, 18, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(100,140,255,0.08)';
+    ctx.fill();
+  }
+}
+
+function drawChar() {
+  const sx = char.x - camX;
+  const sy = char.y;
+  const sq = char.squish;
+
+  ctx.save();
+  ctx.translate(sx, sy + CHAR_H);
+  ctx.rotate(char.rot);
+  ctx.scale(1 / sq, sq);
+
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(0, 2, CHAR_W * 0.6, 4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fill();
+
+  // Body
+  const bodyGrad = ctx.createLinearGradient(-CHAR_W / 2, -CHAR_H, CHAR_W / 2, 0);
+  bodyGrad.addColorStop(0, '#dde8ff');
+  bodyGrad.addColorStop(1, '#8090cc');
+  ctx.fillStyle = bodyGrad;
+  ctx.beginPath();
+  ctx.roundRect(-CHAR_W / 2 + 2, -CHAR_H + 6, CHAR_W - 4, CHAR_H - 8, 3);
+  ctx.fill();
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(0, -CHAR_H + 4, 9, 0, Math.PI * 2);
+  ctx.fillStyle = '#e8f0ff';
+  ctx.fill();
+
+  // Hat (jazz/adventurer hat)
+  ctx.fillStyle = '#1a1040';
+  ctx.beginPath();
+  ctx.ellipse(0, -CHAR_H - 3, 10, 3.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(-6, -CHAR_H - 14, 12, 11);
+  ctx.beginPath();
+  ctx.ellipse(0, -CHAR_H - 3, 13, 4, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a1040';
+  ctx.fill();
+  // Hat band
+  ctx.fillStyle = '#ffd700';
+  ctx.fillRect(-6, -CHAR_H - 7, 12, 2.5);
+
+  // Scarf
+  ctx.fillStyle = '#ff5040';
+  ctx.fillRect(-CHAR_W / 2 + 3, -CHAR_H + 8, CHAR_W - 6, 5);
+  ctx.fillRect(3, -CHAR_H + 8, 4, 14);
+
+  // Glow
+  ctx.beginPath();
+  ctx.arc(0, -CHAR_H / 2, CHAR_W, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(150,180,255,0.07)';
+  ctx.fill();
+
+  ctx.restore();
+
+  // Charge bar above character
+  if (holding && char.onGround && chargeT > 0.02) {
+    const bw = 50;
+    const bx = sx - bw / 2;
+    const by = sy - 22;
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(bx, by, bw, 5);
+    const chargeColor = chargeT > 0.85 ? '#ff4040' : chargeT > 0.5 ? '#ffd700' : '#4af';
+    ctx.fillStyle = chargeColor;
+    ctx.fillRect(bx, by, bw * chargeT, 5);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(bx, by, bw, 5);
+  }
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    const sx = p.x - camX;
+    ctx.beginPath();
+    ctx.arc(sx, p.y, p.trail ? 2.5 : 3, 0, Math.PI * 2);
+    if (typeof p.color === 'string' && p.color.startsWith('rgba')) {
+      const alpha = p.life * (p.trail ? 0.7 : 1);
+      ctx.fillStyle = p.color.replace(/[\d.]+\)$/, alpha + ')');
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.life;
+    }
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawHint() {
+  if (char.onGround && char.peak === 0 && peakCount < 4) {
+    const sx = peaks[1]?.x + peaks[1]?.w / 2 - camX;
+    const sy = peaks[1]?.y - 28;
+    if (sx && sy) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = 'bold 10px SF Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('NEXT PEAK →', sx, sy);
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawBg(camX);
+  for (const p of peaks) drawPeak(p);
+  drawArcPreview();
+  drawParticles();
+  drawChar();
+  drawHint();
+}
+
+// ── HUD HELPERS ────────────────────────────────────────────────────────────
+let comboFadeTimer = null;
+function showCombo() {
+  const el = document.getElementById('h-combo');
+  el.textContent = 'x' + combo;
+  el.style.opacity = '1';
+  el.style.transform = 'scale(1.3)';
+  setTimeout(() => el.style.transform = 'scale(1)', 150);
+  clearTimeout(comboFadeTimer);
+  comboFadeTimer = setTimeout(() => el.style.opacity = '0', 1800);
+}
+function updateBestDisplay() {
+  document.getElementById('h-best').textContent = bestScore.toLocaleString();
+}
+
+// ── SCREENS ───────────────────────────────────────────────────────────────
+const overlay = document.getElementById('overlay');
+function showDead() {
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('summitBest', bestScore);
+  }
+  updateBestDisplay();
+
+  document.getElementById('ov-tag').textContent = combo > 5 ? '🔥 ON FIRE' : peakCount > 15 ? '🏔 NOT BAD' : 'GAME OVER';
+  document.getElementById('ov-score').textContent = Math.round(score).toLocaleString();
+  document.getElementById('ov-best-line').textContent = score >= bestScore ? '★ NEW BEST!' : `Best: ${bestScore.toLocaleString()}`;
+  document.getElementById('ov-peaks').textContent = char.peak;
+  document.getElementById('ov-best-combo').textContent = bestCombo;
+  document.getElementById('ov-score-block').style.display = 'block';
+  document.getElementById('ov-sub').style.display = 'none';
+  document.getElementById('ov-hint').textContent = 'TAP TO PLAY AGAIN';
+  overlay.classList.remove('hidden');
+  state = 'DEAD';
+}
+
+function showDead() {
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('summitBest', bestScore);
+  }
+  updateBestDisplay();
+
+  document.getElementById('ov-tag').textContent = bestCombo > 7 ? '🔥 LEGENDARY RUN' : char.peak > 12 ? '🏔 SOLID CLIMB' : '⛰ GAME OVER';
+  document.getElementById('ov-score').textContent = Math.round(score).toLocaleString();
+  document.getElementById('ov-best-line').textContent = score >= bestScore ? '★ NEW BEST!' : `Best: ${bestScore.toLocaleString()}`;
+  document.getElementById('ov-peaks').textContent = char.peak;
+  document.getElementById('ov-best-combo').textContent = bestCombo;
+  document.getElementById('ov-score-block').style.display = 'block';
+  document.getElementById('ov-sub').style.display = 'none';
+  document.getElementById('ov-hint').textContent = 'TAP TO PLAY AGAIN';
+  overlay.classList.remove('hidden');
+  state = 'DEAD';
+}
+
+function startGame() {
+  initAudio();
+  initGame();
+  overlay.classList.add('hidden');
+  state = 'PLAYING';
+}
+
+overlay.addEventListener('click', startGame);
+overlay.addEventListener('touchend', e => { e.preventDefault(); startGame(); });
+
+// ── INPUT ─────────────────────────────────────────────────────────────────
+function pressStart() {
+  if (state !== 'PLAYING') return;
+  holding = true;
+  holdStart = Date.now();
+  chargeT = 0;
+}
+function pressEnd() {
+  if (!holding || state !== 'PLAYING') return;
+  holding = false;
+  chargeT = 0;
+  jump();
+}
+
+window.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); pressStart(); }
+  if (e.code === 'ArrowUp')   { e.preventDefault(); jumpAngle = Math.min(jumpAngle + 0.08, Math.PI * 0.72); }
+  if (e.code === 'ArrowDown') { e.preventDefault(); jumpAngle = Math.max(jumpAngle - 0.08, Math.PI * 0.12); }
+});
+window.addEventListener('keyup', e => { if (e.code === 'Space') pressEnd(); });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); pressStart(); }, { passive: false });
+canvas.addEventListener('touchend',   e => { e.preventDefault(); pressEnd(); }, { passive: false });
+canvas.addEventListener('mousedown', pressStart);
+canvas.addEventListener('mouseup', pressEnd);
+
+// ── GAME LOOP ─────────────────────────────────────────────────────────────
+let last = 0;
+function loop(ts) {
+  const dt = Math.min((ts - last) / 1000, 0.05);
+  last = ts;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// Init
+updateBestDisplay();
+drawBg(0);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

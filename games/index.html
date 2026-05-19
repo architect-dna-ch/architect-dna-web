@@ -2,688 +2,604 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VOID CELL — Game Studio</title>
-<meta name="description" content="VOID CELL — Independent game studio by Architect-DNA. Skill-based browser games. No installs. No accounts.">
-<meta property="og:title" content="VOID CELL — Game Studio">
-<meta property="og:description" content="Skill-based browser games. No installs. No accounts.">
-<meta property="og:url" content="https://architect-dna.ch/games">
-<meta name="theme-color" content="#000">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>VOID CELL — Game Store</title>
+<meta name="description" content="VOID CELL Game Store — 7 browser games. No install required. Play free, install as PWA.">
+<meta name="theme-color" content="#060810">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --cyan:#00eeff;
-  --red:#ff2233;
-  --amber:#ffaa00;
-  --white:#f0f4ff;
-  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --bg:#060810;--bg2:rgba(255,255,255,.04);--bg3:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --text:#f0f0f8;--text2:rgba(240,240,248,.55);--text3:rgba(240,240,248,.28);
+  --accent:#00d4ff;
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
 }
-html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{min-height:100dvh}
 
-/* ── HORIZONTAL SCROLL CONTAINER ── */
-.track{
-  display:flex;
-  width:600vw;
-  height:100vh;
-  will-change:transform;
-}
-.panel{
-  width:100vw;
-  height:100vh;
-  flex-shrink:0;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;height:56px;background:rgba(6,8,16,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px}
+.nav-logo{font-family:var(--mono);font-size:13px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:9px}
+.nav-logo-box{width:28px;height:28px;border:1.5px solid rgba(0,212,255,.4);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.nav-logo-box svg{width:13px;height:13px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round}
+.nav-count{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--text3);text-transform:uppercase}
+.nav-back{margin-left:auto;font-size:12px;font-weight:600;color:var(--text3);text-decoration:none;letter-spacing:.06em;transition:.15s}
+.nav-back:hover{color:var(--text2)}
+.nav-kbd{font-family:var(--mono);font-size:9px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;padding:2px 6px;color:var(--text3);letter-spacing:.05em}
 
-/* ── CANVAS (shared bg) ── */
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* SHELF */
+#shelf{position:sticky;top:56px;z-index:90;background:rgba(6,8,16,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 0}
+.shelf-track{display:flex;gap:12px;padding:0 24px;overflow-x:auto;scrollbar-width:none;cursor:grab;user-select:none}
+.shelf-track:active{cursor:grabbing}
+.shelf-track::-webkit-scrollbar{display:none}
+.shelf-card{flex-shrink:0;width:160px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg2);overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative}
+.shelf-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.shelf-card.active{border-color:var(--accent);box-shadow:0 0 20px rgba(0,212,255,.18)}
+.shelf-card.active .shelf-thumb-label{background:var(--accent);color:#000}
+.shelf-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);position:relative;overflow:hidden}
+.shelf-thumb canvas{position:absolute;inset:0;width:100%;height:100%}
+.shelf-thumb-label{font-size:8px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono);padding:2px 8px;border-radius:3px;background:var(--bg3);color:var(--text3);position:absolute;top:6px;left:6px;transition:.2s}
+.shelf-name{font-size:11px;font-weight:800;padding:8px 10px 4px;letter-spacing:.04em;color:var(--text)}
+.shelf-genre{font-size:9px;font-weight:600;padding:0 10px 8px;color:var(--text3);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
 
-/* ── PROGRESS BAR ── */
-.progress{
-  position:fixed;bottom:0;left:0;height:2px;
-  background:var(--cyan);z-index:200;
-  transition:width .08s linear;
-  box-shadow:0 0 12px var(--cyan);
-}
+/* HERO */
+#hero{display:grid;grid-template-columns:1fr 1fr;min-height:400px;max-height:60vh;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+@media(max-width:700px){#hero{grid-template-columns:1fr;max-height:none}}
+#hero-canvas{width:100%;height:100%;display:block;background:var(--bg)}
+.hero-info{padding:40px 40px 40px 36px;display:flex;flex-direction:column;justify-content:center;gap:0;position:relative;z-index:1}
+@media(max-width:700px){.hero-info{padding:28px 24px}}
+.hero-genre{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;transition:.3s}
+.hero-title{font-size:clamp(28px,4vw,52px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:14px;transition:.3s}
+.hero-tagline{font-size:15px;color:var(--text2);line-height:1.55;margin-bottom:28px;transition:.3s;max-width:380px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-play{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:800;border:none;cursor:pointer;transition:filter .15s,transform .1s;font-family:var(--font);letter-spacing:-.01em}
+.btn-play:hover{filter:brightness(1.1)}
+.btn-play:active{transform:scale(.97)}
+.btn-install{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;background:transparent;border:1.5px solid var(--border2);color:var(--text2);cursor:pointer;transition:.15s;font-family:var(--font)}
+.btn-install:hover{border-color:var(--text2);color:var(--text)}
+.hero-nav-hint{margin-top:20px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:8px}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:24px 40px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:var(--mono);font-size:12px;font-weight:900;letter-spacing:.22em;color:var(--cyan);text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:10px}
-.nav-logo-box{width:30px;height:30px;border:1.5px solid rgba(0,238,255,0.4);border-radius:6px;display:flex;align-items:center;justify-content:center}
-.nav-logo-box svg{width:14px;height:14px;stroke:var(--cyan);fill:none;stroke-width:1.5;stroke-linecap:round}
-.nav-right{display:flex;align-items:center;gap:20px}
-.nav-right a{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,244,255,0.35);text-decoration:none;transition:.2s}
-.nav-right a:hover{color:var(--cyan)}
-.nav-scroll-hint{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,244,255,0.2);display:flex;align-items:center;gap:8px}
-.nav-scroll-hint::after{content:'→';color:rgba(0,238,255,0.3)}
-@media(max-width:560px){.nav-right a:not(:last-child){display:none}}
+/* DETAIL */
+#detail{padding:0}
+.detail-inner{max-width:1200px;margin:0 auto}
+.detail-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 24px}
+.detail-tab{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:16px 20px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font)}
+.detail-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.detail-tab:hover:not(.active){color:var(--text2)}
+.detail-body{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:520px}
+@media(max-width:900px){.detail-body{grid-template-columns:1fr}}
+.detail-info{padding:36px 24px 36px 36px;display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--border)}
+@media(max-width:900px){.detail-info{border-right:none;border-bottom:1px solid var(--border);padding:28px 24px}}
+.detail-desc{font-size:15px;color:var(--text2);line-height:1.75}
+.detail-features{display:flex;flex-wrap:wrap;gap:8px}
+.feat-chip{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:var(--mono);letter-spacing:.05em}
+.detail-open{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:800;text-decoration:none;transition:.15s;border:1.5px solid var(--border2);color:var(--text2);width:fit-content}
+.detail-open:hover{border-color:var(--text2);color:var(--text)}
+.detail-demo{position:relative;background:#000;display:flex;flex-direction:column}
+.demo-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.demo-label{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text3)}
+.demo-fullscreen{font-size:11px;font-weight:700;color:var(--text3);text-decoration:none;letter-spacing:.06em;transition:.15s;display:flex;align-items:center;gap:5px}
+.demo-fullscreen:hover{color:var(--text)}
+#demo-frame{width:100%;flex:1;border:none;background:#000;min-height:460px}
+.demo-overlay{position:absolute;inset:0;background:rgba(6,8,16,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;transition:opacity .25s;z-index:10}
+.demo-overlay.hidden{opacity:0;pointer-events:none}
+.demo-overlay-icon{font-size:48px;opacity:.7}
+.demo-overlay-text{font-size:14px;color:var(--text2);font-weight:600}
+.demo-overlay-hint{font-size:11px;color:var(--text3)}
+.demo-play-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:10px;font-size:14px;font-weight:800;border:none;cursor:pointer;transition:filter .15s;font-family:var(--font)}
 
-/* ── PANEL 0 — COVER (Code 8 style) ── */
-.cover{background:#000}
-.cover-noise{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
-.cover-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,238,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,238,255,0.04) 1px,transparent 1px);background-size:60px 60px}
-.cover-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px);pointer-events:none}
-.cover-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 50%,transparent 30%,rgba(0,0,0,0.85) 100%)}
-.cover-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(0,238,255,0.06) 0%,rgba(119,85,255,0.04) 40%,transparent 70%);pointer-events:none}
+/* STARS BG */
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5}
 
-.cover-content{position:relative;z-index:2;text-align:center;padding:0 24px}
-.cover-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:rgba(0,238,255,0.45);margin-bottom:40px;display:flex;align-items:center;justify-content:center;gap:16px}
-.cover-eyebrow::before,.cover-eyebrow::after{content:'';display:block;width:50px;height:1px;background:rgba(0,238,255,0.2)}
-.cover-title{font-family:var(--mono);font-size:clamp(72px,15vw,180px);font-weight:900;letter-spacing:-.05em;line-height:.88;color:#fff;text-shadow:0 0 120px rgba(0,238,255,0.12),0 0 40px rgba(0,238,255,0.06);margin-bottom:4px}
-.cover-title .void{display:block}
-.cover-title .cell{display:block;color:var(--cyan);text-shadow:0 0 60px rgba(0,238,255,0.5),0 0 120px rgba(0,238,255,0.2)}
-.cover-sub{font-family:var(--mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,244,255,0.22);margin-top:20px;margin-bottom:48px}
-.cover-tagline{font-size:clamp(13px,1.8vw,16px);color:rgba(240,244,255,0.45);letter-spacing:.02em;max-width:380px;margin:0 auto 48px;line-height:1.8}
-.cover-scroll{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,238,255,0.3);display:flex;align-items:center;justify-content:center;gap:12px;animation:pulse 2.5s ease-in-out infinite}
-.cover-scroll::after{content:'';width:32px;height:1px;background:rgba(0,238,255,0.25);animation:extend 2.5s ease-in-out infinite}
-@keyframes extend{0%,100%{width:24px;opacity:.3}50%{width:48px;opacity:.7}}
-@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.9}}
-
-/* ── PANEL — GAME CARD ── */
-.game-panel{background:#000}
-.game-bg-left{position:absolute;left:0;top:0;bottom:0;width:55%;display:flex;align-items:center;justify-content:center;padding:80px 60px 80px 80px}
-.game-bg-right{position:absolute;right:0;top:0;bottom:0;width:48%;display:flex;align-items:center;justify-content:center}
-.game-canvas-wrap{position:absolute;inset:0}
-
-.game-info{position:relative;z-index:2;max-width:480px}
-.game-number{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.22em;color:rgba(255,255,255,0.18);margin-bottom:20px;display:flex;align-items:center;gap:12px}
-.game-number::before{content:'';width:32px;height:1px;background:rgba(255,255,255,0.15)}
-.game-name{font-family:var(--mono);font-size:clamp(36px,6vw,72px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:16px;color:#fff}
-.game-tagline{font-size:clamp(13px,1.6vw,16px);line-height:1.75;color:rgba(240,244,255,0.5);margin-bottom:36px;max-width:380px}
-.game-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
-.tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border-radius:20px}
-.game-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:12px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:.2s}
-.game-cta:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.game-cta svg{width:16px;height:16px;flex-shrink:0}
-
-/* NEXUS BREACH */
-.nb-accent{color:#1aaeff}
-.nb-tag{background:rgba(26,174,255,.08);border:1px solid rgba(26,174,255,.15);color:rgba(26,174,255,.7)}
-.nb-cta{background:#1aaeff;color:#000;box-shadow:0 0 32px rgba(26,174,255,.3)}
-.nb-glow{position:absolute;right:-10%;top:50%;transform:translateY(-50%);width:60%;height:80%;background:radial-gradient(ellipse,rgba(26,174,255,0.05) 0%,transparent 70%);pointer-events:none}
-
-/* GRID FALL */
-.gf-accent{color:#ff2233}
-.gf-tag{background:rgba(255,34,51,.08);border:1px solid rgba(255,34,51,.15);color:rgba(255,34,51,.7)}
-.gf-cta{background:var(--red);color:#fff;box-shadow:0 0 32px rgba(255,34,51,.3)}
-.gf-glow{position:absolute;right:-10%;top:50%;transform:translateY(-50%);width:60%;height:80%;background:radial-gradient(ellipse,rgba(255,34,51,0.05) 0%,transparent 70%);pointer-events:none}
-
-/* SECTOR ZERO */
-.sz-accent{color:#ffaa00}
-.sz-tag{background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.15);color:rgba(255,170,0,.7)}
-.sz-cta{background:var(--amber);color:#000;box-shadow:0 0 32px rgba(255,170,0,.3)}
-.sz-glow{position:absolute;right:-10%;top:50%;transform:translateY(-50%);width:60%;height:80%;background:radial-gradient(ellipse,rgba(255,170,0,0.05) 0%,transparent 70%);pointer-events:none}
-
-/* KART */
-.kt-accent{background:linear-gradient(90deg,#ff4466,#ffaa00,#00e5c0,#7c6cfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.kt-tag{background:rgba(255,68,102,.08);border:1px solid rgba(255,68,102,.15);color:rgba(255,100,120,.8)}
-.kt-cta{background:linear-gradient(90deg,#ff4466,#ff9900);color:#fff;box-shadow:0 0 32px rgba(255,68,102,.35)}
-.kt-glow{position:absolute;right:-10%;top:50%;transform:translateY(-50%);width:60%;height:80%;background:radial-gradient(ellipse,rgba(255,68,102,0.06) 0%,transparent 70%);pointer-events:none}
-
-/* PANEL 5 — STUDIO ── */
-.studio-panel{background:#000}
-.studio-content{position:relative;z-index:2;text-align:center;padding:0 24px;max-width:700px}
-.studio-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,238,255,0.4);margin-bottom:32px;display:flex;align-items:center;justify-content:center;gap:14px}
-.studio-label::before,.studio-label::after{content:'';display:block;width:40px;height:1px;background:rgba(0,238,255,0.2)}
-.studio-heading{font-family:var(--mono);font-size:clamp(32px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.05;color:#fff;margin-bottom:24px}
-.studio-body{font-size:clamp(13px,1.6vw,16px);color:rgba(240,244,255,0.45);line-height:1.9;margin-bottom:48px}
-.studio-stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;margin-bottom:52px}
-.stat-val{font-family:var(--mono);font-size:clamp(28px,4vw,48px);font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1}
-.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,238,255,0.4);margin-top:6px}
-.studio-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.studio-link{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:12px 24px;border-radius:10px;transition:.2s}
-.studio-link-primary{background:var(--cyan);color:#000;box-shadow:0 0 24px rgba(0,238,255,.25)}
-.studio-link-primary:hover{filter:brightness(1.1)}
-.studio-link-ghost{border:1px solid rgba(0,238,255,.2);color:rgba(0,238,255,.6)}
-.studio-link-ghost:hover{border-color:rgba(0,238,255,.5);color:var(--cyan)}
-
-/* ── GAME VISUAL CANVAS ── */
-.game-visual{position:absolute;right:0;top:0;bottom:0;width:50%;z-index:1}
-.game-visual canvas{width:100%;height:100%}
-
-/* ── DOT NAV ── */
-.dot-nav{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:200}
-.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.18);cursor:pointer;transition:.3s;border:none;padding:0}
-.dot.active{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-
-@media(max-width:700px){
-  .game-visual{display:none}
-  .game-bg-left{width:100%;padding:80px 28px}
-  .game-info{max-width:100%}
-  .cover-title{font-size:clamp(56px,18vw,120px)}
-  .studio-stats{gap:28px}
-}
+/* TRANSITION */
+.fade-swap{animation:fadeSwap .25s ease}
+@keyframes fadeSwap{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
-<canvas id="bg"></canvas>
-<div class="progress" id="progress"></div>
+<canvas id="stars"></canvas>
 
 <nav>
   <a class="nav-logo" href="/">
     <div class="nav-logo-box">
-      <svg viewBox="0 0 14 14"><path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/></svg>
+      <svg viewBox="0 0 14 14"><path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/><path d="M7 1v12M1 4l6 3 6-3"/></svg>
     </div>
     VOID CELL
   </a>
-  <div class="nav-right">
-    <span class="nav-scroll-hint" id="scrollHint">Scroll or drag</span>
-    <a href="/">architect-dna.ch</a>
-  </div>
+  <span class="nav-count">7 Games Live</span>
+  <span class="nav-kbd">⌘ ←→ navigate</span>
+  <a class="nav-back" href="/">← architect-dna.ch</a>
 </nav>
 
-<div class="track" id="track">
+<section id="shelf">
+  <div class="shelf-track" id="shelf-track"></div>
+</section>
 
-  <!-- ── PANEL 0: COVER ── -->
-  <div class="panel cover">
-    <div class="cover-noise"></div>
-    <div class="cover-grid"></div>
-    <div class="cover-scan"></div>
-    <div class="cover-vignette"></div>
-    <div class="cover-glow"></div>
-    <div class="cover-content">
-      <div class="cover-eyebrow">Independent Game Studio</div>
-      <div class="cover-title">
-        <span class="void">VOID</span>
-        <span class="cell">CELL</span>
-      </div>
-      <div class="cover-sub">Architect-DNA Systems · Switzerland · Est. 2025</div>
-      <p class="cover-tagline">Skill-based browser games. Zero installs. Zero accounts. Pure canvas.</p>
-      <div class="cover-scroll">Explore games</div>
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-info">
+    <div class="hero-genre" id="hero-genre"></div>
+    <h1 class="hero-title" id="hero-title"></h1>
+    <p class="hero-tagline" id="hero-tagline"></p>
+    <div class="hero-actions">
+      <button class="btn-play" id="btn-play" onclick="openGame()">▶ Play Now</button>
+      <button class="btn-install" id="btn-install" onclick="installGame()">⊕ Add to Home Screen</button>
+    </div>
+    <div class="hero-nav-hint">
+      <span class="nav-kbd">← →</span>
+      <span style="color:var(--text3);font-size:11px">or click a title above</span>
     </div>
   </div>
+</section>
 
-  <!-- ── PANEL 1: NEXUS BREACH ── -->
-  <div class="panel game-panel">
-    <canvas class="game-visual" id="c-nb" width="800" height="900"></canvas>
-    <div class="nb-glow"></div>
-    <div class="game-bg-left">
-      <div class="game-info">
-        <div class="game-number">01 · Arcade Brawler</div>
-        <div class="game-name nb-accent">NEXUS<br>BREACH</div>
-        <p class="game-tagline">Survive endless waves of neon enemies. Chain kills, build multipliers, unleash devastating abilities. How long can you hold the line?</p>
-        <div class="game-tags">
-          <span class="tag nb-tag">Arena Combat</span>
-          <span class="tag nb-tag">Wave Survival</span>
-          <span class="tag nb-tag">Abilities</span>
-          <span class="tag nb-tag">Free</span>
-        </div>
-        <a class="game-cta nb-cta" href="https://nexus-breach.architect-dna.ch" target="_blank">
-          <svg viewBox="0 0 16 16" fill="none"><polygon points="5,2 13,8 5,14" fill="currentColor"/></svg>
-          Play Now
-        </a>
-      </div>
+<section id="detail">
+  <div class="detail-inner">
+    <div class="detail-tabs">
+      <button class="detail-tab active">Overview</button>
+      <button class="detail-tab" onclick="scrollToDemo()">Play Inline</button>
     </div>
-  </div>
-
-  <!-- ── PANEL 2: GRID FALL ── -->
-  <div class="panel game-panel">
-    <canvas class="game-visual" id="c-gf" width="800" height="900"></canvas>
-    <div class="gf-glow"></div>
-    <div class="game-bg-left">
-      <div class="game-info">
-        <div class="game-number">02 · Puzzle Reflex</div>
-        <div class="game-name gf-accent">GRID<br>FALL</div>
-        <p class="game-tagline">Blocks fall. You think fast. Clear lines before the grid fills. Simple rules, brutal difficulty. A pure test of spatial reasoning under pressure.</p>
-        <div class="game-tags">
-          <span class="tag gf-tag">Puzzle</span>
-          <span class="tag gf-tag">Reflex</span>
-          <span class="tag gf-tag">Highscore</span>
-          <span class="tag gf-tag">Free</span>
+    <div class="detail-body">
+      <div class="detail-info">
+        <p class="detail-desc" id="detail-desc"></p>
+        <div class="detail-features" id="detail-features"></div>
+        <a class="detail-open" id="detail-open" target="_blank">Open Fullscreen ↗</a>
+      </div>
+      <div class="detail-demo" id="detail-demo">
+        <div class="demo-header">
+          <span class="demo-label">Live Demo</span>
+          <a class="demo-fullscreen" id="demo-fullscreen-link" target="_blank">Fullscreen ↗</a>
         </div>
-        <a class="game-cta gf-cta" href="https://grid-fall.architect-dna.ch" target="_blank">
-          <svg viewBox="0 0 16 16" fill="none"><polygon points="5,2 13,8 5,14" fill="currentColor"/></svg>
-          Play Now
-        </a>
+        <div style="position:relative;flex:1;display:flex;flex-direction:column">
+          <iframe id="demo-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock allow-modals" allow="fullscreen;pointer-lock"></iframe>
+          <div class="demo-overlay" id="demo-overlay" onclick="loadDemo()">
+            <div class="demo-overlay-icon" id="demo-overlay-icon"></div>
+            <button class="demo-play-btn" id="demo-play-btn">▶ Load Game</button>
+            <div class="demo-overlay-hint">Runs in browser — no install needed</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- ── PANEL 3: SECTOR ZERO ── -->
-  <div class="panel game-panel">
-    <canvas class="game-visual" id="c-sz" width="800" height="900"></canvas>
-    <div class="sz-glow"></div>
-    <div class="game-bg-left">
-      <div class="game-info">
-        <div class="game-number">03 · Space Shooter</div>
-        <div class="game-name sz-accent">SECTOR<br>ZERO</div>
-        <p class="game-tagline">Deep space. Unknown threats. Navigate through sector zero and eliminate everything that moves. Roguelite progression, no two runs the same.</p>
-        <div class="game-tags">
-          <span class="tag sz-tag">Space Shooter</span>
-          <span class="tag sz-tag">Roguelite</span>
-          <span class="tag sz-tag">Progression</span>
-          <span class="tag sz-tag">Free</span>
-        </div>
-        <a class="game-cta sz-cta" href="https://sector-zero.architect-dna.ch" target="_blank">
-          <svg viewBox="0 0 16 16" fill="none"><polygon points="5,2 13,8 5,14" fill="currentColor"/></svg>
-          Play Now
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PANEL 4: KART ── -->
-  <div class="panel game-panel">
-    <canvas class="game-visual" id="c-kt" width="800" height="900"></canvas>
-    <div class="kt-glow"></div>
-    <div class="game-bg-left">
-      <div class="game-info">
-        <div class="game-number">04 · Racer</div>
-        <div class="game-name kt-accent">KART</div>
-        <p class="game-tagline">Rainbow road. Top-down racing. Scream into your mic to trigger nitro boost. Three laps, one winner. Your voice is the gas.</p>
-        <div class="game-tags">
-          <span class="tag kt-tag">Voice Control</span>
-          <span class="tag kt-tag">Racing</span>
-          <span class="tag kt-tag">3 Laps</span>
-          <span class="tag kt-tag">Free</span>
-        </div>
-        <a class="game-cta kt-cta" href="https://kart.architect-dna.ch" target="_blank">
-          <svg viewBox="0 0 16 16" fill="none"><polygon points="5,2 13,8 5,14" fill="currentColor"/></svg>
-          Race Now
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PANEL 5: STUDIO ── -->
-  <div class="panel studio-panel">
-    <div class="cover-grid" style="opacity:.3"></div>
-    <div class="cover-vignette"></div>
-    <div class="studio-content">
-      <div class="studio-label">The Studio</div>
-      <div class="studio-heading">Built in the void.<br>Played everywhere.</div>
-      <p class="studio-body">
-        VOID CELL is Architect-DNA's game division.<br>
-        No game engines. No frameworks. Pure Canvas 2D API, hand-written game loops, Web Audio from scratch.<br>
-        Every pixel earned.
-      </p>
-      <div class="studio-stats">
-        <div>
-          <div class="stat-val" style="color:var(--cyan)">4</div>
-          <div class="stat-label">Titles Live</div>
-        </div>
-        <div>
-          <div class="stat-val">5K+</div>
-          <div class="stat-label">Players</div>
-        </div>
-        <div>
-          <div class="stat-val">40+</div>
-          <div class="stat-label">Countries</div>
-        </div>
-        <div>
-          <div class="stat-val" style="color:var(--cyan)">∞</div>
-          <div class="stat-label">Free Forever</div>
-        </div>
-      </div>
-      <div class="studio-links">
-        <a class="studio-link studio-link-primary" href="https://nexus-breach.architect-dna.ch">Play a Game</a>
-        <a class="studio-link studio-link-ghost" href="/">architect-dna.ch</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- DOT NAV -->
-<div class="dot-nav" id="dotNav">
-  <button class="dot active" data-i="0"></button>
-  <button class="dot" data-i="1"></button>
-  <button class="dot" data-i="2"></button>
-  <button class="dot" data-i="3"></button>
-  <button class="dot" data-i="4"></button>
-  <button class="dot" data-i="5"></button>
-</div>
+</section>
 
 <script>
-// ── HORIZONTAL SCROLL ──────────────────────────────────────────────────────
-const track = document.getElementById('track');
-const PANELS = 6;
-let current = 0;
-let targetX = 0;
-let currentX = 0;
-let isAnimating = false;
-let touchStartX = 0;
-let touchStartY = 0;
+// ── GAME DATA ──────────────────────────────────────────────────────────────────
+const GAMES = [
+  {
+    id:'nexus-breach',
+    name:'NEXUS BREACH',
+    tagline:'Orbital combat. Survive the infinite swarm.',
+    genre:'Shooter · Score Attack',
+    color:'#1aaeff',
+    url:'/nexus-breach',
+    emoji:'🚀',
+    desc:'Your ship vs an infinite enemy swarm in orbital space. Dodge, aim, survive as long as you can. Each run is different — enemies scale with your score.',
+    features:['Infinite waves','Score leaderboard','Keyboard + mouse','No install','~2MB total']
+  },
+  {
+    id:'grid-fall',
+    name:'GRID FALL',
+    tagline:'Blocks fall. Think fast. Clear the grid.',
+    genre:'Puzzle · Speed',
+    color:'#ff2233',
+    url:'/gridfal',
+    emoji:'🟥',
+    desc:'Classic falling block mechanics with brutal difficulty scaling. Clear lines before the grid fills. Pure spatial reasoning under relentless pressure.',
+    features:['Speed scaling','High scores','Mobile-friendly','Touch controls','Instant start']
+  },
+  {
+    id:'sector-zero',
+    name:'SECTOR ZERO',
+    tagline:'Deep space. Unknown threats. No two runs the same.',
+    genre:'Roguelite · Action',
+    color:'#7755ff',
+    url:'/sector-zero',
+    emoji:'⚡',
+    desc:'Navigate procedurally generated sectors and eliminate everything that moves. Roguelite progression with an upgrade system means each run teaches you something new.',
+    features:['Roguelite runs','Procedural maps','Upgrade system','Permadeath','No install']
+  },
+  {
+    id:'kart',
+    name:'KART',
+    tagline:'Drift lines. Real physics. Neon track.',
+    genre:'Racing · Physics',
+    color:'#ffaa00',
+    url:'/kart',
+    emoji:'🏎',
+    desc:'Genuine friction physics with drift and momentum — not fake arcade handling. Light cycle aesthetic. Learn the track, master the corners, beat your own time.',
+    features:['Real physics engine','Drift mechanics','Time attack','Track mastery','Browser native']
+  },
+  {
+    id:'bloom',
+    name:'BLOOM',
+    tagline:'Plant, grow, share with your neighbors.',
+    genre:'Garden · Social',
+    color:'#00e87a',
+    url:'/bloom',
+    emoji:'🌸',
+    desc:'A calm, social garden game where your flowers grow in real time. Plant seeds, harvest crops, cook recipes, and share produce with neighbors via gift codes.',
+    features:['Real-time growth','Gift codes','Recipe system','Social','iOS coming soon']
+  },
+  {
+    id:'sprint',
+    name:'SPRINT',
+    tagline:'Click 1→25. Beat the clock. Challenge your WG.',
+    genre:'Reflex · Leaderboard',
+    color:'#00d4ff',
+    url:'/sprint',
+    emoji:'⏱',
+    desc:'Click numbers 1 through 25 in order as fast as you can. Every grid is unique per seed. Share your leaderboard via URL — scores accumulate as the link passes around.',
+    features:['Seeded grids','URL leaderboard','Anonymous scores','Share scores','WG-friendly']
+  },
+  {
+    id:'fly',
+    name:'CITY FROM ABOVE',
+    tagline:'3D bird flight over NYC and Sydney.',
+    genre:'Experience · 3D',
+    color:'#3b82f6',
+    url:'/fly',
+    emoji:'🌆',
+    desc:'Real-data 3D flight experience over New York and Sydney. 44+ landmark buildings rendered with bloom and glow. Autonomous drone, manual camera, cinematic follow-cam.',
+    features:['Real building data','Bloom rendering','Drone cam mode','NYC + Sydney','WebGL · Three.js']
+  }
+];
 
-function goTo(i){
-  i = Math.max(0, Math.min(PANELS - 1, i));
-  current = i;
-  targetX = -i * window.innerWidth;
-  document.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('active', j===i));
-  document.getElementById('progress').style.width = (i/(PANELS-1)*100) + '%';
-  document.getElementById('scrollHint').textContent = i === 0 ? 'Scroll or drag' : i === PANELS-1 ? 'The studio' : 'Game '+(i)+' of 4';
-  animate();
+let activeIdx = 0;
+let demoLoaded = false;
+let heroAnimFrame = null;
+
+// ── STARS BACKGROUND ──────────────────────────────────────────────────────────
+const starsC = document.getElementById('stars');
+const starsCtx = starsC.getContext('2d');
+const starsList = Array.from({length:160}, () => ({
+  x:Math.random(), y:Math.random(),
+  s:Math.random()*1.2+0.2, b:Math.random(),
+  sp:Math.random()*0.0003+0.0001
+}));
+function resizeStars(){ starsC.width=window.innerWidth; starsC.height=window.innerHeight; }
+resizeStars(); window.addEventListener('resize', resizeStars);
+function drawStars(){
+  requestAnimationFrame(drawStars);
+  starsCtx.clearRect(0,0,starsC.width,starsC.height);
+  starsList.forEach(s => {
+    s.b+=s.sp;
+    starsCtx.globalAlpha=Math.max(0,.05+Math.sin(s.b)*.06);
+    starsCtx.fillStyle='#fff';
+    starsCtx.beginPath(); starsCtx.arc(s.x*starsC.width,s.y*starsC.height,s.s,0,Math.PI*2); starsCtx.fill();
+  });
+  starsCtx.globalAlpha=1;
 }
+drawStars();
 
-function animate(){
-  const diff = targetX - currentX;
-  if(Math.abs(diff) < 0.5){ currentX = targetX; track.style.transform = `translateX(${currentX}px)`; return; }
-  currentX += diff * 0.1;
-  track.style.transform = `translateX(${currentX}px)`;
-  requestAnimationFrame(animate);
-}
-
-// Wheel
-let wheelLock = false;
-window.addEventListener('wheel', e => {
-  e.preventDefault();
-  if(wheelLock) return;
-  const dir = e.deltaY > 0 || e.deltaX > 0 ? 1 : -1;
-  goTo(current + dir);
-  wheelLock = true;
-  setTimeout(() => wheelLock = false, 700);
-}, {passive: false});
-
-// Touch
-window.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-}, {passive: true});
-window.addEventListener('touchend', e => {
-  const dx = touchStartX - e.changedTouches[0].clientX;
-  const dy = touchStartY - e.changedTouches[0].clientY;
-  if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
-}, {passive: true});
-
-// Keys
-window.addEventListener('keydown', e => {
-  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
-  if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+// ── SHELF ─────────────────────────────────────────────────────────────────────
+const shelfTrack = document.getElementById('shelf-track');
+GAMES.forEach((g,i) => {
+  const card = document.createElement('div');
+  card.className = 'shelf-card' + (i===0?' active':'');
+  card.innerHTML = `
+    <div class="shelf-thumb" style="background:linear-gradient(135deg,#0a0e18,${g.color}18)">
+      <canvas id="thumb-${g.id}" style="opacity:.85"></canvas>
+      <span class="shelf-thumb-label" style="${i===0?`background:${g.color};color:#000`:''}"></span>
+    </div>
+    <div class="shelf-name">${g.name}</div>
+    <div class="shelf-genre">${g.genre.split('·')[0].trim()}</div>
+  `;
+  card.onclick = () => selectGame(i);
+  shelfTrack.appendChild(card);
 });
 
-// Dot nav
-document.querySelectorAll('.dot').forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+// Shelf drag
+let shelfDrag=false, shelfStartX=0, shelfScrollStart=0;
+shelfTrack.addEventListener('mousedown',e=>{shelfDrag=true;shelfStartX=e.pageX;shelfScrollStart=shelfTrack.scrollLeft});
+window.addEventListener('mousemove',e=>{if(!shelfDrag)return;shelfTrack.scrollLeft=shelfScrollStart-(e.pageX-shelfStartX)});
+window.addEventListener('mouseup',()=>shelfDrag=false);
 
-// Resize
-window.addEventListener('resize', () => { currentX = targetX = -current * window.innerWidth; track.style.transform = `translateX(${currentX}px)`; });
-
-goTo(0);
-
-// ── BACKGROUND CANVAS ──────────────────────────────────────────────────────
-const bgC = document.getElementById('bg');
-const bgCtx = bgC.getContext('2d');
-let W, H;
-function resizeBg(){ W = bgC.width = window.innerWidth; H = bgC.height = window.innerHeight; }
-resizeBg(); window.addEventListener('resize', resizeBg);
-
-const stars = Array.from({length:200}, () => ({
-  x: Math.random(), y: Math.random(),
-  s: Math.random() * 1.5 + 0.2,
-  b: Math.random(),
-  sp: Math.random() * 0.0004 + 0.0001
-}));
-
-let bgFrame = 0;
-function drawBg(){
-  requestAnimationFrame(drawBg);
-  bgFrame++;
-  bgCtx.clearRect(0,0,W,H);
-  bgCtx.fillStyle = '#000';
-  bgCtx.fillRect(0,0,W,H);
-  stars.forEach(s => {
-    s.b += s.sp;
-    const alpha = 0.12 + Math.sin(s.b) * 0.1;
-    bgCtx.globalAlpha = Math.max(0, alpha);
-    bgCtx.fillStyle = '#00eeff';
-    bgCtx.beginPath();
-    bgCtx.arc(s.x*W, s.y*H, s.s, 0, Math.PI*2);
-    bgCtx.fill();
-  });
-  bgCtx.globalAlpha = 1;
+// ── HERO CANVAS ANIMATIONS ────────────────────────────────────────────────────
+const heroC = document.getElementById('hero-canvas');
+const heroCtx = heroC.getContext('2d');
+function resizeHero(){
+  heroC.width=heroC.offsetWidth*(devicePixelRatio||1);
+  heroC.height=heroC.offsetHeight*(devicePixelRatio||1);
 }
-drawBg();
+window.addEventListener('resize',resizeHero);
 
-// ── GAME VISUAL: NEXUS BREACH ──────────────────────────────────────────────
-const nbC = document.getElementById('c-nb');
-if(nbC){
-  const ctx = nbC.getContext('2d');
-  let f = 0;
-  const enemies = Array.from({length:18}, (_, i) => ({
-    angle: (i/18)*Math.PI*2,
-    r: 80 + Math.random()*120,
-    speed: (Math.random()-0.5)*0.018,
-    size: 4 + Math.random()*8,
-    color: Math.random() > 0.5 ? '#1aaeff' : '#7755ff'
-  }));
-  const bullets = Array.from({length:8}, (_, i) => ({angle: (i/8)*Math.PI*2, r:0, speed:3.5}));
-  function drawNB(){
-    requestAnimationFrame(drawNB);
-    f++;
-    const cw = nbC.offsetWidth * (window.devicePixelRatio||1);
-    const ch = nbC.offsetHeight * (window.devicePixelRatio||1);
-    if(nbC.width !== cw){ nbC.width = cw; nbC.height = ch; }
-    const cx = nbC.width/2, cy = nbC.height/2;
-    ctx.clearRect(0,0,nbC.width,nbC.height);
-    // Player
-    const gr = ctx.createRadialGradient(cx,cy,0,cx,cy,60);
-    gr.addColorStop(0,'rgba(26,174,255,0.15)'); gr.addColorStop(1,'transparent');
-    ctx.fillStyle=gr; ctx.fillRect(0,0,nbC.width,nbC.height);
-    ctx.save(); ctx.translate(cx,cy);
-    ctx.strokeStyle='#1aaeff'; ctx.lineWidth=1.5; ctx.globalAlpha=0.6;
-    ctx.beginPath(); ctx.arc(0,0,24,0,Math.PI*2); ctx.stroke();
-    ctx.globalAlpha=1; ctx.fillStyle='#1aaeff';
-    ctx.beginPath(); ctx.moveTo(0,-16); ctx.lineTo(12,10); ctx.lineTo(0,4); ctx.lineTo(-12,10); ctx.closePath(); ctx.fill();
-    ctx.restore();
-    // Enemies
-    enemies.forEach(e => {
-      e.angle += e.speed;
-      const x = cx + Math.cos(e.angle)*e.r;
-      const y = cy + Math.sin(e.angle)*e.r;
-      ctx.fillStyle = e.color; ctx.globalAlpha = 0.7;
-      ctx.beginPath(); ctx.arc(x,y,e.size,0,Math.PI*2); ctx.fill();
-      ctx.globalAlpha = 0.2;
-      ctx.beginPath(); ctx.arc(x,y,e.size+6,0,Math.PI*2); ctx.fill();
-    });
-    // Bullets
-    bullets.forEach((b,i) => {
-      b.r += b.speed;
-      if(b.r > Math.max(nbC.width,nbC.height)/2) b.r = 0;
-      const angle = b.angle + f*0.012;
-      const x = cx + Math.cos(angle)*b.r;
-      const y = cy + Math.sin(angle)*b.r;
-      ctx.globalAlpha = Math.max(0, 1 - b.r/300);
-      ctx.fillStyle='#fff';
-      ctx.beginPath(); ctx.arc(x,y,2,0,Math.PI*2); ctx.fill();
-    });
-    ctx.globalAlpha=1;
-  }
-  drawNB();
-}
+const heroDrawers = {
+  'nexus-breach': makeNexusDraw(),
+  'grid-fall':    makeGridDraw(),
+  'sector-zero':  makeSectorDraw(),
+  'kart':         makeKartDraw(),
+  'bloom':        makeBloomDraw(),
+  'sprint':       makeSprintDraw(),
+  'fly':          makeFlyDraw()
+};
 
-// ── GAME VISUAL: GRID FALL ─────────────────────────────────────────────────
-const gfC = document.getElementById('c-gf');
-if(gfC){
-  const ctx = gfC.getContext('2d');
-  const COLS=8, ROWS=14;
-  const grid = Array.from({length:ROWS}, () => Array.from({length:COLS}, () => Math.random() > 0.55 ? 1 : 0));
-  let f=0, dropY=0;
-  const piece = [[1,1],[1,1]];
-  const COLORS = ['#ff2233','#ff5544','#ff8833'];
-  function drawGF(){
-    requestAnimationFrame(drawGF);
-    f++;
-    const cw = gfC.offsetWidth*(window.devicePixelRatio||1);
-    const ch = gfC.offsetHeight*(window.devicePixelRatio||1);
-    if(gfC.width!==cw){gfC.width=cw;gfC.height=ch;}
-    ctx.clearRect(0,0,gfC.width,gfC.height);
-    const SZ = Math.min(gfC.width/COLS, gfC.height/ROWS) * 0.72;
-    const ox = (gfC.width - COLS*SZ)/2;
-    const oy = (gfC.height - ROWS*SZ)/2;
-    // Grid
-    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
-      if(grid[r][c]){
-        const shade = COLORS[Math.floor((r+c)%COLORS.length)];
-        ctx.fillStyle=shade; ctx.globalAlpha=0.25+(r/ROWS)*0.5;
-        ctx.fillRect(ox+c*SZ+2,oy+r*SZ+2,SZ-4,SZ-4);
-      } else {
-        ctx.strokeStyle='rgba(255,34,51,0.06)'; ctx.lineWidth=1;
-        ctx.strokeRect(ox+c*SZ+1,oy+r*SZ+1,SZ-2,SZ-2);
-      }
-    }
-    // Falling piece
-    if(f%3===0) dropY = (dropY+1)%ROWS;
-    const px=3, py=dropY;
-    piece.forEach((row,dr) => row.forEach((v,dc) => {
-      if(v){
-        ctx.fillStyle='#ff2233'; ctx.globalAlpha=0.9;
-        ctx.fillRect(ox+(px+dc)*SZ+2,oy+(py+dr)*SZ+2,SZ-4,SZ-4);
-        ctx.globalAlpha=0.3;
-        ctx.fillStyle='#fff';
-        ctx.fillRect(ox+(px+dc)*SZ+2,oy+(py+dr)*SZ+2,SZ-4,6);
-      }
-    }));
-    ctx.globalAlpha=1;
-  }
-  drawGF();
-}
-
-// ── GAME VISUAL: SECTOR ZERO ───────────────────────────────────────────────
-const szC = document.getElementById('c-sz');
-if(szC){
-  const ctx = szC.getContext('2d');
+function makeNexusDraw(){
+  const enemies=Array.from({length:22},(_,i)=>({angle:(i/22)*Math.PI*2,r:60+Math.random()*160,speed:(Math.random()-.5)*.022,size:3+Math.random()*7,color:Math.random()>.5?'#1aaeff':'#7755ff'}));
+  const bullets=Array.from({length:10},(_,i)=>({angle:(i/10)*Math.PI*2,r:0,speed:4}));
   let f=0;
-  const asteroids = Array.from({length:20},()=>({
-    x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0012,vy:(Math.random()-.5)*.0012,
-    r:8+Math.random()*20,angle:Math.random()*Math.PI*2,rot:(Math.random()-.5)*.02
-  }));
-  const shots = Array.from({length:6},(_,i)=>({y:1-i/6*0.3,speed:.007}));
-  function drawSZ(){
-    requestAnimationFrame(drawSZ);
+  return function(ctx,w,h){
     f++;
-    const cw=szC.offsetWidth*(window.devicePixelRatio||1);
-    const ch=szC.offsetHeight*(window.devicePixelRatio||1);
-    if(szC.width!==cw){szC.width=cw;szC.height=ch;}
-    ctx.clearRect(0,0,cw,ch);
-    const cx=cw/2,cy=ch/2;
-    // Ship
-    const gr=ctx.createRadialGradient(cx,cy*.7,0,cx,cy*.7,80);
-    gr.addColorStop(0,'rgba(255,170,0,0.12)');gr.addColorStop(1,'transparent');
-    ctx.fillStyle=gr;ctx.fillRect(0,0,cw,ch);
-    ctx.save();ctx.translate(cx,ch*0.75);
-    ctx.fillStyle='#ffaa00';ctx.globalAlpha=0.9;
-    ctx.beginPath();ctx.moveTo(0,-22);ctx.lineTo(14,14);ctx.lineTo(0,6);ctx.lineTo(-14,14);ctx.closePath();ctx.fill();
-    ctx.globalAlpha=0.3;ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(0,-8,6,0,Math.PI*2);ctx.fill();
+    ctx.clearRect(0,0,w,h);
+    const cx=w/2,cy=h/2;
+    const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,120);
+    gr.addColorStop(0,'rgba(26,174,255,.12)');gr.addColorStop(1,'transparent');
+    ctx.fillStyle=gr;ctx.fillRect(0,0,w,h);
+    ctx.save();ctx.translate(cx,cy);
+    ctx.strokeStyle='#1aaeff';ctx.lineWidth=1.5;ctx.globalAlpha=.5;
+    ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);ctx.stroke();
+    ctx.globalAlpha=1;ctx.fillStyle='#1aaeff';
+    ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(13,11);ctx.lineTo(0,5);ctx.lineTo(-13,11);ctx.closePath();ctx.fill();
     ctx.restore();
-    // Shots
-    shots.forEach(s=>{
-      s.y-=s.speed;
-      if(s.y<0)s.y=1;
-      ctx.fillStyle='#ffaa00';ctx.globalAlpha=0.8;
-      ctx.fillRect(cx-2,s.y*ch,3,12);
-      ctx.globalAlpha=0.2;ctx.fillRect(cx-4,s.y*ch,7,18);
+    enemies.forEach(e=>{
+      e.angle+=e.speed;
+      const x=cx+Math.cos(e.angle)*e.r,y=cy+Math.sin(e.angle)*e.r;
+      ctx.fillStyle=e.color;ctx.globalAlpha=.7;
+      ctx.beginPath();ctx.arc(x,y,e.size,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=.18;ctx.beginPath();ctx.arc(x,y,e.size+7,0,Math.PI*2);ctx.fill();
     });
-    // Asteroids
-    asteroids.forEach(a=>{
-      a.x+=a.vx;a.y+=a.vy;a.angle+=a.rot;
-      if(a.x<-0.1)a.x=1.1;if(a.x>1.1)a.x=-0.1;
-      if(a.y<-0.1)a.y=1.1;if(a.y>1.1)a.y=-0.1;
-      ctx.save();ctx.translate(a.x*cw,a.y*ch);ctx.rotate(a.angle);
-      ctx.strokeStyle='rgba(255,170,0,0.4)';ctx.lineWidth=1.5;ctx.globalAlpha=0.6;
-      ctx.beginPath();
-      for(let i=0;i<7;i++){const angle=(i/7)*Math.PI*2,r=a.r*(0.7+Math.sin(i*2.3)*0.3);ctx.lineTo(Math.cos(angle)*r,Math.sin(angle)*r);}
-      ctx.closePath();ctx.stroke();
+    bullets.forEach(b=>{
+      b.r+=b.speed; if(b.r>Math.max(w,h)/1.5)b.r=0;
+      const a=b.angle+f*.014,x=cx+Math.cos(a)*b.r,y=cy+Math.sin(a)*b.r;
+      ctx.globalAlpha=Math.max(0,1-b.r/320);ctx.fillStyle='#fff';
+      ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  };
+}
+function makeGridDraw(){
+  const COLS=9,ROWS=14;
+  const grid=Array.from({length:ROWS},()=>Array.from({length:COLS},()=>Math.random()>.55?1:0));
+  const COLORS=['#ff2233','#ff5544','#ff8833'];
+  let f=0,dropY=0;
+  return function(ctx,w,h){
+    f++;ctx.clearRect(0,0,w,h);
+    const SZ=Math.min(w/COLS,h/ROWS)*.7,ox=(w-COLS*SZ)/2,oy=(h-ROWS*SZ)/2;
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+      if(grid[r][c]){ctx.fillStyle=COLORS[(r+c)%3];ctx.globalAlpha=.2+(r/ROWS)*.55;ctx.fillRect(ox+c*SZ+2,oy+r*SZ+2,SZ-4,SZ-4);}
+      else{ctx.strokeStyle='rgba(255,34,51,.06)';ctx.lineWidth=1;ctx.strokeRect(ox+c*SZ+1,oy+r*SZ+1,SZ-2,SZ-2);}
+    }
+    if(f%3===0)dropY=(dropY+1)%ROWS;
+    [[dropY,3],[dropY,4],[dropY+1,3],[dropY+1,4]].forEach(([r,c])=>{
+      if(r<ROWS&&c<COLS){ctx.fillStyle='#ff2233';ctx.globalAlpha=.9;ctx.fillRect(ox+c*SZ+2,oy+r*SZ+2,SZ-4,SZ-4);}
+    });
+    ctx.globalAlpha=1;
+  };
+}
+function makeSectorDraw(){
+  const ships=Array.from({length:14},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.003,vy:(Math.random()-.5)*.003}));
+  let f=0;
+  return function(ctx,w,h){
+    f++;ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='rgba(119,85,255,.06)';
+    for(let i=0;i<3;i++){const r=80+i*60;ctx.beginPath();ctx.arc(w/2,h/2,r,0,Math.PI*2);ctx.strokeStyle=`rgba(119,85,255,${.04+i*.02})`;ctx.lineWidth=1;ctx.stroke();}
+    ships.forEach(s=>{
+      s.x+=s.vx;s.y+=s.vy;
+      if(s.x<0||s.x>1)s.vx*=-1;if(s.y<0||s.y>1)s.vy*=-1;
+      const x=s.x*w,y=s.y*h;
+      ctx.fillStyle='#7755ff';ctx.globalAlpha=.6;
+      ctx.save();ctx.translate(x,y);ctx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);
+      ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(5,6);ctx.lineTo(0,2);ctx.lineTo(-5,6);ctx.closePath();ctx.fill();
       ctx.restore();
     });
     ctx.globalAlpha=1;
-  }
-  drawSZ();
+  };
+}
+function makeKartDraw(){
+  const pts=[];for(let i=0;i<60;i++){const a=(i/60)*Math.PI*2;pts.push({x:.5+.38*Math.cos(a)+.12*Math.cos(a*2),y:.5+.3*Math.sin(a)+.08*Math.sin(a*3)});}
+  let t=0;
+  return function(ctx,w,h){
+    t+=.006;ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='rgba(255,170,0,.22)';ctx.lineWidth=18;ctx.beginPath();
+    pts.forEach((p,i)=>i===0?ctx.moveTo(p.x*w,p.y*h):ctx.lineTo(p.x*w,p.y*h));
+    ctx.closePath();ctx.stroke();
+    ctx.strokeStyle='rgba(255,170,0,.55)';ctx.lineWidth=2;ctx.beginPath();
+    pts.forEach((p,i)=>i===0?ctx.moveTo(p.x*w,p.y*h):ctx.lineTo(p.x*w,p.y*h));
+    ctx.closePath();ctx.stroke();
+    const ti=t%(1),idx=Math.floor(ti*pts.length),p=pts[idx],pn=pts[(idx+1)%pts.length];
+    const kx=p.x*w,ky=p.y*h,angle=Math.atan2((pn.y-p.y)*h,(pn.x-p.x)*w);
+    ctx.save();ctx.translate(kx,ky);ctx.rotate(angle);
+    ctx.fillStyle='#ffaa00';ctx.globalAlpha=.95;
+    ctx.beginPath();ctx.roundRect(-10,-6,20,12,3);ctx.fill();
+    ctx.fillStyle='rgba(255,170,0,.3)';ctx.beginPath();ctx.arc(-8,0,16,0,Math.PI*2);ctx.fill();
+    ctx.restore();ctx.globalAlpha=1;
+  };
+}
+function makeBloomDraw(){
+  const flowers=Array.from({length:12},()=>({x:Math.random(),y:Math.random(),r:8+Math.random()*20,bloom:Math.random(),speed:.005+Math.random()*.008,hue:100+Math.random()*60}));
+  return function(ctx,w,h){
+    ctx.clearRect(0,0,w,h);
+    flowers.forEach(fl=>{
+      fl.bloom=(fl.bloom+fl.speed)%1;
+      const br=fl.r*fl.bloom,x=fl.x*w,y=fl.y*h;
+      for(let p=0;p<6;p++){
+        const a=(p/6)*Math.PI*2,px=x+Math.cos(a)*br,py=y+Math.sin(a)*br;
+        const g=ctx.createRadialGradient(px,py,0,px,py,br*.7);
+        g.addColorStop(0,`hsla(${fl.hue},80%,70%,.6)`);g.addColorStop(1,'transparent');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,br*.7,0,Math.PI*2);ctx.fill();
+      }
+      ctx.fillStyle=`hsla(${fl.hue+20},60%,50%,.8)`;ctx.globalAlpha=fl.bloom;
+      ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    });
+  };
+}
+function makeSprintDraw(){
+  const nums=Array.from({length:25},(_,i)=>({n:i+1,x:Math.random(),y:Math.random(),hit:Math.random()>.6,t:Math.random()*Math.PI*2}));
+  let f=0,nextN=1;
+  return function(ctx,w,h){
+    f++;if(f%90===0){nextN=(nextN%25)+1;}
+    ctx.clearRect(0,0,w,h);
+    const cols=5,rows=5,cw=w/cols,ch=h/rows;
+    nums.forEach((n,i)=>{
+      const col=i%cols,row=Math.floor(i/cols);
+      const cx2=col*cw+cw/2,cy2=row*ch+ch/2;
+      const isNext=n.n===nextN;
+      ctx.fillStyle=n.hit?'rgba(255,255,255,.04)':isNext?'rgba(0,212,255,.15)':'rgba(255,255,255,.07)';
+      ctx.strokeStyle=isNext?'rgba(0,212,255,.8)':'rgba(255,255,255,.12)';
+      ctx.lineWidth=isNext?1.5:1;
+      const s=Math.min(cw,ch)*.72;
+      ctx.beginPath();ctx.roundRect(cx2-s/2,cy2-s/2,s,s,6);ctx.fill();ctx.stroke();
+      if(!n.hit){
+        ctx.fillStyle=isNext?'#00d4ff':'rgba(240,240,248,.55)';
+        ctx.font=`${isNext?'800':'600'} ${Math.min(s*.38,18)}px system-ui`;
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(n.n,cx2,cy2);
+      }
+    });
+  };
+}
+function makeFlyDraw(){
+  const buildings=Array.from({length:18},()=>({x:Math.random(),h:.1+Math.random()*.7,w:.03+Math.random()*.06,lit:Math.random()>.4}));
+  let f=0;
+  return function(ctx,w,h){
+    f++;ctx.clearRect(0,0,w,h);
+    const ground=h*.65;
+    const gr=ctx.createLinearGradient(0,0,0,h);
+    gr.addColorStop(0,'#060c1a');gr.addColorStop(1,'#0a1830');
+    ctx.fillStyle=gr;ctx.fillRect(0,0,w,h);
+    buildings.forEach((b,i)=>{
+      const bx=b.x*w,bh=b.h*ground,bw=b.w*w;
+      ctx.fillStyle=`rgba(30,60,120,${.4+Math.sin(f*.02+i)*.1})`;
+      ctx.fillRect(bx-bw/2,ground-bh,bw,bh);
+      if(b.lit){
+        for(let wr=0;wr<Math.floor(bh/12);wr++)for(let wc=0;wc<Math.floor(bw/8);wc++){
+          if(Math.random()>.7)continue;
+          ctx.fillStyle=`rgba(255,220,100,${.2+Math.random()*.3})`;
+          ctx.fillRect(bx-bw/2+wc*8+1,ground-bh+wr*12+2,4,5);
+        }
+      }
+    });
+    const drone={x:w*.35+Math.sin(f*.018)*w*.15,y:ground*.4+Math.sin(f*.027)*ground*.15};
+    ctx.fillStyle='rgba(59,130,246,.9)';ctx.globalAlpha=.8;
+    ctx.save();ctx.translate(drone.x,drone.y);
+    ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(6,4);ctx.lineTo(-6,4);ctx.closePath();ctx.fill();
+    ctx.restore();
+    const trail=[];for(let i=1;i<=20;i++){trail.push({x:drone.x-Math.sin(f*.018-i*.04)*w*.15,y:drone.y-Math.sin(f*.027-i*.04)*ground*.15,a:1-i/20});}
+    trail.forEach((p,i)=>{ctx.globalAlpha=p.a*.3;ctx.fillStyle='#3b82f6';ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();});
+    ctx.globalAlpha=1;
+  };
 }
 
-// ── GAME VISUAL: KART ──────────────────────────────────────────────────────
-const ktC = document.getElementById('c-kt');
-if(ktC){
-  const ctx = ktC.getContext('2d');
-  let f = 0;
-  // Track points (ellipse approximation)
-  const N = 80;
-  const trackPts = Array.from({length:N}, (_,i) => {
-    const a = (i/N)*Math.PI*2;
-    return { x: 0.5 + Math.cos(a)*0.34, y: 0.5 + Math.sin(a)*0.22 };
+// Thumb canvases (small previews in shelf)
+function startThumbAnims(){
+  GAMES.forEach(g=>{
+    const c=document.getElementById(`thumb-${g.id}`);
+    if(!c)return;
+    const ctx=c.getContext('2d');
+    const draw=heroDrawers[g.id];
+    if(!draw)return;
+    function frame(){
+      const w=c.offsetWidth*(devicePixelRatio||1),h=c.offsetHeight*(devicePixelRatio||1);
+      if(c.width!==w||c.height!==h){c.width=w;c.height=h;}
+      draw(ctx,c.width,c.height);
+      requestAnimationFrame(frame);
+    }
+    frame();
   });
-  const COLORS = ['#ff0040','#ff6600','#ffcc00','#00ee44','#00aaff','#7744ff'];
-  let kartT = 0;
-  function getTrackPt(t){
-    const fi = ((t%1)+1)%1 * N;
-    const i0 = Math.floor(fi) % N;
-    const i1 = (i0+1) % N;
-    const s = fi - Math.floor(fi);
-    return {
-      x: trackPts[i0].x + (trackPts[i1].x - trackPts[i0].x)*s,
-      y: trackPts[i0].y + (trackPts[i1].y - trackPts[i0].y)*s
-    };
-  }
-  function drawKT(){
-    requestAnimationFrame(drawKT);
-    f++;
-    const cw = ktC.offsetWidth*(window.devicePixelRatio||1);
-    const ch = ktC.offsetHeight*(window.devicePixelRatio||1);
-    if(ktC.width!==cw||ktC.height!==ch){ktC.width=cw;ktC.height=ch;}
-    const W=ktC.width, H=ktC.height;
-    ctx.clearRect(0,0,W,H);
-    // Draw rainbow track stripes
-    for(let stripe=0; stripe<6; stripe++){
-      const w = 40 + stripe*8;
-      ctx.beginPath();
-      for(let i=0;i<=N;i++){
-        const p = trackPts[i%N];
-        const px = p.x*W, py = p.y*H;
-        i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = COLORS[stripe];
-      ctx.lineWidth = 8;
-      ctx.globalAlpha = 0.18 - stripe*0.02;
-      ctx.stroke();
-    }
-    // Main track
-    ctx.beginPath();
-    for(let i=0;i<=N;i++){
-      const p = trackPts[i%N];
-      const px=p.x*W, py=p.y*H;
-      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
-    }
-    ctx.closePath();
-    ctx.strokeStyle='rgba(255,255,255,0.06)';
-    ctx.lineWidth=48;
-    ctx.globalAlpha=1;
-    ctx.stroke();
-    // Rainbow stripe top
-    const grad = ctx.createLinearGradient(0,0,W,0);
-    COLORS.forEach((c,i)=>grad.addColorStop(i/COLORS.length,c));
-    ctx.beginPath();
-    for(let i=0;i<=N;i++){
-      const p=trackPts[i%N];
-      i===0?ctx.moveTo(p.x*W,p.y*H):ctx.lineTo(p.x*W,p.y*H);
-    }
-    ctx.closePath();
-    ctx.strokeStyle=grad;
-    ctx.lineWidth=4;
-    ctx.globalAlpha=0.9;
-    ctx.stroke();
-    // Kart
-    kartT += 0.003;
-    const kp = getTrackPt(kartT);
-    const kpNext = getTrackPt(kartT+0.01);
-    const angle = Math.atan2(kpNext.y-kp.y, kpNext.x-kp.x);
-    ctx.globalAlpha=1;
-    ctx.save();
-    ctx.translate(kp.x*W, kp.y*H);
-    ctx.rotate(angle);
-    ctx.font=`${Math.min(W,H)*0.06}px serif`;
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.fillText('🏎️',0,0);
-    ctx.restore();
-    ctx.globalAlpha=1;
-  }
-  drawKT();
 }
+
+// ── SELECT GAME ───────────────────────────────────────────────────────────────
+function selectGame(idx){
+  activeIdx=idx;
+  demoLoaded=false;
+  const g=GAMES[idx];
+
+  // Update shelf
+  document.querySelectorAll('.shelf-card').forEach((c,i)=>{
+    c.classList.toggle('active',i===idx);
+    const lbl=c.querySelector('.shelf-thumb-label');
+    if(i===idx){lbl.style.background=g.color;lbl.style.color='#000';}
+    else{lbl.style.background='';lbl.style.color='';}
+  });
+
+  // Scroll shelf card into view
+  const shelfCards=[...document.querySelectorAll('.shelf-card')];
+  if(shelfCards[idx]) shelfCards[idx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+
+  // Hero info
+  const heroInfo=document.querySelector('.hero-info');
+  heroInfo.classList.remove('fade-swap');
+  void heroInfo.offsetWidth;
+  heroInfo.classList.add('fade-swap');
+
+  document.getElementById('hero-genre').textContent=g.genre;
+  document.getElementById('hero-genre').style.color=g.color;
+  document.getElementById('hero-title').textContent=g.name;
+  document.getElementById('hero-title').style.color=g.color;
+  document.getElementById('hero-tagline').textContent=g.tagline;
+
+  const btnPlay=document.getElementById('btn-play');
+  btnPlay.style.background=g.color;
+  btnPlay.style.color=['#00e87a','#ffaa00','#00d4ff','#ff2233'].includes(g.color)?'#000':'#fff';
+
+  // Detail
+  document.getElementById('detail-desc').textContent=g.desc;
+  document.getElementById('detail-features').innerHTML=g.features.map(f=>`<span class="feat-chip">${f}</span>`).join('');
+  document.getElementById('detail-open').href=g.url;
+  document.getElementById('demo-fullscreen-link').href=g.url;
+  document.getElementById('demo-overlay-icon').textContent=g.emoji;
+  document.getElementById('demo-play-btn').style.background=g.color;
+  document.getElementById('demo-play-btn').style.color='#000';
+
+  // Reset demo
+  const frame=document.getElementById('demo-frame');
+  frame.src='about:blank';
+  document.getElementById('demo-overlay').classList.remove('hidden');
+}
+
+function openGame(){
+  window.open(GAMES[activeIdx].url, '_blank', 'noopener');
+}
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+function installGame(){
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;}
+  else{window.open(GAMES[activeIdx].url,'_blank','noopener');}
+}
+
+function loadDemo(){
+  demoLoaded=true;
+  document.getElementById('demo-overlay').classList.add('hidden');
+  document.getElementById('demo-frame').src=GAMES[activeIdx].url;
+}
+
+function scrollToDemo(){
+  document.getElementById('detail-demo').scrollIntoView({behavior:'smooth'});
+  if(!demoLoaded) setTimeout(loadDemo, 400);
+}
+
+// ── HERO CANVAS LOOP ──────────────────────────────────────────────────────────
+function heroLoop(){
+  if(heroAnimFrame) cancelAnimationFrame(heroAnimFrame);
+  const g=GAMES[activeIdx];
+  const draw=heroDrawers[g.id];
+  if(!draw){heroAnimFrame=null;return;}
+  function frame(){
+    const w=heroC.offsetWidth*(devicePixelRatio||1),h=heroC.offsetHeight*(devicePixelRatio||1);
+    if(heroC.width!==w||heroC.height!==h){heroC.width=w;heroC.height=h;}
+    draw(heroCtx,heroC.width,heroC.height);
+    heroAnimFrame=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+// ── KEYBOARD NAV ──────────────────────────────────────────────────────────────
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||(e.metaKey&&e.key==='ArrowRight')){e.preventDefault();selectGame(Math.min(activeIdx+1,GAMES.length-1));}
+  if(e.key==='ArrowLeft'||(e.metaKey&&e.key==='ArrowLeft')){e.preventDefault();selectGame(Math.max(activeIdx-1,0));}
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+selectGame(0);
+heroLoop();
+// Restart hero loop when game changes (observe activeIdx changes via selectGame call)
+const _origSelect=selectGame;
+window.selectGame=function(idx){_origSelect(idx);heroLoop();};
+window.addEventListener('load',()=>{startThumbAnims();window.selectGame(0);});
+window.addEventListener('resize',()=>{resizeHero();});
 </script>
 </body>
 </html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SPRINT — architect-dna.ch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#08080f;--bg2:#111118;--bg3:#1a1a24;
+  --border:#1e1e30;--border2:#2a2a40;
+  --text:#dde0ff;--text2:#5a5a88;
+  --accent:#00d4ff;--ok:#00ff99;--bad:#ff3366;
+  --gold:#ffd700;--silver:#b0b8c8;--bronze:#cd7f32;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);
+  min-height:100dvh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;
+  user-select:none;overflow:hidden}
+
+.screen{display:none;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:380px}
+.screen.show{display:flex}
+
+/* idle */
+.logo{font-size:clamp(44px,12vw,72px);font-weight:900;letter-spacing:-.06em;
+  color:var(--accent);text-shadow:0 0 60px rgba(0,212,255,.35);line-height:1}
+.tagline{font-size:12px;color:var(--text2);letter-spacing:.14em;text-transform:uppercase}
+.pb-row{font-size:14px;color:var(--text2)}
+.pb-row b{color:var(--text);font-weight:800}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(5px,1.8vw,9px);width:min(340px,92vw)}
+.cell{aspect-ratio:1;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(15px,3.8vw,21px);font-weight:800;cursor:pointer;
+  transition:background .08s,border-color .08s,transform .08s,opacity .12s;color:var(--text)}
+.cell:active{transform:scale(.91)}
+.cell.next{border-color:var(--accent);box-shadow:0 0 14px rgba(0,212,255,.28);color:var(--accent)}
+.cell.hit{background:var(--bg3);border-color:var(--border);color:var(--text2);
+  opacity:.35;pointer-events:none;transform:scale(.9)}
+.cell.wrong{animation:jolt .22s ease}
+@keyframes jolt{0%,100%{transform:translateX(0)}30%{transform:translateX(-6px) scale(1.05)}70%{transform:translateX(5px)}}
+
+/* timer */
+.timer{font-size:clamp(52px,14vw,80px);font-weight:900;letter-spacing:-.05em;
+  font-variant-numeric:tabular-nums;color:var(--text);line-height:1}
+.timer.ticking{color:var(--accent)}
+.hint{font-size:12px;color:var(--text2);letter-spacing:.06em}
+.hint b{color:var(--text)}
+
+/* done */
+.res-time{font-size:clamp(56px,15vw,88px);font-weight:900;letter-spacing:-.06em;color:var(--accent);line-height:1}
+.res-label{font-size:12px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-top:-4px}
+.res-delta{font-size:13px;color:var(--text2)}
+
+/* leaderboard */
+.lb{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.lb-header{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2);
+  padding:10px 16px 8px;border-bottom:1px solid var(--border)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:9px 16px;
+  border-bottom:1px solid var(--border);transition:background .1s}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:rgba(0,212,255,.06)}
+.lb-rank{font-size:12px;font-weight:800;width:20px;text-align:center;color:var(--text2);flex-shrink:0}
+.lb-rank.r1{color:var(--gold)}
+.lb-rank.r2{color:var(--silver)}
+.lb-rank.r3{color:var(--bronze)}
+.lb-name{flex:1;font-size:13px;font-weight:700;color:var(--text2)}
+.lb-row.me .lb-name{color:var(--accent)}
+.lb-time{font-size:14px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--text)}
+.lb-row.me .lb-time{color:var(--accent)}
+.lb-new{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);margin-left:4px;opacity:.8}
+
+.seed-tag{font-size:11px;color:var(--text2);letter-spacing:.06em;
+  background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 14px}
+
+.btn{background:var(--accent);color:#000;border:none;border-radius:12px;
+  padding:13px 32px;font-size:15px;font-weight:900;cursor:pointer;
+  letter-spacing:-.02em;transition:filter .12s,transform .1s;font-family:var(--font)}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:scale(.96)}
+.btn-ghost{background:transparent;border:1.5px solid var(--border2);color:var(--text2);
+  border-radius:12px;padding:11px 22px;font-size:13px;font-weight:700;
+  cursor:pointer;transition:.15s;font-family:var(--font)}
+.btn-ghost:hover{border-color:var(--text2);color:var(--text)}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.back{position:fixed;top:14px;left:16px;font-size:11px;color:var(--text2);
+  text-decoration:none;letter-spacing:.08em;opacity:.4;transition:opacity .15s}
+.back:hover{opacity:.8}
+</style>
+</head>
+<body>
+<a class="back" href="/">← home</a>
+
+<!-- IDLE -->
+<div class="screen show" id="s-idle">
+  <div class="logo">SPRINT</div>
+  <div class="tagline">Click 1 → 25 as fast as possible</div>
+  <div class="pb-row" id="idle-pb"></div>
+  <button class="btn" onclick="startGame()">Start</button>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="s-game">
+  <div class="timer" id="timer">0.00</div>
+  <div class="hint">Next: <b id="next-n">1</b> &nbsp;·&nbsp; <span id="remaining">25 left</span></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- DONE -->
+<div class="screen" id="s-done">
+  <div class="res-time" id="res-time">0.00s</div>
+  <div class="res-label" id="res-label">Time</div>
+  <div class="res-delta" id="res-delta"></div>
+  <div class="lb" id="lb"><div class="lb-header">Grid Leaderboard</div><div id="lb-rows"></div></div>
+  <div class="seed-tag" id="res-seed">Grid #—</div>
+  <div class="row">
+    <button class="btn" onclick="startGame(seed)">Again</button>
+    <button class="btn-ghost" onclick="startGame()">New Grid</button>
+  </div>
+  <button class="btn-ghost" id="share-btn" onclick="shareGrid()">📋 Share leaderboard</button>
+</div>
+
+<script>
+// ── Identity ──────────────────────────────────────────────────────────────────
+const ADJS  = ['Swift','Lazy','Angry','Sleepy','Noisy','Brave','Sneaky','Hyper','Chill','Clumsy','Lucky','Dizzy'];
+const NOUNS = ['Panda','Tiger','Eagle','Fox','Wolf','Otter','Shark','Lynx','Sloth','Gecko','Koala','Narwhal'];
+
+let myUid = localStorage.getItem('sprint_uid');
+if(!myUid){ myUid = Math.random().toString(36).slice(2,8); localStorage.setItem('sprint_uid', myUid); }
+
+function nameFor(uid){
+  if(uid === myUid) return 'You';
+  let h = 0;
+  for(const c of uid) h = (Math.imul(31, h) + c.charCodeAt(0)) | 0;
+  h = Math.abs(h);
+  return ADJS[h % ADJS.length] + ' ' + NOUNS[Math.floor(h / ADJS.length) % NOUNS.length];
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let seed, order, nextExp, t0, raf;
+let pb = parseFloat(localStorage.getItem('sprint_pb') || '0') || 0;
+
+function lbKey(s){ return 'sprint_lb_' + s; }
+function getLB(s){ try{ return JSON.parse(localStorage.getItem(lbKey(s)) || '[]'); }catch{ return []; } }
+function saveLB(s, arr){ localStorage.setItem(lbKey(s), JSON.stringify(arr)); }
+
+function mergeLB(s, incoming){
+  const existing = getLB(s);
+  const map = new Map(existing.map(e => [e.uid, e.time]));
+  for(const e of incoming) if(!map.has(e.uid) || e.time < map.get(e.uid)) map.set(e.uid, e.time);
+  const merged = [...map.entries()].map(([uid,time]) => ({uid, time})).sort((a,b) => a.time - b.time);
+  saveLB(s, merged);
+  return merged;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function rng(s){ return()=>{ s=(s+0x6D2B79F5)|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;} }
+function shuffle(a,r){ for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('show',s.id===id)); }
+
+// ── Game ──────────────────────────────────────────────────────────────────────
+function startGame(s){
+  cancelAnimationFrame(raf);
+  seed = (s !== undefined && s !== null) ? s : (Math.random()*999983|0);
+  order = shuffle([...Array(25)].map((_,i)=>i+1), rng(seed));
+  nextExp = 1; t0 = null;
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  order.forEach(n => {
+    const c = document.createElement('div');
+    c.className = 'cell' + (n===1 ? ' next' : '');
+    c.textContent = n; c.dataset.n = n;
+    c.onclick = () => tap(n, c);
+    grid.appendChild(c);
+  });
+
+  document.getElementById('next-n').textContent = '1';
+  document.getElementById('remaining').textContent = '25 left';
+  document.getElementById('timer').className = 'timer';
+  document.getElementById('timer').textContent = '0.00';
+  show('s-game');
+}
+
+function tap(n, cell){
+  if(n !== nextExp){
+    cell.classList.add('wrong');
+    setTimeout(() => cell.classList.remove('wrong'), 230);
+    return;
+  }
+  if(!t0){
+    t0 = performance.now();
+    document.getElementById('timer').classList.add('ticking');
+    tick();
+  }
+  cell.classList.remove('next'); cell.classList.add('hit');
+  nextExp++;
+  if(nextExp <= 25){
+    document.getElementById('next-n').textContent = nextExp;
+    document.getElementById('remaining').textContent = (26-nextExp)+' left';
+    document.querySelector(`.cell[data-n="${nextExp}"]`).classList.add('next');
+  } else { finish(); }
+}
+
+function tick(){
+  document.getElementById('timer').textContent = ((performance.now()-t0)/1000).toFixed(2);
+  raf = requestAnimationFrame(tick);
+}
+
+function finish(){
+  cancelAnimationFrame(raf);
+  const t = Math.round((performance.now()-t0)*100)/100; // centisecond precision
+
+  const isPB = !pb || t < pb;
+  const prev = pb;
+  if(isPB){ pb = t; localStorage.setItem('sprint_pb', pb); }
+
+  // Merge my score into leaderboard
+  const lb = mergeLB(seed, [{uid: myUid, time: t}]);
+
+  document.getElementById('res-time').textContent = t.toFixed(2) + 's';
+  document.getElementById('res-label').textContent = isPB ? '🏆 Personal best!' : 'Your time';
+  const d = document.getElementById('res-delta');
+  d.textContent = (!isPB && prev) ? '+' + (t-prev).toFixed(2) + 's off your best (' + prev.toFixed(2) + 's)' : '';
+
+  renderLB(lb, myUid, t);
+  document.getElementById('res-seed').textContent = 'Grid #' + seed;
+  document.getElementById('idle-pb').innerHTML = 'Personal best: <b>' + pb.toFixed(2) + 's</b>';
+  document.getElementById('share-btn').textContent = '📋 Share leaderboard';
+  show('s-done');
+}
+
+function renderLB(lb, highlightUid, newTime){
+  const rows = document.getElementById('lb-rows');
+  rows.innerHTML = '';
+  lb.forEach((e, i) => {
+    const isMe = e.uid === highlightUid;
+    const isNew = isMe && e.time === newTime;
+    const r = document.createElement('div');
+    r.className = 'lb-row' + (isMe ? ' me' : '');
+    const rank = i+1;
+    const rankClass = rank <= 3 ? ' r'+rank : '';
+    r.innerHTML =
+      `<div class="lb-rank${rankClass}">${rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank}</div>` +
+      `<div class="lb-name">${nameFor(e.uid)}${isNew?'<span class="lb-new">new</span>':''}</div>` +
+      `<div class="lb-time">${e.time.toFixed(2)}s</div>`;
+    rows.appendChild(r);
+  });
+}
+
+// ── Share ─────────────────────────────────────────────────────────────────────
+function shareGrid(){
+  const lb = getLB(seed);
+  const encoded = lb.map(e => e.uid + ':' + e.time).join(',');
+  const url = location.origin + location.pathname + '?grid=' + seed + '&lb=' + encodeURIComponent(encoded);
+  const myEntry = lb.find(e => e.uid === myUid);
+  const myTime = myEntry ? myEntry.time.toFixed(2) + 's — ' : '';
+  const text = `SPRINT Grid #${seed} — ${myTime}can you beat it?\n${url}`;
+  navigator.clipboard?.writeText(text).then(() => {
+    const b = document.getElementById('share-btn');
+    b.textContent = '✓ Copied!';
+    setTimeout(() => b.textContent = '📋 Share leaderboard', 2200);
+  }).catch(() => prompt('Copy this:', text));
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+const qs = new URLSearchParams(location.search);
+const qGrid = qs.get('grid');
+const qLB   = qs.get('lb');
+
+if(qGrid){
+  const s = +qGrid;
+  if(qLB){
+    const incoming = qLB.split(',').map(p => { const [uid,time]=p.split(':'); return {uid, time:parseFloat(time)}; }).filter(e=>e.uid&&!isNaN(e.time));
+    mergeLB(s, incoming);
+  }
+  startGame(s);
+} else {
+  if(pb) document.getElementById('idle-pb').innerHTML = 'Personal best: <b>'+pb.toFixed(2)+'s</b>';
+  show('s-idle');
+}
+</script>
+</body>
+</html>
