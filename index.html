@@ -1399,52 +1399,66 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity
 .ce-bubble.show{opacity:1;transform:translateY(0) scale(1)}
 
 .ce-sprite{
-  font-family:'SF Mono','Fira Code','Courier New',monospace;
-  font-size:13px;line-height:1.1;
-  color:#fff;
-  text-align:center;
-  background:#1a1a1a;
-  border-radius:8px;
-  padding:6px 8px;
-  box-shadow:0 2px 12px rgba(0,0,0,.2);
-  animation:ceIdle 1.4s ease-in-out infinite;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:#1c1c1e;
+  border-radius:12px;
+  padding:8px 11px 6px;
+  box-shadow:0 2px 16px rgba(0,0,0,.3);
+  animation:ceIdle 2s cubic-bezier(.36,.07,.19,.97) infinite;
   position:relative;
+  transform-origin:bottom center;
 }
-body.vc-mode .ce-sprite{background:#ff6b00;color:#000}
+body.vc-mode .ce-sprite{background:#1a0a00}
+
+.ce-star{
+  font-size:20px;line-height:1;
+  color:#f5a623;
+  display:block;
+}
 
 .ce-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:#ff6b00;
-  position:absolute;top:-3px;left:50%;transform:translateX(-50%);
-  animation:ceDot 1.4s ease-in-out infinite;
+  width:4px;height:4px;border-radius:50%;
+  background:#f5a623;opacity:.5;
 }
-body.vc-mode .ce-dot{background:#fff}
+body.vc-mode .ce-dot{background:#ff8c33}
 
 .ce-label{
-  font-size:9px;font-weight:700;letter-spacing:.1em;
-  color:rgba(255,255,255,.35);margin-top:4px;
+  font-size:9px;font-weight:700;letter-spacing:.08em;
+  color:rgba(255,255,255,.3);margin-top:3px;
   font-family:-apple-system,sans-serif;text-transform:uppercase;
 }
-body.vc-mode .ce-label{color:rgba(0,0,0,.35)}
+body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
+
+.ce-shadow{
+  width:22px;height:4px;border-radius:50%;
+  background:rgba(0,0,0,.25);
+  margin-top:2px;
+  animation:ceShadow 2s cubic-bezier(.36,.07,.19,.97) infinite;
+}
 
 @keyframes ceIdle{
-  0%,100%{transform:translateY(0)}
-  30%{transform:translateY(-10px) rotate(-3deg)}
-  50%{transform:translateY(-14px) rotate(2deg)}
-  70%{transform:translateY(-6px) rotate(-1deg)}
+  0%,100%{transform:translateY(0) scaleY(1) scaleX(1)}
+  8%{transform:translateY(0) scaleY(.82) scaleX(1.18)}
+  30%{transform:translateY(-14px) scaleY(1.08) scaleX(.94)}
+  55%{transform:translateY(-16px) scaleY(1.05) scaleX(.96)}
+  80%{transform:translateY(-3px) scaleY(.9) scaleX(1.08)}
+  92%{transform:translateY(0) scaleY(1.04) scaleX(.97)}
 }
-@keyframes ceDot{
-  0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}
-  40%{opacity:1;transform:translateX(-50%) scale(1.4)}
+@keyframes ceShadow{
+  0%,100%{transform:scaleX(1);opacity:.25}
+  8%{transform:scaleX(1.2);opacity:.1}
+  30%,55%{transform:scaleX(.55);opacity:.12}
+  80%{transform:scaleX(1.1);opacity:.2}
 }
 </style>
 
 <div id="claude-egg">
   <div class="ce-bubble" id="ce-bubble"></div>
   <div class="ce-sprite">
-    ▗▗<br>██<br>▝▝
+    <span class="ce-star">✦</span>
     <div class="ce-dot"></div>
   </div>
+  <div class="ce-shadow"></div>
   <div class="ce-label">Claude</div>
 </div>
 
