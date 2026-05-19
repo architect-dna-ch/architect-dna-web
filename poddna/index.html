@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Podcast DNA — AI Podcast Companion</title>
-<meta name="description" content="Voice-powered podcast research. Ask questions about any episode, get deep AI analysis via Claude. Never miss the point again.">
+<title>Podcast DNA — Your Interactive Shower Podcast</title>
+<meta name="description" content="Say a topic. A podcast starts. Interrupt whenever you want. It adapts. No host, no schedule, no algorithm.">
 <meta name="theme-color" content="#0d0808">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0d0808;--bg2:#1a0e0e;--bg3:#261616;
   --text:#fff0e8;--text2:rgba(255,240,232,.65);--text3:rgba(255,240,232,.35);
-  --accent:#ef4444;--accent2:#f87171;
+  --accent:#ef4444;--accent2:#f87171;--orange:#f97316;
   --border:rgba(239,68,68,.12);--border2:rgba(239,68,68,.28);
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
   --mono:'SF Mono','Fira Code','Courier New',monospace;
@@ -24,27 +24,62 @@ nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-betw
 .nav-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--accent);padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle}
 .nav-open{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
 .nav-open:hover{filter:brightness(1.15)}
-.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
-.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
-h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+
+.hero{padding:80px 24px 64px;max-width:680px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:20px}
+h1{font-size:clamp(36px,8vw,64px);font-weight:900;letter-spacing:-.04em;line-height:1.0;margin-bottom:22px}
 h1 em{color:var(--accent);font-style:normal}
-.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.hero-sub{font-size:clamp(16px,2.5vw,20px);color:var(--text2);line-height:1.6;max-width:480px;margin:0 auto 40px}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.cta-primary{padding:14px 30px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.cta-primary{padding:14px 32px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
 .cta-primary:hover{filter:brightness(1.15)}
 .cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
 .cta-ghost:hover{color:var(--text);border-color:var(--accent)}
-.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
-.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
-.feat-icon{font-size:24px;margin-bottom:10px}
-.feat-title{font-size:14px;font-weight:800;margin-bottom:5px}
-.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* Demo mock */
+.demo{max-width:480px;margin:0 auto 80px;padding:0 24px}
+.mock{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.mock-top{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.mock-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.mock-status{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--accent);font-family:var(--mono)}
+.mock-topic{margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono)}
+.mock-body{padding:20px}
+.mock-wave{display:flex;align-items:flex-end;gap:3px;height:36px;margin-bottom:16px}
+.mock-wave span{display:block;width:4px;border-radius:2px;background:var(--accent);opacity:.7}
+.bubble{padding:11px 15px;border-radius:12px;font-size:13px;line-height:1.6;margin-bottom:10px;max-width:88%}
+.bubble-host{background:var(--bg3);color:var(--text2)}
+.bubble-user{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.2);color:var(--text);margin-left:auto}
+.bubble-label{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:5px}
+.mock-interrupt{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.interrupt-btn{padding:8px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:800;font-family:var(--font);cursor:pointer}
+.interrupt-hint{font-size:11px;color:var(--text3)}
+
+/* How */
+.how{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.how-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+.step-num{font-size:26px;font-weight:900;color:var(--accent);font-family:var(--mono);margin-bottom:10px;letter-spacing:-.04em}
+.step-title{font-size:14px;font-weight:800;margin-bottom:6px}
+.step-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* vs section */
+.vs{max-width:640px;margin:0 auto 80px;padding:0 24px}
+.vs-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+.vs-title{font-size:13px;font-weight:800;margin-bottom:12px;color:var(--text2)}
+.vs-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.vs-col{flex:1;min-width:140px}
+.vs-col-label{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-family:var(--mono);margin-bottom:10px}
+.vs-col-label.bad{color:var(--text3)}
+.vs-col-label.good{color:var(--accent)}
+.vs-item{font-size:12px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.vs-item:last-child{border-bottom:none}
+
 .bottom-cta{text-align:center;padding:0 24px 80px}
 .bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
 .bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
-.beta-notice{display:inline-block;background:rgba(239,68,68,.1);border:1px solid var(--border2);border-radius:8px;padding:8px 16px;font-size:12px;color:var(--text2);font-family:var(--mono);margin-bottom:20px}
+
 footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
 footer a{color:var(--text3);text-decoration:none}
@@ -52,37 +87,112 @@ footer a:hover{color:var(--text2)}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-logo">Podcast <em>DNA</em><span class="nav-badge">Beta</span></div>
-  <a class="nav-open" href="https://poddna.architect-dna.ch">Try Beta</a>
+  <a class="nav-open" href="https://poddna.architect-dna.ch">Start Talking</a>
 </nav>
+
 <section class="hero">
-  <div class="hero-label">AI · Voice · Deep Research</div>
-  <h1>Listen smarter.<br><em>AI companion</em> for every podcast.</h1>
-  <p class="hero-sub">Paste any podcast episode. Ask questions by voice or text. Get deep research, fact-checks, related reading, and chapter summaries — powered by Claude.</p>
+  <div class="hero-label">Interactive Voice Podcast</div>
+  <h1>Say a topic.<br>A podcast <em>starts.</em></h1>
+  <p class="hero-sub">No host. No schedule. No queue. Just say what you're curious about — and interrupt whenever you want.</p>
   <div class="cta-row">
-    <a class="cta-primary" href="https://poddna.architect-dna.ch">Open Podcast DNA</a>
+    <a class="cta-primary" href="https://poddna.architect-dna.ch">Start a Podcast</a>
     <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
   </div>
 </section>
-<section class="features">
-  <div class="features-label">What it does</div>
-  <div class="features-grid">
-    <div class="feat"><div class="feat-icon">🎙️</div><div class="feat-title">Voice questions</div><div class="feat-body">Ask questions out loud while you listen. No typing — just talk, and Claude answers in context.</div></div>
-    <div class="feat"><div class="feat-icon">🔬</div><div class="feat-title">Deep research</div><div class="feat-body">Every claim can be expanded. Claude finds supporting evidence, contradictions, and deeper context instantly.</div></div>
-    <div class="feat"><div class="feat-icon">📑</div><div class="feat-title">Chapter summaries</div><div class="feat-body">Paste a transcript and get structured chapter summaries with the key takeaway per section.</div></div>
-    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Powered by Claude</div><div class="feat-body">Built on Anthropic's Claude for nuanced understanding of complex topics — not just keyword search.</div></div>
+
+<div class="demo">
+  <div class="mock">
+    <div class="mock-top">
+      <div class="mock-dot"></div>
+      <span class="mock-status">ON AIR</span>
+      <span class="mock-topic">Topic: sleep &amp; memory</span>
+    </div>
+    <div class="mock-body">
+      <div class="mock-wave">
+        <span style="height:60%"></span><span style="height:90%"></span><span style="height:45%"></span>
+        <span style="height:75%"></span><span style="height:55%"></span><span style="height:100%"></span>
+        <span style="height:65%"></span><span style="height:40%"></span><span style="height:80%"></span>
+        <span style="height:50%"></span><span style="height:70%"></span><span style="height:35%"></span>
+      </div>
+      <div>
+        <div class="bubble-label">Host</div>
+        <div class="bubble bubble-host">— So during REM sleep, your hippocampus is basically replaying your day, transferring short-term memories into long-term storage. But here's what's wild—</div>
+      </div>
+      <div style="text-align:right;margin-top:10px">
+        <div class="bubble-label" style="text-align:right">You</div>
+        <div class="bubble bubble-user">Wait — does napping actually help with this?</div>
+      </div>
+      <div class="mock-interrupt">
+        <button class="interrupt-btn">🎙 Interrupt</button>
+        <span class="interrupt-hint">Just talk. It listens.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="how">
+  <div class="how-label">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Name a topic</div>
+      <div class="step-body">Anything. Sleep science, Ottoman history, why planes don't flap their wings. It starts immediately.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">It talks</div>
+      <div class="step-body">A live voice podcast starts — no intro jingle, no sponsor reads. Straight into the content.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">You interrupt</div>
+      <div class="step-body">At any point. Ask a follow-up, go deeper, change direction entirely. It adapts in real time.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Shower, walk, cook</div>
+      <div class="step-body">Hands-free. Made for when your eyes are busy but your brain isn't.</div>
+    </div>
   </div>
 </section>
-<section class="bottom-cta">
-  <div class="beta-notice">🧪 Beta — features in active development</div>
-  <h2>Never just passively listen again.</h2>
-  <p>Free to try. No account needed.</p>
-  <a class="cta-primary" href="https://poddna.architect-dna.ch">Try Podcast DNA →</a>
+
+<section class="vs">
+  <div class="vs-card">
+    <div class="vs-title">Not the same as a podcast</div>
+    <div class="vs-row">
+      <div class="vs-col">
+        <div class="vs-col-label bad">Regular podcast</div>
+        <div class="vs-item">Fixed topic, fixed host</div>
+        <div class="vs-item">Can't ask questions</div>
+        <div class="vs-item">Can't go deeper</div>
+        <div class="vs-item">Pre-recorded</div>
+        <div class="vs-item">Algorithm decides next</div>
+      </div>
+      <div class="vs-col">
+        <div class="vs-col-label good">Podcast DNA</div>
+        <div class="vs-item">You pick the topic, always</div>
+        <div class="vs-item">Interrupt anytime</div>
+        <div class="vs-item">Follow any thread</div>
+        <div class="vs-item">Live, never repeats</div>
+        <div class="vs-item">You decide what's next</div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<section class="bottom-cta">
+  <h2>Your next shower just got interesting.</h2>
+  <p>Beta — free, no account needed.</p>
+  <a class="cta-primary" href="https://poddna.architect-dna.ch">Start Talking →</a>
+</section>
+
 <footer>
   <p>Podcast DNA by <a href="https://architect-dna.ch">Architect-DNA</a></p>
   <p><a href="https://architect-dna.ch">← All Projects</a></p>
 </footer>
+
 </body>
 </html>
