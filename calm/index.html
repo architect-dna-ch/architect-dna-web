@@ -4,955 +4,179 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calm — Nervous System Reset</title>
-<meta name="description" content="Biology-first tools for cortisol regulation, amygdala calming, and thought spiral interruption. Private. No account.">
+<meta name="description" content="Biology-first tools for when you're triggered. Physiological interventions before psychology. No account, no server.">
 <meta name="theme-color" content="#0d1117">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0d1117;--bg2:#161b27;--bg3:#1c2333;
   --text:#e6edf3;--text2:rgba(230,237,243,.65);--text3:rgba(230,237,243,.35);
-  --blue:#58a6ff;--green:#3fb950;--teal:#39d353;
-  --purple:#bc8cff;--red:#ff7b72;--warm:#f0883e;--yellow:#e3b341;
+  --teal:#39d353;--blue:#58a6ff;--purple:#bc8cff;
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
   --mono:'SF Mono','Fira Code','Courier New',monospace;
-  --r:14px;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
 
-header{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:rgba(13,17,23,.94);backdrop-filter:blur(16px)}
-.logo{font-size:17px;font-weight:900;letter-spacing:-.03em}
-.logo em{color:var(--teal);font-style:normal}
-.logo-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;margin-top:1px}
-.crisis-link{margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text3);text-decoration:none;padding:5px 10px;border:1px solid var(--border);border-radius:6px;letter-spacing:.04em}
-.crisis-link:hover{color:var(--red);border-color:rgba(255,123,114,.3)}
+nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-.03em}
+.nav-logo em{color:var(--teal);font-style:normal}
+.nav-sub{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;margin-top:1px}
+.nav-open{padding:8px 18px;background:var(--teal);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;letter-spacing:.01em}
 
-.tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:11px 16px;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;white-space:nowrap;border:none;background:none;font-family:var(--font)}
-.tab:hover{color:var(--text2)}
-.tab.active{color:var(--text);border-bottom-color:var(--teal)}
+.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);font-family:var(--mono);margin-bottom:18px}
+h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 em{color:var(--teal);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{padding:14px 30px;background:var(--teal);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;letter-spacing:.01em;transition:filter .15s}
+.cta-primary:hover{filter:brightness(1.1)}
+.cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;transition:.15s}
+.cta-ghost:hover{color:var(--text);border-color:var(--teal)}
 
-.page{display:none;padding:20px;max-width:680px;margin:0 auto}
-.page.active{display:block}
+.sequence{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.sequence-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.seq-steps{display:flex;gap:0;flex-direction:column;max-width:540px;margin:0 auto}
+.seq-step{background:var(--bg2);border:1px solid var(--border);padding:18px 22px;display:flex;gap:16px;align-items:flex-start}
+.seq-step:first-child{border-radius:12px 12px 0 0}
+.seq-step:last-child{border-radius:0 0 12px 12px}
+.seq-step+.seq-step{border-top:none}
+.seq-num{font-size:10px;font-weight:800;letter-spacing:.1em;font-family:var(--mono);color:var(--text3);flex-shrink:0;margin-top:2px}
+.seq-body{}
+.seq-title{font-size:14px;font-weight:800;margin-bottom:3px}
+.seq-desc{font-size:12px;color:var(--text2);line-height:1.55}
+.seq-why{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px}
 
-/* ── SHARED COMPONENTS ── */
-.section-label{font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:10px}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px}
-.card-title{font-size:15px;font-weight:800;margin-bottom:4px;letter-spacing:-.02em}
-.card-body{font-size:13px;color:var(--text2);line-height:1.65}
-.card-body strong{color:var(--text)}
-.accent-teal{color:var(--teal)}
-.accent-blue{color:var(--blue)}
-.accent-purple{color:var(--purple)}
-.accent-warm{color:var(--warm)}
-.btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .15s,border-color .15s;font-family:var(--font);border:1px solid transparent}
-.btn-primary{background:var(--teal);color:#000;border-color:var(--teal)}
-.btn-primary:hover{filter:brightness(1.1)}
-.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border)}
-.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
-.btn-red{background:rgba(255,123,114,.1);color:var(--red);border-color:rgba(255,123,114,.25)}
-.btn-red:hover{background:rgba(255,123,114,.18)}
+.tools{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.tools-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.tool{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.tool-icon{font-size:24px;margin-bottom:10px}
+.tool-title{font-size:14px;font-weight:800;margin-bottom:5px;letter-spacing:-.02em}
+.tool-body{font-size:13px;color:var(--text2);line-height:1.6}
 
-/* ── NOW / CRISIS PAGE ── */
-.protocol-intro{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;padding:16px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);border-left:3px solid var(--teal)}
-.bio-section{margin-bottom:24px}
-.bio-section h3{font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.bio-section h3 span{font-size:10px;font-family:var(--mono);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.science{max-width:640px;margin:0 auto 80px;padding:0 24px;text-align:center}
+.science h2{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin-bottom:16px}
+.science p{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.science em{color:var(--teal);font-style:normal}
+.science strong{color:var(--text)}
 
-.bio-step{display:flex;gap:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:border-color .2s,background .2s;align-items:flex-start}
-.bio-step:hover{border-color:var(--border2)}
-.bio-step.done{border-color:rgba(57,211,83,.3);background:rgba(57,211,83,.05)}
-.bio-step-icon{font-size:22px;flex-shrink:0;line-height:1;margin-top:1px}
-.bio-step-text{flex:1}
-.bio-step-head{font-size:14px;font-weight:800;margin-bottom:2px}
-.bio-step-sub{font-size:12px;color:var(--text2);line-height:1.5}
-.bio-step-why{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:5px}
-.bio-step-check{font-size:18px;opacity:0;transition:opacity .2s;flex-shrink:0;margin-top:2px}
-.bio-step.done .bio-step-check{opacity:1}
+.bottom-cta{text-align:center;padding:0 24px 80px}
+.bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
+.private-note{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);font-family:var(--mono);background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;margin-bottom:24px;letter-spacing:.04em}
 
-.reset-all-btn{display:block;margin:16px auto 0;background:none;border:1px solid var(--border);color:var(--text3);padding:7px 18px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.reset-all-btn:hover{border-color:var(--border2);color:var(--text2)}
-
-/* ── BREATHE PAGE ── */
-.breathe-center{text-align:center;padding:10px 0}
-.breathe-presets{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
-.bpreset{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:.15s;font-family:var(--font)}
-.bpreset:hover{border-color:var(--border2);color:var(--text)}
-.bpreset.sel{background:rgba(57,211,83,.1);border-color:rgba(57,211,83,.35);color:var(--teal)}
-.breathe-name{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;font-family:var(--mono)}
-.breathe-ring-wrap{display:inline-flex;align-items:center;justify-content:center;position:relative;margin-bottom:24px;cursor:pointer}
-.breathe-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.breathe-phase{font-size:15px;font-weight:800}
-.breathe-count{font-size:38px;font-weight:900;font-family:var(--mono);color:var(--teal);line-height:1}
-.breathe-guide{font-size:13px;color:var(--text2);line-height:1.7;max-width:480px;margin:0 auto 20px;text-align:left}
-.breathe-guide strong{color:var(--text)}
-
-/* ── THOUGHTS PAGE ── */
-.thought-intro{font-size:13px;color:var(--text2);line-height:1.65;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);border-left:3px solid var(--purple);margin-bottom:20px}
-.thought-intro strong{color:var(--text)}
-.thought-input-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px}
-.thought-input-wrap label{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:8px}
-.thought-ta{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);resize:vertical;min-height:80px;line-height:1.55;transition:border-color .15s}
-.thought-ta:focus{border-color:rgba(188,140,255,.35)}
-.thought-ta::placeholder{color:var(--text3)}
-.check-btn{margin-top:10px;padding:10px 20px;background:rgba(188,140,255,.12);border:1px solid rgba(188,140,255,.3);color:var(--purple);border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.check-btn:hover{background:rgba(188,140,255,.2)}
-
-.thought-check{display:none;margin-top:4px}
-.thought-check.open{display:block}
-.check-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:8px}
-.check-step-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-family:var(--mono);margin-bottom:6px}
-.check-step-q{font-size:14px;font-weight:800;margin-bottom:8px;line-height:1.35}
-.check-step-ta{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);resize:none;min-height:60px;line-height:1.5;transition:border-color .15s}
-.check-step-ta:focus{border-color:rgba(188,140,255,.35)}
-.check-step-ta::placeholder{color:var(--text3)}
-.distortion-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
-.dtag{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);color:var(--text2);background:transparent;cursor:pointer;font-family:var(--font);transition:.15s}
-.dtag:hover{border-color:var(--border2);color:var(--text)}
-.dtag.sel{background:rgba(188,140,255,.12);border-color:rgba(188,140,255,.3);color:var(--purple)}
-.likelihood-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
-.ll-btn{width:36px;height:36px;border-radius:8px;font-size:12px;font-weight:800;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--mono);transition:.15s}
-.ll-btn:hover{border-color:var(--border2);color:var(--text2)}
-.ll-btn.sel{background:rgba(188,140,255,.15);border-color:rgba(188,140,255,.4);color:var(--purple)}
-.reframe-box{background:rgba(57,211,83,.06);border:1px solid rgba(57,211,83,.2);border-radius:var(--r);padding:16px 18px;margin-bottom:8px}
-.reframe-box h4{font-size:13px;font-weight:800;color:var(--teal);margin-bottom:6px}
-.reframe-box p{font-size:13px;color:var(--text2);line-height:1.6}
-.save-check-btn{padding:9px 18px;background:rgba(57,211,83,.1);border:1px solid rgba(57,211,83,.2);color:var(--teal);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.save-check-btn:hover{background:rgba(57,211,83,.18)}
-.clear-check-btn{padding:9px 18px;background:transparent;border:1px solid var(--border);color:var(--text3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font);margin-left:8px}
-.clear-check-btn:hover{border-color:var(--border2);color:var(--text2)}
-
-/* ── GROUND PAGE ── */
-.ground-intro{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.65;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
-.ground-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px}
-.ground-num{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono);color:var(--purple);margin-bottom:6px}
-.ground-title{font-size:16px;font-weight:800;margin-bottom:4px}
-.ground-desc{font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.55}
-.ground-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;resize:vertical;min-height:64px}
-.ground-input:focus{border-color:rgba(188,140,255,.3)}
-.ground-input::placeholder{color:var(--text3)}
-
-/* ── JOURNAL ── */
-.journal-write{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:16px}
-.journal-write h3{font-size:13px;font-weight:800;margin-bottom:12px}
-.mood-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
-.mood-chip{font-size:20px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.15s;background:transparent}
-.mood-chip.sel{border-color:var(--border2);background:var(--bg3)}
-.journal-ta{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);resize:vertical;min-height:90px;line-height:1.6;transition:border-color .15s}
-.journal-ta:focus{border-color:var(--border2)}
-.journal-ta::placeholder{color:var(--text3)}
-.journal-save-btn{margin-top:10px;padding:9px 18px;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.25);color:var(--blue);border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.journal-save-btn:hover{background:rgba(88,166,255,.18)}
-.journal-entry{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
-.je-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.je-mood{font-size:22px}
-.je-time{font-size:11px;color:var(--text3);font-family:var(--mono)}
-.je-del{margin-left:auto;background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px;transition:color .15s}
-.je-del:hover{color:var(--red)}
-.je-text{font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
-.no-entries{font-size:13px;color:var(--text3);text-align:center;padding:36px 0}
-
-/* ── LEARN ── */
-.learn-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px;cursor:pointer}
-.learn-card:hover{border-color:var(--border2)}
-.learn-head{display:flex;align-items:center;gap:12px}
-.learn-icon{font-size:22px;flex-shrink:0}
-.learn-title{font-size:14px;font-weight:800;margin-bottom:2px}
-.learn-tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);font-family:var(--mono)}
-.learn-chevron{margin-left:auto;color:var(--text3);font-size:16px;transition:transform .2s}
-.learn-card.open .learn-chevron{transform:rotate(90deg)}
-.learn-body{display:none;margin-top:14px;font-size:13px;color:var(--text2);line-height:1.72}
-.learn-card.open .learn-body{display:block}
-.learn-body h4{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin:14px 0 6px}
-.learn-body ul{padding-left:18px}
-.learn-body ul li{margin-bottom:5px}
-.learn-body p{margin-bottom:8px}
-.learn-body strong{color:var(--text);font-weight:700}
-.learn-body em{color:var(--teal);font-style:normal}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999;white-space:nowrap}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── ONBOARDING ── */
-#onboarding{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 0 32px;overflow:hidden}
-#onboarding.hidden{display:none}
-.ob-slides{flex:1;display:flex;align-items:center;justify-content:center;width:100%;position:relative;overflow:hidden}
-.ob-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;text-align:center;opacity:0;transform:translateX(60px);transition:opacity .35s ease,transform .35s ease;pointer-events:none}
-.ob-slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
-.ob-slide.out{opacity:0;transform:translateX(-60px)}
-.ob-emoji{font-size:64px;margin-bottom:24px;line-height:1}
-.ob-title{font-size:clamp(22px,6vw,30px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px;line-height:1.1}
-.ob-title em{color:var(--teal);font-style:normal}
-.ob-body{font-size:14px;color:var(--text2);line-height:1.7;max-width:400px}
-.ob-body strong{color:var(--text)}
-.ob-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
-.ob-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text2);background:var(--bg2)}
-
-.ob-footer{width:100%;max-width:480px;padding:0 20px}
-.ob-dots{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
-.ob-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:.25s;border:none;padding:0;cursor:pointer}
-.ob-dot.active{background:var(--teal);width:20px;border-radius:3px}
-.ob-next{width:100%;padding:15px;background:var(--teal);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);transition:filter .15s;letter-spacing:-.01em}
-.ob-next:hover{filter:brightness(1.1)}
-.ob-skip{display:block;margin-top:14px;text-align:center;font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:var(--font);transition:color .15s;width:100%}
-.ob-skip:hover{color:var(--text2)}
+footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--text2)}
 </style>
 </head>
 <body>
-<div id="toast"></div>
 
-<!-- ══════════════════════════════════════════════════════ ONBOARDING -->
-<div id="onboarding">
-  <div class="ob-slides">
-
-    <div class="ob-slide active" id="ob-0">
-      <div class="ob-emoji">🧠</div>
-      <div class="ob-title">Something <em>biological</em><br>just happened</div>
-      <div class="ob-body">
-        When you get triggered, your amygdala fires an alarm — <strong>before you can think</strong>. Cortisol and adrenaline flood your body in seconds. This is not weakness. It's hardware.
-        <br><br>
-        Calm gives you the tools to reset it — <strong>starting with your body, not your mind</strong>.
-      </div>
-    </div>
-
-    <div class="ob-slide" id="ob-1">
-      <div class="ob-emoji">⚡ → 🫁 → 💭</div>
-      <div class="ob-title">Biology first.<br><em>Psychology second.</em></div>
-      <div class="ob-body">
-        Willpower and positive thinking <strong>don't work when cortisol is high</strong>. Your prefrontal cortex goes partially offline when the amygdala fires.<br><br>
-        The protocol here follows the correct sequence:<br>
-        <strong>physiological interventions first</strong> (breathing, cold water, movement) → then cognitive tools once your nervous system is ready to hear them.
-      </div>
-    </div>
-
-    <div class="ob-slide" id="ob-2">
-      <div class="ob-emoji">🛠️</div>
-      <div class="ob-title">Six tools.<br><em>One protocol.</em></div>
-      <div class="ob-body">All data stays on your device. No account, no server.</div>
-      <div class="ob-pills">
-        <span class="ob-pill">🆘 Right Now — crisis protocol</span>
-        <span class="ob-pill">🫁 Breathe — physiological sigh</span>
-        <span class="ob-pill">💭 Thoughts — distortion checker</span>
-        <span class="ob-pill">🌱 Ground — 5-4-3-2-1 senses</span>
-        <span class="ob-pill">📓 Journal — private log</span>
-        <span class="ob-pill">🧠 Biology — understand the science</span>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="ob-footer">
-    <div class="ob-dots">
-      <button class="ob-dot active" onclick="obGoTo(0)"></button>
-      <button class="ob-dot" onclick="obGoTo(1)"></button>
-      <button class="ob-dot" onclick="obGoTo(2)"></button>
-    </div>
-    <button class="ob-next" id="ob-btn" onclick="obNext()">Next →</button>
-    <button class="ob-skip" onclick="obDone()">Skip intro</button>
-  </div>
-</div>
-
-<header>
+<nav>
   <div>
-    <div class="logo"><em>Calm</em></div>
-    <div class="logo-sub">Nervous System · Biology First</div>
+    <div class="nav-logo"><em>Calm</em></div>
+    <div class="nav-sub">Nervous System · Biology First</div>
   </div>
-  <a class="crisis-link" href="tel:143">☎ 143 · Crisis</a>
-</header>
+  <a class="nav-open" href="https://calm.architect-dna.ch">Open App</a>
+</nav>
 
-<div class="tabs">
-  <button class="tab active" data-page="now"      onclick="setPage('now')">🆘 Right Now</button>
-  <button class="tab"        data-page="breathe"  onclick="setPage('breathe')">🫁 Breathe</button>
-  <button class="tab"        data-page="thoughts" onclick="setPage('thoughts')">💭 Thoughts</button>
-  <button class="tab"        data-page="ground"   onclick="setPage('ground')">🌱 Ground</button>
-  <button class="tab"        data-page="journal"  onclick="setPage('journal')">📓 Journal</button>
-  <button class="tab"        data-page="learn"    onclick="setPage('learn')">🧠 Biology</button>
-</div>
-
-<!-- ══════════════════════════════════════════════════════ NOW PAGE -->
-<div class="page active" id="page-now">
-
-  <p class="protocol-intro">
-    Your threat response fired. <strong>Cortisol and adrenaline are now physically in your bloodstream.</strong> The body reacts before thought. Start with the biological interventions — they change your brain chemistry directly. Psychological tools work <em>after</em> the physiology settles.
-  </p>
-
-  <div class="bio-section">
-    <h3 class="accent-teal">⚡ Under 60 seconds — biological first strike <span>do these first</span></h3>
-
-    <div class="bio-step" id="ns0" onclick="toggleNow(0)">
-      <div class="bio-step-icon">💨</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Physiological sigh × 3</div>
-        <div class="bio-step-sub">Double inhale through nose (sniff, then sniff more), then long exhale through mouth. Repeat 3×.</div>
-        <div class="bio-step-why">↳ Fastest known breathing method to drop cortisol in real time (Huberman Lab, Stanford). Deflates air sacs, activates vagus nerve immediately.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns1" onclick="toggleNow(1)">
-      <div class="bio-step-icon">🥶</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Cold water on face or wrists — 30 seconds</div>
-        <div class="bio-step-sub">Run cold water over your face and wrists, or press a cold glass against your cheek.</div>
-        <div class="bio-step-why">↳ Triggers the mammalian dive reflex. Drops heart rate 10-25% in under 30 seconds. No willpower required — it's pure physiology.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns2" onclick="toggleNow(2)">
-      <div class="bio-step-icon">🦶</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Press feet hard into the floor — 10 seconds</div>
-        <div class="bio-step-sub">Both feet flat. Push down hard. Feel the resistance. This is not a metaphor.</div>
-        <div class="bio-step-why">↳ Proprioceptive input (pressure/joint position) is processed in the same thalamic circuit that gates the amygdala alarm. Physical grounding has a measurable dampening effect on threat response.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
+<section class="hero">
+  <div class="hero-label">Nervous system reset</div>
+  <h1>Biology first.<br><em>Psychology second.</em></h1>
+  <p class="hero-sub">When you're triggered, your amygdala fires before you can think. Willpower doesn't work then. Calm gives you tools that act on your body first — the correct sequence for actually coming down.</p>
+  <div class="cta-row">
+    <a class="cta-primary" href="https://calm.architect-dna.ch">Open Calm</a>
+    <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
   </div>
+</section>
 
-  <div class="bio-section">
-    <h3 class="accent-warm">⏱ 2–5 minutes — bring cortisol down <span>if you can</span></h3>
-
-    <div class="bio-step" id="ns3" onclick="toggleNow(3)">
-      <div class="bio-step-icon">🏃</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Move your body — 50 jumping jacks, run in place, walk fast</div>
-        <div class="bio-step-sub">Any vigorous movement for 2-3 minutes.</div>
-        <div class="bio-step-why">↳ Cortisol and adrenaline are designed to fuel movement. Burning them through exercise is the most direct metabolic pathway. Standing still with cortisol in your blood is what makes the feeling unbearable.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns4" onclick="toggleNow(4)">
-      <div class="bio-step-icon">🍌</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Eat something — anything with protein or fat</div>
-        <div class="bio-step-sub">Even a few bites. A handful of nuts, bread, fruit, anything.</div>
-        <div class="bio-step-why">↳ Cortisol is a stress hormone AND a blood-sugar hormone. Low blood sugar triggers cortisol release as a survival mechanism. If you haven't eaten recently, you may be in a cortisol loop that food can break.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns5" onclick="toggleNow(5)">
-      <div class="bio-step-icon">🫂</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Move toward a calm person — same room is enough</div>
-        <div class="bio-step-sub">Your WG group, a café, anywhere humans are present and not hostile.</div>
-        <div class="bio-step-why">↳ Co-regulation is biological. The ventral vagal system (social engagement) is inhibited during threat response. A calm nervous system nearby literally entrains yours — cardiac synchrony, cortisol drop via oxytocin.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-  </div>
-
-  <div class="bio-section">
-    <h3 class="accent-blue">🧠 Once your body starts to settle <span>then, not before</span></h3>
-
-    <div class="bio-step" id="ns6" onclick="toggleNow(6)">
-      <div class="bio-step-icon">🏷</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Name the feeling — one word</div>
-        <div class="bio-step-sub">Say it silently: "I feel angry." / "I feel humiliated." / "I feel scared." Not the story — just the emotion word.</div>
-        <div class="bio-step-why">↳ Affect labeling (naming emotions) reduces amygdala activation and increases prefrontal regulation in fMRI studies (Lieberman 2007). The act of finding a word brings cortex back online. This is not therapy — it's neuroscience.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns7" onclick="toggleNow(7)">
-      <div class="bio-step-icon">⏸</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">Don't respond yet — to anything</div>
-        <div class="bio-step-sub">Whatever the situation is, it can wait 10 minutes. You have the right to not respond immediately.</div>
-        <div class="bio-step-why">↳ Decisions and words made in high cortisol states tend to escalate, not resolve. The "refractory period" after a trigger is when most additional damage happens. Waiting is not weakness — it's prefrontal strategy.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-
-    <div class="bio-step" id="ns8" onclick="toggleNow(8)">
-      <div class="bio-step-icon">🌊</div>
-      <div class="bio-step-text">
-        <div class="bio-step-head">The thought spiral — interrupt it now</div>
-        <div class="bio-step-sub">If worst-case thoughts are looping, go to the 💭 Thoughts tab. That's what it's for.</div>
-        <div class="bio-step-why">↳ Catastrophizing loops amplify cortisol further. The spiral isn't truth — it's the amygdala's threat model running without a brake. It needs to be interrupted structurally, not suppressed.</div>
-      </div>
-      <div class="bio-step-check">✅</div>
-    </div>
-  </div>
-
-  <button class="reset-all-btn" onclick="resetNow()">Reset checklist</button>
-</div>
-
-<!-- ══════════════════════════════════════════════════════ BREATHE PAGE -->
-<div class="page" id="page-breathe">
-  <div class="breathe-center">
-    <div class="breathe-name" id="breathe-name">Physiological Sigh — Fastest cortisol drop</div>
-    <div class="breathe-presets">
-      <button class="bpreset sel" onclick="selectPat('sigh')"  id="bp-sigh">Sigh ×3</button>
-      <button class="bpreset"     onclick="selectPat('box')"   id="bp-box">Box 4-4-4-4</button>
-      <button class="bpreset"     onclick="selectPat('478')"   id="bp-478">4-7-8 Calm</button>
-      <button class="bpreset"     onclick="selectPat('relax')" id="bp-relax">6-2-7 Vagus</button>
-    </div>
-    <div class="breathe-ring-wrap" onclick="toggleBreathe()">
-      <svg id="breathe-ring" width="190" height="190" viewBox="0 0 190 190">
-        <circle cx="95" cy="95" r="76" fill="none" stroke="rgba(57,211,83,.1)" stroke-width="15"/>
-        <circle cx="95" cy="95" r="76" fill="none" stroke="var(--teal)" stroke-width="15"
-          stroke-dasharray="477" stroke-dashoffset="477" stroke-linecap="round"
-          id="breathe-arc" style="transform:rotate(-90deg);transform-origin:95px 95px;transition:stroke-dashoffset 4s linear"/>
-        <circle cx="95" cy="95" r="50" fill="rgba(57,211,83,.07)" id="breathe-bubble" style="transition:r 4s ease-in-out"/>
-      </svg>
-      <div class="breathe-inner">
-        <div class="breathe-phase" id="breathe-phase">Tap to start</div>
-        <div class="breathe-count" id="breathe-count">—</div>
+<section class="sequence">
+  <div class="sequence-label">The correct sequence</div>
+  <div class="seq-steps">
+    <div class="seq-step">
+      <div class="seq-num">01</div>
+      <div class="seq-body">
+        <div class="seq-title" style="color:var(--teal)">⚡ Biological intervention — first</div>
+        <div class="seq-desc">Physiological sigh. Cold water on face. Feet pressed to floor. These act on your brainstem directly — before your cortex needs to cooperate.</div>
+        <div class="seq-why">↳ Cortisol and adrenaline are in your bloodstream. Only biology removes them.</div>
       </div>
     </div>
-    <div class="breathe-guide" id="breathe-guide">
-      <strong>Physiological sigh:</strong> Double inhale (sniff · sniff) then long exhale. Stanford research shows this is the fastest way to reduce physiological arousal in real time — works in under 3 breaths. It works by deflating air sacs (alveoli) that have collapsed during stress breathing, which restores the CO₂/O₂ balance that drives the calm signal.
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════ THOUGHTS PAGE -->
-<div class="page" id="page-thoughts">
-  <div class="thought-intro">
-    When you're triggered, the amygdala generates <strong>threat predictions</strong> — not facts. Worst-case scenarios feel certain. The brain's negativity bias and pattern-matching create a loop. <strong>This tool breaks that loop structurally</strong> — not by forcing positive thinking, but by separating what happened from what your brain is adding.
-  </div>
-
-  <div class="thought-input-wrap">
-    <label>The thought / assumption I'm having</label>
-    <textarea class="thought-ta" id="thought-in" placeholder='e.g. "They think I'm incompetent and will never take me seriously" or "This always happens to me, nothing will change"'></textarea>
-    <button class="check-btn" onclick="openCheck()">→ Break this down</button>
-  </div>
-
-  <div class="thought-check" id="thought-check">
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 1 · What distortion is this?</div>
-      <div class="check-step-q">Which of these best describes what the thought is doing?</div>
-      <div class="distortion-tags" id="distortion-tags">
-        <button class="dtag" onclick="toggleD(this)">Catastrophizing</button>
-        <button class="dtag" onclick="toggleD(this)">Mind-reading</button>
-        <button class="dtag" onclick="toggleD(this)">All-or-nothing</button>
-        <button class="dtag" onclick="toggleD(this)">Fortune-telling</button>
-        <button class="dtag" onclick="toggleD(this)">Overgeneralizing</button>
-        <button class="dtag" onclick="toggleD(this)">Should statements</button>
-        <button class="dtag" onclick="toggleD(this)">Emotional reasoning</button>
-        <button class="dtag" onclick="toggleD(this)">Personalization</button>
+    <div class="seq-step">
+      <div class="seq-num">02</div>
+      <div class="seq-body">
+        <div class="seq-title" style="color:#f0883e">🏃 Metabolize — second</div>
+        <div class="seq-desc">Movement. Food if blood sugar is low. A calm human nearby. These are not clichés — they are the actual metabolic pathway for cortisol clearance.</div>
+        <div class="seq-why">↳ Cortisol is designed to fuel movement. Burning it is the most direct route.</div>
       </div>
-      <div style="font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5" id="distortion-explain"></div>
     </div>
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 2 · What actually happened?</div>
-      <div class="check-step-q">Facts only — no interpretation. What literally occurred?</div>
-      <textarea class="check-step-ta" id="tc-facts" placeholder="e.g. Someone said X in a meeting. That is all that happened."></textarea>
-    </div>
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 3 · What am I adding?</div>
-      <div class="check-step-q">What meaning, prediction or judgment am I layering on top of those facts?</div>
-      <textarea class="check-step-ta" id="tc-adding" placeholder='e.g. I am concluding they think less of me forever, that others noticed, that this defines my worth'></textarea>
-    </div>
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 4 · How likely is the worst case?</div>
-      <div class="check-step-q">On a scale 1–10, how likely is the absolute worst outcome?</div>
-      <div class="likelihood-row" id="ll-row">
-        <button class="ll-btn" onclick="selectLL(this,1)">1</button>
-        <button class="ll-btn" onclick="selectLL(this,2)">2</button>
-        <button class="ll-btn" onclick="selectLL(this,3)">3</button>
-        <button class="ll-btn" onclick="selectLL(this,4)">4</button>
-        <button class="ll-btn" onclick="selectLL(this,5)">5</button>
-        <button class="ll-btn" onclick="selectLL(this,6)">6</button>
-        <button class="ll-btn" onclick="selectLL(this,7)">7</button>
-        <button class="ll-btn" onclick="selectLL(this,8)">8</button>
-        <button class="ll-btn" onclick="selectLL(this,9)">9</button>
-        <button class="ll-btn" onclick="selectLL(this,10)">10</button>
+    <div class="seq-step">
+      <div class="seq-num">03</div>
+      <div class="seq-body">
+        <div class="seq-title" style="color:var(--blue)">🧠 Cognitive tools — once settled</div>
+        <div class="seq-desc">Name the emotion. Check the thought spiral. Reframe. These only work when your prefrontal cortex is back online — which requires steps 1 and 2 first.</div>
+        <div class="seq-why">↳ Positive thinking doesn't work when cortisol is high. Sequence matters.</div>
       </div>
-      <div style="font-size:12px;color:var(--text3)" id="ll-label"></div>
-    </div>
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 5 · The realistic middle</div>
-      <div class="check-step-q">Not the best case. Not the worst. What's the most likely actual outcome?</div>
-      <textarea class="check-step-ta" id="tc-middle" placeholder="e.g. They probably didn't think much of it. Most people are focused on themselves. This is uncomfortable but not a catastrophe."></textarea>
-    </div>
-
-    <div class="check-step">
-      <div class="check-step-label accent-purple">Step 6 · What would you tell a close friend?</div>
-      <div class="check-step-q">If your best friend had this exact thought about this exact situation — what would you say to them?</div>
-      <textarea class="check-step-ta" id="tc-friend" placeholder="Write what you'd say — with the same warmth you'd give someone you love."></textarea>
-    </div>
-
-    <div class="reframe-box" id="reframe-box" style="display:none">
-      <h4>Your reframe</h4>
-      <p id="reframe-text"></p>
-    </div>
-
-    <div style="margin-top:12px">
-      <button class="save-check-btn" onclick="generateReframe()">Generate reframe + save to journal</button>
-      <button class="clear-check-btn" onclick="clearCheck()">Clear</button>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════════════════ GROUND PAGE -->
-<div class="page" id="page-ground">
-  <div class="ground-intro">
-    <strong>5-4-3-2-1 Grounding</strong> forces your brain into present-moment sensory processing, interrupting the amygdala's threat narrative. Each sense adds a separate channel of "safe present data" — the more channels, the harder it is for the fear circuit to maintain the alarm.
-  </div>
-  <div class="ground-step">
-    <div class="ground-num">👀 See · 5 things</div>
-    <div class="ground-title">5 things you can see right now</div>
-    <div class="ground-desc">Name 5 actual objects in your physical space. Be specific — not "a chair" but "the green plastic chair with the scratch."</div>
-    <textarea class="ground-input" id="g0" placeholder="1. &#10;2. &#10;3. &#10;4. &#10;5." rows="5" oninput="saveGround()"></textarea>
-  </div>
-  <div class="ground-step">
-    <div class="ground-num">✋ Touch · 4 things</div>
-    <div class="ground-title">4 things you can physically feel</div>
-    <div class="ground-desc">Touch your surroundings. Temperature, texture, pressure, weight.</div>
-    <textarea class="ground-input" id="g1" placeholder="1. &#10;2. &#10;3. &#10;4." rows="4" oninput="saveGround()"></textarea>
-  </div>
-  <div class="ground-step">
-    <div class="ground-num">👂 Hear · 3 things</div>
-    <div class="ground-title">3 things you can hear</div>
-    <div class="ground-desc">Listen for background sounds you usually filter — traffic, airflow, your own heartbeat.</div>
-    <textarea class="ground-input" id="g2" placeholder="1. &#10;2. &#10;3." rows="3" oninput="saveGround()"></textarea>
-  </div>
-  <div class="ground-step">
-    <div class="ground-num">👃 Smell · 2 things</div>
-    <div class="ground-title">2 things you can smell</div>
-    <div class="ground-desc">Smell is processed directly by the limbic system — it's one of the most powerful grounding channels.</div>
-    <textarea class="ground-input" id="g3" placeholder="1. &#10;2." rows="2" oninput="saveGround()"></textarea>
-  </div>
-  <div class="ground-step">
-    <div class="ground-num">👅 Taste · 1 thing</div>
-    <div class="ground-title">1 thing you can taste</div>
-    <div class="ground-desc">Any taste. Take a sip of water if you have some — the cold or warmth is data too.</div>
-    <textarea class="ground-input" id="g4" placeholder="1." rows="2" oninput="saveGround()"></textarea>
-  </div>
-  <button class="reset-all-btn" onclick="clearGround()">Clear answers</button>
-</div>
-
-<!-- ══════════════════════════════════════════════════════ JOURNAL PAGE -->
-<div class="page" id="page-journal">
-  <div class="journal-write">
-    <h3>What's happening right now?</h3>
-    <div class="mood-row">
-      <button class="mood-chip" onclick="selectMood(this,'😤')">😤</button>
-      <button class="mood-chip" onclick="selectMood(this,'😢')">😢</button>
-      <button class="mood-chip" onclick="selectMood(this,'😰')">😰</button>
-      <button class="mood-chip" onclick="selectMood(this,'😞')">😞</button>
-      <button class="mood-chip" onclick="selectMood(this,'😔')">😔</button>
-      <button class="mood-chip" onclick="selectMood(this,'😐')">😐</button>
-      <button class="mood-chip" onclick="selectMood(this,'🙂')">🙂</button>
-      <button class="mood-chip" onclick="selectMood(this,'😌')">😌</button>
-      <button class="mood-chip" onclick="selectMood(this,'😊')">😊</button>
+<section class="tools">
+  <div class="tools-label">Six tools in one app</div>
+  <div class="tools-grid">
+    <div class="tool">
+      <div class="tool-icon">🆘</div>
+      <div class="tool-title">Right Now</div>
+      <div class="tool-body">Full crisis protocol — 9 steps in order, physiological first, psychological last. Tap each step as you complete it.</div>
     </div>
-    <textarea class="journal-ta" id="journal-input" placeholder="Write freely. Stays on this device only. No account, no sync, no one reads this.&#10;&#10;What triggered you? What are you feeling in your body? What do you need right now?"></textarea>
-    <button class="journal-save-btn" onclick="saveJournal()">Save entry</button>
+    <div class="tool">
+      <div class="tool-icon">🫁</div>
+      <div class="tool-title">Breathe</div>
+      <div class="tool-body">Physiological sigh, box breathing, 4-7-8, vagal activation. Animated ring with real-time count. Evidence-based selections only.</div>
+    </div>
+    <div class="tool">
+      <div class="tool-icon">💭</div>
+      <div class="tool-title">Thought Check</div>
+      <div class="tool-body">Six-step spiral interrupt. Identify the distortion, separate facts from interpretation, rate worst-case likelihood, generate a reframe.</div>
+    </div>
+    <div class="tool">
+      <div class="tool-icon">🌱</div>
+      <div class="tool-title">Ground</div>
+      <div class="tool-body">5-4-3-2-1 sensory grounding. Forces present-moment processing and interrupts the amygdala's threat narrative with real sensory data.</div>
+    </div>
+    <div class="tool">
+      <div class="tool-icon">📓</div>
+      <div class="tool-title">Journal</div>
+      <div class="tool-body">Private mood log, stays on your device. Write freely — no account, no server, no one reads it. Thought check reframes save here automatically.</div>
+    </div>
+    <div class="tool">
+      <div class="tool-icon">🧠</div>
+      <div class="tool-title">Biology</div>
+      <div class="tool-body">Six deep-dives on the actual neuroscience: amygdala hijack, cortisol baseline, thought spiral biology, co-regulation, window of tolerance.</div>
+    </div>
   </div>
-  <div id="journal-list"></div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════════════════ LEARN PAGE -->
-<div class="page" id="page-learn">
-  <div id="learn-list"></div>
-</div>
+<section class="science">
+  <h2>This is <em>not</em> mindfulness content</h2>
+  <p>The tools in Calm are built around what the research says actually interrupts a stress response — not what feels intuitive. <strong>Cold water drops heart rate 10-25% in 30 seconds</strong> via the mammalian dive reflex. <strong>A physiological sigh lowers arousal faster than any other breathing pattern</strong> because it deflates collapsed air sacs and restores CO₂ balance. <strong>Naming an emotion reduces amygdala activation</strong> in fMRI studies — the word creates a small prefrontal gap.</p>
+  <p>Willpower, positive affirmations, and "just calm down" <em>don't work when cortisol is high</em> because your prefrontal cortex is partially suppressed. The protocol follows the correct biological sequence: body first, mind second.</p>
+</section>
 
-<script>
-'use strict';
+<section class="bottom-cta">
+  <h2>When you need it, open it.</h2>
+  <p>No sign-up. No loading screen. Works offline once loaded.</p>
+  <div><span class="private-note">🔒 All data stays on your device only</span></div>
+  <a class="cta-primary" href="https://calm.architect-dna.ch">Open Calm →</a>
+</section>
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
-function setPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelector(`.tab[data-page="${id}"]`).classList.add('active');
-  if(id==='journal') renderJournal();
-  if(id==='learn') renderLearn();
-}
-document.querySelectorAll('.tab').forEach(t=>t.setAttribute('data-page',t.getAttribute('onclick').match(/'(\w+)'/)[1]));
+<footer>
+  <p>Calm by <a href="https://architect-dna.ch">Architect-DNA</a></p>
+  <p><a href="https://architect-dna.ch">← All Projects</a></p>
+</footer>
 
-// ── NOW ───────────────────────────────────────────────────────────────────────
-const NOW_TOTAL = 9;
-function loadNow(){ try{return JSON.parse(localStorage.getItem('calm_now')||'[]')}catch{return []} }
-function saveNow(a){ localStorage.setItem('calm_now', JSON.stringify(a)) }
-function toggleNow(i){
-  const a=loadNow(); const ix=a.indexOf(i);
-  if(ix>=0) a.splice(ix,1); else a.push(i);
-  saveNow(a); renderNow();
-}
-function renderNow(){
-  const done=loadNow();
-  for(let i=0;i<NOW_TOTAL;i++){
-    const el=document.getElementById('ns'+i);
-    if(el) el.classList.toggle('done',done.includes(i));
-  }
-}
-function resetNow(){ saveNow([]); renderNow(); toast('Checklist reset'); }
-renderNow();
-
-// ── BREATHING ────────────────────────────────────────────────────────────────
-const PATS = {
-  sigh:{name:'Physiological Sigh — fastest cortisol drop',
-    phases:['Sniff in','Sniff more','Long exhale out'],counts:[2,1,6],
-    guide:'<strong>Physiological sigh</strong> (Stanford Huberman Lab): Double inhale fills collapsed air sacs, long exhale dumps CO₂ and immediately activates the parasympathetic brake. This is the single fastest breath technique — faster than box breathing — because it works on the alveoli directly. Three sighs drops measurable anxiety in under 60 seconds.'},
-  box:{name:'Box Breathing — 4-4-4-4',
-    phases:['Breathe in','Hold','Breathe out','Hold'],counts:[4,4,4,4],
-    guide:'<strong>Box breathing</strong>: Equal 4-count cycles. Used by Navy SEALs and ER surgeons before high-pressure tasks. Regulates the sympathetic/parasympathetic balance. Good when you need to be functional, not just calm.'},
-  '478':{name:'4-7-8 — deep parasympathetic',
-    phases:['Breathe in','Hold','Breathe out',''],counts:[4,7,8,0],
-    guide:'<strong>4-7-8 breathing</strong>: The long hold raises CO₂ slightly, which triggers a stronger parasympathetic rebound. The 8-count exhale extends vagal stimulation. Powerful for severe anxiety, panic, or before sleep after a hard day.'},
-  relax:{name:'6-2-7 — vagus nerve activation',
-    phases:['Breathe in','Hold','Breathe out',''],counts:[6,2,7,0],
-    guide:'<strong>6-2-7 vagal breathing</strong>: Extended exhale stimulates the vagus nerve mechanically — the nerve runs near the diaphragm. Each long exhale sends a parasympathetic signal up to the brainstem. Measurably reduces heart rate within 90 seconds.'},
-};
-let curPat = PATS.sigh;
-let breatheOn = false;
-let breatheTimer = null;
-let bPhase = 0;
-
-function selectPat(k){
-  document.querySelectorAll('.bpreset').forEach(b=>b.classList.remove('sel'));
-  document.getElementById('bp-'+k).classList.add('sel');
-  curPat = PATS[k];
-  document.getElementById('breathe-name').textContent = curPat.name;
-  document.getElementById('breathe-guide').innerHTML = curPat.guide;
-  stopBreathe();
-}
-function toggleBreathe(){ breatheOn ? stopBreathe() : startBreathe(); }
-function startBreathe(){ breatheOn=true; bPhase=0; tickBreathe(); }
-function stopBreathe(){
-  breatheOn=false; clearTimeout(breatheTimer);
-  document.getElementById('breathe-phase').textContent='Tap to start';
-  document.getElementById('breathe-count').textContent='—';
-  const arc=document.getElementById('breathe-arc');
-  arc.style.transition='stroke-dashoffset 0.3s';
-  arc.style.strokeDashoffset='477';
-  document.getElementById('breathe-bubble').setAttribute('r','50');
-}
-function tickBreathe(){
-  if(!breatheOn) return;
-  const phases=curPat.phases.filter((_,i)=>curPat.counts[i]>0);
-  const counts=curPat.counts.filter(c=>c>0);
-  const ph=bPhase%phases.length;
-  const label=phases[ph]; const dur=counts[ph];
-  document.getElementById('breathe-phase').textContent=label;
-  const arc=document.getElementById('breathe-arc');
-  const bubble=document.getElementById('breathe-bubble');
-  arc.style.transition=`stroke-dashoffset ${dur}s linear`;
-  if(label.toLowerCase().includes('in')){
-    arc.style.strokeDashoffset='0';
-    bubble.style.transition=`r ${dur}s ease-in-out`;
-    bubble.setAttribute('r','74');
-  } else if(label.toLowerCase().includes('out')){
-    arc.style.strokeDashoffset='477';
-    bubble.style.transition=`r ${dur}s ease-in-out`;
-    bubble.setAttribute('r','38');
-  }
-  let cnt=dur;
-  document.getElementById('breathe-count').textContent=cnt;
-  const tick=()=>{
-    if(!breatheOn) return;
-    cnt--;
-    if(cnt>0){ document.getElementById('breathe-count').textContent=cnt; breatheTimer=setTimeout(tick,1000); }
-    else { bPhase++; breatheTimer=setTimeout(tickBreathe,250); }
-  };
-  breatheTimer=setTimeout(tick,1000);
-}
-
-// ── THOUGHTS ─────────────────────────────────────────────────────────────────
-const DISTORTION_EXPLAIN = {
-  'Catastrophizing':'Assuming the worst possible outcome is certain or very likely. The brain treats a low-probability disaster as inevitable.',
-  'Mind-reading':'Assuming you know what others are thinking, usually negative. Almost always inaccurate, especially under stress.',
-  'All-or-nothing':'Seeing things as only two extremes — perfect or ruined, always or never. Reality exists between these.',
-  'Fortune-telling':'Predicting a specific negative outcome as if it\'s fact. Confusing "I feel like X will happen" with evidence.',
-  'Overgeneralizing':'Taking one event and concluding it\'s a permanent pattern. "This always happens to me."',
-  'Should statements':'Internal rules about how you/others must behave. When violated, triggers shame or rage disproportionately.',
-  'Emotional reasoning':'Treating a feeling as evidence of reality. "I feel incompetent, therefore I am incompetent." Feelings are not facts.',
-  'Personalization':'Taking excessive responsibility for external events, or assuming events are about you when they aren\'t.',
-};
-let selectedLL = null;
-
-function toggleD(el){
-  el.classList.toggle('sel');
-  const selected = Array.from(document.querySelectorAll('.dtag.sel')).map(e=>e.textContent);
-  const explain = selected.map(k=>DISTORTION_EXPLAIN[k]).filter(Boolean);
-  document.getElementById('distortion-explain').textContent = explain.length ? explain.join(' · ') : '';
-}
-function selectLL(el, val){
-  document.querySelectorAll('.ll-btn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel');
-  selectedLL = val;
-  const labels = {1:'Very unlikely',2:'Very unlikely',3:'Unlikely',4:'Unlikely',5:'Possible',6:'Moderate',7:'Fairly likely',8:'Likely',9:'Very likely',10:'Certain in your mind right now'};
-  const note = val <= 3 ? ' — Your nervous system may be inflating this.' : val <= 6 ? ' — A real concern, but not a certainty.' : ' — High alert state. Check the facts again.';
-  document.getElementById('ll-label').textContent = (labels[val]||'') + note;
-}
-
-function openCheck(){
-  const thought = document.getElementById('thought-in').value.trim();
-  if(!thought){ toast('Write the thought first'); return; }
-  document.getElementById('thought-check').classList.add('open');
-  document.getElementById('thought-check').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function generateReframe(){
-  const facts = document.getElementById('tc-facts').value.trim();
-  const middle = document.getElementById('tc-middle').value.trim();
-  const friend = document.getElementById('tc-friend').value.trim();
-  const thought = document.getElementById('thought-in').value.trim();
-  const distortions = Array.from(document.querySelectorAll('.dtag.sel')).map(e=>e.textContent);
-
-  const parts = [];
-  if(distortions.length) parts.push(`The thought pattern: ${distortions.join(', ')}.`);
-  if(facts) parts.push(`What actually happened: ${facts}`);
-  if(middle) parts.push(`Most likely reality: ${middle}`);
-  if(friend) parts.push(`What I'd tell a friend: ${friend}`);
-
-  if(!parts.length){ toast('Fill in at least a few steps first'); return; }
-
-  const reframe = parts.join(' ');
-  document.getElementById('reframe-text').textContent = reframe;
-  document.getElementById('reframe-box').style.display = 'block';
-
-  // Save to journal
-  const entries = loadJEntries();
-  entries.unshift({
-    mood:'💭',
-    text:`Thought check:\n"${thought}"\n\n${reframe}`,
-    ts: Date.now()
-  });
-  saveJEntries(entries);
-  toast('Reframe saved to journal ✓');
-}
-
-function clearCheck(){
-  document.getElementById('thought-in').value='';
-  document.getElementById('tc-facts').value='';
-  document.getElementById('tc-adding').value='';
-  document.getElementById('tc-middle').value='';
-  document.getElementById('tc-friend').value='';
-  document.querySelectorAll('.dtag.sel').forEach(e=>e.classList.remove('sel'));
-  document.querySelectorAll('.ll-btn.sel').forEach(e=>e.classList.remove('sel'));
-  document.getElementById('distortion-explain').textContent='';
-  document.getElementById('ll-label').textContent='';
-  document.getElementById('reframe-box').style.display='none';
-  document.getElementById('thought-check').classList.remove('open');
-  selectedLL=null;
-}
-
-// ── GROUNDING ────────────────────────────────────────────────────────────────
-function loadGround(){ try{return JSON.parse(localStorage.getItem('calm_ground')||'{}')}catch{return{}} }
-function saveGround(){
-  const d={};
-  for(let i=0;i<5;i++) d[i]=document.getElementById('g'+i).value;
-  localStorage.setItem('calm_ground',JSON.stringify(d));
-}
-function clearGround(){
-  for(let i=0;i<5;i++) document.getElementById('g'+i).value='';
-  localStorage.removeItem('calm_ground'); toast('Cleared');
-}
-(()=>{ const gd=loadGround(); for(let i=0;i<5;i++) if(gd[i]&&document.getElementById('g'+i)) document.getElementById('g'+i).value=gd[i]; })();
-
-// ── JOURNAL ───────────────────────────────────────────────────────────────────
-let selMood='📓';
-function selectMood(el,emoji){
-  document.querySelectorAll('.mood-chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel'); selMood=emoji;
-}
-function loadJEntries(){ try{return JSON.parse(localStorage.getItem('calm_journal')||'[]')}catch{return[]} }
-function saveJEntries(arr){ localStorage.setItem('calm_journal',JSON.stringify(arr)) }
-
-function saveJournal(){
-  const text=document.getElementById('journal-input').value.trim();
-  if(!text){ toast('Write something first'); return; }
-  const arr=loadJEntries();
-  arr.unshift({mood:selMood,text,ts:Date.now()});
-  saveJEntries(arr);
-  document.getElementById('journal-input').value='';
-  selMood='📓';
-  document.querySelectorAll('.mood-chip').forEach(c=>c.classList.remove('sel'));
-  renderJournal(); toast('Entry saved ✓');
-}
-function deleteJEntry(ts){ saveJEntries(loadJEntries().filter(e=>e.ts!==ts)); renderJournal(); }
-function renderJournal(){
-  const arr=loadJEntries();
-  const list=document.getElementById('journal-list');
-  if(!arr.length){ list.innerHTML='<div class="no-entries">No entries yet.</div>'; return; }
-  list.innerHTML=arr.map(e=>`
-    <div class="journal-entry">
-      <div class="je-head">
-        <span class="je-mood">${e.mood}</span>
-        <span class="je-time">${new Date(e.ts).toLocaleString('de-CH',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
-        <button class="je-del" onclick="deleteJEntry(${e.ts})">×</button>
-      </div>
-      <div class="je-text">${e.text.replace(/</g,'&lt;')}</div>
-    </div>`).join('');
-}
-
-// ── LEARN ─────────────────────────────────────────────────────────────────────
-const LEARN_CONTENT = [
-  {icon:'⚡',title:'Why Your Cortisol Is Already High',tag:'Biology',body:`
-<p><strong>Cortisol is your body's primary stress hormone</strong> — and in people with trauma histories, the baseline level is often chronically elevated. This means you start every day closer to the threshold where the threat response fires.</p>
-<h4>What chronically high cortisol does</h4>
-<ul>
-<li>Sensitizes the amygdala — it fires faster and harder for smaller triggers</li>
-<li>Suppresses the prefrontal cortex — less access to reasoning, perspective, impulse control</li>
-<li>Disrupts sleep → more cortisol → lighter sleep → more cortisol (a loop)</li>
-<li>Increases inflammatory responses, which further affects mood and reactivity</li>
-</ul>
-<h4>Why criticism hits so hard</h4>
-<p>When you're already at high baseline cortisol, <strong>even minor criticism can cross the threshold that activates a full threat response</strong>. It's not that you're oversensitive — it's that your system is running hot and has less buffer before the alarm fires.</p>
-<h4>What measurably lowers cortisol over time</h4>
-<ul>
-<li>Consistent sleep schedule (most impactful)</li>
-<li>Morning sunlight within 30-60 min of waking (resets the cortisol awakening response)</li>
-<li>Vigorous exercise 3-5× per week (metabolizes cortisol)</li>
-<li>Social connection — oxytocin directly suppresses cortisol</li>
-<li>Cold exposure — cold shower triggers parasympathetic rebound after initial spike</li>
-</ul>`},
-
-  {icon:'🧠',title:'The Amygdala Hijack — What\'s Actually Happening',tag:'Neuroscience',body:`
-<p>The amygdala is a small almond-shaped structure in your brain's limbic system. Its job is <strong>threat detection and survival response</strong>. It does not reason. It does not care about context. It pattern-matches at millisecond speed.</p>
-<h4>The sequence</h4>
-<ul>
-<li><strong>Sensory input arrives</strong> (someone criticizes you)</li>
-<li><strong>Thalamus routes it</strong> — simultaneously to amygdala (fast, emotional) AND prefrontal cortex (slow, rational)</li>
-<li><strong>Amygdala fires first</strong> — within 100ms, before your conscious mind registers the event</li>
-<li><strong>Cortisol and adrenaline flood your bloodstream</strong> — fight/flight/freeze activates</li>
-<li><strong>Prefrontal cortex gets partially suppressed</strong> — this is why you can't think clearly when triggered</li>
-</ul>
-<h4>Why it's worse if you have a trauma history</h4>
-<p>The amygdala learns from experience. If criticism in your past led to real danger (emotional withdrawal, punishment, abandonment), the amygdala has a <em>low-threshold pattern</em> for criticism = threat. It doesn't know that the present situation is different.</p>
-<h4>What interrupts the hijack</h4>
-<p>Physical interventions work faster than psychological ones because <strong>they act on the brainstem and vagal system directly</strong>, bypassing the cortex. Cold water → dive reflex. Physiological sigh → CO₂ balance. Pressure on feet → proprioception calms thalamus gating. These are not tricks — they're hardware.</p>`},
-
-  {icon:'💭',title:'The Thought Spiral Biology',tag:'Cognition',body:`
-<p>When the amygdala fires, it activates a <strong>threat prediction model</strong> — your brain automatically generates scenarios of what could go wrong. This is adaptive for physical threats. For social threats, it creates a loop.</p>
-<h4>The loop</h4>
-<ul>
-<li>Trigger → amygdala fires → cortisol up → threat predictions generated</li>
-<li>Worst-case thoughts → more cortisol → amygdala sensitization → more worst-case thoughts</li>
-<li>Each cycle deepens the activation</li>
-</ul>
-<h4>Why worst-case assumptions feel true</h4>
-<p><strong>Emotional reasoning:</strong> "I feel like this is a catastrophe, therefore it is." High cortisol biases your attention toward threat-relevant information and causes you to weight negative evidence more heavily. This is a biology problem, not a character flaw.</p>
-<h4>What breaks the loop</h4>
-<ul>
-<li><strong>First:</strong> physiological intervention (breathe, move, cold) — lowers cortisol so the PFC can come back online</li>
-<li><strong>Then:</strong> cognitive defusion — naming the distortion pattern ("I notice I'm catastrophizing") creates a small observer gap between you and the thought</li>
-<li><strong>Then:</strong> evidence checking — separating facts from interpretation</li>
-</ul>
-<p>The 💭 Thoughts tab is designed to do this sequence systematically.</p>`},
-
-  {icon:'🫂',title:'Co-Regulation Is Biology',tag:'Social Neuroscience',body:`
-<p>Your nervous system is not designed to self-regulate in isolation. Humans are social mammals — we evolved to use each other's nervous systems as a <strong>physiological resource</strong>.</p>
-<h4>What happens near a calm person</h4>
-<ul>
-<li>Cardiac entrainment — heart rates begin to synchronize, especially with eye contact</li>
-<li>Oxytocin is released — directly inhibits cortisol and amygdala firing</li>
-<li>Ventral vagal activation — the "social engagement system" comes online and suppresses fight/flight</li>
-<li>Facial expressions of safety are processed subconsciously and downregulate threat response</li>
-</ul>
-<p>What you did on that hard day — sitting with your WG instead of isolating — is one of the most neurologically sound things you could have done. Even not talking, just being in the same space, has measurable effects. <strong>This is not weakness. This is correct biology.</strong></p>`},
-
-  {icon:'🌊',title:'The Window of Tolerance',tag:'Trauma Science',body:`
-<p>The <strong>Window of Tolerance</strong> is the zone where your nervous system functions optimally — not over-activated (hyperarousal) and not shut down (hypoarousal).</p>
-<h4>Hyperarousal — too activated</h4>
-<ul>
-<li>Anger, rage, panic, overwhelm, urge to scream or flee</li>
-<li>Racing thoughts, can't think clearly, impulsive</li>
-<li>Cortisol and adrenaline dominate</li>
-</ul>
-<h4>Hypoarousal — too shut down</h4>
-<ul>
-<li>Numb, disconnected, collapsed, empty</li>
-<li>Depression, can't move, dissociation</li>
-<li>Dorsal vagal shutdown — a last-resort survival response</li>
-</ul>
-<h4>How the window expands</h4>
-<p>Trauma <strong>narrows</strong> the window — smaller triggers cause bigger exits. Therapy (especially EMDR, somatic work) expands it. Daily biology (sleep, exercise, consistent food) keeps you closer to center. Co-regulation helps when you've already exited.</p>
-<p>The depressive phase you mentioned — not eating, isolation leading to collapse — is hypoarousal. The interventions are different: activation (light, movement, social contact, food) rather than calming.</p>`},
-
-  {icon:'🛠',title:'Your Personal Protocol',tag:'Practice',body:`
-<p>Build this in advance so you don't have to think during the trigger.</p>
-<h4>Tier 1 — Biological first (0-2 min)</h4>
-<ul>
-<li>Physiological sigh × 3</li>
-<li>Cold water on face or wrists</li>
-<li>Feet pressed hard into floor</li>
-</ul>
-<h4>Tier 2 — Metabolize (2-10 min)</h4>
-<ul>
-<li>Movement — any vigorous activity</li>
-<li>Eat if blood sugar may be low</li>
-<li>Move toward people</li>
-</ul>
-<h4>Tier 3 — Cognitive (once body is settling)</h4>
-<ul>
-<li>Name the emotion (one word)</li>
-<li>Use the Thoughts tab to check the spiral</li>
-<li>Don't respond to the situation yet</li>
-</ul>
-<h4>Tier 4 — Processing (hours later or next day)</h4>
-<ul>
-<li>Journal what happened</li>
-<li>Identify what old story was activated</li>
-<li>Self-compassion: "This makes sense given what I've been through"</li>
-<li>Decide if the original situation needs to be addressed — from a regulated state</li>
-</ul>
-<h4>Longer arc</h4>
-<p>Trauma-focused therapy (EMDR, somatic experiencing, IFS) can actually update the amygdala's threat maps so the threshold for triggering rises. This takes months but it genuinely works. The biology is plastic — the system can be retrained.</p>`},
-];
-
-function renderLearn(){
-  document.getElementById('learn-list').innerHTML = LEARN_CONTENT.map((item,i)=>`
-    <div class="learn-card" id="lc-${i}" onclick="toggleLearn(${i})">
-      <div class="learn-head">
-        <div class="learn-icon">${item.icon}</div>
-        <div style="flex:1"><div class="learn-title">${item.title}</div><div class="learn-tag">${item.tag}</div></div>
-        <div class="learn-chevron">›</div>
-      </div>
-      <div class="learn-body">${item.body}</div>
-    </div>`).join('');
-}
-function toggleLearn(i){ document.getElementById('lc-'+i).classList.toggle('open'); }
-
-// ── ONBOARDING ────────────────────────────────────────────────────────────────
-let obStep = 0;
-const OB_TOTAL = 3;
-function obGoTo(i){
-  if(i === obStep) return;
-  const prevEl = document.getElementById('ob-'+obStep);
-  prevEl.classList.remove('active');
-  prevEl.classList.add('out');
-  setTimeout(()=>prevEl.classList.remove('out'), 380);
-  obStep = i;
-  document.getElementById('ob-'+obStep).classList.add('active');
-  document.querySelectorAll('.ob-dot').forEach((d,idx)=>d.classList.toggle('active',idx===obStep));
-  document.getElementById('ob-btn').textContent = obStep===OB_TOTAL-1 ? "Let's go →" : "Next →";
-}
-function obNext(){
-  if(obStep < OB_TOTAL-1) obGoTo(obStep+1);
-  else obDone();
-}
-function obDone(){
-  localStorage.setItem('calmOnboarded','1');
-  document.getElementById('onboarding').classList.add('hidden');
-}
-(function(){
-  if(localStorage.getItem('calmOnboarded')) document.getElementById('onboarding').classList.add('hidden');
-})();
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>el.classList.remove('show'),2400);
-}
-</script>
 </body>
 </html>

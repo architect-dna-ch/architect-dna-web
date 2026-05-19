@@ -3,470 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clyedo — Quality Comedy, Zero Algorithm</title>
-<meta name="description" content="Curated comedy. No recommendations. No rabbit hole. Just the good stuff.">
+<title>Clyedo — YouTube Without the Algorithm</title>
+<meta name="description" content="Find comedy, documentaries, gardening tips — anything you actually want — without recommendations, autoplay, or rabbit holes.">
 <meta name="theme-color" content="#0a0a0a">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;
-  --text:#f5f5f0;--text2:rgba(245,245,240,.6);--text3:rgba(245,245,240,.32);
-  --accent:#f5a623;--accent2:#ffcc66;
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+  --text:#f5f5f0;--text2:rgba(245,245,240,.65);--text3:rgba(245,245,240,.35);
+  --accent:#f5a623;
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
   --mono:'SF Mono','Fira Code','Courier New',monospace;
-  --r:12px;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
 
-/* ── HEADER ── */
-header{position:sticky;top:0;z-index:200;background:rgba(10,10,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px}
-.logo{font-size:18px;font-weight:900;letter-spacing:-.04em;color:var(--text);text-decoration:none;flex-shrink:0}
-.logo em{color:var(--accent);font-style:normal}
-.search-wrap{flex:1;max-width:360px;position:relative}
-.search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 34px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s}
-.search-input::placeholder{color:var(--text3)}
-.search-input:focus{border-color:var(--border2)}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;color:var(--text3)}
-.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
-.spin-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--accent);color:#000;border:none;border-radius:8px;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;transition:filter .15s;font-family:var(--font)}
-.spin-btn:hover{filter:brightness(1.1)}
-.add-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.add-btn:hover{border-color:var(--border2);color:var(--text)}
+nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-.04em}
+.nav-logo em{color:var(--accent);font-style:normal}
+.nav-open{padding:8px 18px;background:var(--accent);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;letter-spacing:.01em}
 
-/* ── CATEGORIES ── */
-.cats{padding:16px 20px 0;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-.cat-btn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.04em;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:.15s;font-family:var(--font);margin-bottom:12px}
-.cat-btn:hover{border-color:var(--border2);color:var(--text2)}
-.cat-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
+h1{font-size:clamp(36px,8vw,62px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{padding:14px 30px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;letter-spacing:.01em;transition:filter .15s}
+.cta-primary:hover{filter:brightness(1.1)}
+.cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;transition:.15s}
+.cta-ghost:hover{color:var(--text);border-color:var(--accent)}
 
-/* ── GRID ── */
-.grid-wrap{padding:24px 20px;max-width:1200px;margin:0 auto}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-@media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+.demo{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.demo-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.demo-bar{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:20px;gap:12px}
+@media(max-width:560px){.demo-grid{grid-template-columns:repeat(2,1fr)}}
+.demo-thumb{background:var(--bg3);border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--border);position:relative;overflow:hidden}
+.demo-thumb-label{position:absolute;bottom:6px;left:8px;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-family:var(--mono)}
+.demo-no-rec{background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.15);border-radius:8px;padding:10px 14px;text-align:center;font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:.04em}
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;position:relative}
-.card:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.card:active{transform:translateY(-1px)}
-.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--bg3);display:block}
-.thumb-placeholder{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,var(--bg3),var(--bg2))}
-.card-body{padding:12px}
-.card-comedian{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;font-family:var(--mono)}
-.card-title{font-size:13px;font-weight:700;line-height:1.35;color:var(--text);margin-bottom:6px}
-.card-meta{display:flex;align-items:center;justify-content:space-between}
-.card-cat{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:2px 7px;border:1px solid var(--border);border-radius:4px}
-.card-year{font-size:10px;color:var(--text3);font-family:var(--mono)}
-.card-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);width:44px;height:44px;background:rgba(245,166,35,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:transform .2s cubic-bezier(.34,1.56,.64,1);pointer-events:none;margin-top:-36px}
-.card:hover .card-play{transform:translate(-50%,-50%) scale(1)}
+.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+.feat-icon{font-size:26px;margin-bottom:12px}
+.feat-title{font-size:14px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
+.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
 
-/* empty state */
-.empty{text-align:center;padding:80px 20px;color:var(--text3)}
-.empty p{font-size:14px;margin-top:8px}
+.why{max-width:640px;margin:0 auto 80px;padding:0 24px;text-align:center}
+.why h2{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin-bottom:16px}
+.why p{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.why em{color:var(--accent);font-style:normal}
 
-/* ── PLAYER MODAL ── */
-#player-overlay{
-  position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;
-  animation:fadeIn .2s ease;
-}
-#player-overlay.open{display:flex}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.player-wrap{width:90vw;max-width:1000px;position:relative}
-.player-close{position:absolute;top:-44px;right:0;background:rgba(255,255,255,.1);border:none;color:var(--text);font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center}
-.player-close:hover{background:rgba(255,255,255,.18)}
-.player-iframe-wrap{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
-.player-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-.player-info{margin-top:12px;display:flex;gap:12px;align-items:flex-start}
-.player-comedian{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;font-family:var(--mono)}
-.player-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.3}
-.player-desc{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.5}
-.player-next{margin-left:auto;flex-shrink:0;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.player-next:hover{border-color:var(--border2);color:var(--text)}
+.cats-demo{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:28px 0}
+.cat-chip{padding:6px 15px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--text3);cursor:default}
+.cat-chip.lit{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.07)}
 
-/* ── ADD PANEL ── */
-#add-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);display:none;align-items:flex-end;justify-content:center}
-#add-overlay.open{display:flex}
-.add-panel{background:var(--bg2);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:28px 24px 40px;width:100%;max-width:600px;animation:slideUp .25s ease}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
-.add-panel h2{font-size:18px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px}
-.add-panel p{font-size:13px;color:var(--text2);margin-bottom:20px}
-.add-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);margin-bottom:8px;transition:border-color .15s}
-.add-input:focus{border-color:var(--accent)}
-.add-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.add-meta select,.add-meta input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s}
-.add-meta select:focus,.add-meta input:focus{border-color:var(--accent)}
-.add-actions{display:flex;gap:8px;margin-top:16px}
-.add-save{flex:1;background:var(--accent);color:#000;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;transition:filter .15s;font-family:var(--font)}
-.add-save:hover{filter:brightness(1.08)}
-.add-cancel{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:10px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.add-cancel:hover{border-color:var(--border2);color:var(--text)}
-.yt-search-row{display:flex;gap:8px;align-items:center;margin-bottom:0}
-.yt-search-row .add-input{flex:1;margin-bottom:0}
-.yt-search-btn{white-space:nowrap;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:10px;padding:12px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font)}
-.yt-search-btn:hover{border-color:#f00;color:#f00}
-.add-error{font-size:12px;color:#ff4466;margin-top:4px;display:none}
+.bottom-cta{text-align:center;padding:0 24px 80px}
+.bottom-cta h2{font-size:clamp(24px,5vw,36px);font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+.bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
 
-/* ── FOOTER ── */
-footer{padding:24px 20px;border-top:1px solid var(--border);text-align:center}
+footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
 footer a{color:var(--text3);text-decoration:none}
 footer a:hover{color:var(--text2)}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999;white-space:nowrap}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
 
-<div id="player-overlay" onclick="closePlayer(event)">
-  <div class="player-wrap">
-    <button class="player-close" onclick="closePlayerBtn()">×</button>
-    <div class="player-iframe-wrap">
-      <iframe id="player-iframe" allow="autoplay;fullscreen" allowfullscreen></iframe>
+<nav>
+  <div class="nav-logo"><em>C</em>lyedo</div>
+  <a class="nav-open" href="https://clyedo.architect-dna.ch">Open App</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">YouTube without the algorithm</div>
+  <h1>Find what you <em>actually</em> want to watch</h1>
+  <p class="hero-sub">Comedy specials, documentaries, gardening tips — curated and searchable. No autoplay. No recommendations dragging you somewhere you didn't choose to go.</p>
+  <div class="cta-row">
+    <a class="cta-primary" href="https://clyedo.architect-dna.ch">Open Clyedo</a>
+    <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
+  </div>
+</section>
+
+<div class="demo">
+  <div class="demo-card">
+    <div class="demo-bar">
+      <div class="demo-dot" style="background:#ff5f57"></div>
+      <div class="demo-dot" style="background:#febc2e"></div>
+      <div class="demo-dot" style="background:#28c840"></div>
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:6px">clyedo.architect-dna.ch</span>
     </div>
-    <div class="player-info">
-      <div>
-        <div class="player-comedian" id="player-comedian"></div>
-        <div class="player-title" id="player-title"></div>
-        <div class="player-desc" id="player-desc"></div>
+    <div class="demo-grid">
+      <div class="demo-thumb">🎤<div class="demo-thumb-label">Standup</div></div>
+      <div class="demo-thumb">🎭<div class="demo-thumb-label">Sketch</div></div>
+      <div class="demo-thumb">🇬🇧<div class="demo-thumb-label">British</div></div>
+      <div class="demo-thumb">⭐<div class="demo-thumb-label">Classic</div></div>
+      <div class="demo-no-rec" style="grid-column:1/-1">
+        🚫 No "Up Next". No recommendations sidebar. No rabbit hole.
       </div>
-      <button class="player-next" onclick="nextRandom()">Next 🎲</button>
     </div>
   </div>
 </div>
 
-<div id="add-overlay" onclick="closeAdd(event)">
-  <div class="add-panel">
-    <h2>Add a Video</h2>
-    <div class="yt-search-row">
-      <input class="add-input" id="yt-search-input" type="text" placeholder="Search YouTube…" onkeydown="if(event.key==='Enter')ytSearch()">
-      <button class="yt-search-btn" onclick="ytSearch()">🔍 YouTube ↗</button>
+<section class="features">
+  <div class="features-label">What makes it different</div>
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon">🎲</div>
+      <div class="feat-title">Random Spin</div>
+      <div class="feat-body">Hit Spin and let chance pick something great. No decision fatigue, no infinite scroll.</div>
     </div>
-    <p style="margin-top:8px">Or paste a URL / video ID directly:</p>
-    <input class="add-input" id="add-url" type="text" placeholder="youtube.com/watch?v=... or youtu.be/...">
-    <div id="add-error" class="add-error">Couldn't extract a video ID — check the URL.</div>
-    <div class="add-meta">
-      <input id="add-comedian" type="text" placeholder="Comedian / Show">
-      <select id="add-cat">
-        <option value="standup">Standup</option>
-        <option value="sketch">Sketch</option>
-        <option value="british">British</option>
-        <option value="classic">Classic</option>
-        <option value="roast">Roast</option>
-        <option value="other">Other</option>
-      </select>
+    <div class="feat">
+      <div class="feat-icon">📚</div>
+      <div class="feat-title">Curated Library</div>
+      <div class="feat-body">50+ handpicked specials from Chappelle to Monty Python. Add your own with any YouTube link.</div>
     </div>
-    <input class="add-input" id="add-title" type="text" placeholder="Title (optional — auto-filled)">
-    <div class="add-actions">
-      <button class="add-cancel" onclick="closeAdd()">Cancel</button>
-      <button class="add-save" onclick="saveAdd()">Add to Library ✓</button>
+    <div class="feat">
+      <div class="feat-icon">🔍</div>
+      <div class="feat-title">Search by Name or Category</div>
+      <div class="feat-body">Find by comedian, show, or category. Standup, Sketch, British, Classic, Roasts.</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🚫</div>
+      <div class="feat-title">Zero Algorithm</div>
+      <div class="feat-body">No watch history. No profiling. No recommendations nudging you toward outrage. Just the video you chose.</div>
     </div>
   </div>
-</div>
+</section>
 
-<div id="toast"></div>
-
-<header>
-  <a class="logo" href="/"><em>C</em>lyedo</a>
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input class="search-input" id="search" type="text" placeholder="Search comedian or title…" oninput="renderGrid()">
+<section class="why">
+  <h2>YouTube is <em>designed</em> to take over your evening</h2>
+  <p>Autoplay. "Recommended for you." Trending. The algorithm's job is to maximise watch time — not your satisfaction. It works by keeping you in a loop you didn't choose to enter.</p>
+  <p>Clyedo is a curated library with a player. <em>You pick what's next.</em> When it ends, it stops. Your evening stays yours.</p>
+  <div class="cats-demo">
+    <span class="cat-chip lit">Standup</span>
+    <span class="cat-chip lit">Sketch</span>
+    <span class="cat-chip lit">British</span>
+    <span class="cat-chip">Roasts</span>
+    <span class="cat-chip">Classic</span>
+    <span class="cat-chip lit">+ Your own</span>
   </div>
-  <div class="header-right">
-    <button class="spin-btn" onclick="spinRandom()">🎲 Random</button>
-    <button class="add-btn" onclick="openAdd()">＋ Add</button>
-  </div>
-</header>
+</section>
 
-<div class="cats" id="cats"></div>
-<div class="grid-wrap"><div class="grid" id="grid"></div></div>
+<section class="bottom-cta">
+  <h2>Pick something. Watch it. Done.</h2>
+  <p>No account. No install. Works in any browser.</p>
+  <a class="cta-primary" href="https://clyedo.architect-dna.ch">Open Clyedo →</a>
+</section>
 
 <footer>
-  <p>Clyedo by <a href="/">Architect-DNA</a> · Quality comedy, zero algorithm · <a href="/">← Back</a></p>
+  <p>Clyedo by <a href="https://architect-dna.ch">Architect-DNA</a></p>
+  <p><a href="https://architect-dna.ch">← All Projects</a></p>
 </footer>
 
-<script>
-'use strict';
-
-// ── CURATED SEED ──────────────────────────────────────────────────────────────
-const SEED = [
-  // STANDUP
-  {id:'iMd3YVOjM-Q', comedian:'Dave Chappelle', title:'Killin\' Them Softly', cat:'standup', year:2000, emoji:'🎤', desc:'Classic early Chappelle. One of the best standup specials ever recorded.'},
-  {id:'N-i9GXbptog', comedian:'Jim Gaffigan', title:'Hot Pockets — Beyond the Pale', cat:'standup', year:2006, emoji:'🎤', desc:'Gaffigan\'s signature bit. The Hot Pockets routine that made him famous.'},
-  {id:'k1BneeJTDcU', comedian:'Bo Burnham', title:'Welcome to the Internet', cat:'standup', year:2021, emoji:'🎤', desc:'From "Inside" — Burnham on the internet\'s infinite dark scroll.'},
-  {id:'ObOqq1knVxs', comedian:'Bo Burnham', title:'That Funny Feeling', cat:'standup', year:2021, emoji:'🎤', desc:'The emotional gut-punch at the heart of Inside. Quiet, devastating, unforgettable.'},
-  {id:'1Rx_p3NW7gQ', comedian:'Bo Burnham', title:'All Eyes on Me', cat:'standup', year:2021, emoji:'🎤', desc:'The climax of Inside. The moment the whole special builds toward.'},
-  {id:'5S5iZZEtTkg', comedian:'John Mulaney', title:'New in Town', cat:'standup', year:2012, emoji:'🎤', desc:'Clean, sharp storytelling. The Salt & Pepper Diner bit lives here.'},
-  {id:'uCJDLgQ6xFk', comedian:'Bill Burr', title:'Let It Go', cat:'standup', year:2010, emoji:'🎤', desc:'Burr at his most honest. Philadelphia rant included.'},
-  {id:'hgjpU5-zO8A', comedian:'Trevor Noah', title:'African American', cat:'standup', year:2013, emoji:'🎤', desc:'Trevor Noah on growing up mixed race in apartheid South Africa.'},
-  {id:'aGnMbKwP36U', comedian:'Louis CK', title:'Everything\'s Amazing & Nobody\'s Happy', cat:'standup', year:2009, emoji:'🎤', desc:'The "people on planes complaining about wifi" classic Conan bit.'},
-  {id:'jJN9mBRX3uo', comedian:'Norm Macdonald', title:'The Moth Joke', cat:'standup', year:1997, emoji:'🎤', desc:'The greatest shaggy-dog story ever told on a comedy stage. Eleven minutes of pure setup.'},
-  {id:'vrIw2i4WtA4', comedian:'Mitch Hedberg', title:'Comedy Central Presents — Full Special', cat:'standup', year:2003, emoji:'🎤', desc:'Hedberg\'s one-liners, machine-gun delivery, and surreal logic. No filler, only hits.'},
-  {id:'XY9h-0x1Oao', comedian:'Ali Wong', title:'Baby Cobra — Clip', cat:'standup', year:2016, emoji:'🎤', desc:'Ali Wong 7 months pregnant, absolutely ruthless. The special that made her famous.'},
-  {id:'29LxAwlGTpk', comedian:'Mike Birbiglia', title:'My Girlfriend\'s Boyfriend', cat:'standup', year:2013, emoji:'🎤', desc:'Birbiglia\'s best storytelling special. Slow-burn comedy that pays off perfectly.'},
-  {id:'twq-ouRpz7s', comedian:'Patton Oswalt', title:'Sky Cake', cat:'standup', year:2009, emoji:'🎤', desc:'Oswalt on why God created religion. Absurd logic, perfect delivery.'},
-  {id:'5aE29fiatQ0', comedian:'Hannah Gadsby', title:'Nanette — Trailer', cat:'standup', year:2018, emoji:'🎤', desc:'The special that redefined what standup comedy is allowed to be. Full special on Netflix.'},
-  {id:'rrPBE0nylss', comedian:'Demetri Martin', title:'These Are Jokes', cat:'standup', year:2006, emoji:'🎤', desc:'Martin\'s one-liners and wordplay. Completely original format.'},
-
-  // SKETCH
-  {id:'Dd7FixvoKBw', comedian:'Key & Peele', title:'Substitute Teacher', cat:'sketch', year:2012, emoji:'🎭', desc:'Mr. Garvey is done with this bulls***. One of the most re-watched K&P sketches.'},
-  {id:'6EOhh9TsdKU', comedian:'Key & Peele', title:'Obama Anger Translator', cat:'sketch', year:2012, emoji:'🎭', desc:'Luther, Obama\'s anger translator. The sketch that launched a thousand formats.'},
-  {id:'5LGEiIL1__s', comedian:'Key & Peele', title:'I Said Bitch', cat:'sketch', year:2013, emoji:'🎭', desc:'Two guys carefully discussing what they said to their wives. Escalates perfectly.'},
-  {id:'ToKcmnrE5oY', comedian:'Mitchell & Webb', title:'Are We the Baddies?', cat:'sketch', year:2006, emoji:'🎭', desc:'Two SS officers notice their skulls on the hats. BAFTA-winning BBC sketch.'},
-  {id:'_Vx3lWoDJXY', comedian:'Mr. Bean', title:'Library Bean', cat:'sketch', year:1990, emoji:'🎭', desc:'Rowan Atkinson\'s silent physical comedy at its absolute peak.'},
-  {id:'TaFDzTzKAT0', comedian:'Monty Python', title:'Dead Parrot', cat:'sketch', year:1969, emoji:'🎭', desc:'The definitive Python sketch. This parrot is no more. It has ceased to be.'},
-  {id:'Ch_hoYPPeGc', comedian:'SNL', title:'Celebrity Jeopardy — Sean Connery & Burt Reynolds', cat:'sketch', year:1996, emoji:'🎭', desc:'Will Ferrell as Trebek vs. the worst Jeopardy contestants ever. Defined late-90s SNL.'},
-  {id:'cVsQLlk-T0s', comedian:'SNL', title:'More Cowbell', cat:'sketch', year:2000, emoji:'🎭', desc:'Christopher Walken needs more cowbell. One of the most-quoted sketches in SNL history.'},
-  {id:'WLfAf8oHrMo', comedian:'Tim Robinson', title:'I Think You Should Leave — Hot Dog Car', cat:'sketch', year:2019, emoji:'🎭', desc:'Nobody admits who drove the hot dog car. I Think You Should Leave at its most unhinged.'},
-  {id:'zIV4poUZAQo', comedian:'Monty Python', title:'Knights Who Say Ni', cat:'sketch', year:1975, emoji:'🎭', desc:'Holy Grail — the Knights Who Say Ni. Peak Python silliness and wordplay.'},
-  {id:'psMMKgvpGfg', comedian:'Monty Python', title:'Spanish Inquisition', cat:'sketch', year:1970, emoji:'🎭', desc:'Nobody expects it. Classic Flying Circus absurdism.'},
-
-  // BRITISH
-  {id:'FPZyLTvF_Zs', comedian:'Michael McIntyre', title:'People with No Kids', cat:'british', year:2012, emoji:'🇬🇧', desc:'McIntyre on the difference between life before and after having children.'},
-  {id:'EOtBs2wxFBk', comedian:'Jimmy Carr', title:'Roasts Everyone — Countdown', cat:'british', year:2019, emoji:'🇬🇧', desc:'Jimmy Carr\'s best moments from 8 Out of 10 Cats Does Countdown. Dry, quick, devastating.'},
-  {id:'LCNdTLHZAeo', comedian:'Ricky Gervais', title:'Golden Globes 2020 Monologue', cat:'british', year:2020, emoji:'🇬🇧', desc:'The opening monologue that everyone talked about for weeks.'},
-  {id:'Fq4vF4NZ7oQ', comedian:'Lee Evans', title:'XL Tour — 47 Minutes', cat:'british', year:2005, emoji:'🇬🇧', desc:'Physical comedy legend Lee Evans. You will sweat just watching him.'},
-  {id:'Pw_kiIR8-z8', comedian:'Peter Kay', title:'Garlic Bread — Live at the Top of the Tower', cat:'british', year:2003, emoji:'🇬🇧', desc:'Peter Kay on things from the 70s and 80s. The garlic bread routine that defined him.'},
-  {id:'uDYba0m6ztE', comedian:'Dara O\'Briain', title:'Science Doesn\'t Know Everything', cat:'british', year:2008, emoji:'🇬🇧', desc:'O\'Briain dismantles alternative medicine. The most satisfying rant in British comedy.'},
-  {id:'05QyerezBu0', comedian:'Sean Lock', title:'1 Hour of Best Moments', cat:'british', year:2011, emoji:'🇬🇧', desc:'Sean Lock\'s finest moments compiled. One of the great British comedians.'},
-  {id:'68wJIQbCtlI', comedian:'Bill Bailey', title:'Doctor Who Theme — Belgian Jazz', cat:'british', year:2004, emoji:'🇬🇧', desc:'Bailey performs the Doctor Who theme in the style of Belgian jazz. Absurd musicianship.'},
-
-  // CLASSIC
-  {id:'zvGA7DNmxmw', comedian:'Eddie Murphy', title:'RAW — Richard Pryor Impression', cat:'classic', year:1987, emoji:'⭐', desc:'Eddie Murphy\'s RAW. At 26 years old, already untouchable.'},
-  {id:'MvgN5gCuLac', comedian:'George Carlin', title:'Stuff — Comic Relief 1986', cat:'classic', year:1986, emoji:'⭐', desc:'Carlin on the meaning of "stuff". Observational comedy as philosophy.'},
-  {id:'tBrzFSWGcbc', comedian:'Robin Williams', title:'Live on Broadway — Full Special', cat:'classic', year:2002, emoji:'⭐', desc:'Robin Williams at full speed. Rapid-fire, genre-leaping, impossible to follow.'},
-  {id:'4sjn4i7DQJw', comedian:'Richard Pryor', title:'Live on the Sunset Strip', cat:'classic', year:1982, emoji:'⭐', desc:'Pryor on fire — literally and figuratively. His most personal and devastating hour.'},
-  {id:'FYbavuReVF4', comedian:'Steve Martin', title:'King Tut — SNL 1978', cat:'classic', year:1978, emoji:'⭐', desc:'Steve Martin\'s King Tut comedy song. Pure absurdist 70s comedy at the peak of his fame.'},
-  {id:'TIf3IfHCoiE', comedian:'Victor Borge', title:'Phonetic Punctuation', cat:'classic', year:1960, emoji:'⭐', desc:'Borge reads a text aloud and vocalises every punctuation mark. Timeless absurdity.'},
-  {id:'LGvnHvba_b0', comedian:'Rodney Dangerfield', title:'Tonight Show 1983 — Best on Carson', cat:'classic', year:1983, emoji:'⭐', desc:'Pure Dangerfield — no respect, no setup longer than two seconds, just punchlines.'},
-
-  // ROAST
-  {id:'Z7oG74nHSTQ', comedian:'Hasan Minhaj', title:'White House Correspondents\' Dinner 2017', cat:'roast', year:2017, emoji:'🔥', desc:'WHCD roast that held power accountable. Watch twice.'},
-  {id:'nLH_8TRb58Q', comedian:'Nikki Glaser', title:'The Roast of Tom Brady', cat:'roast', year:2024, emoji:'🔥', desc:'Nikki Glaser absolutely demolished at the Netflix Tom Brady Roast.'},
-  {id:'wvtvtROpXW4', comedian:'Jeff Ross', title:'Funniest Roasts — Best of Career', cat:'roast', year:2018, emoji:'🔥', desc:'The Roastmaster General in his element. Clinical, relentless, brilliant.'},
-  {id:'0_TrrWWkMXU', comedian:'Greg Giraldo', title:'Best of Comedy Central Roasts', cat:'roast', year:2009, emoji:'🔥', desc:'Giraldo was the best roaster who ever lived. These clips prove it.'},
-];
-
-const CATS = [
-  {id:'all',    label:'All'},
-  {id:'standup',label:'Standup'},
-  {id:'sketch', label:'Sketches'},
-  {id:'british',label:'British'},
-  {id:'classic',label:'Classic'},
-  {id:'roast',  label:'Roasts'},
-];
-
-// ── STATE ──────────────────────────────────────────────────────────────────────
-let currentCat = 'all';
-let currentVideo = null;
-let playerIdx = -1;
-
-const SEED_VERSION = 4; // bump each time SEED grows
-
-function getLibrary(){
-  try{ return JSON.parse(localStorage.getItem('clyedo_lib') || 'null') || SEED; }
-  catch{ return SEED; }
-}
-function saveLibrary(lib){ localStorage.setItem('clyedo_lib', JSON.stringify(lib)); }
-
-// On version bump: full reset to new SEED (fixes broken IDs), keep user-added entries
-(function syncSeed(){
-  const storedVer = parseInt(localStorage.getItem('clyedo_seed_ver') || '0', 10);
-  if(storedVer >= SEED_VERSION) return;
-  const oldLib = getLibrary();
-  const newIds = new Set(SEED.map(v => v.id));
-  // Preserve entries the user manually added (not in any seed)
-  // We detect them by checking against ALL known old seed IDs
-  const oldSeedIds = new Set([
-    'TNlAVn5DLzw','CEpGjJ26_2Y','k1BneeJTDcU','JDs-A-HiRKg','CJn0DsM0M6E','a7JTPN2WBpc','KVSHEiIBfUA',
-    'IRGP_1B51xE','zg-zInPuKOQ','Qy0GkZHs5C0','iEQiB2GEmkk','K5E7b4oAOxc','GGSJDlqJRNE','--vNpTUqoXQ',
-    'e7IcFqzBFHs','nEOsGCDAMbQ','3HLwHMELPX4','Dd6dF0_RMvI','NPI9JBlIYKA','hSJkKNXByYI','8r1CZTLk-Gk',
-    'IWJPKKKX90k','O-hFMO4Ciro','VfNAoOlBuok','hn1VgkAlPyU','Qst9UVDdVQg','A7XinN7VzEk','Z8v7mSHXKwA',
-    'r0YVrWzQmps','WV9Qc_2XpS4','PAz7BjZMCgU','qLJlHYgNdJQ','dTF8A5QT_9w','b83h2I0nMjc','HfCj3hFJkig',
-    'EqMkFIy2ASY','7DqVXpFkBrs','xSJ5-Xww-nU','y8Kyi0WNg40','A7J9-ScMC3M','4YxoLaFSz_E','_jUgEGggPNo',
-    '_e7Mc_ov-zg','5HbYScltf1c','e80HWa-RCNA','P9TalWVrb6E','aAo0e-JHxLc',
-    // v2 additions
-    'iMd3YVOjM-Q','N-i9GXbptog','ObOqq1knVxs','1Rx_p3NW7gQ','5S5iZZEtTkg','uCJDLgQ6xFk','hgjpU5-zO8A',
-    'aGnMbKwP36U','jJN9mBRX3uo','vrIw2i4WtA4','XY9h-0x1Oao','29LxAwlGTpk','twq-ouRpz7s','5aE29fiatQ0',
-    'rrPBE0nylss','Dd7FixvoKBw','6EOhh9TsdKU','5LGEiIL1__s','ToKcmnrE5oY','_Vx3lWoDJXY','TaFDzTzKAT0',
-    'Ch_hoYPPeGc','cVsQLlk-T0s','WLfAf8oHrMo','zIV4poUZAQo','psMMKgvpGfg','FPZyLTvF_Zs','EOtBs2wxFBk',
-    'LCNdTLHZAeo','Fq4vF4NZ7oQ','Pw_kiIR8-z8','uDYba0m6ztE','05QyerezBu0','68wJIQbCtlI','zvGA7DNmxmw',
-    'MvgN5gCuLac','tBrzFSWGcbc','4sjn4i7DQJw','FYbavuReVF4','TIf3IfHCoiE','LGvnHvba_b0','Z7oG74nHSTQ',
-    'nLH_8TRb58Q','wvtvtROpXW4','0_TrrWWkMXU',
-  ]);
-  const userAdded = oldLib.filter(v => !oldSeedIds.has(v.id) && !newIds.has(v.id));
-  saveLibrary([...SEED, ...userAdded]);
-  localStorage.setItem('clyedo_seed_ver', String(SEED_VERSION));
-})();
-
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function buildCats(){
-  const el = document.getElementById('cats');
-  el.innerHTML = CATS.map(c=>
-    `<button class="cat-btn${c.id===currentCat?' active':''}" onclick="setCat('${c.id}')">${c.label}</button>`
-  ).join('');
-}
-
-function getVisible(){
-  const lib = getLibrary();
-  const q = document.getElementById('search').value.trim().toLowerCase();
-  return lib.filter(v => {
-    const matchCat = currentCat === 'all' || v.cat === currentCat;
-    const matchQ = !q || v.title.toLowerCase().includes(q) || v.comedian.toLowerCase().includes(q);
-    return matchCat && matchQ;
-  });
-}
-
-function renderGrid(){
-  const grid = document.getElementById('grid');
-  const visible = getVisible();
-  if(!visible.length){
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div style="font-size:48px">🎭</div>
-      <p>Nothing found. Try a different search or <button onclick="openAdd()" style="background:none;border:none;color:var(--accent);font-size:inherit;cursor:pointer;font-weight:700">add a video</button>.</p>
-    </div>`;
-    return;
-  }
-  grid.innerHTML = visible.map((v,i) => `
-    <div class="card" onclick="openPlayer(${i})" data-id="${v.id}">
-      <div style="position:relative">
-        <img class="thumb" src="https://img.youtube.com/vi/${v.id}/hqdefault.jpg"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-          alt="${v.title}" loading="lazy">
-        <div class="thumb-placeholder" style="display:none">${v.emoji||'🎤'}</div>
-        <div class="card-play">▶</div>
-      </div>
-      <div class="card-body">
-        <div class="card-comedian">${v.comedian}</div>
-        <div class="card-title">${v.title}</div>
-        <div class="card-meta">
-          <span class="card-cat">${v.cat}</span>
-          <span class="card-year">${v.year||''}</span>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function setCat(id){ currentCat = id; buildCats(); renderGrid(); }
-
-// ── PLAYER ────────────────────────────────────────────────────────────────────
-function openPlayer(idx){
-  const visible = getVisible();
-  if(idx < 0 || idx >= visible.length) return;
-  const v = visible[idx];
-  playerIdx = idx;
-  currentVideo = v;
-  document.getElementById('player-iframe').src =
-    `https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-  document.getElementById('player-comedian').textContent = v.comedian;
-  document.getElementById('player-title').textContent = v.title;
-  document.getElementById('player-desc').textContent = v.desc || '';
-  document.getElementById('player-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-
-function closePlayerBtn(){
-  document.getElementById('player-overlay').classList.remove('open');
-  document.getElementById('player-iframe').src='';
-  document.body.style.overflow='';
-}
-function closePlayer(e){ if(e.target===document.getElementById('player-overlay')) closePlayerBtn(); }
-
-function nextRandom(){
-  const visible = getVisible();
-  if(!visible.length) return;
-  let next = playerIdx;
-  while(next === playerIdx && visible.length > 1) next = Math.floor(Math.random()*visible.length);
-  openPlayer(next);
-}
-
-// ── SPIN ──────────────────────────────────────────────────────────────────────
-function spinRandom(){
-  const visible = getVisible();
-  if(!visible.length){ toast('No videos to spin!'); return; }
-  openPlayer(Math.floor(Math.random()*visible.length));
-}
-
-// ── ADD PANEL ────────────────────────────────────────────────────────────────
-function ytSearch(){
-  const q = document.getElementById('yt-search-input').value.trim();
-  if(!q) return;
-  window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q), '_blank', 'noopener');
-}
-function openAdd(){
-  document.getElementById('add-overlay').classList.add('open');
-  document.getElementById('yt-search-input').value='';
-  document.getElementById('add-url').focus();
-  document.body.style.overflow='hidden';
-}
-function closeAdd(e){
-  if(e && e.target !== document.getElementById('add-overlay')) return;
-  document.getElementById('add-overlay').classList.remove('open');
-  document.body.style.overflow='';
-  document.getElementById('add-url').value='';
-  document.getElementById('add-comedian').value='';
-  document.getElementById('add-title').value='';
-  document.getElementById('add-error').style.display='none';
-}
-
-function extractVideoId(url){
-  const patterns = [
-    /(?:v=|youtu\.be\/|embed\/|v\/|shorts\/)([A-Za-z0-9_-]{11})/,
-    /^([A-Za-z0-9_-]{11})$/,
-  ];
-  for(const p of patterns){
-    const m = url.trim().match(p);
-    if(m) return m[1];
-  }
-  return null;
-}
-
-function saveAdd(){
-  const url = document.getElementById('add-url').value.trim();
-  const id = extractVideoId(url);
-  if(!id){
-    document.getElementById('add-error').style.display='block';
-    return;
-  }
-  document.getElementById('add-error').style.display='none';
-  const comedian = document.getElementById('add-comedian').value.trim() || 'Unknown';
-  const title = document.getElementById('add-title').value.trim() || 'Untitled';
-  const cat = document.getElementById('add-cat').value;
-  const lib = getLibrary();
-  if(lib.some(v=>v.id===id)){ toast('Already in your library!'); closeAdd({}); return; }
-  lib.unshift({id, comedian, title, cat, year: new Date().getFullYear(), emoji:'🎤'});
-  saveLibrary(lib);
-  renderGrid();
-  toast('Added to library ✓');
-  closeAdd({});
-}
-
-// ── TOAST ──────────────────────────────────────────────────────────────────────
-function toast(msg){
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(()=>el.classList.remove('show'), 2400);
-}
-
-// ── KEYBOARD ──────────────────────────────────────────────────────────────────
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){
-    if(document.getElementById('player-overlay').classList.contains('open')) closePlayerBtn();
-    if(document.getElementById('add-overlay').classList.contains('open')) document.getElementById('add-overlay').classList.remove('open');
-  }
-  if(document.getElementById('player-overlay').classList.contains('open')){
-    if(e.key==='ArrowRight'||e.key==='n') nextRandom();
-  }
-});
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-buildCats();
-renderGrid();
-</script>
 </body>
 </html>
