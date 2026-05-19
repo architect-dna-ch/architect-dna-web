@@ -1324,5 +1324,133 @@ document.body.style.opacity='0';
 requestAnimationFrame(()=>requestAnimationFrame(()=>{document.body.style.opacity='';}));
 </script>
 
+<!-- ── CLAUDE EASTER EGG ── -->
+<style>
+#claude-egg{
+  position:fixed;bottom:24px;right:24px;z-index:8000;
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;user-select:none;
+  transition:transform .15s;
+}
+#claude-egg:hover{transform:scale(1.1)}
+#claude-egg:active{transform:scale(.95)}
+
+.ce-bubble{
+  position:absolute;bottom:calc(100% + 8px);right:0;
+  background:#1a1a1a;color:#fff;
+  font-size:12px;font-weight:600;line-height:1.4;
+  padding:9px 13px;border-radius:10px 10px 4px 10px;
+  white-space:nowrap;max-width:220px;white-space:normal;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  opacity:0;transform:translateY(6px) scale(.9);
+  transition:opacity .2s,transform .2s;
+  pointer-events:none;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.ce-bubble::after{
+  content:'';position:absolute;bottom:-6px;right:12px;
+  border:6px solid transparent;border-top-color:#1a1a1a;border-bottom:0;
+  border-left:0;
+}
+.ce-bubble.show{opacity:1;transform:translateY(0) scale(1)}
+
+.ce-sprite{
+  font-family:'SF Mono','Fira Code','Courier New',monospace;
+  font-size:13px;line-height:1.1;
+  color:#fff;
+  text-align:center;
+  background:#1a1a1a;
+  border-radius:8px;
+  padding:6px 8px;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  animation:ceIdle 1.4s ease-in-out infinite;
+  position:relative;
+}
+body.vc-mode .ce-sprite{background:#ff6b00;color:#000}
+
+.ce-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#ff6b00;
+  position:absolute;top:-3px;left:50%;transform:translateX(-50%);
+  animation:ceDot 1.4s ease-in-out infinite;
+}
+body.vc-mode .ce-dot{background:#fff}
+
+.ce-label{
+  font-size:9px;font-weight:700;letter-spacing:.1em;
+  color:rgba(255,255,255,.35);margin-top:4px;
+  font-family:-apple-system,sans-serif;text-transform:uppercase;
+}
+body.vc-mode .ce-label{color:rgba(0,0,0,.35)}
+
+@keyframes ceIdle{
+  0%,100%{transform:translateY(0)}
+  30%{transform:translateY(-10px) rotate(-3deg)}
+  50%{transform:translateY(-14px) rotate(2deg)}
+  70%{transform:translateY(-6px) rotate(-1deg)}
+}
+@keyframes ceDot{
+  0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}
+  40%{opacity:1;transform:translateX(-50%) scale(1.4)}
+}
+</style>
+
+<div id="claude-egg">
+  <div class="ce-bubble" id="ce-bubble"></div>
+  <div class="ce-sprite">
+    ▗▗<br>██<br>▝▝
+    <div class="ce-dot"></div>
+  </div>
+  <div class="ce-label">Claude</div>
+</div>
+
+<script>
+(function(){
+  const msgs=[
+    "Built with Claude Code ✦",
+    "100% tokens, 0% caffeine ☕",
+    "Wrote this whole site in one session 😏",
+    "claude-sonnet-4-6 at your service",
+    "architect·dna × Claude",
+    "No WebGL was harmed in the making",
+    "↑↑↓↓←→←→ BA ✓",
+    "Privacy-first. Even the AI agrees.",
+    "Swiss precision, AI execution.",
+    "I also play Nexus Breach sometimes 🔫",
+  ];
+  let idx=0,timer=null;
+  const egg=document.getElementById('claude-egg');
+  const bubble=document.getElementById('ce-bubble');
+
+  function showMsg(){
+    bubble.textContent=msgs[idx%msgs.length];
+    bubble.classList.add('show');
+    clearTimeout(timer);
+    timer=setTimeout(()=>bubble.classList.remove('show'),3200);
+    idx++;
+  }
+
+  egg.addEventListener('click',showMsg);
+
+  // auto-greet after 8s if user hasn't clicked
+  setTimeout(()=>{
+    if(idx===0) showMsg();
+  },8000);
+
+  // konami code fires a special message
+  let seq=[];
+  const konami=[38,38,40,40,37,39,37,39,66,65];
+  document.addEventListener('keydown',e=>{
+    seq.push(e.keyCode);seq=seq.slice(-10);
+    if(seq.join(',')==='38,38,40,40,37,39,37,39,66,65'){
+      bubble.textContent='✓ Konami unlocked. Still no cheat codes. 🤫';
+      bubble.classList.add('show');
+      clearTimeout(timer);
+      timer=setTimeout(()=>bubble.classList.remove('show'),4000);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
