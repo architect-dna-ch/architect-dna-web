@@ -132,6 +132,47 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdr
 .privacy-box ul li{margin-bottom:4px}
 .privacy-box .policy-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:24px}
 
+/* ── SERVICES ── */
+#services{border-top:1px solid var(--border);max-width:1100px;margin:0 auto;padding:64px 32px}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:40px}
+.svc-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px 24px;transition:.2s}
+.svc-card:hover{border-color:var(--border2);box-shadow:0 6px 28px rgba(0,0,0,.07);transform:translateY(-2px)}
+.svc-icon{font-size:28px;margin-bottom:16px}
+.svc-name{font-size:15px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px}
+.svc-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── CONTACT ── */
+#contact{border-top:1px solid var(--border);max-width:1100px;margin:0 auto;padding:64px 32px}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.contact-left h2{font-size:clamp(22px,3.5vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1.15;margin-bottom:16px}
+.contact-left p{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:24px}
+.contact-meta{display:flex;flex-direction:column;gap:10px}
+.contact-meta-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)}
+.contact-meta-row span{font-size:18px}
+.contact-form{display:flex;flex-direction:column;gap:12px}
+.cf-input{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;width:100%}
+.cf-input:focus{border-color:var(--border2)}
+.cf-input::placeholder{color:var(--text3)}
+.cf-textarea{resize:vertical;min-height:110px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cf-submit{background:var(--text);color:var(--bg);border:none;border-radius:10px;padding:13px 24px;font-size:14px;font-weight:800;cursor:pointer;transition:background .15s;font-family:var(--font);letter-spacing:-.01em}
+.cf-submit:hover{background:#2a2820}
+.cf-success{display:none;padding:14px 18px;background:rgba(26,122,60,.07);border:1px solid rgba(26,122,60,.2);border-radius:10px;font-size:13px;color:#1a7a3c;font-weight:600}
+
+body.vc-mode #services,body.vc-mode #contact,body.vc-mode .expand-wrap,body.vc-mode #extra-grid{display:none!important}
+body.vc-mode .svc-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+body.vc-mode .svc-card:hover{box-shadow:0 6px 28px rgba(0,0,0,.4)}
+body.vc-mode .cf-input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:var(--text)}
+body.vc-mode .cf-input:focus{border-color:rgba(255,255,255,.22)}
+body.vc-mode .cf-submit{background:#ff6b00;color:#000}
+body.vc-mode .cf-submit:hover{background:#ff8c33}
+
+@media(max-width:700px){
+  #services,#contact{padding:48px 20px}
+  .contact-inner{grid-template-columns:1fr}
+  .cf-row{grid-template-columns:1fr}
+}
+
 /* ── FOOTER ── */
 footer{border-top:1px solid var(--border);padding:28px 32px}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -145,7 +186,12 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
   .header-nav{display:none}
   .about-inner{grid-template-columns:1fr}
   .stack-icons{grid-template-columns:1fr 1fr}
-  .projects-head{padding:0 20px}
+  .projects-head{padding:0 20px;flex-wrap:wrap;gap:4px}
+  .projects-head p{display:none}
+  .scroll-track{padding:0 20px!important}
+  #services,#contact{padding:48px 20px}
+  .contact-inner{grid-template-columns:1fr}
+  .cf-row{grid-template-columns:1fr}
   #about,#privacy{padding:48px 20px}
   .scroll-track{padding:0 calc(50vw - 150px)}
   .proj-card{width:280px}
@@ -199,21 +245,115 @@ body.vc-mode #email-toast{background:#0c0f1a;border:1px solid rgba(255,255,255,.
 .vc-void{color:#ff6b00}
 .vc-cell{color:#00e87a}
 
+/* ── SPLIT INTRO ── */
+#split-intro{
+  position:fixed;inset:0;z-index:9000;
+  display:flex;flex-direction:row;overflow:hidden;
+  transition:opacity .45s ease, transform .45s ease;
+}
+#split-intro.dismissed{opacity:0;pointer-events:none}
+.split-half{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;cursor:pointer;transition:flex .4s cubic-bezier(.4,0,.2,1);
+  padding:40px;text-align:center;position:relative;overflow:hidden;
+}
+.split-half:hover{flex:1.45}
+.split-divider{
+  width:1.5px;background:rgba(255,255,255,.18);flex-shrink:0;
+  position:relative;z-index:1;transition:background .3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.split-divider::after{
+  content:'↔';position:absolute;
+  background:#1A1A1A;color:rgba(255,255,255,.5);
+  font-size:12px;font-weight:800;border-radius:50%;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.18);
+  animation:splitPulse 2s ease-in-out infinite;
+}
+@keyframes splitPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.18);opacity:1}}
+
+.split-left{background:var(--bg);border-right:1px solid rgba(0,0,0,.08)}
+.split-right{background:#060810}
+
+.split-eyebrow{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.5}
+.split-left .split-eyebrow{color:#1A1A1A}
+.split-right .split-eyebrow{color:#ff6b00}
+
+.split-title{font-size:clamp(32px,6vw,64px);font-weight:900;letter-spacing:-.05em;line-height:.95}
+.split-left .split-title{color:#1A1A1A}
+.split-right .split-title{color:#f0f0f8}
+.split-right .split-title em{font-style:normal;color:#ff6b00}
+.split-right .split-title span{color:#00e87a}
+
+.split-sub{font-size:14px;line-height:1.55;max-width:260px;opacity:.6}
+.split-left .split-sub{color:#1A1A1A}
+.split-right .split-sub{color:#f0f0f8}
+
+.split-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 22px;border-radius:10px;
+  font-size:13px;font-weight:800;letter-spacing:-.01em;
+  transition:filter .15s, transform .15s;margin-top:4px;
+}
+.split-cta:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.split-left .split-cta{background:#1A1A1A;color:#FAFAF8}
+.split-right .split-cta{background:#ff6b00;color:#000}
+
+/* expanding animation when a half is chosen */
+#split-intro.pick-left .split-left{flex:100}
+#split-intro.pick-left .split-right{flex:0;opacity:0}
+#split-intro.pick-left .split-divider{opacity:0}
+#split-intro.pick-right .split-right{flex:100}
+#split-intro.pick-right .split-left{flex:0;opacity:0}
+#split-intro.pick-right .split-divider{opacity:0}
+
+@media(max-width:600px){
+  #split-intro{flex-direction:column;height:100dvh}
+  .split-half{
+    flex:0 0 calc(50dvh - 1px)!important;
+    height:calc(50dvh - 1px);
+    overflow:hidden;padding:20px;width:100%;gap:8px;
+    justify-content:center;
+  }
+  .split-half:hover,.split-half:focus{flex:0 0 calc(50dvh - 1px)!important}
+  .split-half:active{filter:brightness(.9)}
+  .split-eyebrow{font-size:9px;margin-bottom:0}
+  .split-title{font-size:clamp(28px,9vw,44px)!important;line-height:.9}
+  .split-sub{display:none}
+  .split-cta{padding:8px 16px;font-size:12px;margin-top:0}
+  .split-divider{width:100%;height:1.5px;min-height:1.5px;flex-shrink:0}
+  .split-divider::after{content:'↕'}
+  #split-intro.pick-left .split-left{flex:0 0 100dvh!important;height:100dvh}
+  #split-intro.pick-left .split-right{flex:0 0 0!important;height:0;opacity:0}
+  #split-intro.pick-left .split-divider{opacity:0}
+  #split-intro.pick-right .split-right{flex:0 0 100dvh!important;height:100dvh}
+  #split-intro.pick-right .split-left{flex:0 0 0!important;height:0;opacity:0}
+  #split-intro.pick-right .split-divider{opacity:0}
+}
+
 /* ── RIPPLE OVERLAY ── */
 #ripple-overlay{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0;will-change:clip-path,opacity}
 
-/* ── VC TOGGLE BUTTON ── */
+/* ── VC TOGGLE SWITCH ── */
 #vc-toggle{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 14px;border-radius:20px;
-  font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-  border:1.5px solid rgba(0,0,0,.18);background:transparent;
-  color:var(--text2);cursor:pointer;transition:border-color .18s,color .18s,background .18s;
-  font-family:var(--mono);white-space:nowrap;margin-left:8px;
+  display:flex;align-items:center;
+  border-radius:20px;border:1.5px solid var(--border2);
+  background:var(--bg2);cursor:pointer;
+  font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  overflow:hidden;margin-left:8px;padding:0;transition:border-color .3s;
+  flex-shrink:0;
 }
-#vc-toggle:hover{border-color:var(--text);color:var(--text);background:var(--bg2)}
-body.vc-mode #vc-toggle{border-color:rgba(0,232,122,.4);color:#00e87a;background:rgba(0,232,122,.07)}
-body.vc-mode #vc-toggle:hover{border-color:#00e87a;background:rgba(0,232,122,.14)}
+.vct-half{
+  padding:6px 12px;transition:background .28s,color .28s;white-space:nowrap;line-height:1;
+  display:flex;align-items:center;gap:5px;
+}
+.vct-adna{background:var(--text);color:var(--bg)}
+.vct-vc{color:var(--text3)}
+.vct-adna:hover,.vct-vc:hover{filter:brightness(.92)}
+body.vc-mode #vc-toggle{border-color:rgba(255,107,0,.35)}
+body.vc-mode .vct-adna{background:transparent;color:var(--text3)}
+body.vc-mode .vct-vc{background:#ff6b00;color:#000}
 
 /* VC studio badge (appears next to logo in vc-mode) */
 .vc-badge{
@@ -328,14 +468,32 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
       <a href="#projects">Work</a>
       <a href="/games">Games</a>
       <a href="#about">About</a>
+      <a href="#services">Services</a>
       <a href="#" onclick="copyEmail(event)" class="nav-cta">Contact →</a>
     </nav>
-    <button id="vc-toggle" onclick="switchTheme(event)" title="Switch identity">
-      <span id="vc-toggle-icon">🕹</span>
-      <span id="vc-toggle-label">VOID CELL</span>
+    <button id="vc-toggle" onclick="switchTheme(event)" title="Switch identity" aria-label="Switch between Architect-DNA and VOID CELL">
+      <span class="vct-half vct-adna">🏛 ARCHITECT·DNA</span>
+      <span class="vct-half vct-vc">🕹 VOID·CELL</span>
     </button>
   </div>
 </header>
+
+<!-- ── SPLIT INTRO ── -->
+<div id="split-intro">
+  <div class="split-half split-left" onclick="chooseSide('adna')">
+    <div class="split-eyebrow">Software Studio · Switzerland</div>
+    <div class="split-title">Architect<br>DNA</div>
+    <div class="split-sub">Privacy-first apps for web, iOS & Android. No tracking, no lock-in.</div>
+    <div class="split-cta">Enter Studio →</div>
+  </div>
+  <div class="split-divider"></div>
+  <div class="split-half split-right" onclick="chooseSide('vc')">
+    <div class="split-eyebrow">Game Studio · 5 Titles</div>
+    <div class="split-title"><em>VOID</em><br><span>CELL</span></div>
+    <div class="split-sub">Five browser games. Pure canvas. No install. Play right now.</div>
+    <div class="split-cta">Enter Games →</div>
+  </div>
+</div>
 
 <main>
 
@@ -372,7 +530,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   <div class="scroll-outer" id="scroll-outer">
     <div class="scroll-track" id="scroll-track">
 
-      <a class="proj-card" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
+      <a class="proj-card" data-mode="adna" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
         <div class="proj-card-icon">🎧</div>
         <div class="proj-card-tag">Focus · Ambient · iOS · Web</div>
         <div class="proj-card-name">VOID FREQ</div>
@@ -384,7 +542,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/games" target="_blank" style="--card-accent:#0ea5e9">
+      <a class="proj-card" data-mode="vc" href="/games" target="_blank" style="--card-accent:#0ea5e9">
         <div class="proj-card-icon">🕹</div>
         <div class="proj-card-tag">Game Studio · 5 Titles · Browser</div>
         <div class="proj-card-name">VOID CELL</div>
@@ -396,7 +554,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/bloom" target="_blank" style="--card-accent:#10b981">
+      <a class="proj-card" data-mode="vc" href="/bloom" target="_blank" style="--card-accent:#10b981">
         <div class="proj-card-icon">🌸</div>
         <div class="proj-card-tag">Garden Game · Social · iOS Soon</div>
         <div class="proj-card-name">BLOOM</div>
@@ -408,7 +566,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/konnekt" target="_blank" style="--card-accent:#f59e0b">
+      <a class="proj-card" data-mode="adna" href="/konnekt" target="_blank" style="--card-accent:#f59e0b">
         <div class="proj-card-icon">🔗</div>
         <div class="proj-card-tag">Networking · NFC · QR</div>
         <div class="proj-card-name">Konnekt</div>
@@ -420,7 +578,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/noise" target="_blank" style="--card-accent:#7c6cfa">
+      <a class="proj-card" data-mode="adna" href="/noise" target="_blank" style="--card-accent:#7c6cfa">
         <div class="proj-card-icon">🎛</div>
         <div class="proj-card-tag">Focus · Ambient · Pomodoro · Web</div>
         <div class="proj-card-name">Noise</div>
@@ -432,7 +590,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/clyedo" target="_blank" style="--card-accent:#f5a623">
+      <a class="proj-card" data-mode="adna" href="/clyedo" target="_blank" style="--card-accent:#f5a623">
         <div class="proj-card-icon">😂</div>
         <div class="proj-card-tag">Comedy · Curated · No Algorithm</div>
         <div class="proj-card-name">Clyedo</div>
@@ -444,7 +602,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/rida" target="_blank" style="--card-accent:#22c55e">
+      <a class="proj-card" data-mode="adna" href="/rida" target="_blank" style="--card-accent:#22c55e">
         <div class="proj-card-icon">🕌</div>
         <div class="proj-card-tag">Muslim Lifestyle · PWA · Offline</div>
         <div class="proj-card-name">Rida <span style="font-weight:400;font-size:16px;color:var(--text3)">رِضا</span></div>
@@ -456,7 +614,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" href="/calm" target="_blank" style="--card-accent:#6366f1">
+      <a class="proj-card" data-mode="adna" href="/calm" target="_blank" style="--card-accent:#6366f1">
         <div class="proj-card-icon">🧠</div>
         <div class="proj-card-tag">Biology · Regulation · Mental Health</div>
         <div class="proj-card-name">Calm</div>
@@ -488,7 +646,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   </div>
 
   <div class="extra-grid" id="extra-grid">
-    <a class="mini-card" href="/fly" target="_blank" style="border-color:rgba(30,100,255,.25)">
+    <a class="mini-card" data-mode="vc" href="/fly" target="_blank" style="border-color:rgba(30,100,255,.25)">
       <div class="mini-name">City from Above 🌆</div>
       <div class="mini-desc">Real-data 3D bird flight over NYC & Sydney. 44+ landmark buildings, bloom rendering, live HUD.</div>
       <div class="mini-foot"><span>architect-dna.ch/fly</span><span class="proj-card-status s-new">New</span></div>
@@ -545,6 +703,62 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   </div>
 </section>
 
+<!-- ── SERVICES ── -->
+<section id="services">
+  <div class="section-label">Services</div>
+  <div class="about-text" style="max-width:560px;margin-bottom:8px">We take on a small number of projects each year.</div>
+  <p class="about-sub" style="max-width:560px">Privacy-first software built fast and clean. No bloat, no tracking, no lock-in. Swiss quality, async-friendly for global teams.</p>
+  <div class="services-grid">
+    <div class="svc-card">
+      <div class="svc-icon">🌐</div>
+      <div class="svc-name">Web Applications</div>
+      <div class="svc-desc">Custom tools, dashboards, and microsites. Vanilla or framework — whatever ships fastest. Sub-200ms load, offline-capable.</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">📱</div>
+      <div class="svc-name">iOS & Android Apps</div>
+      <div class="svc-desc">One codebase to both stores. Native feel, biometric auth, offline-first. We handle App Store Connect to Play Console.</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">🤖</div>
+      <div class="svc-name">AI Integration</div>
+      <div class="svc-desc">Embed Claude or other LLMs into your existing product. Context-aware, cost-controlled, privacy-respecting by design.</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-icon">🔐</div>
+      <div class="svc-name">Privacy-First Architecture</div>
+      <div class="svc-desc">GDPR & DSG-compliant from day one. Passkeys, on-device processing, zero-analytics builds for regulated industries.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="section-label">Start a Project</div>
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h2>Let's build something worth using.</h2>
+      <p>Reach out with a brief description of your project. We respond within 48 hours and can scope a fixed-fee estimate in one call.</p>
+      <div class="contact-meta">
+        <div class="contact-meta-row"><span>📍</span> Bern, Switzerland — remote worldwide</div>
+        <div class="contact-meta-row"><span>⏱</span> Typical engagement: 2–8 weeks</div>
+        <div class="contact-meta-row"><span>🔒</span> NDA available on request</div>
+        <div class="contact-meta-row"><span>✉️</span> <a href="#" onclick="copyEmail(event)" style="color:var(--text2);text-decoration:none">systems@architect-dna.ch</a></div>
+      </div>
+    </div>
+    <form class="contact-form" id="contact-form" onsubmit="submitContact(event)">
+      <div class="cf-row">
+        <input class="cf-input" type="text" name="name" placeholder="Your name" required>
+        <input class="cf-input" type="email" name="email" placeholder="Work email" required>
+      </div>
+      <input class="cf-input" type="text" name="company" placeholder="Company (optional)">
+      <textarea class="cf-input cf-textarea" name="message" placeholder="Briefly describe your project — what it does, tech stack if any, timeline." required></textarea>
+      <button class="cf-submit" type="submit">Send Message →</button>
+      <div class="cf-success" id="cf-success">✓ Message sent — we'll be in touch within 48 hours.</div>
+    </form>
+  </div>
+</section>
+
 <!-- ── PRIVACY ── -->
 <section id="privacy">
   <div class="section-label">Legal</div>
@@ -595,9 +809,10 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   <div class="footer-inner">
     <span class="footer-copy">© 2026 Architect-DNA Systems · Bern, Switzerland</span>
     <div class="footer-links">
-      <a href="#privacy">Privacy</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
       <a href="/games">Games</a>
-      <a href="#" onclick="copyEmail(event)">Contact</a>
+      <a href="#privacy">Privacy</a>
     </div>
   </div>
 </footer>
@@ -606,12 +821,12 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 // ── Horizontal scroll — mouse-follow + drag + touch ───────────────────────────
 const track = document.getElementById('scroll-track');
 const outer = document.getElementById('scroll-outer');
-const cards = document.querySelectorAll('.proj-card');
-const dots  = document.querySelectorAll('.dot');
+let cards = [...document.querySelectorAll('.proj-card')];
 let current = 0, targetX = 0, currentX = 0, hovering = false;
 
 function cardCenter(i){
   const c = cards[i];
+  if(!c) return 0;
   return c.offsetLeft + c.offsetWidth / 2 - window.innerWidth / 2;
 }
 
@@ -622,7 +837,7 @@ function goTo(i){
 }
 
 function syncActive(){
-  dots.forEach((d,i) => d.classList.toggle('active', i === current));
+  document.querySelectorAll('#scroll-dots .dot').forEach((d,i) => d.classList.toggle('active', i === current));
   cards.forEach((c,i) => c.classList.toggle('active', i === current));
 }
 
@@ -861,6 +1076,86 @@ function copyEmail(e){
   }, 2200);
 }
 
+// ── Split intro ───────────────────────────────────────────────────────────────
+function chooseSide(mode){
+  const intro = document.getElementById('split-intro');
+  intro.classList.add(mode === 'vc' ? 'pick-right' : 'pick-left');
+  setTimeout(()=>{
+    if(mode === 'vc') switchToMode(true);
+    intro.classList.add('dismissed');
+    localStorage.setItem('adna_mode', mode);
+  }, 480);
+  setTimeout(()=>{ intro.style.display='none'; }, 940);
+}
+
+function switchToMode(toVC){
+  document.body.classList.toggle('vc-mode', toVC);
+  const content = toVC ? VC_CONTENT : ADNA_CONTENT;
+  document.getElementById('hero-eyebrow').textContent = content.eyebrow;
+  document.getElementById('hero-h1').innerHTML = content.h1;
+  document.getElementById('hero-line').textContent = content.line;
+  document.getElementById('hero-chips').innerHTML = content.chips.map(c=>`<span class="chip">${c}</span>`).join('');
+  const pb = document.getElementById('hero-btn-primary');
+  pb.textContent = content.btnPrimary.text; pb.href = content.btnPrimary.href;
+  const sb = document.getElementById('hero-btn-secondary');
+  sb.textContent = content.btnSecondary.text; sb.href = content.btnSecondary.href;
+  if(content.btnSecondary.blank){ sb.target='_blank'; sb.removeAttribute('onclick'); }
+  else { sb.removeAttribute('target'); sb.setAttribute('onclick','copyEmail(event)'); }
+  document.getElementById('proj-label').textContent = content.projLabel;
+  document.getElementById('proj-h2').textContent = content.projH2;
+  document.getElementById('proj-hint').textContent = content.projHint;
+  document.getElementById('about-label').textContent = content.aboutLabel;
+  document.getElementById('about-text').textContent = content.aboutText;
+  document.getElementById('about-sub').textContent = content.aboutSub;
+  document.getElementById('stack-icons').innerHTML = content.pills;
+  filterCards(toVC ? 'vc' : 'adna');
+  document.getElementById('vc-toggle-icon') && (document.getElementById('vc-toggle-icon').textContent = toVC ? '⬡' : '🕹');
+  document.querySelectorAll('.stack-pill').forEach((pill, i) => {
+    const bubbleIdx = toVC ? [0,1,2,3,4,5][i] ?? i : i;
+    pill.addEventListener('mouseenter', () => { if(!_isTouchDevice()) openBubble(bubbleIdx, pill); });
+    pill.addEventListener('click', e => { e.stopPropagation(); openBubble(bubbleIdx, pill); });
+    pill.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); openBubble(bubbleIdx, pill); }, {passive:false});
+    pill.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();openBubble(bubbleIdx,pill);}});
+  });
+}
+
+function filterCards(mode){
+  document.querySelectorAll('.proj-card[data-mode], .mini-card[data-mode]').forEach(c => {
+    c.style.display = (!c.dataset.mode || c.dataset.mode === mode) ? '' : 'none';
+  });
+  // Update live cards reference + reset position
+  cards = [...document.querySelectorAll('.proj-card')].filter(c => c.style.display !== 'none');
+  current = 0; targetX = 0; currentX = 0;
+  // Rebuild dots
+  document.getElementById('scroll-dots').innerHTML = cards.map((_,i) =>
+    `<button class="dot${i===0?' active':''}" onclick="goTo(${i})"></button>`).join('');
+  // Wait for layout reflow before repositioning
+  requestAnimationFrame(() => requestAnimationFrame(() => goTo(0)));
+}
+
+// ── Contact form (Formspree) ──────────────────────────────────────────────────
+async function submitContact(e){
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.cf-submit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const r = await fetch('https://formspree.io/f/xwvzpapv', {
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if(r.ok){
+      form.reset();
+      document.getElementById('cf-success').style.display = 'block';
+      btn.style.display = 'none';
+    } else { throw new Error(); }
+  } catch {
+    btn.disabled = false; btn.textContent = 'Send Message →';
+    alert('Could not send — email us directly at systems@architect-dna.ch');
+  }
+}
+
 // ── VOID CELL Theme Switcher ──────────────────────────────────────────────────
 const VC_PILLS = `
   <div class="stack-pill" role="button" tabindex="0"><div class="stack-pill-icon">🎮</div><div><div class="stack-pill-label">Canvas 2D</div><div class="stack-pill-sub">Raw API · 60fps</div></div></div>
@@ -932,50 +1227,9 @@ function switchTheme(e){
 
   // phase 2: swap content + class at peak, start fade-out
   setTimeout(()=>{
-    document.body.classList.toggle('vc-mode', toVC);
-    const content = toVC ? VC_CONTENT : ADNA_CONTENT;
-
-    document.getElementById('hero-eyebrow').textContent = content.eyebrow;
-    document.getElementById('hero-h1').innerHTML = content.h1;
-    document.getElementById('hero-line').textContent = content.line;
-    document.getElementById('hero-chips').innerHTML = content.chips.map(c=>`<span class="chip">${c}</span>`).join('');
-
-    const pb = document.getElementById('hero-btn-primary');
-    pb.textContent = content.btnPrimary.text;
-    pb.href = content.btnPrimary.href;
-
-    const sb = document.getElementById('hero-btn-secondary');
-    sb.textContent = content.btnSecondary.text;
-    sb.href = content.btnSecondary.href;
-    if(content.btnSecondary.blank){ sb.target='_blank'; sb.removeAttribute('onclick'); }
-    else { sb.removeAttribute('target'); sb.setAttribute('onclick','copyEmail(event)'); }
-
-    // Projects section
-    document.getElementById('proj-label').textContent = content.projLabel;
-    document.getElementById('proj-h2').textContent = content.projH2;
-    document.getElementById('proj-hint').textContent = content.projHint;
-
-    // About section
-    document.getElementById('about-label').textContent = content.aboutLabel;
-    document.getElementById('about-text').textContent = content.aboutText;
-    document.getElementById('about-sub').textContent = content.aboutSub;
-    document.getElementById('stack-icons').innerHTML = content.pills;
-
-    // Re-attach bubble listeners to new pills
-    document.querySelectorAll('.stack-pill').forEach((pill, i) => {
-      const bubbleIdx = toVC ? [0,1,2,3,4,5][i] ?? i : i;
-      pill.addEventListener('mouseenter', () => { if(!_isTouchDevice()) openBubble(bubbleIdx, pill); });
-      pill.addEventListener('click', e => { e.stopPropagation(); openBubble(bubbleIdx, pill); });
-      pill.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); openBubble(bubbleIdx, pill); }, {passive:false});
-      pill.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();openBubble(bubbleIdx,pill);}});
-    });
-
-    // toggle label
-    document.getElementById('vc-toggle-icon').textContent = toVC ? '⬡' : '🕹';
-    document.getElementById('vc-toggle-label').textContent = toVC ? 'ARCHITECT·DNA' : 'VOID CELL';
-
-    // navigate carousel to VOID CELL card when entering VC mode
-    if(toVC) goTo(1);
+    switchToMode(toVC);
+    localStorage.setItem('adna_mode', toVC ? 'vc' : 'adna');
+    if(toVC) goTo(0);
 
     // fade ripple out
     ripple.style.transition = 'opacity 0.4s ease';
@@ -988,6 +1242,20 @@ function switchTheme(e){
     ripple.style.clipPath = `circle(0px at ${x}px ${y}px)`;
   }, 960);
 }
+
+// ── Init: split intro or restore saved mode ───────────────────────────────────
+(function initMode(){
+  const saved = localStorage.getItem('adna_mode');
+  const intro = document.getElementById('split-intro');
+  if(saved){
+    intro.style.display = 'none';
+    if(saved === 'vc') switchToMode(true);
+    else filterCards('adna');
+  } else {
+    // First visit — show split, hide main content until chosen
+    filterCards('adna'); // default state behind the overlay
+  }
+})();
 
 // page transitions
 document.querySelectorAll('a[href]').forEach(a=>{
