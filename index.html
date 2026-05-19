@@ -239,6 +239,10 @@ body.vc-mode .header-nav a{color:var(--text3)}
 body.vc-mode .header-nav a:hover{background:rgba(255,255,255,.06);color:var(--text)}
 body.vc-mode .header-nav .nav-cta{background:#ff6b00;color:#000}
 body.vc-mode .header-nav .nav-cta:hover{background:#ff8c33}
+.nav-adna-only{display:inline-flex}
+.nav-vc-only{display:none}
+body.vc-mode .nav-adna-only{display:none}
+body.vc-mode .nav-vc-only{display:inline-flex}
 body.vc-mode #email-toast{background:#0c0f1a;border:1px solid rgba(255,255,255,.1)}
 
 /* VC hero content coloring */
@@ -466,9 +470,9 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
     <span class="vc-badge">VOID CELL STUDIO</span>
     <nav class="header-nav">
       <a href="#projects">Work</a>
-      <a href="/games">Games</a>
+      <a href="#projects" class="nav-vc-only">Play ↓</a>
       <a href="#about">About</a>
-      <a href="#services">Services</a>
+      <a href="#services" class="nav-adna-only">Services</a>
       <a href="#" onclick="copyEmail(event)" class="nav-cta">Contact →</a>
     </nav>
     <button id="vc-toggle" onclick="switchTheme(event)" title="Switch identity" aria-label="Switch between Architect-DNA and VOID CELL">
@@ -892,9 +896,10 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   <div class="footer-inner">
     <span class="footer-copy">© 2026 Architect-DNA Systems · Bern, Switzerland</span>
     <div class="footer-links">
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-      <a href="/games">Games</a>
+      <a href="#services" class="nav-adna-only">Services</a>
+      <a href="#projects" class="nav-vc-only">Games ↓</a>
+      <a href="#contact" class="nav-adna-only">Contact</a>
+      <a href="#" onclick="copyEmail(event)" class="nav-vc-only">Contact</a>
       <a href="#privacy">Privacy</a>
     </div>
   </div>
