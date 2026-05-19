@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TACZ — AI Suite with WebAuthn Passkeys</title>
-<meta name="description" content="One biometric unlocks every AI tool. TACZ uses WebAuthn passkeys to let you access your entire AI suite with a single touch.">
-<meta name="theme-color" content="#040e0a">
+<title>TACZ — AI Earpiece for Real Conversations</title>
+<meta name="description" content="Real-time AI suggestions in your ear during any conversation. Meetings, calls, negotiations — TACZ listens and whispers what to say next.">
+<meta name="theme-color" content="#09080d">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#040e0a;--bg2:#081a10;--bg3:#0d2618;
-  --text:#e8fff2;--text2:rgba(232,255,242,.65);--text3:rgba(232,255,242,.35);
-  --accent:#10b981;--accent2:#34d399;
-  --border:rgba(16,185,129,.12);--border2:rgba(16,185,129,.28);
+  --bg:#09080d;--bg2:#110f1a;--bg3:#1a1727;
+  --text:#f0eeff;--text2:rgba(240,238,255,.65);--text3:rgba(240,238,255,.35);
+  --accent:#a78bfa;--accent2:#c4b5fd;--dim:#7c3aed;
+  --border:rgba(167,139,250,.12);--border2:rgba(167,139,250,.28);
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
   --mono:'SF Mono','Fira Code','Courier New',monospace;
 }
@@ -21,34 +21,56 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-size:18px;font-weight:900;letter-spacing:-.02em}
 .nav-logo em{color:var(--accent);font-style:normal}
-.nav-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--accent);padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle}
-.nav-open{padding:8px 18px;background:var(--accent);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.nav-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:var(--accent);padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle}
+.nav-open{padding:8px 18px;background:var(--accent);color:#09080d;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
 .nav-open:hover{filter:brightness(1.1)}
-.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+
+.hero{padding:80px 24px 60px;max-width:720px;margin:0 auto;text-align:center}
 .hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
 h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
 h1 em{color:var(--accent);font-style:normal}
 .hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
 .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.cta-primary{padding:14px 30px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.cta-primary{padding:14px 30px;background:var(--accent);color:#09080d;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
 .cta-primary:hover{filter:brightness(1.1)}
 .cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
 .cta-ghost:hover{color:var(--text);border-color:var(--accent)}
-.auth-demo{max-width:440px;margin:0 auto 80px;padding:0 24px}
-.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center}
-.auth-icon{font-size:48px;margin-bottom:14px}
-.auth-title{font-size:17px;font-weight:800;margin-bottom:6px}
-.auth-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.55}
-.auth-btn{width:100%;padding:13px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);transition:filter .15s}
-.auth-btn:hover{filter:brightness(1.1)}
-.auth-note{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:10px;letter-spacing:.04em}
-.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
-.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
-.feat-icon{font-size:24px;margin-bottom:10px}
-.feat-title{font-size:14px;font-weight:800;margin-bottom:5px}
-.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* Mock conversation UI */
+.demo{max-width:540px;margin:0 auto 80px;padding:0 24px}
+.mock{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.mock-top{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.mock-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.mock-label{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--accent);font-family:var(--mono)}
+.mock-context{margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono)}
+.mock-body{padding:18px;display:flex;flex-direction:column;gap:10px}
+.conv-line{font-size:13px;line-height:1.55;color:var(--text2);padding-left:14px;border-left:2px solid var(--border2)}
+.conv-line strong{color:var(--text);font-weight:700}
+.tacz-whisper{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);border-radius:10px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start}
+.whisper-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.whisper-text{font-size:12px;line-height:1.6;color:var(--accent2)}
+.whisper-label{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:3px}
+.tacz-whisper+.conv-line{border-left-color:var(--accent);opacity:.9}
+
+/* How */
+.how{max-width:760px;margin:0 auto 80px;padding:0 24px}
+.how-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+.step-num{font-size:26px;font-weight:900;color:var(--accent);font-family:var(--mono);margin-bottom:10px;letter-spacing:-.04em}
+.step-title{font-size:14px;font-weight:800;margin-bottom:6px}
+.step-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* Use cases */
+.uses{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.uses-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.uses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.use{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.use-icon{font-size:22px;margin-bottom:10px}
+.use-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.use-body{font-size:12px;color:var(--text2);line-height:1.6}
+
 .bottom-cta{text-align:center;padding:0 24px 80px}
 .bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
 .bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
@@ -59,45 +81,96 @@ footer a:hover{color:var(--text2)}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-logo"><em>TACZ</em><span class="nav-badge">Beta</span></div>
   <a class="nav-open" href="https://tacz.architect-dna.ch">Try TACZ</a>
 </nav>
+
 <section class="hero">
-  <div class="hero-label">AI Suite · WebAuthn · Passkeys</div>
-  <h1>One biometric.<br><em>All your AI tools.</em></h1>
-  <p class="hero-sub">TACZ uses WebAuthn passkeys — your fingerprint or face — as the only login. One touch unlocks every AI tool in the suite. No passwords. No tokens. No friction.</p>
+  <div class="hero-label">Real-Time AI · Earpiece · Conversation</div>
+  <h1>Your AI.<br><em>Whispering.</em></h1>
+  <p class="hero-sub">TACZ listens to your conversation and feeds you suggestions in real time — context, talking points, what to say next. Like a smart co-pilot in your ear, invisible to everyone else.</p>
   <div class="cta-row">
-    <a class="cta-primary" href="https://tacz.architect-dna.ch">Open TACZ</a>
+    <a class="cta-primary" href="https://tacz.architect-dna.ch">Try TACZ</a>
     <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
   </div>
 </section>
-<div class="auth-demo">
-  <div class="auth-card">
-    <div class="auth-icon">🔑</div>
-    <div class="auth-title">Touch to unlock</div>
-    <div class="auth-sub">Your device passkey unlocks every tool instantly. No typing. No remembering.</div>
-    <button class="auth-btn">Authenticate with passkey</button>
-    <div class="auth-note">Uses WebAuthn · No password stored · Works offline</div>
+
+<div class="demo">
+  <div class="mock">
+    <div class="mock-top">
+      <div class="mock-dot"></div>
+      <span class="mock-label">LIVE · TACZ active</span>
+      <span class="mock-context">Sales call · 4m 12s</span>
+    </div>
+    <div class="mock-body">
+      <div class="conv-line"><strong>Client:</strong> "The price is the main blocker for us right now — we're stretched on budget this quarter."</div>
+      <div class="tacz-whisper">
+        <div class="whisper-icon">🎧</div>
+        <div>
+          <div class="whisper-label">TACZ</div>
+          <div class="whisper-text">Budget objection — pivot to ROI. Mention the 3-month payback case. Offer quarterly billing to reduce upfront. Don't discount yet.</div>
+        </div>
+      </div>
+      <div class="conv-line"><strong>You:</strong> "Totally fair — let me show you what the numbers look like over the first quarter…"</div>
+      <div class="tacz-whisper">
+        <div class="whisper-icon">🎧</div>
+        <div>
+          <div class="whisper-label">TACZ</div>
+          <div class="whisper-text">Good. Pause after you show the slide. Let them respond first.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<section class="features">
-  <div class="features-label">Why TACZ</div>
-  <div class="features-grid">
-    <div class="feat"><div class="feat-icon">🔐</div><div class="feat-title">WebAuthn passkeys</div><div class="feat-body">FIDO2/WebAuthn — the same standard used by Apple, Google, and Microsoft. No server stores your credentials.</div></div>
-    <div class="feat"><div class="feat-icon">⚡</div><div class="feat-title">Instant access</div><div class="feat-body">Biometric auth takes under a second. Your AI tools are ready before you've settled in your chair.</div></div>
-    <div class="feat"><div class="feat-icon">🛡️</div><div class="feat-title">Phishing-proof</div><div class="feat-body">Passkeys are domain-bound. No password to steal. No OTP to intercept. No credential reuse attack surface.</div></div>
-    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">AI suite inside</div><div class="feat-body">Writing, research, code review, summarisation — all your AI workflows behind one biometric gate.</div></div>
+
+<section class="how">
+  <div class="how-label">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">TACZ listens</div>
+      <div class="step-body">Runs in the background — browser, phone, earpiece. Transcribes both sides of the conversation in real time.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">AI reads the room</div>
+      <div class="step-body">Detects tone, objections, questions, and gaps. Pulls in context you've fed it about the meeting or person.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">It whispers back</div>
+      <div class="step-body">Quiet suggestions appear on your screen or in your ear — what to say, what to avoid, what to ask next.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">You stay natural</div>
+      <div class="step-body">No fumbling, no blanking. You sound sharp because you are — TACZ fills the gaps.</div>
+    </div>
   </div>
 </section>
+
+<section class="uses">
+  <div class="uses-label">Where it helps</div>
+  <div class="uses-grid">
+    <div class="use"><div class="use-icon">💼</div><div class="use-title">Sales calls</div><div class="use-body">Handle objections live. Know when to pause. Never pitch the wrong feature at the wrong moment.</div></div>
+    <div class="use"><div class="use-icon">🤝</div><div class="use-title">Negotiations</div><div class="use-body">Spot leverage. Flag anchoring tactics. Know when the other side is bluffing from tone shifts.</div></div>
+    <div class="use"><div class="use-icon">🎙️</div><div class="use-title">Interviews</div><div class="use-body">Real-time prompts on what to elaborate, what to keep tight, and when to flip to questions.</div></div>
+    <div class="use"><div class="use-icon">📋</div><div class="use-title">Meetings</div><div class="use-body">Follow fast conversations. Surface relevant context. Remind you of follow-ups mid-conversation.</div></div>
+  </div>
+</section>
+
 <section class="bottom-cta">
-  <h2>Login solved. Focus on the work.</h2>
-  <p>Beta — free to try, actively developed.</p>
+  <h2>Be the sharpest person in the room.</h2>
+  <p>Beta — actively developed. Feedback welcome.</p>
   <a class="cta-primary" href="https://tacz.architect-dna.ch">Try TACZ →</a>
 </section>
+
 <footer>
   <p>TACZ by <a href="https://architect-dna.ch">Architect-DNA</a></p>
   <p><a href="https://architect-dna.ch">← All Projects</a></p>
 </footer>
+
 </body>
 </html>
