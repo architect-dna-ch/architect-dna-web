@@ -9,6 +9,7 @@
     { "source": "/", "has": [{"type": "host", "value": "clyedo.architect-dna.ch"}], "destination": "/clyedo/app.html" },
     { "source": "/", "has": [{"type": "host", "value": "calm.architect-dna.ch"}], "destination": "/calm/app.html" },
     { "source": "/", "has": [{"type": "host", "value": "gridfal.architect-dna.ch"}], "destination": "/gridfal/play.html" },
+    { "source": "/", "has": [{"type": "host", "value": "mission.architect-dna.ch"}], "destination": "/velo-noir" },
     { "source": "/", "has": [{"type": "host", "value": "sprint.architect-dna.ch"}], "destination": "/sprint/play.html" },
     { "source": "/", "has": [{"type": "host", "value": "fly.architect-dna.ch"}], "destination": "/fly/play.html" }
   ]

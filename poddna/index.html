@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Podcast DNA — AI Podcast Companion</title>
+<meta name="description" content="Voice-powered podcast research. Ask questions about any episode, get deep AI analysis via Claude. Never miss the point again.">
+<meta name="theme-color" content="#0d0808">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0808;--bg2:#1a0e0e;--bg3:#261616;
+  --text:#fff0e8;--text2:rgba(255,240,232,.65);--text3:rgba(255,240,232,.35);
+  --accent:#ef4444;--accent2:#f87171;
+  --border:rgba(239,68,68,.12);--border2:rgba(239,68,68,.28);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-.04em}
+.nav-logo em{color:var(--accent);font-style:normal}
+.nav-badge{font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--accent);padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle}
+.nav-open{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.nav-open:hover{filter:brightness(1.15)}
+.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
+h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{padding:14px 30px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.cta-primary:hover{filter:brightness(1.15)}
+.cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
+.cta-ghost:hover{color:var(--text);border-color:var(--accent)}
+.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.feat-icon{font-size:24px;margin-bottom:10px}
+.feat-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
+.bottom-cta{text-align:center;padding:0 24px 80px}
+.bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
+.beta-notice{display:inline-block;background:rgba(239,68,68,.1);border:1px solid var(--border2);border-radius:8px;padding:8px 16px;font-size:12px;color:var(--text2);font-family:var(--mono);margin-bottom:20px}
+footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Podcast <em>DNA</em><span class="nav-badge">Beta</span></div>
+  <a class="nav-open" href="https://poddna.architect-dna.ch">Try Beta</a>
+</nav>
+<section class="hero">
+  <div class="hero-label">AI · Voice · Deep Research</div>
+  <h1>Listen smarter.<br><em>AI companion</em> for every podcast.</h1>
+  <p class="hero-sub">Paste any podcast episode. Ask questions by voice or text. Get deep research, fact-checks, related reading, and chapter summaries — powered by Claude.</p>
+  <div class="cta-row">
+    <a class="cta-primary" href="https://poddna.architect-dna.ch">Open Podcast DNA</a>
+    <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
+  </div>
+</section>
+<section class="features">
+  <div class="features-label">What it does</div>
+  <div class="features-grid">
+    <div class="feat"><div class="feat-icon">🎙️</div><div class="feat-title">Voice questions</div><div class="feat-body">Ask questions out loud while you listen. No typing — just talk, and Claude answers in context.</div></div>
+    <div class="feat"><div class="feat-icon">🔬</div><div class="feat-title">Deep research</div><div class="feat-body">Every claim can be expanded. Claude finds supporting evidence, contradictions, and deeper context instantly.</div></div>
+    <div class="feat"><div class="feat-icon">📑</div><div class="feat-title">Chapter summaries</div><div class="feat-body">Paste a transcript and get structured chapter summaries with the key takeaway per section.</div></div>
+    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Powered by Claude</div><div class="feat-body">Built on Anthropic's Claude for nuanced understanding of complex topics — not just keyword search.</div></div>
+  </div>
+</section>
+<section class="bottom-cta">
+  <div class="beta-notice">🧪 Beta — features in active development</div>
+  <h2>Never just passively listen again.</h2>
+  <p>Free to try. No account needed.</p>
+  <a class="cta-primary" href="https://poddna.architect-dna.ch">Try Podcast DNA →</a>
+</section>
+<footer>
+  <p>Podcast DNA by <a href="https://architect-dna.ch">Architect-DNA</a></p>
+  <p><a href="https://architect-dna.ch">← All Projects</a></p>
+</footer>
+</body>
+</html>

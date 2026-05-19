@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prompt Vault — Precision AI Prompt Templates</title>
+<meta name="description" content="Fill-in-the-blank AI prompt templates. Pick a template, fill the blanks, copy, launch. No fluff, just results.">
+<meta name="theme-color" content="#0a0010">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0010;--bg2:#110020;--bg3:#1a0035;
+  --text:#f0eaff;--text2:rgba(240,234,255,.65);--text3:rgba(240,234,255,.35);
+  --accent:#a855f7;--accent2:#c084fc;
+  --border:rgba(168,85,247,.12);--border2:rgba(168,85,247,.25);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-.04em}
+.nav-logo em{color:var(--accent);font-style:normal}
+.nav-open{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.nav-open:hover{filter:brightness(1.15)}
+.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
+h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{padding:14px 30px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.cta-primary:hover{filter:brightness(1.15)}
+.cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
+.cta-ghost:hover{color:var(--text);border-color:var(--accent)}
+.demo{max-width:680px;margin:0 auto 80px;padding:0 24px}
+.template-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:12px;cursor:default}
+.tc-cat{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:8px}
+.tc-title{font-size:15px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.tc-text{font-size:13px;color:var(--text2);line-height:1.7;font-family:var(--mono)}
+.tc-blank{display:inline-block;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);border-radius:4px;padding:1px 8px;color:var(--accent);font-weight:700;min-width:80px;text-align:center}
+.tc-footer{margin-top:12px;display:flex;align-items:center;gap:8px}
+.tc-copy{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;font-family:var(--font);transition:filter .15s}
+.tc-copy:hover{filter:brightness(1.15)}
+.tc-count{font-size:10px;color:var(--text3);font-family:var(--mono)}
+.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.feat-icon{font-size:24px;margin-bottom:10px}
+.feat-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
+.bottom-cta{text-align:center;padding:0 24px 80px}
+.bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
+footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Prompt <em>Vault</em></div>
+  <a class="nav-open" href="https://vault.architect-dna.ch">Open Vault</a>
+</nav>
+<section class="hero">
+  <div class="hero-label">AI Prompt Templates</div>
+  <h1>Precision prompts.<br><em>Fill, copy, launch.</em></h1>
+  <p class="hero-sub">Stop writing the same prompts from scratch. Structured, fill-in-the-blank templates for Claude, GPT, and Gemini — organised by use case and ready to copy in one click.</p>
+  <div class="cta-row">
+    <a class="cta-primary" href="https://vault.architect-dna.ch">Open Prompt Vault</a>
+    <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
+  </div>
+</section>
+<div class="demo">
+  <div class="template-card">
+    <div class="tc-cat">Code Review</div>
+    <div class="tc-title">PR Review — Concise</div>
+    <div class="tc-text">Review this <span class="tc-blank">[language]</span> pull request. Focus on <span class="tc-blank">[concern]</span>. Flag issues as critical / warning / suggestion. Skip praise.</div>
+    <div class="tc-footer">
+      <button class="tc-copy">Copy →</button>
+      <span class="tc-count">2 blanks · 12 words</span>
+    </div>
+  </div>
+  <div class="template-card">
+    <div class="tc-cat">Writing</div>
+    <div class="tc-title">Rewrite — Specific Tone</div>
+    <div class="tc-text">Rewrite this in the voice of <span class="tc-blank">[author/style]</span>. Keep the core argument. Target audience: <span class="tc-blank">[reader]</span>. Max <span class="tc-blank">[word count]</span> words.</div>
+    <div class="tc-footer">
+      <button class="tc-copy">Copy →</button>
+      <span class="tc-count">3 blanks · 20 words</span>
+    </div>
+  </div>
+</div>
+<section class="features">
+  <div class="features-label">Built for speed</div>
+  <div class="features-grid">
+    <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Fill the blanks</div><div class="feat-body">Every template has highlighted blanks. Tab through, fill in your specifics, copy in one click.</div></div>
+    <div class="feat"><div class="feat-icon">🗂️</div><div class="feat-title">Organised by use case</div><div class="feat-body">Code review, writing, research, analysis, summarisation, brainstorming. Find what you need in seconds.</div></div>
+    <div class="feat"><div class="feat-icon">🤖</div><div class="feat-title">Model-agnostic</div><div class="feat-body">Templates work with Claude, GPT-4o, Gemini. Where one model shines, we note it.</div></div>
+    <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title">No account</div><div class="feat-body">Your saved templates stay in your browser. Nothing leaves your device.</div></div>
+  </div>
+</section>
+<section class="bottom-cta">
+  <h2>Stop rewriting. Start prompting.</h2>
+  <p>Free. No sign-up. Works in any browser.</p>
+  <a class="cta-primary" href="https://vault.architect-dna.ch">Open Prompt Vault →</a>
+</section>
+<footer>
+  <p>Prompt Vault by <a href="https://architect-dna.ch">Architect-DNA</a></p>
+  <p><a href="https://architect-dna.ch">← All Projects</a></p>
+</footer>
+</body>
+</html>

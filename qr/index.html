@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CV Card — Digital CV Behind a QR Code</title>
+<meta name="description" content="Your full CV behind a single QR code. No app, no login, no install — just scan and read.">
+<meta name="theme-color" content="#050d1a">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050d1a;--bg2:#0c1829;--bg3:#142236;
+  --text:#e8f4ff;--text2:rgba(232,244,255,.65);--text3:rgba(232,244,255,.35);
+  --accent:#3b82f6;--accent2:#60a5fa;
+  --border:rgba(59,130,246,.12);--border2:rgba(59,130,246,.28);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+nav{padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:18px;font-weight:900;letter-spacing:-.04em}
+.nav-logo em{color:var(--accent);font-style:normal}
+.nav-open{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.nav-open:hover{filter:brightness(1.15)}
+.hero{padding:72px 24px 56px;max-width:720px;margin:0 auto;text-align:center}
+.hero-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:18px}
+h1{font-size:clamp(34px,8vw,60px);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px}
+h1 em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:clamp(15px,2.5vw,18px);color:var(--text2);line-height:1.65;max-width:520px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{padding:14px 30px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;transition:filter .15s}
+.cta-primary:hover{filter:brightness(1.15)}
+.cta-ghost{padding:14px 26px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
+.cta-ghost:hover{color:var(--text);border-color:var(--accent)}
+.how{max-width:760px;margin:0 auto 80px;padding:0 24px}
+.how-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+.step-num{font-size:28px;font-weight:900;color:var(--accent);font-family:var(--mono);margin-bottom:12px;letter-spacing:-.04em}
+.step-title{font-size:14px;font-weight:800;margin-bottom:6px}
+.step-body{font-size:13px;color:var(--text2);line-height:1.6}
+.features{max-width:860px;margin:0 auto 80px;padding:0 24px}
+.features-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:36px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.feat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+.feat-icon{font-size:24px;margin-bottom:10px}
+.feat-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.feat-body{font-size:13px;color:var(--text2);line-height:1.6}
+.bottom-cta{text-align:center;padding:0 24px 80px}
+.bottom-cta h2{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.bottom-cta p{font-size:14px;color:var(--text2);margin-bottom:28px}
+footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer p{font-size:11px;color:var(--text3);font-family:var(--mono)}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">CV <em>Card</em></div>
+  <a class="nav-open" href="https://qr.architect-dna.ch">Create Yours</a>
+</nav>
+<section class="hero">
+  <div class="hero-label">Digital CV · QR Code</div>
+  <h1>Your full CV behind<br>a <em>single QR code.</em></h1>
+  <p class="hero-sub">One QR code. Scan it — see your full professional profile, links, and contact details. No app on either end. No login. Print it on a business card and you're done.</p>
+  <div class="cta-row">
+    <a class="cta-primary" href="https://qr.architect-dna.ch">Create Your CV Card</a>
+    <a class="cta-ghost" href="https://architect-dna.ch">← All Projects</a>
+  </div>
+</section>
+<section class="how">
+  <div class="how-label">How it works</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Fill your profile</div><div class="step-body">Name, title, bio, links, skills, experience. Takes 3 minutes.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Get your QR code</div><div class="step-body">Instant QR code linking to your live CV profile page. Download, print, share.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Anyone scans it</div><div class="step-body">Opens instantly in any phone browser. No app, no install, no account on their end.</div></div>
+  </div>
+</section>
+<section class="features">
+  <div class="features-label">Why CV Card</div>
+  <div class="features-grid">
+    <div class="feat"><div class="feat-icon">🪪</div><div class="feat-title">One link for everything</div><div class="feat-body">Portfolio, LinkedIn, GitHub, email, phone — all in one clean profile page behind a single QR.</div></div>
+    <div class="feat"><div class="feat-icon">📱</div><div class="feat-title">No app needed</div><div class="feat-body">The person scanning needs nothing installed. Standard camera app, opens in browser.</div></div>
+    <div class="feat"><div class="feat-icon">✏️</div><div class="feat-title">Edit anytime</div><div class="feat-body">Update your profile and the QR code link stays the same. Print once, update forever.</div></div>
+    <div class="feat"><div class="feat-icon">🔒</div><div class="feat-title">No tracking</div><div class="feat-body">No analytics, no pixel tracking. People view your CV — that's it.</div></div>
+  </div>
+</section>
+<section class="bottom-cta">
+  <h2>Your whole career. One scan away.</h2>
+  <p>Free. No sign-up required to start.</p>
+  <a class="cta-primary" href="https://qr.architect-dna.ch">Create Your CV Card →</a>
+</section>
+<footer>
+  <p>CV Card by <a href="https://architect-dna.ch">Architect-DNA</a></p>
+  <p><a href="https://architect-dna.ch">← All Projects</a></p>
+</footer>
+</body>
+</html>

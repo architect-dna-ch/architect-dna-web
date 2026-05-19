@@ -99,10 +99,10 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdr
 .expand-wrap{text-align:center;margin-top:24px}
 #btn-expand{background:none;border:1px solid var(--border2);color:var(--text2);font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;cursor:pointer;transition:.15s;font-family:var(--font)}
 #btn-expand:hover{background:var(--bg2);color:var(--text)}
-.extra-grid{display:none;max-width:1100px;margin:24px auto 0;padding:0 32px;display:none}
-.extra-grid.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.mini-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;transition:.15s}
-.mini-card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.06);transform:translateY(-2px)}
+.extra-grid{display:none;max-width:1100px;margin:24px auto 0;padding:0 32px}
+.extra-grid.open{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.extra-grid .proj-card{width:auto;flex-shrink:1;transform:scale(1)!important;opacity:1!important;box-shadow:none}
+.extra-grid .proj-card.active{box-shadow:none}
 .mini-name{font-size:15px;font-weight:800;letter-spacing:-.02em}
 .mini-desc{font-size:13px;color:var(--text2);line-height:1.5}
 .mini-foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text3);font-family:var(--mono)}
@@ -159,7 +159,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdr
 .cf-submit:hover{background:#2a2820}
 .cf-success{display:none;padding:14px 18px;background:rgba(26,122,60,.07);border:1px solid rgba(26,122,60,.2);border-radius:10px;font-size:13px;color:#1a7a3c;font-weight:600}
 
-body.vc-mode #services,body.vc-mode #contact,body.vc-mode .expand-wrap,body.vc-mode #extra-grid{display:none!important}
+body.vc-mode #services,body.vc-mode #contact{display:none!important}
 body.vc-mode .svc-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
 body.vc-mode .svc-card:hover{box-shadow:0 6px 28px rgba(0,0,0,.4)}
 body.vc-mode .cf-input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:var(--text)}
@@ -530,6 +530,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   <div class="scroll-outer" id="scroll-outer">
     <div class="scroll-track" id="scroll-track">
 
+      <!-- ── ADNA FEATURED (3) ── -->
       <a class="proj-card" data-mode="adna" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
         <div class="proj-card-icon">🎧</div>
         <div class="proj-card-tag">Focus · Ambient · iOS · Web</div>
@@ -542,6 +543,31 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
+      <a class="proj-card" data-mode="adna" href="/vault" target="_blank" style="--card-accent:#a855f7">
+        <div class="proj-card-icon">🗝️</div>
+        <div class="proj-card-tag">AI · Prompts · Templates</div>
+        <div class="proj-card-name">Prompt Vault</div>
+        <div class="proj-card-desc">Precision AI prompt templates. Fill in the blanks, copy, launch. Structured workflows for Claude, GPT, Gemini.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">vault.architect-dna.ch</span>
+          <span class="proj-card-status s-live">Live</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <a class="proj-card" data-mode="adna" href="/lia" style="--card-accent:#3b82f6">
+        <div class="proj-card-icon">⚖️</div>
+        <div class="proj-card-tag">Legal · Human Rights · Privacy</div>
+        <div class="proj-card-name">LIA</div>
+        <div class="proj-card-desc">Zero-knowledge legal vault for human rights documentation. Evidence stored encrypted, never leaves your device.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">architect-dna.ch/lia</span>
+          <span class="proj-card-status s-live">Live</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
+      <!-- ── VC FEATURED (3) ── -->
       <a class="proj-card" data-mode="vc" href="/nexus-breach" target="_blank" style="--card-accent:#ff2d55">
         <div class="proj-card-icon">🔫</div>
         <div class="proj-card-tag">Arena Brawler · Endless Waves · Browser</div>
@@ -578,114 +604,6 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         </div>
       </a>
 
-      <a class="proj-card" data-mode="vc" href="/sector-zero" target="_blank" style="--card-accent:#a855f7">
-        <div class="proj-card-icon">🛸</div>
-        <div class="proj-card-tag">Shooter · Sci-Fi · Browser</div>
-        <div class="proj-card-name">SECTOR ZERO</div>
-        <div class="proj-card-desc">Tactical sci-fi shooter. Unknown sector, hostile contacts. Aim, fire, survive the unknown.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">sector-zero.architect-dna.ch</span>
-          <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="vc" href="/gridfal" target="_blank" style="--card-accent:#00e5ff">
-        <div class="proj-card-icon">🟦</div>
-        <div class="proj-card-tag">Dodge · Reflex · Browser</div>
-        <div class="proj-card-name">GRID FALL</div>
-        <div class="proj-card-desc">Falling blocks, one tile at a time. Dodge the drop. Speed escalates every second. How long can you last?</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">gridfal.architect-dna.ch</span>
-          <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="vc" href="/sprint" target="_blank" style="--card-accent:#00ff9d">
-        <div class="proj-card-icon">🏃</div>
-        <div class="proj-card-tag">Runner · Speed · Browser</div>
-        <div class="proj-card-name">SPRINT</div>
-        <div class="proj-card-desc">Navigate a shifting grid at breakneck speed. Procedurally generated, endlessly faster. No ceiling — just a higher score.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">sprint.architect-dna.ch</span>
-          <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="vc" href="/fly" target="_blank" style="--card-accent:#1e64ff">
-        <div class="proj-card-icon">✈️</div>
-        <div class="proj-card-tag">3D Flight · City · Browser</div>
-        <div class="proj-card-name">ARES RACE</div>
-        <div class="proj-card-desc">3D bird-flight over NYC and Sydney. 44+ landmark buildings, bloom rendering, live altitude HUD. Pure canvas — no WebGL.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">fly.architect-dna.ch</span>
-          <span class="proj-card-status s-new">New</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="adna" href="/konnekt" target="_blank" style="--card-accent:#f59e0b">
-        <div class="proj-card-icon">🔗</div>
-        <div class="proj-card-tag">Networking · NFC · QR</div>
-        <div class="proj-card-name">Konnekt</div>
-        <div class="proj-card-desc">Share your contact with one tap. NFC & QR. Profile lives in your browser. No app needed on the other end.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">architect-dna.ch/konnekt</span>
-          <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="adna" href="/noise" target="_blank" style="--card-accent:#7c6cfa">
-        <div class="proj-card-icon">🎛</div>
-        <div class="proj-card-tag">Focus · Ambient · Pomodoro · Web</div>
-        <div class="proj-card-name">Noise</div>
-        <div class="proj-card-desc">Layer ambient soundscapes. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">architect-dna.ch/noise</span>
-          <span class="proj-card-status s-new">New</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="adna" href="/clyedo" target="_blank" style="--card-accent:#f5a623">
-        <div class="proj-card-icon">😂</div>
-        <div class="proj-card-tag">Comedy · Curated · No Algorithm</div>
-        <div class="proj-card-name">Clyedo</div>
-        <div class="proj-card-desc">Quality comedy, zero distraction. Curated standup, sketches, classics — no YouTube rabbit holes, no recommendations, no ads.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">architect-dna.ch/clyedo</span>
-          <span class="proj-card-status s-new">New</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="adna" href="/rida" target="_blank" style="--card-accent:#22c55e">
-        <div class="proj-card-icon">🕌</div>
-        <div class="proj-card-tag">Muslim Lifestyle · PWA · Offline</div>
-        <div class="proj-card-name">Rida <span style="font-weight:400;font-size:16px;color:var(--text3)">رِضا</span></div>
-        <div class="proj-card-desc">Salah planner, Dhikr counter, Hifz tracker, Halal nutrition — your complete Muslim companion. 100% offline, no account.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">rida.architect-dna.ch</span>
-          <span class="proj-card-status s-new">New</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
-      <a class="proj-card" data-mode="adna" href="/calm" target="_blank" style="--card-accent:#6366f1">
-        <div class="proj-card-icon">🧠</div>
-        <div class="proj-card-tag">Biology · Regulation · Mental Health</div>
-        <div class="proj-card-name">Calm</div>
-        <div class="proj-card-desc">Biology-first emotional regulation. Physiological sigh, dive reflex, cognitive defusion — cortisol down, amygdala calm, thoughts clear.</div>
-        <div class="proj-card-footer">
-          <span class="proj-card-url">calm.architect-dna.ch</span>
-          <span class="proj-card-status s-new">New</span>
-          <span class="proj-card-arrow">↗</span>
-        </div>
-      </a>
-
     </div>
   </div>
   </div>
@@ -694,9 +612,6 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
     <button class="dot active" onclick="goTo(0)"></button>
     <button class="dot" onclick="goTo(1)"></button>
     <button class="dot" onclick="goTo(2)"></button>
-    <button class="dot" onclick="goTo(3)"></button>
-    <button class="dot" onclick="goTo(4)"></button>
-    <button class="dot" onclick="goTo(5)"></button>
   </div>
 
   <div class="expand-wrap">
@@ -704,36 +619,151 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   </div>
 
   <div class="extra-grid" id="extra-grid">
-    <a class="mini-card" href="https://vault.architect-dna.ch" target="_blank">
-      <div class="mini-name">Prompt Vault</div>
-      <div class="mini-desc">Precision AI prompt templates. Fill, copy, launch.</div>
-      <div class="mini-foot"><span>vault.architect-dna.ch</span><span class="proj-card-status s-live">Live</span></div>
+    <!-- ADNA overflow -->
+    <a class="proj-card" data-mode="adna" href="/qr" target="_blank" style="--card-accent:#3b82f6">
+      <div class="proj-card-icon">🪪</div>
+      <div class="proj-card-tag">CV · QR Code · No Install</div>
+      <div class="proj-card-name">CV Card</div>
+      <div class="proj-card-desc">Digital CV behind a QR code. No login, no app. Your full profile, links, and contact — one scan away.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">qr.architect-dna.ch</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
     </a>
-    <a class="mini-card" href="/lia">
-      <div class="mini-name">LIA</div>
-      <div class="mini-desc">Zero-knowledge legal vault for human rights documentation.</div>
-      <div class="mini-foot"><span>architect-dna.ch/lia</span><span class="proj-card-status s-live">Live</span></div>
+    <a class="proj-card" data-mode="adna" href="/poddna" target="_blank" style="--card-accent:#ef4444">
+      <div class="proj-card-icon">🎙️</div>
+      <div class="proj-card-tag">AI · Podcast · Claude</div>
+      <div class="proj-card-name">Podcast DNA</div>
+      <div class="proj-card-desc">AI podcast companion. Ask questions by voice, get deep research and chapter summaries via Claude.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">poddna.architect-dna.ch</span>
+        <span class="proj-card-status s-beta">Beta</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
     </a>
-    <a class="mini-card" href="https://qr.architect-dna.ch?demo=1" target="_blank">
-      <div class="mini-name">CV Card</div>
-      <div class="mini-desc">Digital CV behind a QR code. No login, no app.</div>
-      <div class="mini-foot"><span>qr.architect-dna.ch</span><span class="proj-card-status s-live">Live</span></div>
+    <a class="proj-card" data-mode="adna" href="/tacz" target="_blank" style="--card-accent:#10b981">
+      <div class="proj-card-icon">🔑</div>
+      <div class="proj-card-tag">AI Suite · WebAuthn · Passkeys</div>
+      <div class="proj-card-name">TACZ</div>
+      <div class="proj-card-desc">AI tool suite with WebAuthn passkeys. One biometric unlocks every AI tool. No passwords, no friction.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">tacz.architect-dna.ch</span>
+        <span class="proj-card-status s-beta">Beta</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
     </a>
-    <a class="mini-card" href="https://poddna.architect-dna.ch" target="_blank" style="opacity:.72">
-      <div class="mini-name">Podcast DNA</div>
-      <div class="mini-desc">AI podcast companion. Voice + deep research via Claude.</div>
-      <div class="mini-foot"><span>poddna.architect-dna.ch</span><span class="proj-card-status s-beta">Beta</span></div>
+    <a class="proj-card" data-mode="adna" href="/velo-noir" target="_blank" style="--card-accent:#dc2626">
+      <div class="proj-card-icon">🚴</div>
+      <div class="proj-card-tag">Cycling · Fog of War · GPS</div>
+      <div class="proj-card-name">VELO NOIR</div>
+      <div class="proj-card-desc">Fog-of-war cycling missions. Your map starts black. Every kilometre you ride reveals the terrain.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">mission.architect-dna.ch</span>
+        <span class="proj-card-status s-lab">Lab</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
     </a>
-    <a class="mini-card" href="https://tacz.architect-dna.ch" target="_blank" style="opacity:.72">
-      <div class="mini-name">TACZ</div>
-      <div class="mini-desc">AI tool suite with WebAuthn passkeys. One biometric, all apps.</div>
-      <div class="mini-foot"><span>tacz.architect-dna.ch</span><span class="proj-card-status s-beta">Beta</span></div>
+    <a class="proj-card" data-mode="adna" href="/konnekt" target="_blank" style="--card-accent:#f59e0b">
+      <div class="proj-card-icon">🔗</div>
+      <div class="proj-card-tag">Networking · NFC · QR</div>
+      <div class="proj-card-name">Konnekt</div>
+      <div class="proj-card-desc">Share your contact with one tap. NFC & QR. Profile lives in your browser. No app needed on the other end.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">architect-dna.ch/konnekt</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
     </a>
-    <div class="mini-card" style="opacity:.55;cursor:default">
-      <div class="mini-name">VELO NOIR</div>
-      <div class="mini-desc">Fog-of-war cycling missions. Shipped — honestly not tested yet.</div>
-      <div class="mini-foot"><span>mission.architect-dna.ch</span><span class="proj-card-status s-lab">Lab</span></div>
-    </div>
+    <a class="proj-card" data-mode="adna" href="/noise" target="_blank" style="--card-accent:#7c6cfa">
+      <div class="proj-card-icon">🎛</div>
+      <div class="proj-card-tag">Focus · Ambient · Pomodoro · Web</div>
+      <div class="proj-card-name">Noise</div>
+      <div class="proj-card-desc">Layer ambient soundscapes. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">architect-dna.ch/noise</span>
+        <span class="proj-card-status s-new">New</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="adna" href="/clyedo" target="_blank" style="--card-accent:#f5a623">
+      <div class="proj-card-icon">😂</div>
+      <div class="proj-card-tag">Comedy · Curated · No Algorithm</div>
+      <div class="proj-card-name">Clyedo</div>
+      <div class="proj-card-desc">Quality comedy, zero distraction. Curated standup, sketches, classics — no YouTube rabbit holes, no autoplay.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">architect-dna.ch/clyedo</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="adna" href="/rida" target="_blank" style="--card-accent:#22c55e">
+      <div class="proj-card-icon">🕌</div>
+      <div class="proj-card-tag">Muslim Lifestyle · PWA · Offline</div>
+      <div class="proj-card-name">Rida <span style="font-weight:400;font-size:16px;color:var(--text3)">رِضا</span></div>
+      <div class="proj-card-desc">Salah planner, Dhikr counter, Hifz tracker, Halal nutrition — your complete Muslim companion. 100% offline, no account.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">rida.architect-dna.ch</span>
+        <span class="proj-card-status s-new">New</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="adna" href="/calm" target="_blank" style="--card-accent:#6366f1">
+      <div class="proj-card-icon">🧠</div>
+      <div class="proj-card-tag">Biology · Regulation · Mental Health</div>
+      <div class="proj-card-name">Calm</div>
+      <div class="proj-card-desc">Biology-first emotional regulation. Physiological sigh, dive reflex, cognitive defusion — cortisol down, amygdala calm.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">architect-dna.ch/calm</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <!-- VC overflow -->
+    <a class="proj-card" data-mode="vc" href="/sector-zero" target="_blank" style="--card-accent:#a855f7">
+      <div class="proj-card-icon">🛸</div>
+      <div class="proj-card-tag">Shooter · Sci-Fi · Browser</div>
+      <div class="proj-card-name">SECTOR ZERO</div>
+      <div class="proj-card-desc">Tactical sci-fi shooter. Unknown sector, hostile contacts. Aim, fire, survive the unknown.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">sector-zero.architect-dna.ch</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="vc" href="/gridfal" target="_blank" style="--card-accent:#00e5ff">
+      <div class="proj-card-icon">🟦</div>
+      <div class="proj-card-tag">Dodge · Reflex · Browser</div>
+      <div class="proj-card-name">GRID FALL</div>
+      <div class="proj-card-desc">Falling blocks, one tile at a time. Dodge the drop. Speed escalates every second. How long can you last?</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">gridfal.architect-dna.ch</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="vc" href="/sprint" target="_blank" style="--card-accent:#00ff9d">
+      <div class="proj-card-icon">🏃</div>
+      <div class="proj-card-tag">Runner · Speed · Browser</div>
+      <div class="proj-card-name">SPRINT</div>
+      <div class="proj-card-desc">Navigate a shifting grid at breakneck speed. Procedurally generated, endlessly faster. No ceiling — just a higher score.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">sprint.architect-dna.ch</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="vc" href="/fly" target="_blank" style="--card-accent:#1e64ff">
+      <div class="proj-card-icon">✈️</div>
+      <div class="proj-card-tag">3D Flight · City · Browser</div>
+      <div class="proj-card-name">ARES RACE</div>
+      <div class="proj-card-desc">3D bird-flight over NYC and Sydney. 44+ landmark buildings, bloom rendering, live altitude HUD. Pure canvas — no WebGL.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">fly.architect-dna.ch</span>
+        <span class="proj-card-status s-new">New</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -1173,15 +1203,29 @@ function switchToMode(toVC){
 }
 
 function filterCards(mode){
-  document.querySelectorAll('.proj-card[data-mode], .mini-card[data-mode]').forEach(c => {
+  // Filter carousel cards
+  document.querySelectorAll('#scroll-track .proj-card[data-mode]').forEach(c => {
     c.style.display = (!c.dataset.mode || c.dataset.mode === mode) ? '' : 'none';
   });
-  // Update live cards reference + reset position
-  cards = [...document.querySelectorAll('.proj-card')].filter(c => c.style.display !== 'none');
+  // Filter extra-grid cards
+  document.querySelectorAll('#extra-grid .proj-card[data-mode]').forEach(c => {
+    c.style.display = (!c.dataset.mode || c.dataset.mode === mode) ? '' : 'none';
+  });
+  // Show/hide expand button based on whether there are overflow cards for this mode
+  const hasOverflow = [...document.querySelectorAll('#extra-grid .proj-card[data-mode]')].some(c => c.style.display !== 'none');
+  const expandWrap = document.querySelector('.expand-wrap');
+  if(expandWrap) expandWrap.style.display = hasOverflow ? '' : 'none';
+  // Update live carousel cards reference + reset position
+  cards = [...document.querySelectorAll('#scroll-track .proj-card')].filter(c => c.style.display !== 'none');
   current = 0; targetX = 0; currentX = 0;
   // Rebuild dots
   document.getElementById('scroll-dots').innerHTML = cards.map((_,i) =>
     `<button class="dot${i===0?' active':''}" onclick="goTo(${i})"></button>`).join('');
+  // Collapse extra-grid on mode switch
+  const eg = document.getElementById('extra-grid');
+  if(eg){ eg.classList.remove('open'); }
+  const btn = document.getElementById('btn-expand');
+  if(btn) btn.textContent = 'More projects ↓';
   // Wait for layout reflow before repositioning
   requestAnimationFrame(() => requestAnimationFrame(() => goTo(0)));
 }
@@ -1228,9 +1272,9 @@ const ADNA_PILLS = `
 `;
 
 const VC_CONTENT = {
-  eyebrow: 'Game Studio · 5 Titles · Browser',
+  eyebrow: 'Game Studio · 7 Titles · Browser',
   h1: '<span class="vc-void">VOID</span><br><span class="vc-cell">CELL</span>',
-  line: 'Five browser games. Pure canvas. No install. Nexus Breach, Grid Fall, Sector Zero, KART, BLOOM.',
+  line: 'Seven browser games. Pure canvas. No install. Nexus Breach, KART, BLOOM, Sector Zero, Grid Fall, Sprint, Ares Race.',
   chips: ['🕹 5 Titles Live','Canvas Engine','No Install','Free Forever'],
   btnPrimary: {text:'Enter Studio →', href:'/games'},
   btnSecondary: {text:'Play Now ↗', href:'/games', blank:true},
