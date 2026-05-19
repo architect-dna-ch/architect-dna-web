@@ -38,10 +38,10 @@ let deathTimer;
 let particles;
 
 // ── row object ───────────────────────────────────────────────────────────────
-// {y, gap: col index with no block, passed: bool}
+// gap spans gapStart and gapStart+1 (2 columns wide)
 function makeRow(y){
-  const gap=Math.floor(Math.random()*COLS);
-  return {y,gap,passed:false,flash:0};
+  const gapStart=Math.floor(Math.random()*(COLS-1));
+  return {y,gapStart,passed:false,flash:0};
 }
 
 function startGame(){
@@ -53,7 +53,7 @@ function startGame(){
   playerPulse=0;
   particles=[];
   // seed a few rows above screen
-  for(let i=0;i<8;i++) rows.push(makeRow(-CELL*2 - i*CELL*2.2));
+  for(let i=0;i<8;i++) rows.push(makeRow(-CELL*2 - i*CELL*3.0));
   state=STATE.PLAYING;
 }
 
@@ -148,7 +148,7 @@ function update(ts){
   // spawn new rows at top when needed
   const topmost=rows.reduce((m,r)=>r.y<m?r.y:m, Infinity);
   if(topmost>-CELL*0.5){
-    rows.push(makeRow(topmost-CELL*2.2));
+    rows.push(makeRow(topmost-CELL*3.0));
   }
 
   // remove off-screen rows
@@ -161,8 +161,8 @@ function update(ts){
     const ry=r.y;
     // row occupies ry to ry+CELL
     if(ry+CELL>py-2 && ry<py+CELL-2){
-      // player is in this row's zone
-      if(r.gap!==playerCol){
+      // player is in this row's zone (gap is 2 wide)
+      if(playerCol!==r.gapStart && playerCol!==r.gapStart+1){
         // HIT — player is in a filled block
         doDie();
         return;
@@ -215,7 +215,7 @@ function draw(){
 function drawRows(){
   for(const r of rows){
     for(let col=0;col<COLS;col++){
-      if(col===r.gap) continue;
+      if(col===r.gapStart||col===r.gapStart+1) continue;
       const x=col*CELL, y=r.y;
       const flash=r.flash||0;
       const alpha=0.75+flash*0.25;
@@ -229,11 +229,11 @@ function drawRows(){
       ctx.strokeRect(x+2,y+2,CELL-4,CELL-4);
       ctx.globalAlpha=1;
     }
-    // draw gap indicator (subtle arrow / opening)
-    const gx=r.gap*CELL;
+    // draw gap indicator — 2 columns
     ctx.globalAlpha=0.18;
     ctx.fillStyle='#00eeff';
-    ctx.fillRect(gx+2,r.y+2,CELL-4,CELL-4);
+    ctx.fillRect(r.gapStart*CELL+2,r.y+2,CELL-4,CELL-4);
+    ctx.fillRect((r.gapStart+1)*CELL+2,r.y+2,CELL-4,CELL-4);
     ctx.globalAlpha=1;
   }
 }
