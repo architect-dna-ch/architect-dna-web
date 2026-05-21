@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRID — Personal Metrics</title>
+  <meta name="description" content="Local-first personal metrics dashboard. Private by default.">
+  <meta name="theme-color" content="#09090b">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'] },
+          colors: { zinc: { 950: '#09090b' } }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-mono min-h-dvh antialiased select-none">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur border-b border-zinc-800/60 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xs font-black tracking-[0.3em] text-white uppercase">GRID</span>
+      <span class="text-zinc-700">·</span>
+      <span class="text-xs text-zinc-500" id="date-el"></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-zinc-700" id="count-el">—</span>
+      <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+    </div>
+  </header>
+
+  <!-- Command bar -->
+  <div class="border-b border-zinc-800/60 px-4 py-3 flex items-center gap-3 bg-zinc-900/30">
+    <span class="text-emerald-500 text-sm font-black shrink-0">›_</span>
+    <input
+      id="cmd"
+      type="text"
+      placeholder="sleep 7.5  ·  mood 8  ·  weight 73.2  ·  help"
+      class="flex-1 bg-transparent text-sm text-zinc-100 placeholder-zinc-700 outline-none caret-emerald-500"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+    >
+    <kbd class="hidden sm:block text-[10px] text-zinc-700 border border-zinc-800 rounded px-1.5 py-0.5">↵</kbd>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-4 right-4 z-50 bg-zinc-800 border border-zinc-700 text-zinc-100 text-xs px-3 py-2 rounded-lg max-w-xs whitespace-pre-line leading-relaxed shadow-xl"></div>
+
+  <!-- Main -->
+  <main class="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
+
+    <!-- Metrics grid -->
+    <div id="metrics-grid" class="grid grid-cols-2 gap-3"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="flex flex-col items-center justify-center py-20 gap-3">
+      <div class="text-3xl opacity-20">▦</div>
+      <div class="text-xs text-zinc-600 tracking-widest uppercase">No metrics yet</div>
+      <div class="text-xs text-zinc-700 text-center leading-relaxed">
+        Type <span class="text-zinc-400">sleep 7.5</span> and press Enter<br>
+        or type <span class="text-zinc-400">help</span> for all commands
+      </div>
+    </div>
+
+    <!-- Export unlock -->
+    <div class="rounded-xl border border-dashed border-zinc-800 p-4 flex items-start justify-between gap-4">
+      <div class="flex flex-col gap-1.5">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Export</span>
+          <span class="text-[10px] bg-zinc-800 text-zinc-600 px-2 py-0.5 rounded-full tracking-wider">LOCKED</span>
+        </div>
+        <p class="text-xs text-zinc-700 leading-relaxed">CSV · JSON · Markdown<br>One-time unlock.</p>
+      </div>
+      <button id="unlock-btn" class="shrink-0 text-xs font-bold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white px-3 py-2 rounded-lg transition-all">
+        CHF 2.– →
+      </button>
+    </div>
+
+    <!-- Log -->
+    <div id="log-section" class="hidden flex flex-col gap-2">
+      <div class="text-[10px] text-zinc-600 tracking-[0.2em] uppercase">Recent</div>
+      <div id="log-list" class="flex flex-col"></div>
+      <button id="clear-log-btn" class="text-[10px] text-zinc-700 hover:text-red-500 text-left mt-1 transition-colors">reset all →</button>
+    </div>
+
+  </main>
+
+  <!-- Export Modal -->
+  <div id="modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+    <div class="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-sm flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-black tracking-wider">Export Unlock</span>
+        <button onclick="closeModal()" class="text-zinc-500 hover:text-zinc-300 text-xl leading-none w-6 h-6 flex items-center justify-center">×</button>
+      </div>
+      <p class="text-xs text-zinc-500 leading-relaxed">
+        One-time CHF 2.– unlocks CSV, JSON, and Markdown export of all your metrics. Local-first — nothing leaves your device.
+      </p>
+      <div id="export-actions" class="hidden flex-col gap-2">
+        <button onclick="doExport('csv')" class="w-full text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 py-2.5 rounded-xl transition-colors">Download CSV</button>
+        <button onclick="doExport('json')" class="w-full text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 py-2.5 rounded-xl transition-colors">Download JSON</button>
+        <button onclick="doExport('md')" class="w-full text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 py-2.5 rounded-xl transition-colors">Download Markdown</button>
+      </div>
+      <div id="pay-actions" class="flex flex-col gap-2">
+        <button onclick="handlePay()" class="w-full text-sm font-black bg-white hover:bg-zinc-100 text-zinc-900 py-3 rounded-xl transition-colors">
+          Pay CHF 2.– · Unlock →
+        </button>
+        <button onclick="closeModal()" class="w-full text-xs text-zinc-600 hover:text-zinc-400 py-2 transition-colors">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const KEY_DATA    = 'grid_v1_entries';
+const KEY_UNLOCK  = 'grid_v1_unlocked';
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function load()          { try { return JSON.parse(localStorage.getItem(KEY_DATA)||'[]'); } catch{ return []; } }
+function save(e)         { localStorage.setItem(KEY_DATA, JSON.stringify(e)); }
+function isUnlocked()    { return localStorage.getItem(KEY_UNLOCK) === '1'; }
+
+// ── Date ──────────────────────────────────────────────────────────────────
+document.getElementById('date-el').textContent =
+  new Date().toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
+
+// ── Sparkline ─────────────────────────────────────────────────────────────
+function sparkline(vals, color) {
+  if (vals.length < 2) return `<svg width="72" height="24"></svg>`;
+  const w=72, h=24, min=Math.min(...vals), max=Math.max(...vals), rng=max-min||1;
+  const pts = vals.map((v,i)=>`${(i/(vals.length-1))*w},${h-2-((v-min)/rng)*(h-6)}`).join(' ');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/></svg>`;
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+const ACCENT = ['#10b981','#6366f1','#f59e0b','#ec4899','#3b82f6','#8b5cf6','#14b8a6','#f97316'];
+const metricColor = {};
+let colorIdx = 0;
+function colorFor(m){ if(!metricColor[m]){ metricColor[m]=ACCENT[colorIdx++%ACCENT.length]; } return metricColor[m]; }
+
+function render() {
+  const entries = load();
+  const grid    = document.getElementById('metrics-grid');
+  const empty   = document.getElementById('empty-state');
+  const logSec  = document.getElementById('log-section');
+  const logList = document.getElementById('log-list');
+
+  document.getElementById('count-el').textContent = entries.length ? `${entries.length} entries` : '—';
+
+  const byMetric = {};
+  entries.forEach(e => { (byMetric[e.metric] ??= []).push(e); });
+  const keys = Object.keys(byMetric);
+
+  empty.classList.toggle('hidden', keys.length > 0);
+  grid.innerHTML = '';
+
+  keys.forEach(metric => {
+    const arr    = byMetric[metric].sort((a,b)=>a.ts-b.ts);
+    const latest = arr.at(-1).value;
+    const prev   = arr.length > 1 ? arr.at(-2).value : null;
+    const delta  = prev !== null ? latest - prev : null;
+    const c      = colorFor(metric);
+    const d      = delta !== null
+      ? `<span class="text-[11px] font-bold ${delta>=0?'text-emerald-400':'text-red-400'}">${delta>=0?'+':''}${delta.toFixed(1)}</span>`
+      : `<span class="text-[11px] text-zinc-600">—</span>`;
+
+    const card = document.createElement('div');
+    card.className = 'bg-zinc-900 border border-zinc-800 rounded-xl p-3 flex flex-col gap-2 hover:border-zinc-700 transition-colors cursor-default';
+    card.innerHTML = `
+      <div class="flex items-center justify-between gap-1">
+        <span class="text-[10px] tracking-widest uppercase truncate" style="color:${c}">${metric}</span>
+        ${d}
+      </div>
+      <div class="text-2xl font-black text-zinc-100 leading-none tracking-tight">${latest}</div>
+      <div>${sparkline(arr.map(e=>e.value), c)}</div>
+      <div class="text-[10px] text-zinc-700">${arr.length} log${arr.length!==1?'s':''}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Log
+  if (entries.length > 0) {
+    logSec.classList.remove('hidden');
+    const sorted = [...entries].sort((a,b)=>b.ts-a.ts).slice(0,20);
+    logList.innerHTML = sorted.map(e=>`
+      <div class="flex items-center justify-between text-xs py-2 border-b border-zinc-900 last:border-0">
+        <span class="text-zinc-700 tabular-nums">${new Date(e.ts).toLocaleDateString('en',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
+        <span style="color:${colorFor(e.metric)}" class="font-bold">${e.metric}</span>
+        <span class="text-zinc-200 font-bold tabular-nums">${e.value}</span>
+      </div>`).join('');
+  } else {
+    logSec.classList.add('hidden');
+  }
+}
+
+// ── Command parser ─────────────────────────────────────────────────────────
+const HELP_MSG =
+`Commands
+  <name> <value>   log a metric
+  del <name>       delete metric
+  reset            clear all data
+  export           open export
+  help             this message
+
+Examples
+  sleep 7.5
+  mood 8
+  weight 73.2
+  hrv 52`;
+
+const input = document.getElementById('cmd');
+input.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const raw = input.value.trim();
+  if (!raw) return;
+  input.value = '';
+  exec(raw);
+});
+
+function exec(raw) {
+  const parts = raw.trim().split(/\s+/);
+  const cmd   = parts[0].toLowerCase();
+
+  if (cmd === 'help')   { toast(HELP_MSG, 6000); return; }
+  if (cmd === 'export') { openModal(); return; }
+  if (cmd === 'reset')  {
+    if (!confirm('Delete all data?')) return;
+    save([]); render(); toast('Cleared.'); return;
+  }
+  if (cmd === 'del' && parts[1]) {
+    const m = parts[1].toLowerCase();
+    save(load().filter(e => e.metric !== m));
+    render(); toast(`Deleted "${m}".`); return;
+  }
+  if (parts.length >= 2) {
+    const val = parseFloat(parts[1]);
+    if (isNaN(val)) { toast('Value must be a number.\nExample: sleep 7.5'); return; }
+    const entries = load();
+    entries.push({ metric: cmd, value: val, ts: Date.now() });
+    save(entries); render();
+    toast(`✓  ${cmd}  →  ${val}`);
+  } else {
+    toast('Usage: <metric> <value>\nType help for commands.');
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+let toastT;
+function toast(msg, ms=2200) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>el.classList.add('hidden'), ms);
+}
+
+// ── Export Modal ───────────────────────────────────────────────────────────
+document.getElementById('unlock-btn').addEventListener('click', openModal);
+document.getElementById('clear-log-btn').addEventListener('click', () => {
+  if (confirm('Delete all data?')) { save([]); render(); toast('Cleared.'); }
+});
+
+function openModal() {
+  const unlocked = isUnlocked();
+  document.getElementById('pay-actions').classList.toggle('hidden', unlocked);
+  document.getElementById('export-actions').classList.toggle('hidden', !unlocked);
+  document.getElementById('modal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+
+function handlePay() {
+  // Wire to Stripe: window.location.href = 'https://buy.stripe.com/...';
+  toast('Payment integration pending.\nContact systems@architect-dna.ch');
+  closeModal();
+}
+
+function doExport(type) {
+  const entries = load();
+  let content, mime, ext;
+  if (type === 'json') {
+    content = JSON.stringify(entries, null, 2);
+    mime = 'application/json'; ext = 'json';
+  } else if (type === 'csv') {
+    content = 'metric,value,date\n' + entries.map(e =>
+      `${e.metric},${e.value},${new Date(e.ts).toISOString()}`).join('\n');
+    mime = 'text/csv'; ext = 'csv';
+  } else {
+    const byM = {};
+    entries.forEach(e => (byM[e.metric]??=[]).push(e));
+    content = Object.entries(byM).map(([m,arr]) =>
+      `## ${m}\n| Date | Value |\n|------|-------|\n` +
+      arr.sort((a,b)=>b.ts-a.ts).map(e=>`| ${new Date(e.ts).toLocaleDateString()} | ${e.value} |`).join('\n')
+    ).join('\n\n');
+    mime = 'text/markdown'; ext = 'md';
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type:mime}));
+  a.download = `grid-export.${ext}`;
+  a.click();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+render();
+input.focus();
+</script>
+</body>
+</html>
