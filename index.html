@@ -545,7 +545,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         <div class="proj-card-desc">Live ambient sound for deep work. Brown noise, binaural beats, lo-fi. No streaming. Brain.fm — but free.</div>
         <div class="proj-card-footer">
           <span class="proj-card-url">architect-dna.ch/void-freq</span>
-          <span class="proj-card-status s-new">iOS in Review</span>
+          <span class="proj-card-status s-new">Live on App Store</span>
           <span class="proj-card-arrow">↗</span>
         </div>
       </a>
@@ -852,45 +852,9 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 <!-- ── PRIVACY ── -->
 <section id="privacy">
   <div class="section-label">Legal</div>
-  <button class="privacy-toggle" onclick="togglePrivacy()">
-    <span id="privacy-arrow">▶</span> Privacy Policy
-  </button>
-  <div class="privacy-content" id="privacy-content">
-    <div class="privacy-box">
-      <p class="policy-meta">Last updated: May 2026 · architect-dna.ch and all subdomains</p>
-      <h3>Overview</h3>
-      <p>This privacy policy applies to all applications and services operated under the domain <strong>architect-dna.ch</strong> and its subdomains, including VELO NOIR, Podcast DNA, TACZ, Prompt Vault, LIA, Konnekt, and CV Card.</p>
-      <p>These applications are built with a <strong>privacy-by-design</strong> philosophy. Where technically possible, all data is stored locally on your device and never transmitted to external servers.</p>
-      <h3>Data We Collect</h3>
-      <p>Most applications under architect-dna.ch collect <strong>no personal data</strong>. Specifically:</p>
-      <ul>
-        <li>All user data (API keys, settings, ride logs, mission progress, prompts) is stored in your browser's <code>localStorage</code> on your own device.</li>
-        <li>GPS coordinates (VELO NOIR) are used locally to render the map and are never transmitted.</li>
-        <li>Passkey credentials are managed entirely by your device's authenticator via the WebAuthn standard. We do not receive or store your biometric data.</li>
-        <li>Rider cards and crew codes (VELO NOIR) are text strings you share manually — we do not relay or store them.</li>
-      </ul>
-      <h3>Authentication (Passkeys)</h3>
-      <p>Passkey-enabled applications use the <strong>WebAuthn / FIDO2</strong> standard with the PRF extension for key derivation. Your private key never leaves your device. We store only a credential ID in <code>localStorage</code>. No biometric data is accessible to us.</p>
-      <h3>LIA — Legal Vault</h3>
-      <p>LIA stores encrypted evidence documents. Encryption is performed client-side. Only ciphertext is stored — the decryption key never leaves your device.</p>
-      <h3>Cookies and Tracking</h3>
-      <ul>
-        <li>We do not use cookies.</li>
-        <li>We do not use analytics or tracking scripts.</li>
-        <li>We do not use advertising networks.</li>
-        <li>We do not fingerprint your device or browser.</li>
-      </ul>
-      <h3>Third-Party Services</h3>
-      <p>Some applications use Anthropic Claude APIs. When you use an AI feature, your input is transmitted to Anthropic's servers. See <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener" style="color:var(--red)">anthropic.com/privacy</a>. We do not store AI conversation history.</p>
-      <p>Map tiles are loaded from OpenStreetMap servers. Your IP may be visible to OpenStreetMap when fetching map data.</p>
-      <h3>Data Retention and Deletion</h3>
-      <p>All locally stored data can be deleted by clearing your browser's site data for the respective subdomain, or via in-app reset functions.</p>
-      <h3>Your Rights (GDPR / DSG)</h3>
-      <p>As a user in Switzerland or the EU, you have the right to access, correct, and delete any personal data we hold. Since most data is stored locally, you are already in full control. Contact us below for any questions.</p>
-      <h3>Contact</h3>
-      <p>Architect-DNA · Bern, Switzerland<br><a href="#" onclick="copyEmail(event)" style="color:var(--red)">systems@architect-dna.ch</a></p>
-    </div>
-  </div>
+  <a href="/privacy" style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text2);font-weight:600;text-decoration:none;padding:8px 0">
+    ▶ Privacy Policy →
+  </a>
 </section>
 
 </main>
@@ -903,7 +867,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
       <a href="#projects" class="nav-vc-only">Games ↓</a>
       <a href="#contact" class="nav-adna-only">Contact</a>
       <a href="#" onclick="copyEmail(event)" class="nav-vc-only">Contact</a>
-      <a href="#privacy">Privacy</a>
+      <a href="/privacy">Privacy</a>
     </div>
   </div>
 </footer>
