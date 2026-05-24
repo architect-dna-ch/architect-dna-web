@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DocuSense — KI-Dokumentenanalyse für Schweizer Unternehmen</title>
+<meta name="description" content="Laden Sie beliebige Dokumente hoch. DocuSense extrahiert sofort die wichtigsten Informationen, Risiken und Handlungsempfehlungen.">
+<meta name="theme-color" content="#0a0a14">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a14;--bg2:#12121f;--bg3:#1a1a2e;
+  --glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.09);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f0f0ff;--text2:rgba(240,240,255,.65);--text3:rgba(240,240,255,.35);
+  --purple:#8b5cf6;--pink:#ec4899;--green:#22c55e;--amber:#f59e0b;--blue:#60a5fa;
+  --grad:linear-gradient(135deg,#8b5cf6,#ec4899);
+  --font:system-ui,-apple-system,sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb1{width:600px;height:600px;background:rgba(139,92,246,.12);top:-200px;right:-200px}
+.orb2{width:400px;height:400px;background:rgba(236,72,153,.08);bottom:-100px;left:-100px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;padding:0 32px;background:rgba(10,10,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;height:64px;display:flex;align-items:center;gap:20px}
+.nav-logo{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-badge{font-size:10px;background:rgba(139,92,246,.2);color:var(--purple);border:1px solid rgba(139,92,246,.3);padding:2px 8px;border-radius:4px;font-family:var(--mono);letter-spacing:.06em;-webkit-text-fill-color:var(--purple)}
+.nav-cta{margin-left:auto;padding:9px 22px;background:var(--grad);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none}
+
+/* SECTIONS */
+section{position:relative;z-index:10}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+/* HERO */
+.hero{padding:100px 32px 80px;max-width:1100px;margin:0 auto;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);font-family:var(--mono);margin-bottom:28px}
+.hero h1{font-size:clamp(36px,7vw,72px);font-weight:900;letter-spacing:-.04em;line-height:1.0;margin-bottom:24px}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:580px;margin:0 auto 40px;line-height:1.7}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:15px 32px;background:var(--grad);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:filter .15s}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-ghost{padding:15px 28px;background:var(--glass2);border:1px solid var(--border2);color:var(--text2);border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:.15s}
+.btn-ghost:hover{color:var(--text)}
+
+/* DEMO UPLOAD */
+.demo-section{padding:0 32px 80px;max-width:900px;margin:0 auto}
+.demo-box{background:var(--glass);border:1px solid var(--border2);border-radius:20px;padding:32px;backdrop-filter:blur(20px)}
+.demo-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.demo-label::after{content:'DEMO';background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3);padding:2px 8px;border-radius:4px;font-size:9px}
+.upload-zone{border:2px dashed var(--border2);border-radius:14px;padding:40px;text-align:center;cursor:pointer;transition:.2s;margin-bottom:20px}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--purple);background:rgba(139,92,246,.06)}
+.upload-icon{font-size:36px;margin-bottom:12px}
+.upload-text{font-size:15px;font-weight:700;margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--text3)}
+.analyze-btn{width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);transition:filter .15s}
+.analyze-btn:hover{filter:brightness(1.1)}
+
+/* Demo result */
+.demo-result{display:none;margin-top:20px}
+.demo-result.show{display:block}
+.result-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.result-icon{font-size:20px}
+.result-title{font-size:14px;font-weight:700}
+.result-badge{font-size:10px;background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:2px 8px;border-radius:4px;font-family:var(--mono);margin-left:auto}
+.insight-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:600px){.insight-cards{grid-template-columns:1fr}}
+.insight{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px}
+.insight-type{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-family:var(--mono);margin-bottom:6px}
+.insight-type.summary{color:var(--blue)}
+.insight-type.risk{color:var(--pink)}
+.insight-type.action{color:var(--green)}
+.insight-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* FEATURES */
+.features{padding:80px 32px;max-width:1100px;margin:0 auto}
+.section-eyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:14px}
+.section-title{font-size:clamp(24px,4vw,42px);font-weight:900;letter-spacing:-.03em;text-align:center;margin-bottom:48px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:700px){.feat-grid{grid-template-columns:1fr}}
+.feat{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s}
+.feat:hover{border-color:var(--border2);background:var(--glass2)}
+.feat-icon{font-size:28px;margin-bottom:14px;display:block}
+.feat-title{font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* PRICING */
+.pricing{padding:80px 32px;max-width:900px;margin:0 auto;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+@media(max-width:680px){.price-grid{grid-template-columns:1fr}}
+.price-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:left;position:relative;transition:.2s}
+.price-card.featured{border-color:var(--purple);background:rgba(139,92,246,.08)}
+.feat-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;border-radius:10px;white-space:nowrap}
+.price-name{font-size:13px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
+.price-amount{font-size:32px;font-weight:900;letter-spacing:-.03em;margin-bottom:4px}
+.price-period{font-size:12px;color:var(--text3)}
+.price-features{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:8px}
+.price-features li{font-size:13px;color:var(--text2);display:flex;gap:8px;align-items:flex-start}
+.price-features li::before{content:'✓';color:var(--green);flex-shrink:0;font-weight:700}
+.price-btn{width:100%;padding:12px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;display:block;text-align:center;margin-top:8px}
+.price-btn-grad{background:var(--grad);color:#fff;border:none}
+.price-btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+
+/* STACK */
+.stack{padding:60px 32px;max-width:900px;margin:0 auto;text-align:center}
+.stack-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.stack-pill{background:var(--glass2);border:1px solid var(--border2);padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;font-family:var(--mono)}
+
+footer{padding:40px 32px;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:12px;position:relative;z-index:10}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">DocuSense</span>
+    <span class="nav-badge">KI-ANALYSE</span>
+    <a href="mailto:ma.akd@proton.me" class="nav-cta">Demo buchen</a>
+  </div>
+</nav>
+
+<section>
+  <div class="hero">
+    <div class="hero-eyebrow">🇨🇭 Für Schweizer Unternehmen</div>
+    <h1>Jedes Dokument.<br><span>Sofort verstanden.</span></h1>
+    <p class="hero-sub">DocuSense liest Verträge, Berichte und Protokolle in Sekunden — und liefert Zusammenfassung, Risiken und Handlungsempfehlungen auf Knopfdruck.</p>
+    <div class="hero-ctas">
+      <a href="mailto:ma.akd@proton.me?subject=DocuSense Demo" class="btn-primary">Kostenlose Demo →</a>
+      <a href="#features" class="btn-ghost">Mehr erfahren</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="demo-section">
+    <div class="demo-box">
+      <div class="demo-label">Live Demo</div>
+      <div class="upload-zone" id="upload-zone" onclick="simulateAnalysis()" ondragover="this.classList.add('drag');event.preventDefault()" ondragleave="this.classList.remove('drag')" ondrop="this.classList.remove('drag');simulateAnalysis()">
+        <div class="upload-icon">📄</div>
+        <div class="upload-text">Dokument hier ablegen</div>
+        <div class="upload-sub">PDF, Word, TXT · Max. 50 MB</div>
+      </div>
+      <button class="analyze-btn" onclick="simulateAnalysis()">Jetzt analysieren →</button>
+      <div class="demo-result" id="demo-result">
+        <div class="result-header">
+          <span class="result-icon">📑</span>
+          <span class="result-title">Mietvertrag_Gewerbe_2024.pdf</span>
+          <span class="result-badge">✓ Analysiert</span>
+        </div>
+        <div class="insight-cards">
+          <div class="insight"><div class="insight-type summary">Zusammenfassung</div><div class="insight-body">Gewerbemietvertrag über 180m². Laufzeit 3 Jahre, Verlängerung automatisch. Mietzins CHF 4,200/Monat indexiert.</div></div>
+          <div class="insight"><div class="insight-type risk">⚠ Risiken</div><div class="insight-body">Kündigungsfrist 6 Monate — nur schriftlich per Einschreiben. Keine Untermietklausel vorhanden.</div></div>
+          <div class="insight"><div class="insight-type action">→ Massnahmen</div><div class="insight-body">Termin für Kündigungsfrist ins Kalender. Untermietoption vor Unterzeichnung verhandeln.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="features">
+    <div class="section-eyebrow">Funktionen</div>
+    <h2 class="section-title">Was DocuSense kann</h2>
+    <div class="feat-grid">
+      <div class="feat"><span class="feat-icon">⚡</span><div class="feat-title">Sofort-Analyse</div><div class="feat-desc">50-seitige Verträge in unter 10 Sekunden. Keine Wartezeiten, keine manuelle Zusammenfassung.</div></div>
+      <div class="feat"><span class="feat-icon">🔍</span><div class="feat-title">Risiko-Erkennung</div><div class="feat-desc">Identifiziert kritische Klauseln, Fristen und Risiken automatisch — mit Quellenangabe.</div></div>
+      <div class="feat"><span class="feat-icon">🇩🇪</span><div class="feat-title">Deutsch-First</div><div class="feat-desc">Optimiert für Schweizer Rechts- und Geschäftsdokumente. Schweizerdeutsche Begriffe verstanden.</div></div>
+      <div class="feat"><span class="feat-icon">🔒</span><div class="feat-title">Datenschutz</div><div class="feat-desc">Verarbeitung in der Schweiz. DSGVO-konform. Keine Daten werden gespeichert oder geteilt.</div></div>
+      <div class="feat"><span class="feat-icon">🔌</span><div class="feat-title">API-Integration</div><div class="feat-desc">REST API für bestehende Systeme — kein Wechsel der Arbeitsabläufe nötig.</div></div>
+      <div class="feat"><span class="feat-icon">📊</span><div class="feat-title">Export & Reports</div><div class="feat-desc">PDF-Reports, Excel-Export und strukturierte JSON-Ausgabe für Weiterverarbeitung.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="pricing">
+    <div class="section-eyebrow">Preise</div>
+    <h2 class="section-title">Einfache Preisgestaltung</h2>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount">CHF 29</div>
+        <div class="price-period">/ Monat</div>
+        <ul class="price-features">
+          <li>50 Dokumente/Monat</li>
+          <li>PDF & Word</li>
+          <li>Basis-Analyse</li>
+          <li>E-Mail Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=DocuSense Starter" class="price-btn price-btn-ghost">Starten</a>
+      </div>
+      <div class="price-card featured">
+        <div class="feat-tag">Beliebteste Wahl</div>
+        <div class="price-name">Professional</div>
+        <div class="price-amount">CHF 49</div>
+        <div class="price-period">/ Monat</div>
+        <ul class="price-features">
+          <li>200 Dokumente/Monat</li>
+          <li>Alle Formate</li>
+          <li>Risiko-Analyse + Fristen</li>
+          <li>API-Zugang</li>
+          <li>Priorität-Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=DocuSense Professional" class="price-btn price-btn-grad">Demo buchen →</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Enterprise</div>
+        <div class="price-amount">CHF 149</div>
+        <div class="price-period">/ Monat</div>
+        <ul class="price-features">
+          <li>Unbegrenzte Dokumente</li>
+          <li>On-Premise möglich</li>
+          <li>Custom Training</li>
+          <li>SLA Garantie</li>
+          <li>Dedicated Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=DocuSense Enterprise" class="price-btn price-btn-ghost">Anfrage senden</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <div class="section-eyebrow">Technologie</div>
+    <div class="stack-pills">
+      <span class="stack-pill">Claude API</span>
+      <span class="stack-pill">PDF.js</span>
+      <span class="stack-pill">Next.js</span>
+      <span class="stack-pill">TypeScript</span>
+      <span class="stack-pill">Vercel</span>
+      <span class="stack-pill">REST API</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DocuSense · Ein Produkt von Architect-DNA Systems · Schweiz · <a href="mailto:ma.akd@proton.me" style="color:var(--purple)">ma.akd@proton.me</a></p>
+</footer>
+
+<script>
+let analyzed = false;
+function simulateAnalysis() {
+  if (analyzed) return;
+  const zone = document.getElementById('upload-zone');
+  zone.innerHTML = '<div class="upload-icon">⏳</div><div class="upload-text">Analysiere…</div>';
+  setTimeout(() => {
+    zone.innerHTML = '<div class="upload-icon">✅</div><div class="upload-text">Analyse abgeschlossen</div>';
+    document.getElementById('demo-result').classList.add('show');
+    analyzed = true;
+  }, 1800);
+}
+</script>
+</body>
+</html>

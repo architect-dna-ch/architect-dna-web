@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MeetMind — Meetings automatisch in Aufgaben verwandeln</title>
+<meta name="description" content="MeetMind transkribiert Ihre Meetings und extrahiert automatisch Aufgaben, Verantwortliche und Deadlines. Kein manuelles Protokoll mehr.">
+<meta name="theme-color" content="#0a0a14">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a14;--bg2:#12121f;--bg3:#1a1a2e;
+  --glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.09);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f0f0ff;--text2:rgba(240,240,255,.65);--text3:rgba(240,240,255,.35);
+  --purple:#8b5cf6;--pink:#ec4899;--green:#22c55e;--amber:#f59e0b;--blue:#60a5fa;
+  --grad:linear-gradient(135deg,#60a5fa,#8b5cf6);
+  --font:system-ui,-apple-system,sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;background:rgba(96,165,250,.1);top:-150px;right:-100px}
+.orb2{width:350px;height:350px;background:rgba(139,92,246,.1);bottom:-80px;left:-80px}
+
+nav{position:sticky;top:0;z-index:100;padding:0 32px;background:rgba(10,10,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;height:64px;display:flex;align-items:center;gap:16px}
+.nav-logo{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-cta{margin-left:auto;padding:9px 22px;background:var(--grad);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none}
+
+section{position:relative;z-index:10}
+
+.hero{padding:100px 32px 60px;max-width:1100px;margin:0 auto;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-family:var(--mono);margin-bottom:28px}
+.hero h1{font-size:clamp(32px,7vw,66px);font-weight:900;letter-spacing:-.04em;line-height:1.0;margin-bottom:22px}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text2);max-width:540px;margin:0 auto 36px;line-height:1.7}
+.ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-p{padding:15px 32px;background:var(--grad);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:filter .15s}
+.btn-p:hover{filter:brightness(1.1)}
+.btn-g{padding:15px 28px;background:var(--glass2);border:1px solid var(--border2);color:var(--text2);border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;transition:.15s}
+.btn-g:hover{color:var(--text)}
+
+/* Demo flow */
+.demo{padding:0 32px 80px;max-width:900px;margin:0 auto}
+.demo-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.demo-label::after{content:'INTERAKTIV';background:rgba(96,165,250,.15);color:var(--blue);border:1px solid rgba(96,165,250,.3);padding:2px 8px;border-radius:4px;font-size:9px}
+.demo-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:start;gap:12px}
+@media(max-width:680px){.demo-flow{grid-template-columns:1fr;gap:8px}.arrow{display:none}}
+.demo-step{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:18px}
+.demo-step-num{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:8px}
+.demo-step-title{font-size:13px;font-weight:700;margin-bottom:8px}
+.demo-step-body{font-size:12px;color:var(--text2);line-height:1.6}
+.arrow{font-size:20px;color:var(--text3);display:flex;align-items:center;padding-top:40px}
+
+.transcript-box{background:var(--bg3);border-radius:8px;padding:12px;font-size:11px;color:var(--text2);font-family:var(--mono);line-height:1.7;max-height:100px;overflow:hidden}
+.transcript-box .speaker{color:var(--blue);font-weight:700}
+
+.tasks-box{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.task-item{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:11px;display:flex;gap:8px;align-items:flex-start}
+.task-check{color:var(--green);flex-shrink:0;font-weight:700}
+.task-text{flex:1;color:var(--text2);line-height:1.5}
+.task-owner{font-size:10px;color:var(--purple);font-family:var(--mono);margin-top:2px}
+
+.email-preview{background:var(--bg3);border-radius:8px;padding:12px;font-size:11px;line-height:1.65;color:var(--text2)}
+.email-preview .subj{color:var(--text);font-weight:700;margin-bottom:6px}
+
+.try-btn{width:100%;padding:12px;margin-top:16px;background:var(--grad);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+/* Features */
+.features{padding:80px 32px;max-width:1100px;margin:0 auto}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:14px}
+.sec-title{font-size:clamp(22px,4vw,38px);font-weight:900;letter-spacing:-.03em;text-align:center;margin-bottom:44px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:700px){.feat-grid{grid-template-columns:1fr}}
+.feat{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:20px}
+.feat-icon{font-size:24px;margin-bottom:10px;display:block}
+.feat-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* Pricing */
+.pricing{padding:80px 32px;max-width:860px;margin:0 auto;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+@media(max-width:640px){.price-grid{grid-template-columns:1fr}}
+.pc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:left;position:relative}
+.pc.pop{border-color:var(--blue);background:rgba(96,165,250,.06)}
+.pop-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;font-size:10px;font-weight:800;padding:3px 12px;border-radius:8px;white-space:nowrap}
+.pc-name{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:6px}
+.pc-price{font-size:28px;font-weight:900;letter-spacing:-.03em}
+.pc-period{font-size:12px;color:var(--text3);margin-bottom:14px}
+.pc-features{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.pc-features li{font-size:12px;color:var(--text2);display:flex;gap:7px}
+.pc-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.pc-btn{display:block;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;text-align:center}
+.pc-btn-g{background:var(--grad);color:#fff;border:none}
+.pc-btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+
+footer{padding:40px 32px;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:12px;position:relative;z-index:10}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">MeetMind</span>
+    <a href="mailto:ma.akd@proton.me?subject=MeetMind Testversion" class="nav-cta">Gratis testen</a>
+  </div>
+</nav>
+
+<section>
+  <div class="hero">
+    <div class="hero-eyebrow">🎙️ Meeting → Aufgaben · Automatisch</div>
+    <h1>Kein Protokoll<br>mehr <span>schreiben.</span></h1>
+    <p class="hero-sub">MeetMind transkribiert Ihre Meetings in Echtzeit und extrahiert automatisch Aufgaben, Verantwortliche und Deadlines — inklusive E-Mail-Zusammenfassung.</p>
+    <div class="ctas">
+      <a href="mailto:ma.akd@proton.me?subject=MeetMind Demo" class="btn-p">Kostenlos testen →</a>
+      <a href="#demo" class="btn-g">Demo ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="demo">
+    <div class="demo-label">So funktioniert es</div>
+    <div class="demo-flow">
+      <div class="demo-step">
+        <div class="demo-step-num">01 · Transkript</div>
+        <div class="demo-step-title">🎙️ Meeting aufzeichnen</div>
+        <div class="transcript-box">
+          <span class="speaker">Anna:</span> Wir müssen die neue Landingpage bis Freitag fertig haben.<br>
+          <span class="speaker">Marc:</span> Ich übernehme das Design bis Mittwoch.<br>
+          <span class="speaker">Anna:</span> Gut. Muharrem, kannst du das Backend bis Donnerstag aufsetzen?
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="demo-step">
+        <div class="demo-step-num">02 · KI-Analyse</div>
+        <div class="demo-step-title">⚡ Aufgaben erkannt</div>
+        <div class="tasks-box">
+          <div class="task-item"><span class="task-check">☐</span><div><div class="task-text">Landingpage Design</div><div class="task-owner">Marc · bis Mi 28.5.</div></div></div>
+          <div class="task-item"><span class="task-check">☐</span><div><div class="task-text">Backend aufsetzen</div><div class="task-owner">Muharrem · bis Do 29.5.</div></div></div>
+          <div class="task-item"><span class="task-check">☐</span><div><div class="task-text">Landingpage live</div><div class="task-owner">Team · bis Fr 30.5.</div></div></div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="demo-step">
+        <div class="demo-step-num">03 · E-Mail</div>
+        <div class="demo-step-title">📧 Zusammenfassung</div>
+        <div class="email-preview">
+          <div class="subj">Meeting-Protokoll · 24.5.2026</div>
+          <strong>3 Aufgaben:</strong><br>
+          → Marc: Design bis Mi<br>
+          → Muharrem: Backend bis Do<br>
+          → Team: Launch Fr<br><br>
+          Nächstes Meeting: offen
+        </div>
+      </div>
+    </div>
+    <a href="mailto:ma.akd@proton.me?subject=MeetMind Demo" class="try-btn" style="display:block;margin-top:20px;text-decoration:none;text-align:center">Jetzt ausprobieren →</a>
+  </div>
+</section>
+
+<section>
+  <div class="features">
+    <div class="sec-label">Funktionen</div>
+    <h2 class="sec-title">Alles was Sie brauchen</h2>
+    <div class="feat-grid">
+      <div class="feat"><span class="feat-icon">🎙️</span><div class="feat-title">Echtzeit-Transkription</div><div class="feat-desc">Unterstützt Zoom, Teams, Google Meet — auch eigene Aufnahmen per Upload.</div></div>
+      <div class="feat"><span class="feat-icon">🤖</span><div class="feat-title">KI-Aufgaben-Extraktion</div><div class="feat-desc">Erkennt automatisch Aufgaben, Verantwortliche, Deadlines und Prioritäten.</div></div>
+      <div class="feat"><span class="feat-icon">📧</span><div class="feat-title">Auto E-Mail-Summary</div><div class="feat-desc">Sendet nach jedem Meeting automatisch ein strukturiertes Protokoll an alle Teilnehmer.</div></div>
+      <div class="feat"><span class="feat-icon">🔗</span><div class="feat-title">Jira / Asana Sync</div><div class="feat-desc">Aufgaben direkt in Ihr Projektmanagement-Tool exportieren — ein Klick.</div></div>
+      <div class="feat"><span class="feat-icon">🇩🇪</span><div class="feat-title">Schweizer Deutsch</div><div class="feat-desc">Versteht Schweizerdeutsch, Hochdeutsch, Französisch und Englisch.</div></div>
+      <div class="feat"><span class="feat-icon">📊</span><div class="feat-title">Meeting-Analytics</div><div class="feat-desc">Redezeit-Analyse, Themen-Tracking, Fortschritt offener Aufgaben.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="pricing">
+    <div class="sec-label">Preise</div>
+    <h2 class="sec-title">Pro Nutzer · Monatlich kündbar</h2>
+    <div class="price-grid">
+      <div class="pc">
+        <div class="pc-name">Solo</div>
+        <div class="pc-price">CHF 19</div>
+        <div class="pc-period">/ Nutzer / Monat</div>
+        <ul class="pc-features">
+          <li>20 Meetings/Mo</li>
+          <li>Deutsch + Englisch</li>
+          <li>Aufgaben-Export PDF</li>
+          <li>E-Mail Summary</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=MeetMind Solo" class="pc-btn pc-btn-ghost">Starten</a>
+      </div>
+      <div class="pc pop">
+        <div class="pop-tag">Beliebt</div>
+        <div class="pc-name">Team</div>
+        <div class="pc-price">CHF 19</div>
+        <div class="pc-period">/ Nutzer / Monat (ab 3)</div>
+        <ul class="pc-features">
+          <li>Unbegrenzte Meetings</li>
+          <li>Alle Sprachen</li>
+          <li>Jira/Asana Sync</li>
+          <li>Team Dashboard</li>
+          <li>Analytics</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=MeetMind Team Demo" class="pc-btn pc-btn-g">Demo buchen →</a>
+      </div>
+      <div class="pc">
+        <div class="pc-name">Enterprise</div>
+        <div class="pc-price">Auf Anfrage</div>
+        <div class="pc-period">ab 25 Nutzer</div>
+        <ul class="pc-features">
+          <li>On-Premise möglich</li>
+          <li>Custom Integrationen</li>
+          <li>SLA Garantie</li>
+          <li>Dedicated Manager</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=MeetMind Enterprise" class="pc-btn pc-btn-ghost">Kontakt</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  MeetMind · Architect-DNA Systems · Schweiz · <a href="mailto:ma.akd@proton.me" style="color:var(--blue)">ma.akd@proton.me</a>
+</footer>
+</body>
+</html>

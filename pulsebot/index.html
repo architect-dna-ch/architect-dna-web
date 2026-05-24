@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PulseBot — KI-Assistent für Ihre Website in einer Zeile Code</title>
+<meta name="description" content="Fügen Sie Ihrer Website in 60 Sekunden einen intelligenten KI-Assistenten hinzu. Eine Zeile Code. Kein Backend. Sofort einsatzbereit.">
+<meta name="theme-color" content="#0a0a14">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a14;--bg2:#12121f;--bg3:#1a1a2e;
+  --glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.09);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f0f0ff;--text2:rgba(240,240,255,.65);--text3:rgba(240,240,255,.35);
+  --purple:#8b5cf6;--pink:#ec4899;--green:#22c55e;--amber:#f59e0b;--blue:#60a5fa;
+  --grad:linear-gradient(135deg,#8b5cf6,#ec4899);
+  --font:system-ui,-apple-system,sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;background:rgba(139,92,246,.14);top:-150px;left:-100px}
+.orb2{width:400px;height:400px;background:rgba(96,165,250,.08);bottom:-100px;right:-100px}
+
+nav{position:sticky;top:0;z-index:100;padding:0 32px;background:rgba(10,10,20,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;height:64px;display:flex;align-items:center;gap:16px}
+.nav-logo{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-cta{margin-left:auto;padding:9px 22px;background:var(--grad);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none}
+
+section{position:relative;z-index:10}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+.hero{padding:100px 32px 60px;max-width:1100px;margin:0 auto;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);font-family:var(--mono);margin-bottom:28px}
+.hero h1{font-size:clamp(34px,7vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1.0;margin-bottom:22px}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text2);max-width:540px;margin:0 auto 36px;line-height:1.7}
+.ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:15px 32px;background:var(--grad);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:filter .15s}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-ghost{padding:15px 28px;background:var(--glass2);border:1px solid var(--border2);color:var(--text2);border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-block;transition:.15s}
+.btn-ghost:hover{color:var(--text)}
+
+/* Code snippet */
+.code-section{padding:0 32px 80px;max-width:800px;margin:0 auto}
+.code-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden}
+.code-header{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);font-family:var(--mono)}
+.code-dots{display:flex;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.red{background:#ef4444}
+.dot.amber{background:#f59e0b}
+.dot.green{background:#22c55e}
+.code-file{margin-left:8px}
+.code-body{padding:24px;font-family:var(--mono);font-size:14px;line-height:1.7;overflow-x:auto}
+.c-comment{color:rgba(240,240,255,.3)}
+.c-tag{color:#60a5fa}
+.c-attr{color:#f0883e}
+.c-str{color:#a5d6ff}
+.c-kw{color:#ec4899}
+.copy-btn{margin:0 16px 16px;padding:9px 18px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:var(--purple);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:.15s}
+.copy-btn:hover{background:rgba(139,92,246,.25)}
+
+/* Demo chat widget */
+.chat-demo{position:fixed;bottom:32px;right:32px;z-index:200}
+.chat-bubble{width:56px;height:56px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.4);transition:transform .2s}
+.chat-bubble:hover{transform:scale(1.08)}
+.chat-window{position:absolute;bottom:70px;right:0;width:300px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);display:none}
+.chat-window.open{display:block}
+.chat-whead{background:var(--grad);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.chat-whead-name{font-size:14px;font-weight:700;color:#fff}
+.chat-whead-status{font-size:11px;color:rgba(255,255,255,.7)}
+.chat-msgs{padding:16px;height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5}
+.msg.bot{background:var(--bg3);color:var(--text);border-radius:10px 10px 10px 2px}
+.msg.user{background:rgba(139,92,246,.2);color:var(--text);margin-left:auto;border-radius:10px 10px 2px 10px}
+.chat-input-row{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:8px 11px;border-radius:8px;font-size:13px;font-family:var(--font);outline:none}
+.chat-send{padding:8px 14px;background:var(--grad);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+/* Features */
+.features{padding:80px 32px;max-width:1100px;margin:0 auto}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);text-align:center;margin-bottom:14px}
+.sec-title{font-size:clamp(24px,4vw,40px);font-weight:900;letter-spacing:-.03em;text-align:center;margin-bottom:48px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:700px){.feat-grid{grid-template-columns:1fr}}
+.feat{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:22px}
+.feat-icon{font-size:26px;margin-bottom:12px;display:block}
+.feat-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* Pricing */
+.pricing{padding:80px 32px;max-width:860px;margin:0 auto;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+@media(max-width:640px){.price-grid{grid-template-columns:1fr}}
+.pc{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:left;position:relative}
+.pc.pop{border-color:var(--purple);background:rgba(139,92,246,.07)}
+.pop-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;font-size:10px;font-weight:800;padding:3px 12px;border-radius:8px;white-space:nowrap}
+.pc-name{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:8px}
+.pc-price{font-size:30px;font-weight:900;letter-spacing:-.03em}
+.pc-period{font-size:12px;color:var(--text3);margin-bottom:16px}
+.pc-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.pc-features li{font-size:12px;color:var(--text2);display:flex;gap:7px}
+.pc-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.pc-btn{display:block;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;text-align:center}
+.pc-btn-grad{background:var(--grad);color:#fff;border:none}
+.pc-btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+
+footer{padding:40px 32px;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:12px;position:relative;z-index:10}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">PulseBot</span>
+    <div class="nav-dot"></div>
+    <span style="font-size:11px;color:var(--green);font-family:var(--mono)">Live</span>
+    <a href="mailto:ma.akd@proton.me?subject=PulseBot Testversion" class="nav-cta">Gratis testen</a>
+  </div>
+</nav>
+
+<section>
+  <div class="hero">
+    <div class="hero-eyebrow">⚡ 1 Zeile Code · Sofort bereit</div>
+    <h1>Ihr Website-Assistent.<br><span>In 60 Sekunden.</span></h1>
+    <p class="hero-sub">PulseBot fügt Ihrer bestehenden Website einen intelligenten KI-Assistenten hinzu — ohne Backend, ohne Entwicklungsaufwand. Einfach einfügen, fertig.</p>
+    <div class="ctas">
+      <a href="mailto:ma.akd@proton.me?subject=PulseBot Testversion" class="btn-primary">Gratis starten →</a>
+      <a href="#features" class="btn-ghost">Demo ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="code-section">
+    <div class="code-box">
+      <div class="code-header">
+        <div class="code-dots"><div class="dot red"></div><div class="dot amber"></div><div class="dot green"></div></div>
+        <span class="code-file">index.html</span>
+      </div>
+      <div class="code-body">
+        <div><span class="c-comment">&lt;!-- Schritt 1: Vor &lt;/body&gt; einfügen --&gt;</span></div>
+        <div><span class="c-tag">&lt;script</span></div>
+        <div>&nbsp;&nbsp;<span class="c-attr">src</span>=<span class="c-str">"https://cdn.pulsebot.ch/v1/widget.js"</span></div>
+        <div>&nbsp;&nbsp;<span class="c-attr">data-token</span>=<span class="c-str">"pb_YOUR_TOKEN"</span></div>
+        <div>&nbsp;&nbsp;<span class="c-attr">data-name</span>=<span class="c-str">"Mein Assistent"</span></div>
+        <div>&nbsp;&nbsp;<span class="c-attr">data-lang</span>=<span class="c-str">"de"</span></div>
+        <div><span class="c-tag">&gt;&lt;/script&gt;</span></div>
+      </div>
+      <button class="copy-btn" onclick="this.textContent='Kopiert ✓';setTimeout(()=>this.textContent='Code kopieren',2000)">Code kopieren</button>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="features">
+    <div class="sec-label">Funktionen</div>
+    <h2 class="sec-title">Alles dabei. Nichts zu konfigurieren.</h2>
+    <div class="feat-grid">
+      <div class="feat"><span class="feat-icon">🤖</span><div class="feat-title">Trainiert auf Ihre Inhalte</div><div class="feat-desc">PulseBot lernt Ihre Website, Produkte und FAQs — ohne manuelles Training.</div></div>
+      <div class="feat"><span class="feat-icon">🌍</span><div class="feat-title">Mehrsprachig</div><div class="feat-desc">Deutsch, Französisch, Englisch, Italienisch. Schweizer Markt abgedeckt.</div></div>
+      <div class="feat"><span class="feat-icon">📱</span><div class="feat-title">Mobile-ready</div><div class="feat-desc">Reagiert auf alle Bildschirmgrössen. Kein extra CSS nötig.</div></div>
+      <div class="feat"><span class="feat-icon">📊</span><div class="feat-title">Analyse-Dashboard</div><div class="feat-desc">Was fragen Ihre Kunden wirklich? Fragen, Themen, Konversionsdaten.</div></div>
+      <div class="feat"><span class="feat-icon">🎨</span><div class="feat-title">Eigenes Branding</div><div class="feat-desc">Farben, Name, Avatar — vollständig anpassbar über das Dashboard.</div></div>
+      <div class="feat"><span class="feat-icon">🔒</span><div class="feat-title">DSGVO-konform</div><div class="feat-desc">Server in der Schweiz. Keine Daten an Dritte. Cookie-Banner-kompatibel.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="pricing">
+    <div class="sec-label">Preise</div>
+    <h2 class="sec-title">Transparent. Skalierbar.</h2>
+    <div class="price-grid">
+      <div class="pc">
+        <div class="pc-name">Starter</div>
+        <div class="pc-price">CHF 49</div>
+        <div class="pc-period">/ Monat</div>
+        <ul class="pc-features">
+          <li>1 Website</li>
+          <li>500 Gespräche/Mo</li>
+          <li>Standard Widget</li>
+          <li>E-Mail Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=PulseBot Starter" class="pc-btn pc-btn-ghost">Starten</a>
+      </div>
+      <div class="pc pop">
+        <div class="pop-tag">Empfehlung</div>
+        <div class="pc-name">Business</div>
+        <div class="pc-price">CHF 149</div>
+        <div class="pc-period">/ Monat</div>
+        <ul class="pc-features">
+          <li>5 Websites</li>
+          <li>5.000 Gespräche/Mo</li>
+          <li>Eigenes Branding</li>
+          <li>Analytics</li>
+          <li>Priorität Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=PulseBot Business" class="pc-btn pc-btn-grad">Demo buchen →</a>
+      </div>
+      <div class="pc">
+        <div class="pc-name">Agency</div>
+        <div class="pc-price">CHF 499</div>
+        <div class="pc-period">/ Monat</div>
+        <ul class="pc-features">
+          <li>Unbegrenzte Websites</li>
+          <li>Unbegrenzte Gespräche</li>
+          <li>White-Label</li>
+          <li>API-Zugang</li>
+          <li>Dedicated Support</li>
+        </ul>
+        <a href="mailto:ma.akd@proton.me?subject=PulseBot Agency" class="pc-btn pc-btn-ghost">Anfrage</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  PulseBot · Architect-DNA Systems · Schweiz · <a href="mailto:ma.akd@proton.me" style="color:var(--purple)">ma.akd@proton.me</a>
+</footer>
+
+<!-- Live Demo Chat Widget -->
+<div class="chat-demo">
+  <div class="chat-window" id="chat-win">
+    <div class="chat-whead">
+      <div>
+        <div class="chat-whead-name">PulseBot Demo</div>
+        <div class="chat-whead-status">● Online · Bereit zu helfen</div>
+      </div>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg bot">Hallo! 👋 Ich bin der PulseBot-Demo. Wie kann ich helfen?</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-in" placeholder="Nachricht…" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button class="chat-send" onclick="sendMsg()">→</button>
+    </div>
+  </div>
+  <div class="chat-bubble" onclick="toggleChat()">💬</div>
+</div>
+
+<script>
+const RESPONSES = {
+  preis: 'Unsere Preise starten bei CHF 49/Monat für den Starter-Plan. Alle Pläne haben eine 14-tägige Testphase — ohne Kreditkarte.',
+  kosten: 'Unsere Preise starten bei CHF 49/Monat für den Starter-Plan. Alle Pläne haben eine 14-tägige Testphase — ohne Kreditkarte.',
+  integration: 'Die Integration dauert unter 60 Sekunden — Sie kopieren eine Zeile Code in Ihre Website. Kein Backend, keine Datenbank, keine Konfiguration.',
+  deutsch: 'Ja, PulseBot spricht Deutsch, Schweizerdeutsch, Französisch, Englisch und Italienisch.',
+  sprache: 'Ja, PulseBot spricht Deutsch, Schweizerdeutsch, Französisch, Englisch und Italienisch.',
+  datenschutz: 'Alle Daten werden auf Servern in der Schweiz verarbeitet und gespeichert. Wir sind DSGVO-konform und teilen keine Daten mit Dritten.',
+  dsgvo: 'Alle Daten werden auf Servern in der Schweiz verarbeitet und gespeichert. Wir sind DSGVO-konform und teilen keine Daten mit Dritten.',
+  demo: 'Buchen Sie eine kostenlose Demo unter ma.akd@proton.me — wir richten PulseBot live auf Ihrer Website ein.',
+  default: 'Gute Frage! Schreiben Sie uns an ma.akd@proton.me für eine persönliche Beratung. Wir antworten innerhalb von 24h.'
+};
+
+function toggleChat() {
+  document.getElementById('chat-win').classList.toggle('open');
+}
+
+function sendMsg() {
+  const input = document.getElementById('chat-in');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  input.value = '';
+  setTimeout(() => {
+    const low = text.toLowerCase();
+    const key = Object.keys(RESPONSES).find(k => low.includes(k)) || 'default';
+    addMsg(RESPONSES[key], 'bot');
+  }, 700);
+}
+
+function addMsg(text, type) {
+  const el = document.createElement('div');
+  el.className = `msg ${type}`;
+  el.textContent = text;
+  const c = document.getElementById('chat-msgs');
+  c.appendChild(el);
+  c.scrollTop = c.scrollHeight;
+}
+</script>
+</body>
+</html>
