@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brief Lab — Client briefs in 30 seconds</title>
+<meta name="description" content="Describe a project, get a complete structured client brief. Built for freelancers and agencies.">
+<meta name="theme-color" content="#0d1117">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b27;--bg3:#1c2333;
+  --text:#e6edf3;--text2:rgba(230,237,243,.65);--text3:rgba(230,237,243,.35);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --blue:#58a6ff;--green:#39d353;--purple:#bc8cff;--amber:#e3b341;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;-webkit-font-smoothing:antialiased}
+header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:900;letter-spacing:-.02em}
+.logo em{color:var(--amber);font-style:normal}
+.badge{font-size:10px;background:rgba(227,179,65,.15);color:var(--amber);border:1px solid rgba(227,179,65,.3);padding:3px 9px;border-radius:4px;font-family:var(--mono);letter-spacing:.06em}
+
+.container{max-width:640px;margin:0 auto;padding:28px 20px}
+
+.hero{margin-bottom:28px}
+.hero h1{font-size:26px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.hero p{font-size:13px;color:var(--text2);line-height:1.7}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.field{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:8px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 11px;border-radius:6px;font-size:13px;font-family:var(--font);outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber)}
+.field select option{background:#1c2333}
+.field textarea{resize:vertical;line-height:1.6}
+input::placeholder,textarea::placeholder{color:var(--text3)}
+
+.btn{width:100%;padding:14px;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);border:none;transition:.15s;margin-top:4px}
+.btn-amber{background:var(--amber);color:#000}
+.btn-amber:hover{filter:brightness(1.1)}
+.btn-amber:disabled{opacity:.5;cursor:wait}
+
+/* Brief output */
+.brief-output{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:20px}
+.brief-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.brief-title{font-size:19px;font-weight:900;letter-spacing:-.02em}
+.brief-actions{display:flex;gap:8px}
+.brief-copy,.brief-print{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);border:1px solid var(--border2);background:transparent;color:var(--text2);transition:.15s}
+.brief-copy:hover,.brief-print:hover{color:var(--text);background:var(--bg3)}
+
+.brief-section{margin-bottom:18px}
+.brief-section-title{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-family:var(--mono);margin-bottom:8px}
+.brief-body{font-size:13px;color:var(--text2);line-height:1.75}
+.brief-body strong{color:var(--text);font-weight:600}
+.brief-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.brief-list li{font-size:13px;color:var(--text2);padding-left:14px;position:relative;line-height:1.6}
+.brief-list li::before{content:'→';position:absolute;left:0;color:var(--amber);font-size:11px}
+
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+@media(max-width:480px){.tier-grid{grid-template-columns:1fr}}
+.tier{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:12px}
+.tier-name{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px;letter-spacing:.06em}
+.tier-price{font-size:18px;font-weight:900;color:var(--text);letter-spacing:-.02em}
+.tier-scope{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--amber);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:40px;color:var(--text3);font-size:13px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><em>Brief</em> Lab</div>
+  <span class="badge">B2B</span>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h1>Client brief in 30 seconds.</h1>
+    <p>Describe the project. Get a full structured brief with scope, deliverables, timeline, and 3 pricing tiers. Export as PDF or copy to clipboard.</p>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label>Project type</label>
+      <select id="type">
+        <option value="website">Website / Web app</option>
+        <option value="mobile">Mobile app</option>
+        <option value="branding">Branding / Design</option>
+        <option value="marketing">Marketing campaign</option>
+        <option value="automation">Automation / Integration</option>
+        <option value="consulting">Consulting / Strategy</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Client industry</label>
+      <input id="industry" placeholder="e.g. Restaurant, SaaS, Law firm">
+    </div>
+    <div class="field full">
+      <label>Describe the project</label>
+      <textarea id="description" rows="3" placeholder="e.g. Local restaurant needs a new website with online reservations, photo gallery, and menu. They currently have no website..."></textarea>
+    </div>
+    <div class="field">
+      <label>Budget range (optional)</label>
+      <input id="budget" placeholder="e.g. CHF 3,000–8,000">
+    </div>
+    <div class="field">
+      <label>Timeline (optional)</label>
+      <input id="timeline" placeholder="e.g. 6 weeks, ASAP, Q3 2026">
+    </div>
+  </div>
+
+  <button class="btn btn-amber" id="gen-btn" onclick="generate()">Generate brief →</button>
+
+  <div id="output"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+async function generate() {
+  const type = document.getElementById('type').value;
+  const industry = document.getElementById('industry').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const budget = document.getElementById('budget').value.trim();
+  const timeline = document.getElementById('timeline').value.trim();
+  if (!description) { toast('Describe the project first'); return; }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  document.getElementById('output').innerHTML = '<div class="loading"><div class="spinner"></div>Building your brief…</div>';
+
+  try {
+    const res = await fetch('/api/brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, industry, description, budget, timeline })
+    });
+    const data = await res.json();
+    renderBrief(data);
+  } catch(e) {
+    document.getElementById('output').innerHTML = '<div class="loading" style="color:#ff7b72">Error. Try again.</div>';
+  }
+  btn.disabled = false; btn.textContent = 'Generate brief →';
+}
+
+function renderBrief(b) {
+  const html = `<div class="brief-output" id="brief-content">
+    <div class="brief-header">
+      <div class="brief-title">${b.title}</div>
+      <div class="brief-actions">
+        <button class="brief-copy" onclick="copyBrief()">Copy text</button>
+        <button class="brief-print" onclick="window.print()">Print / PDF</button>
+      </div>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Overview</div>
+      <div class="brief-body">${b.overview}</div>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Deliverables</div>
+      <ul class="brief-list">${b.deliverables.map(d=>`<li>${d}</li>`).join('')}</ul>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Out of Scope</div>
+      <ul class="brief-list">${b.outOfScope.map(d=>`<li>${d}</li>`).join('')}</ul>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Timeline</div>
+      <div class="brief-body">${b.timeline}</div>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Pricing Tiers</div>
+      <div class="tier-grid">${b.tiers.map(t=>`
+        <div class="tier">
+          <div class="tier-name">${t.name}</div>
+          <div class="tier-price">${t.price}</div>
+          <div class="tier-scope">${t.scope}</div>
+        </div>
+      `).join('')}</div>
+    </div>
+    <div class="brief-section">
+      <div class="brief-section-title">Next Steps</div>
+      <ul class="brief-list">${b.nextSteps.map(d=>`<li>${d}</li>`).join('')}</ul>
+    </div>
+  </div>`;
+  document.getElementById('output').innerHTML = html;
+}
+
+function copyBrief() {
+  const el = document.getElementById('brief-content');
+  const text = el ? el.innerText : '';
+  navigator.clipboard?.writeText(text);
+  toast('Brief copied!');
+}
+</script>
+</body>
+</html>

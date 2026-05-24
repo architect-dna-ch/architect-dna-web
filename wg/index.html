@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WG Pulse</title>
+<meta name="theme-color" content="#0d1117">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b27;--bg3:#1c2333;
+  --text:#e6edf3;--text2:rgba(230,237,243,.65);--text3:rgba(230,237,243,.35);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;-webkit-font-smoothing:antialiased}
+header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:900;letter-spacing:-.02em}
+.logo em{color:#39d353;font-style:normal}
+.code-badge{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--bg3);border:1px solid var(--border2);padding:3px 9px;border-radius:5px;cursor:pointer;letter-spacing:.06em}
+.code-badge:hover{color:var(--text)}
+
+.setup{max-width:360px;margin:80px auto;padding:0 20px;text-align:center}
+.setup h2{font-size:22px;font-weight:900;letter-spacing:-.02em;margin-bottom:10px}
+.setup p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:28px}
+.setup input{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:12px 14px;border-radius:8px;font-size:15px;font-family:var(--font);outline:none;margin-bottom:10px;text-align:center;letter-spacing:.1em;text-transform:uppercase}
+.setup input::placeholder{text-transform:none;letter-spacing:0;color:var(--text3)}
+.btn{width:100%;padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);border:none;transition:.15s}
+.btn-green{background:#39d353;color:#000}
+.btn-green:hover{filter:brightness(1.1)}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);margin-top:8px}
+.btn-ghost:hover{color:var(--text)}
+.divider{font-size:11px;color:var(--text3);margin:14px 0;font-family:var(--mono)}
+
+/* Pulse board */
+.board{max-width:480px;margin:0 auto;padding:20px}
+.board-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.board-title{font-size:13px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.my-status{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:20px}
+.my-status label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:12px;font-family:var(--mono)}
+.vibes{display:flex;gap:8px;flex-wrap:wrap}
+.vibe-btn{flex:1;min-width:80px;padding:10px 8px;border-radius:10px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;text-align:center;transition:.15s;font-family:var(--font)}
+.vibe-btn:hover{border-color:var(--border2);background:var(--bg2)}
+.vibe-btn.active{border-width:2px}
+.vibe-btn .emoji{font-size:22px;display:block;margin-bottom:4px}
+.vibe-btn .label{font-size:10px;color:var(--text2);font-weight:600;letter-spacing:.04em}
+.vibe-btn[data-v="solo"].active{border-color:#ff7b72;background:rgba(255,123,114,.08)}
+.vibe-btn[data-v="open"].active{border-color:#39d353;background:rgba(57,211,83,.08)}
+.vibe-btn[data-v="vibe"].active{border-color:#58a6ff;background:rgba(88,166,255,.08)}
+.vibe-btn[data-v="food"].active{border-color:#f0883e;background:rgba(240,136,62,.08)}
+
+.name-row{display:flex;gap:8px;margin-top:12px}
+.name-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;font-family:var(--font);outline:none}
+.name-row input::placeholder{color:var(--text3)}
+.save-btn{padding:9px 16px;background:#39d353;color:#000;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+.residents{display:flex;flex-direction:column;gap:10px}
+.resident-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px}
+.resident-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.resident-name{font-size:14px;font-weight:700;flex:1}
+.resident-vibe{font-size:11px;color:var(--text2)}
+.resident-time{font-size:10px;color:var(--text3);font-family:var(--mono)}
+.resident-emoji{font-size:20px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;line-height:1.7}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+.poll-indicator{width:6px;height:6px;border-radius:50%;background:#39d353;display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+
+<div id="setup-screen">
+  <header>
+    <div class="logo"><em>WG</em> Pulse</div>
+  </header>
+  <div class="setup">
+    <h2>Your flat, alive.</h2>
+    <p>See how your flatmates are feeling — without having to ask. Anonymous vibes, no account, no pressure.</p>
+    <input id="code-input" placeholder="Enter your flat code (e.g. RUBY7)" maxlength="8" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn btn-green" onclick="joinFlat()">Join flat →</button>
+    <div class="divider">or</div>
+    <button class="btn btn-ghost" onclick="createFlat()">Create new flat</button>
+  </div>
+</div>
+
+<div id="board-screen" style="display:none">
+  <header>
+    <div class="logo"><em>WG</em> Pulse</div>
+    <span class="code-badge" id="code-display" onclick="copyCode()">...</span>
+  </header>
+  <div class="board">
+    <div class="my-status">
+      <label>How are you right now?</label>
+      <div class="vibes">
+        <button class="vibe-btn" data-v="solo" onclick="setVibe('solo')">
+          <span class="emoji">🎧</span><span class="label">Solo time</span>
+        </button>
+        <button class="vibe-btn" data-v="open" onclick="setVibe('open')">
+          <span class="emoji">👋</span><span class="label">Open to chat</span>
+        </button>
+        <button class="vibe-btn" data-v="vibe" onclick="setVibe('vibe')">
+          <span class="emoji">🎉</span><span class="label">Let's hang</span>
+        </button>
+        <button class="vibe-btn" data-v="food" onclick="setVibe('food')">
+          <span class="emoji">🍳</span><span class="label">Cooking</span>
+        </button>
+      </div>
+      <div class="name-row">
+        <input id="name-input" placeholder="Your nickname (optional)" maxlength="20">
+        <button class="save-btn" onclick="saveName()">Save</button>
+      </div>
+    </div>
+
+    <div class="board-header">
+      <span class="board-title">Flatmates <span class="poll-indicator"></span></span>
+    </div>
+    <div class="residents" id="residents-list">
+      <div class="empty-state">Share your flat code with flatmates to see their vibe here.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VIBES = {
+  solo:  { label: 'Solo time',    color: '#ff7b72', emoji: '🎧' },
+  open:  { label: 'Open to chat', color: '#39d353', emoji: '👋' },
+  vibe:  { label: "Let's hang",   color: '#58a6ff', emoji: '🎉' },
+  food:  { label: 'Cooking',      color: '#f0883e', emoji: '🍳' },
+};
+
+const API = 'https://architect-dna.ch/api/wg';
+
+let flatCode = '';
+let myId = localStorage.getItem('wg_myid') || (Math.random().toString(36).slice(2,10));
+localStorage.setItem('wg_myid', myId);
+let myName = localStorage.getItem('wg_name') || '';
+let myVibe = localStorage.getItem('wg_vibe') || '';
+let pollTimer;
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function createFlat() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('code-input').value = code;
+  joinFlat();
+}
+
+function joinFlat() {
+  const code = document.getElementById('code-input').value.trim();
+  if (code.length < 3) { toast('Enter a flat code (min 3 chars)'); return; }
+  flatCode = code;
+  localStorage.setItem('wg_code', code);
+  showBoard();
+}
+
+function showBoard() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('board-screen').style.display = '';
+  document.getElementById('code-display').textContent = flatCode;
+  document.getElementById('name-input').value = myName;
+  if (myVibe) document.querySelector(`.vibe-btn[data-v="${myVibe}"]`)?.classList.add('active');
+  pushMyStatus();
+  startPolling();
+}
+
+function setVibe(v) {
+  document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.vibe-btn[data-v="${v}"]`).classList.add('active');
+  myVibe = v;
+  localStorage.setItem('wg_vibe', v);
+  pushMyStatus();
+}
+
+function saveName() {
+  myName = document.getElementById('name-input').value.trim() || 'Anonymous';
+  localStorage.setItem('wg_name', myName);
+  pushMyStatus();
+  toast('Saved!');
+}
+
+async function pushMyStatus() {
+  if (!myVibe) return;
+  try {
+    await fetch(`${API}/set`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: flatCode, id: myId, name: myName || 'Someone', vibe: myVibe, ts: Date.now() })
+    });
+  } catch(e) {}
+}
+
+async function fetchResidents() {
+  try {
+    const r = await fetch(`${API}/get?code=${flatCode}`);
+    const data = await r.json();
+    renderResidents(data.residents || []);
+  } catch(e) {}
+}
+
+function renderResidents(residents) {
+  const container = document.getElementById('residents-list');
+  const others = residents.filter(r => r.id !== myId);
+  if (!others.length) {
+    container.innerHTML = '<div class="empty-state">Share the code <strong style="color:var(--text)">' + flatCode + '</strong> with your flatmates.<br>Their vibe will appear here.</div>';
+    return;
+  }
+  const now = Date.now();
+  container.innerHTML = others.map(r => {
+    const v = VIBES[r.vibe] || VIBES.open;
+    const mins = Math.round((now - r.ts) / 60000);
+    const age = mins < 2 ? 'just now' : mins < 60 ? `${mins}m ago` : `${Math.round(mins/60)}h ago`;
+    return `<div class="resident-card">
+      <div class="resident-dot" style="background:${v.color}"></div>
+      <div style="flex:1">
+        <div class="resident-name">${r.name}</div>
+        <div class="resident-vibe">${v.label}</div>
+      </div>
+      <span class="resident-emoji">${v.emoji}</span>
+      <span class="resident-time">${age}</span>
+    </div>`;
+  }).join('');
+}
+
+function startPolling() {
+  fetchResidents();
+  pollTimer = setInterval(fetchResidents, 15000);
+}
+
+function copyCode() {
+  navigator.clipboard?.writeText(flatCode);
+  toast(`Code "${flatCode}" copied!`);
+}
+
+// Auto-join if saved
+const saved = localStorage.getItem('wg_code');
+if (saved) { flatCode = saved; document.getElementById('code-input').value = saved; showBoard(); }
+</script>
+</body>
+</html>

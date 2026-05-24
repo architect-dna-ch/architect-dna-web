@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reach — First message, written.</title>
+<meta name="description" content="Describe who you want to reach. Get 3 message options. Hit send.">
+<meta name="theme-color" content="#0d1117">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b27;--bg3:#1c2333;
+  --text:#e6edf3;--text2:rgba(230,237,243,.65);--text3:rgba(230,237,243,.35);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --blue:#58a6ff;--green:#39d353;--purple:#bc8cff;--warm:#f0883e;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;-webkit-font-smoothing:antialiased}
+header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:16px;font-weight:900;letter-spacing:-.02em}
+.logo em{color:var(--blue);font-style:normal}
+.tagline{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+.container{max-width:560px;margin:0 auto;padding:28px 20px}
+
+.hero{text-align:center;margin-bottom:32px}
+.hero h1{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-bottom:10px}
+.hero p{font-size:14px;color:var(--text2);line-height:1.7}
+
+.form-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:14px}
+.form-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:10px}
+textarea,input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:11px 13px;border-radius:8px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;line-height:1.6}
+textarea::placeholder,input::placeholder{color:var(--text3)}
+textarea:focus,input:focus{border-color:var(--blue)}
+
+.tone-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:.15s;font-family:var(--font)}
+.chip:hover{color:var(--text)}
+.chip.active[data-tone="warm"]{background:rgba(240,136,62,.15);border-color:var(--warm);color:var(--warm)}
+.chip.active[data-tone="casual"]{background:rgba(88,166,255,.15);border-color:var(--blue);color:var(--blue)}
+.chip.active[data-tone="bold"]{background:rgba(188,140,255,.15);border-color:var(--purple);color:var(--purple)}
+.chip.active[data-tone="minimal"]{background:rgba(57,211,83,.15);border-color:var(--green);color:var(--green)}
+
+.btn{width:100%;padding:14px;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);border:none;transition:.15s;margin-top:6px}
+.btn-blue{background:var(--blue);color:#000}
+.btn-blue:hover{filter:brightness(1.1)}
+.btn-blue:disabled{opacity:.5;cursor:wait}
+
+.results{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.msg-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;transition:.15s}
+.msg-card:hover{border-color:var(--border2)}
+.msg-tone{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-family:var(--mono);margin-bottom:10px}
+.msg-text{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap}
+.msg-actions{display:flex;gap:8px;margin-top:14px}
+.msg-copy{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);border:1px solid var(--border2);background:transparent;color:var(--text2);transition:.15s}
+.msg-copy:hover{background:var(--bg3);color:var(--text)}
+.msg-copy.copied{border-color:var(--green);color:var(--green)}
+
+.loading{text-align:center;padding:40px;color:var(--text3);font-size:13px}
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+.history{margin-top:28px}
+.history-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:12px}
+.history-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:12px;color:var(--text2);cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.history-item:hover{color:var(--text);border-color:var(--border2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><em>Reach</em></div>
+  <span class="tagline">first message, written.</span>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h1>Say the thing.</h1>
+    <p>Describe the person and situation. Get 3 ready-to-send messages.<br>No cringe, no overthinking.</p>
+  </div>
+
+  <div class="form-section">
+    <label class="form-label">Who is this person?</label>
+    <textarea id="person" rows="2" placeholder="e.g. Flatmate I barely talk to outside the flat, we've had a few good convos about music..."></textarea>
+  </div>
+
+  <div class="form-section">
+    <label class="form-label">What do you want to say / propose?</label>
+    <textarea id="intent" rows="2" placeholder="e.g. Want to ask if they'd be down to watch a movie or grab food this weekend..."></textarea>
+  </div>
+
+  <div class="form-section">
+    <label class="form-label">Context</label>
+    <div class="tone-chips">
+      <button class="chip active" data-tone="warm" onclick="setTone('warm')">💛 Warm</button>
+      <button class="chip" data-tone="casual" onclick="setTone('casual')">😎 Casual</button>
+      <button class="chip" data-tone="bold" onclick="setTone('bold')">⚡ Bold</button>
+      <button class="chip" data-tone="minimal" onclick="setTone('minimal')">🤍 Minimal</button>
+    </div>
+  </div>
+
+  <button class="btn btn-blue" id="gen-btn" onclick="generate()">Write my message →</button>
+
+  <div id="output"></div>
+
+  <div id="history-section" class="history" style="display:none">
+    <div class="history-label">Recent</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let selectedTone = 'warm';
+let history = JSON.parse(localStorage.getItem('reach_history') || '[]');
+
+function setTone(t) {
+  selectedTone = t;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.tone === t));
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+async function generate() {
+  const person = document.getElementById('person').value.trim();
+  const intent = document.getElementById('intent').value.trim();
+  if (!person || !intent) { toast('Fill in both fields'); return; }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.textContent = 'Writing…';
+  document.getElementById('output').innerHTML = '<div class="loading"><div class="spinner"></div>Crafting your messages…</div>';
+
+  try {
+    const res = await fetch('/api/reach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ person, intent, tone: selectedTone })
+    });
+    const { messages } = await res.json();
+    renderMessages(messages, person, intent);
+    saveHistory(person, intent, messages);
+  } catch(e) {
+    document.getElementById('output').innerHTML = '<div class="loading" style="color:#ff7b72">Something went wrong. Try again.</div>';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Write my message →';
+}
+
+function renderMessages(messages, person, intent) {
+  const toneColors = { warm: 'var(--warm)', casual: 'var(--blue)', bold: 'var(--purple)', minimal: 'var(--green)' };
+  const toneLabels = { warm: '💛 Warm', casual: '😎 Casual', bold: '⚡ Bold', minimal: '🤍 Minimal' };
+  const html = messages.map((msg, i) => `
+    <div class="msg-card">
+      <div class="msg-tone" style="color:${toneColors[msg.tone] || 'var(--text3)'}">${toneLabels[msg.tone] || msg.tone}</div>
+      <div class="msg-text" id="msg-${i}">${msg.text}</div>
+      <div class="msg-actions">
+        <button class="msg-copy" onclick="copyMsg(${i})">Copy</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('output').innerHTML = '<div class="results">' + html + '</div>';
+}
+
+function copyMsg(i) {
+  const text = document.getElementById(`msg-${i}`).textContent;
+  navigator.clipboard?.writeText(text);
+  const btn = document.querySelectorAll('.msg-copy')[i];
+  btn.textContent = 'Copied!'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+}
+
+function saveHistory(person, intent, messages) {
+  history.unshift({ person: person.slice(0,50), intent: intent.slice(0,50), messages, ts: Date.now() });
+  if (history.length > 10) history = history.slice(0, 10);
+  localStorage.setItem('reach_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!history.length) return;
+  document.getElementById('history-section').style.display = '';
+  document.getElementById('history-list').innerHTML = history.slice(0,5).map((h, i) => `
+    <div class="history-item" onclick="loadHistory(${i})">
+      <span>${h.person}</span>
+      <span style="color:var(--text3)">${timeAgo(h.ts)}</span>
+    </div>
+  `).join('');
+}
+
+function loadHistory(i) {
+  const h = history[i];
+  document.getElementById('person').value = h.person;
+  document.getElementById('intent').value = h.intent;
+  if (h.messages) renderMessages(h.messages, h.person, h.intent);
+}
+
+function timeAgo(ts) {
+  const m = Math.round((Date.now() - ts) / 60000);
+  if (m < 2) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  if (m < 1440) return `${Math.round(m/60)}h ago`;
+  return `${Math.round(m/1440)}d ago`;
+}
+
+renderHistory();
+</script>
+</body>
+</html>
