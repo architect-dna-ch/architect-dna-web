@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ground — Momentum ohne Druck</title>
+<meta name="theme-color" content="#0a0a14">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a14;--bg2:#12121f;--bg3:#1a1a2e;
+  --glass:rgba(255,255,255,.06);--glass2:rgba(255,255,255,.1);
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f0f0ff;--text2:rgba(240,240,255,.65);--text3:rgba(240,240,255,.35);
+  --purple:#8b5cf6;--pink:#ec4899;--green:#22c55e;--amber:#f59e0b;--blue:#60a5fa;
+  --red:#ef4444;--teal:#2dd4bf;
+  --grad:linear-gradient(135deg,#8b5cf6,#ec4899);
+  --font:system-ui,-apple-system,sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb1{width:400px;height:400px;background:rgba(139,92,246,.1);top:-100px;right:-100px}
+.orb2{width:300px;height:300px;background:rgba(45,212,191,.08);bottom:-80px;left:-80px}
+
+header{position:relative;z-index:10;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:17px;font-weight:900;letter-spacing:-.02em}
+.logo em{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
+.date-badge{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+.container{position:relative;z-index:10;max-width:480px;margin:0 auto;padding:0 20px 100px}
+
+/* Check-in section */
+.section-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:14px}
+
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.pillar{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.pillar:hover{border-color:var(--border2);background:var(--glass2)}
+.pillar.logged{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.25)}
+.pillar-icon{font-size:24px;margin-bottom:8px;display:block}
+.pillar-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.pillar-sub{font-size:11px;color:var(--text3)}
+.pillar-check{position:absolute;top:12px;right:12px;font-size:14px;color:var(--green);opacity:0;transition:.2s}
+.pillar.logged .pillar-check{opacity:1}
+.pillar-streak{font-size:10px;color:var(--amber);font-family:var(--mono);margin-top:4px}
+
+/* Log modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:28px 24px;width:100%;max-width:480px;backdrop-filter:blur(20px)}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.modal-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.modal-opt{padding:13px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--glass);cursor:pointer;font-size:13px;font-weight:600;transition:.15s;text-align:left;font-family:var(--font);color:var(--text)}
+.modal-opt:hover{background:var(--glass2);border-color:var(--border2)}
+.modal-opt.selected{border-color:var(--purple);background:rgba(139,92,246,.12);color:var(--text)}
+.modal-note{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 13px;border-radius:9px;font-size:13px;font-family:var(--font);outline:none;resize:none;margin-bottom:14px}
+.modal-actions{display:flex;gap:10px}
+.btn-save{flex:2;padding:13px;background:var(--grad);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.btn-cancel{flex:1;padding:13px;background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:10px;font-size:14px;cursor:pointer;font-family:var(--font)}
+
+/* Pattern insight */
+.insight-card{background:var(--glass);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:20px;display:none}
+.insight-card.visible{display:block}
+.insight-icon{font-size:20px;margin-bottom:8px}
+.insight-body{font-size:13px;color:var(--text2);line-height:1.7}
+.insight-body strong{color:var(--text)}
+
+/* Decision helper */
+.decision-section{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px}
+.decision-prompt{font-size:14px;font-weight:700;margin-bottom:12px}
+.decision-input{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 13px;border-radius:9px;font-size:13px;font-family:var(--font);outline:none;margin-bottom:10px}
+.decision-btn{padding:10px 20px;background:var(--grad);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.decision-result{margin-top:14px;padding:14px;background:var(--bg3);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.7;display:none}
+.decision-result.show{display:block}
+
+/* Note / trigger log */
+.trigger-section{margin-bottom:20px}
+.trigger-input{width:100%;background:var(--glass);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:12px;font-size:13px;font-family:var(--font);outline:none;resize:none;line-height:1.6}
+.trigger-input::placeholder{color:var(--text3)}
+.trigger-input:focus{border-color:var(--purple)}
+.trigger-save{margin-top:8px;padding:9px 18px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:var(--purple);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)}
+
+/* Notes history */
+.notes-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.note-item{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.6;position:relative}
+.note-time{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:4px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;z-index:300;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<header>
+  <div class="logo"><em>Ground</em></div>
+  <div class="date-badge" id="date-badge"></div>
+</header>
+
+<div class="container">
+
+  <!-- Pattern insight (only shown when relevant) -->
+  <div class="insight-card" id="insight-card">
+    <div class="insight-icon" id="insight-icon">💡</div>
+    <div class="insight-body" id="insight-body"></div>
+  </div>
+
+  <!-- Daily pillars -->
+  <div class="section-title">Wie läuft's heute?</div>
+  <div class="pillars" id="pillars">
+    <div class="pillar" data-key="move" onclick="openLog('move')">
+      <span class="pillar-icon">🏃</span>
+      <div class="pillar-name">Bewegt</div>
+      <div class="pillar-sub">Sport, Spazieren</div>
+      <div class="pillar-streak" id="streak-move"></div>
+      <span class="pillar-check">✓</span>
+    </div>
+    <div class="pillar" data-key="social" onclick="openLog('social')">
+      <span class="pillar-icon">🗣️</span>
+      <div class="pillar-name">Verbunden</div>
+      <div class="pillar-sub">Echt gesprochen</div>
+      <div class="pillar-streak" id="streak-social"></div>
+      <span class="pillar-check">✓</span>
+    </div>
+    <div class="pillar" data-key="outside" onclick="openLog('outside')">
+      <span class="pillar-icon">🌆</span>
+      <div class="pillar-name">Draussen</div>
+      <div class="pillar-sub">Rausgegangen</div>
+      <div class="pillar-streak" id="streak-outside"></div>
+      <span class="pillar-check">✓</span>
+    </div>
+    <div class="pillar" data-key="create" onclick="openLog('create')">
+      <span class="pillar-icon">⚡</span>
+      <div class="pillar-name">Geschaffen</div>
+      <div class="pillar-sub">Gebaut, gelernt</div>
+      <div class="pillar-streak" id="streak-create"></div>
+      <span class="pillar-check">✓</span>
+    </div>
+  </div>
+
+  <!-- Decision helper -->
+  <div class="decision-section">
+    <div class="decision-prompt">🔀 Entscheidung blockiert?</div>
+    <input class="decision-input" id="decision-input" placeholder="Train oder Velo? Stadt oder zuhause bleiben?">
+    <button class="decision-btn" onclick="decide()">Hilf mir →</button>
+    <div class="decision-result" id="decision-result"></div>
+  </div>
+
+  <!-- Trigger / emotion log -->
+  <div class="trigger-section">
+    <div class="section-title">Was bewegt dich gerade?</div>
+    <textarea class="trigger-input" id="trigger-input" rows="3" placeholder="Schreib raus was los ist. Kein Urteil, keine Lösung nötig."></textarea>
+    <button class="trigger-save" onclick="saveNote()">Festhalten →</button>
+    <div class="notes-list" id="notes-list"></div>
+  </div>
+
+</div>
+
+<!-- Log modal -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-options" id="modal-options"></div>
+    <textarea class="modal-note" id="modal-note" rows="2" placeholder="Optional: kurze Notiz"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+      <button class="btn-save" onclick="saveLog()">Speichern ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PILLARS = {
+  move:    { icon:'🏃', name:'Bewegt',    opts:['Kurzer Spaziergang','Sport 30min+','Fahrrad gefahren','Getanzt / bewegt'] },
+  social:  { icon:'🗣️', name:'Verbunden', opts:['Mit WG-Mitbewohner geredet','Jemanden angeschrieben','Telefoniert','Neuen Menschen getroffen'] },
+  outside: { icon:'🌆', name:'Draussen',  opts:['Kurz raus (<15min)','Stadt/Natur (30min+)','Einkaufen gegangen','Café / öffentlich gesessen'] },
+  create:  { icon:'⚡', name:'Geschaffen',opts:['Code geschrieben','Etwas gelernt','Projekt weitergebaut','Kreativ gearbeitet'] },
+};
+
+let state = JSON.parse(localStorage.getItem('ground_state') || '{}');
+// state: { logs: { 'YYYY-MM-DD': { move: {opt,note,ts}, ... } }, notes: [{text,ts}] }
+if (!state.logs) state.logs = {};
+if (!state.notes) state.notes = [];
+let modalKey = '';
+let selectedOpt = '';
+
+function today() { return new Date().toISOString().slice(0,10); }
+function todayLabel() {
+  return new Date().toLocaleDateString('de-CH', { weekday:'long', day:'numeric', month:'long' });
+}
+function save() { localStorage.setItem('ground_state', JSON.stringify(state)); }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function init() {
+  document.getElementById('date-badge').textContent = todayLabel();
+  const t = today();
+  if (!state.logs[t]) state.logs[t] = {};
+  renderPillars();
+  renderInsight();
+  renderNotes();
+}
+
+function renderPillars() {
+  const t = today();
+  Object.keys(PILLARS).forEach(key => {
+    const el = document.querySelector(`.pillar[data-key="${key}"]`);
+    const logged = !!state.logs[t]?.[key];
+    el.classList.toggle('logged', logged);
+    // streak
+    let streak = 0;
+    let d = new Date();
+    for (let i = 0; i < 30; i++) {
+      const ds = d.toISOString().slice(0,10);
+      if (state.logs[ds]?.[key]) streak++;
+      else if (i > 0) break;
+      d = new Date(d - 86400000);
+    }
+    const se = document.getElementById(`streak-${key}`);
+    if (streak > 1) se.textContent = `🔥 ${streak} Tage`;
+    else se.textContent = '';
+  });
+}
+
+function openLog(key) {
+  const t = today();
+  if (state.logs[t]?.[key]) { toast('Heute schon geloggt ✓'); return; }
+  modalKey = key;
+  selectedOpt = '';
+  const p = PILLARS[key];
+  document.getElementById('modal-title').innerHTML = `${p.icon} ${p.name}`;
+  document.getElementById('modal-options').innerHTML = p.opts.map(o =>
+    `<button class="modal-opt" onclick="selectOpt(this,'${o}')">${o}</button>`
+  ).join('');
+  document.getElementById('modal-note').value = '';
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function selectOpt(el, opt) {
+  document.querySelectorAll('.modal-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOpt = opt;
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function saveLog() {
+  if (!selectedOpt) { toast('Wähle eine Option'); return; }
+  const t = today();
+  state.logs[t][modalKey] = { opt: selectedOpt, note: document.getElementById('modal-note').value, ts: Date.now() };
+  save();
+  closeModal();
+  renderPillars();
+  renderInsight();
+  toast('Gespeichert ✓');
+}
+
+function renderInsight() {
+  const card = document.getElementById('insight-card');
+  const insight = getInsight();
+  if (!insight) { card.classList.remove('visible'); return; }
+  card.classList.add('visible');
+  document.getElementById('insight-icon').textContent = insight.icon;
+  document.getElementById('insight-body').innerHTML = insight.body;
+}
+
+function getInsight() {
+  const t = today();
+  const todayLog = state.logs[t] || {};
+  const keys = ['move','social','outside','create'];
+
+  // Check gaps over last 3 days
+  let missingFor = {};
+  keys.forEach(k => {
+    let days = 0;
+    let d = new Date(Date.now() - 86400000);
+    for (let i = 0; i < 7; i++) {
+      if (!state.logs[d.toISOString().slice(0,10)]?.[k]) days++;
+      else break;
+      d = new Date(d - 86400000);
+    }
+    if (days >= 3) missingFor[k] = days;
+  });
+
+  const allDone = keys.every(k => todayLog[k]);
+  if (allDone) return { icon:'🎯', body:'<strong>Volles Haus heute.</strong> Alle vier Säulen geloggt. Das ist seltener als du denkst.' };
+
+  if (missingFor.move >= 4) return { icon:'🏃', body:`<strong>Keine Bewegung seit ${missingFor.move} Tagen.</strong> Nicht als Vorwurf — nur als Information. 10 Minuten draussen reichen.` };
+  if (missingFor.social >= 4) return { icon:'🗣️', body:`<strong>Keine echte Verbindung seit ${missingFor.social} Tagen.</strong> Nicht jeden Tag nötig — aber du weisst, wie sich die Stille aufbaut.` };
+  if (missingFor.outside >= 3) return { icon:'🌆', body:`<strong>${missingFor.outside} Tage drinnen.</strong> Das Zimmer wird kleiner je länger man drin bleibt.` };
+
+  const doneCount = keys.filter(k => todayLog[k]).length;
+  if (doneCount >= 2) return { icon:'✦', body:'<strong>Guter Start heute.</strong> Zwei Säulen geloggt.' };
+
+  return null;
+}
+
+// Decision helper
+const DECISION_PROMPTS = [
+  (q) => `Du hast eine Wahl: "${q}". Wirf eine Münze. Wenn du enttäuscht bist vom Ergebnis — das ist deine Antwort.`,
+  (q) => `"${q}" — Welche Option würdest du einem Freund empfehlen, wenn er dich fragt? Die Antwort ist deine Antwort.`,
+  (q) => `Stell dir vor, du hast dich schon entschieden für "${q.split(' oder ')[1] || q}". Wie fühlt sich das an? Leichter oder schwerer?`,
+  (q) => `Bei "${q}": die meisten Entscheidungen dieser Grösse werden überschätzt. Beide Optionen führen irgendwohin. Welche davon bringt dich näher raus?`,
+];
+
+function decide() {
+  const q = document.getElementById('decision-input').value.trim();
+  if (!q) return;
+  const idx = Math.floor(Date.now() / 1000) % DECISION_PROMPTS.length;
+  const result = document.getElementById('decision-result');
+  result.textContent = DECISION_PROMPTS[idx](q);
+  result.classList.add('show');
+}
+
+// Notes
+function saveNote() {
+  const text = document.getElementById('trigger-input').value.trim();
+  if (!text) return;
+  state.notes.unshift({ text, ts: Date.now() });
+  if (state.notes.length > 30) state.notes = state.notes.slice(0, 30);
+  save();
+  document.getElementById('trigger-input').value = '';
+  renderNotes();
+  toast('Festgehalten.');
+}
+
+function renderNotes() {
+  const list = document.getElementById('notes-list');
+  if (!state.notes.length) { list.innerHTML = ''; return; }
+  list.innerHTML = state.notes.slice(0, 5).map(n => {
+    const d = new Date(n.ts);
+    const label = d.toLocaleDateString('de-CH', { day:'numeric', month:'short' }) + ' ' + d.toLocaleTimeString('de-CH', { hour:'2-digit', minute:'2-digit' });
+    return `<div class="note-item">${n.text}<div class="note-time">${label}</div></div>`;
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>
