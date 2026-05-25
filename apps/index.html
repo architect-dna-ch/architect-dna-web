@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>All Apps — Architect-DNA</title>
+<meta name="description" content="Complete list of all Architect-DNA tools, games, and apps. Plain text, no animations.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--text:#1A1A1A;--text2:#5A5A58;--border:#D0D0C8;
+  --link:#1A1A1A;--link-hover:#B5271E;
+  --tag:#F0EFEB;
+  --focus:#B5271E;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#111;--text:#F0EFE8;--text2:#9A9A98;--border:#2A2A28;--tag:#1E1E1C;--link:#F0EFE8;--link-hover:#ff7060}
+}
+html{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.5}
+body{max-width:760px;margin:0 auto;padding:32px 20px 64px}
+
+/* Skip link */
+.skip{position:absolute;top:-999px;left:0;background:var(--focus);color:#fff;padding:8px 16px;font-weight:700;font-size:14px;text-decoration:none;border-radius:0 0 8px 0;z-index:999}
+.skip:focus{top:0}
+
+/* Header */
+header{margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid var(--text)}
+.logo{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);text-decoration:none;display:block;margin-bottom:8px}
+h1{font-size:clamp(24px,5vw,36px);font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.subtitle{margin-top:8px;font-size:15px;color:var(--text2)}
+.back{margin-top:16px;display:inline-block;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:5px 12px;border-radius:6px}
+.back:hover,.back:focus{color:var(--link-hover);border-color:var(--link-hover)}
+
+/* Section */
+section{margin-bottom:48px}
+h2{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* App list */
+ul{list-style:none}
+li{border-bottom:1px solid var(--border)}
+li:first-child{border-top:1px solid var(--border)}
+a.app-row{display:block;padding:14px 0;text-decoration:none;color:inherit}
+a.app-row:hover,.app-row:focus{background:var(--tag);padding-left:10px;margin-left:-10px;padding-right:10px;margin-right:-10px;outline:none}
+a.app-row:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.app-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.app-name{font-size:17px;font-weight:800;letter-spacing:-.01em;color:var(--link)}
+a.app-row:hover .app-name,a.app-row:focus .app-name{color:var(--link-hover)}
+.app-tag{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);background:var(--tag);padding:2px 7px;border-radius:4px;white-space:nowrap}
+.app-status{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);opacity:.7}
+.app-desc{margin-top:4px;font-size:14px;color:var(--text2);line-height:1.5;max-width:600px}
+.app-url{margin-top:4px;font-size:11px;color:var(--text2);font-family:'SF Mono','Fira Code',monospace;opacity:.7}
+
+/* Footer */
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--text2)}
+footer a{color:var(--text2)}
+footer a:hover{color:var(--link-hover)}
+
+/* High contrast / reduce motion */
+@media(prefers-contrast:more){
+  :root{--text:#000;--text2:#333;--bg:#fff;--border:#000}
+  .app-tag,.app-row:hover{background:#ffff00;color:#000}
+}
+@media print{
+  .skip,.back{display:none}
+  a.app-row{padding:8px 0}
+  .app-url{display:block}
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">Skip to app list</a>
+
+<header>
+  <a href="/" class="logo" aria-label="Architect-DNA home">Architect-DNA Systems</a>
+  <h1>All Apps &amp; Tools</h1>
+  <p class="subtitle">Plain list — no animations, no JavaScript required. Works with screen readers.</p>
+  <a href="/" class="back" aria-label="Back to main site">← architect-dna.ch</a>
+</header>
+
+<main id="main">
+
+  <section aria-labelledby="section-focus">
+    <h2 id="section-focus">Focus &amp; Wellness</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/void-freq" aria-label="VOID FREQ — ambient sound app, live on App Store">
+          <div class="app-top"><span class="app-name">VOID FREQ</span><span class="app-tag">Focus · Ambient</span><span class="app-status">Live on App Store</span></div>
+          <p class="app-desc">Live ambient sound for deep work. Brown noise, binaural beats, lo-fi. No streaming. Brain.fm — but free.</p>
+          <span class="app-url">architect-dna.ch/void-freq</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/noise" aria-label="Noise — ambient soundscape mixer">
+          <div class="app-top"><span class="app-name">Noise</span><span class="app-tag">Ambient · Pomodoro</span><span class="app-status">New</span></div>
+          <p class="app-desc">Layer ambient soundscapes. Set a focus timer. Block everything out. Rain, café, deep space, fireplace — mix and match.</p>
+          <span class="app-url">architect-dna.ch/noise</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/calm" aria-label="Calm — biology-first emotional regulation">
+          <div class="app-top"><span class="app-name">Calm</span><span class="app-tag">Mental Health · Biology</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Biology-first emotional regulation. Physiological sigh, dive reflex, cognitive defusion — cortisol down, amygdala calm.</p>
+          <span class="app-url">architect-dna.ch/calm</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/ground" aria-label="Ground — daily routine tracker">
+          <div class="app-top"><span class="app-name">Ground</span><span class="app-tag">Routine · Patterns</span><span class="app-status">New</span></div>
+          <p class="app-desc">Track your four daily pillars — move, social, outside, create. Spot your patterns before they become problems. Decision helper built in.</p>
+          <span class="app-url">architect-dna.ch/ground</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-social">
+    <h2 id="section-social">Social &amp; Connection</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/sparks" aria-label="Connection Sparks — daily social challenges">
+          <div class="app-top"><span class="app-name">Connection Sparks</span><span class="app-tag">Social · Challenges</span><span class="app-status">New</span></div>
+          <p class="app-desc">Daily social challenges that push you out of your comfort zone. 30 challenges, 4 categories. Streak tracking, confetti rewards.</p>
+          <span class="app-url">architect-dna.ch/sparks</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/reach" aria-label="Reach — AI message drafter">
+          <div class="app-top"><span class="app-name">Reach</span><span class="app-tag">AI · Social Anxiety</span><span class="app-status">New</span></div>
+          <p class="app-desc">AI message drafter for when you don't know what to say. 3 tones for every situation — direct, warm, or casual.</p>
+          <span class="app-url">architect-dna.ch/reach</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/wg" aria-label="WG Pulse — anonymous flatmate vibe board">
+          <div class="app-top"><span class="app-name">WG Pulse</span><span class="app-tag">WG · Anonymous</span><span class="app-status">New</span></div>
+          <p class="app-desc">Anonymous vibe board for flatmates. Post how you feel without names. Know when the flat needs space — or connection.</p>
+          <span class="app-url">architect-dna.ch/wg</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/konnekt" aria-label="Konnekt — digital contact sharing">
+          <div class="app-top"><span class="app-name">Konnekt</span><span class="app-tag">Networking · NFC · QR</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Share your contact with one tap. NFC and QR. Profile lives in your browser. No app needed on the other end.</p>
+          <span class="app-url">architect-dna.ch/konnekt</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-rida">
+    <h2 id="section-rida">Muslim Companion</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/rida" aria-label="Rida — Muslim companion app">
+          <div class="app-top"><span class="app-name">Rida رِضا</span><span class="app-tag">Muslim Lifestyle · Offline</span><span class="app-status">New · iOS + Web</span></div>
+          <p class="app-desc">Salah planner, Dhikr counter, Hifz tracker, Halal nutrition scanner — your complete Muslim companion. 100% offline, no account needed.</p>
+          <span class="app-url">rida.architect-dna.ch</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-ai">
+    <h2 id="section-ai">AI Tools</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/vault" aria-label="Prompt Vault — AI prompt templates">
+          <div class="app-top"><span class="app-name">Prompt Vault</span><span class="app-tag">AI · Prompts</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Precision AI prompt templates. Fill in the blanks, copy, launch. Structured workflows for Claude, GPT, Gemini.</p>
+          <span class="app-url">vault.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/poddna" aria-label="Podcast DNA — AI podcast companion">
+          <div class="app-top"><span class="app-name">Podcast DNA</span><span class="app-tag">AI · Podcast</span><span class="app-status">Beta</span></div>
+          <p class="app-desc">AI podcast companion. Ask questions by voice, get deep research and chapter summaries via Claude.</p>
+          <span class="app-url">poddna.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/tacz" aria-label="TACZ — real-time AI conversation earpiece">
+          <div class="app-top"><span class="app-name">TACZ</span><span class="app-tag">AI · Real-Time Conversation</span><span class="app-status">Beta</span></div>
+          <p class="app-desc">AI earpiece that whispers real-time suggestions during conversations. Meetings, calls, negotiations — it listens and tells you what to say next.</p>
+          <span class="app-url">tacz.architect-dna.ch</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-b2b">
+    <h2 id="section-b2b">B2B Tools</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/brief" aria-label="Brief Lab — AI client brief generator">
+          <div class="app-top"><span class="app-name">Brief Lab</span><span class="app-tag">B2B · AI · Briefs</span><span class="app-status">New</span></div>
+          <p class="app-desc">AI-generated client brief from a 5-question form. Deliverables, timeline, budget tiers, scope — ready in 30 seconds.</p>
+          <span class="app-url">architect-dna.ch/brief</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/docusense" aria-label="DocuSense — document AI">
+          <div class="app-top"><span class="app-name">DocuSense</span><span class="app-tag">B2B · Document AI</span><span class="app-status">Lab</span></div>
+          <p class="app-desc">Drop any document, ask any question. AI that reads contracts, reports, and manuals so your team doesn't have to.</p>
+          <span class="app-url">architect-dna.ch/docusense</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/pulsebot" aria-label="PulseBot — website chatbot">
+          <div class="app-top"><span class="app-name">PulseBot</span><span class="app-tag">B2B · Chatbot</span><span class="app-status">Lab</span></div>
+          <p class="app-desc">Add an AI chatbot to any website in 5 minutes. Answers visitor questions instantly, trained on your content.</p>
+          <span class="app-url">architect-dna.ch/pulsebot</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/meetmind" aria-label="MeetMind — meeting transcription">
+          <div class="app-top"><span class="app-name">MeetMind</span><span class="app-tag">B2B · Meetings · AI</span><span class="app-status">Lab</span></div>
+          <p class="app-desc">Every meeting transcribed, summarised, and searchable. Action items extracted automatically. Never lose a decision again.</p>
+          <span class="app-url">architect-dna.ch/meetmind</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-legal">
+    <h2 id="section-legal">Legal &amp; Privacy</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/lia" aria-label="LIA — legal vault for human rights">
+          <div class="app-top"><span class="app-name">LIA</span><span class="app-tag">Legal · Human Rights · Privacy</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Zero-knowledge legal vault for human rights documentation. Evidence stored encrypted, never leaves your device.</p>
+          <span class="app-url">architect-dna.ch/lia</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/qr" aria-label="CV Card — digital CV with QR code">
+          <div class="app-top"><span class="app-name">CV Card</span><span class="app-tag">CV · QR Code</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Digital CV behind a QR code. No login, no app. Your full profile, links, and contact — one scan away.</p>
+          <span class="app-url">qr.architect-dna.ch</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="section-games">
+    <h2 id="section-games">Games &amp; Experiments</h2>
+    <ul>
+      <li>
+        <a class="app-row" href="/nexus-breach" aria-label="NEXUS BREACH — arena brawler game">
+          <div class="app-top"><span class="app-name">NEXUS BREACH</span><span class="app-tag">Arena Brawler · Browser</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Neon arena brawler. Survive endless enemy waves, chain kills for XP, unlock abilities. Pure canvas, no install.</p>
+          <span class="app-url">nexus-breach.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/kart" aria-label="KART — voice-controlled racing game">
+          <div class="app-top"><span class="app-name">KART</span><span class="app-tag">Racer · Voice Nitro · Browser</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Rainbow road racer. Scream into your mic for nitro boost. Three laps. Your voice is the gas pedal.</p>
+          <span class="app-url">kart.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/sector-zero" aria-label="SECTOR ZERO — sci-fi shooter">
+          <div class="app-top"><span class="app-name">SECTOR ZERO</span><span class="app-tag">Shooter · Sci-Fi · Browser</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Tactical sci-fi shooter. Unknown sector, hostile contacts. Aim, fire, survive the unknown.</p>
+          <span class="app-url">sector-zero.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/gridfal" aria-label="GRID FALL — falling block dodge game">
+          <div class="app-top"><span class="app-name">GRID FALL</span><span class="app-tag">Dodge · Reflex · Browser</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Falling blocks, one tile at a time. Dodge the drop. Speed escalates every second. How long can you last?</p>
+          <span class="app-url">gridfal.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/sprint" aria-label="SPRINT — speed running game">
+          <div class="app-top"><span class="app-name">SPRINT</span><span class="app-tag">Runner · Speed · Browser</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Navigate a shifting grid at breakneck speed. Procedurally generated, endlessly faster.</p>
+          <span class="app-url">sprint.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/fly" aria-label="ARES RACE — 3D flight game">
+          <div class="app-top"><span class="app-name">ARES RACE</span><span class="app-tag">3D Flight · Browser</span><span class="app-status">New</span></div>
+          <p class="app-desc">3D bird-flight over NYC and Sydney. 44+ landmark buildings, bloom rendering, live altitude HUD.</p>
+          <span class="app-url">fly.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/bloom" aria-label="BLOOM — garden simulation game">
+          <div class="app-top"><span class="app-name">BLOOM</span><span class="app-tag">Garden Game · Social</span><span class="app-status">Coming Soon</span></div>
+          <p class="app-desc">Plant, grow, harvest, cook and share with neighbors. Hay Day meets pixel garden. Real-time crop timers, recipes, gift codes.</p>
+          <span class="app-url">bloom.architect-dna.ch</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/clyedo" aria-label="Clyedo — curated comedy videos">
+          <div class="app-top"><span class="app-name">Clyedo</span><span class="app-tag">Comedy · Curated</span><span class="app-status">Live</span></div>
+          <p class="app-desc">Quality comedy, zero distraction. Curated standup, sketches, classics — no YouTube rabbit holes, no autoplay.</p>
+          <span class="app-url">architect-dna.ch/clyedo</span>
+        </a>
+      </li>
+      <li>
+        <a class="app-row" href="/velo-noir" aria-label="VELO NOIR — fog-of-war cycling missions">
+          <div class="app-top"><span class="app-name">VELO NOIR</span><span class="app-tag">Cycling · Fog of War · GPS</span><span class="app-status">Lab</span></div>
+          <p class="app-desc">Fog-of-war cycling missions. Your map starts black. Every kilometre you ride reveals the terrain.</p>
+          <span class="app-url">mission.architect-dna.ch</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <p>Architect-DNA Systems · Switzerland · <a href="/">architect-dna.ch</a> · <a href="/privacy">Privacy Policy</a></p>
+  <p style="margin-top:8px;font-size:12px">This page is intentionally simple: no animations, no JavaScript, works offline, compatible with screen readers and high-contrast mode.</p>
+</footer>
+
+</body>
+</html>
