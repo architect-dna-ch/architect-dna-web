@@ -537,7 +537,19 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   <div class="scroll-outer" id="scroll-outer">
     <div class="scroll-track" id="scroll-track">
 
-      <!-- ── ADNA FEATURED (3) ── -->
+      <!-- ── ADNA FEATURED ── -->
+      <a class="proj-card" data-mode="adna" href="/fitra" style="--card-accent:#00c9a7">
+        <div class="proj-card-icon">🌙</div>
+        <div class="proj-card-tag">Life OS · Wellbeing · Privacy · AI</div>
+        <div class="proj-card-name">FITRA</div>
+        <div class="proj-card-desc">Your whole-life operating system. Five human needs — body, safety, belonging, esteem, soul — in one private daily practice. 12 minutes a day.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">architect-dna.ch/fitra</span>
+          <span class="proj-card-status s-lab">Concept</span>
+          <span class="proj-card-arrow">↗</span>
+        </div>
+      </a>
+
       <a class="proj-card" data-mode="adna" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
         <div class="proj-card-icon">🎧</div>
         <div class="proj-card-tag">Focus · Ambient · iOS · Web</div>
@@ -1512,6 +1524,35 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
   30%,55%{transform:scaleX(.55);opacity:.12}
   80%{transform:scaleX(1.1);opacity:.2}
 }
+
+/* ── Konami overlay ── */
+#konami-ov{display:none;position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;}
+#konami-ov.on{display:block;}
+#konami-glitch{position:absolute;inset:0;background:rgba(0,255,80,.07);mix-blend-mode:screen;opacity:0;transition:opacity .1s;}
+#konami-glitch.on{opacity:1;}
+#konami-scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,255,60,.18) 3px,rgba(0,255,60,.18) 4px);
+  opacity:0;transition:opacity .15s;
+}
+#konami-scan.on{opacity:1;animation:kScan .08s steps(1) infinite;}
+@keyframes kScan{0%{transform:translateY(0);}50%{transform:translateY(2px);}}
+#konami-bunny{position:absolute;bottom:22%;font-size:56px;left:-80px;filter:drop-shadow(0 0 14px #00ff50);}
+#konami-bunny.run{animation:kBunny 2.4s cubic-bezier(.4,0,.6,1) forwards;}
+@keyframes kBunny{
+  0%  {left:-80px;transform:scaleX(1);}
+  45% {left:52%;transform:scaleX(1);}
+  50% {left:52%;transform:scaleX(-1);}
+  100%{left:calc(100% + 80px);transform:scaleX(-1);}
+}
+#konami-msg{
+  position:absolute;top:30%;left:50%;transform:translateX(-50%);
+  color:#00ff50;font-family:'Courier New',monospace;font-size:clamp(16px,2.8vw,26px);
+  font-weight:900;letter-spacing:.1em;white-space:nowrap;
+  text-shadow:0 0 16px #00ff50,0 0 38px #00cc40;
+  opacity:0;transition:opacity .3s;
+}
+#konami-msg.show{opacity:1;}
 </style>
 
 <div id="claude-egg">
@@ -1557,20 +1598,45 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
     if(idx===0) showMsg();
   },8000);
 
-  // konami code fires a special message
-  let seq=[];
+  // konami code
+  let seq=[], konamiRunning=false;
   const konami=[38,38,40,40,37,39,37,39,66,65];
   document.addEventListener('keydown',e=>{
+    if(konamiRunning) return;
     seq.push(e.keyCode);seq=seq.slice(-10);
     if(seq.join(',')==='38,38,40,40,37,39,37,39,66,65'){
-      bubble.textContent='✓ Konami unlocked. Still no cheat codes. 🤫';
-      bubble.classList.add('show');
-      clearTimeout(timer);
-      timer=setTimeout(()=>bubble.classList.remove('show'),4000);
+      seq=[];
+      konamiRunning=true;
+      const ov=document.getElementById('konami-ov');
+      const gl=document.getElementById('konami-glitch');
+      const sc=document.getElementById('konami-scan');
+      const bn=document.getElementById('konami-bunny');
+      const ms=document.getElementById('konami-msg');
+      ov.classList.add('on');
+      bn.classList.add('run');
+      setTimeout(()=>ms.classList.add('show'),950);
+      setTimeout(()=>{gl.classList.add('on');sc.classList.add('on');},1250);
+      let flicker=setInterval(()=>{
+        gl.style.background=`rgba(0,${180+Math.random()*75|0},${40+Math.random()*40|0},${.05+Math.random()*.1})`;
+        gl.style.transform=`translate(${(Math.random()-.5)*4}px,${(Math.random()-.5)*2}px)`;
+      },80);
+      setTimeout(()=>{
+        clearInterval(flicker);
+        gl.classList.remove('on');sc.classList.remove('on');ms.classList.remove('show');
+        gl.style.cssText='';
+        setTimeout(()=>{ov.classList.remove('on');bn.classList.remove('run');konamiRunning=false;},400);
+      },6250);
     }
   });
 })();
 </script>
+
+<div id="konami-ov">
+  <div id="konami-glitch"></div>
+  <div id="konami-scan"></div>
+  <div id="konami-bunny">🐰</div>
+  <div id="konami-msg">Claude says hi 🥚</div>
+</div>
 
 </body>
 </html>
