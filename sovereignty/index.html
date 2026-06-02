@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sovereignty</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:      '#0a0a09',
+            surface: '#111110',
+            border:  '#1e1d1b',
+            accent:  '#c9a96e',
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #0a0a09; -webkit-font-smoothing: antialiased; }
+    .fade { opacity: 0; transform: translateY(16px); animation: up .6s ease forwards; }
+    .fade-2 { animation-delay: .15s; }
+    .fade-3 { animation-delay: .3s; }
+    @keyframes up { to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body class="min-h-full text-stone-200 font-sans">
+
+  <!-- Nav -->
+  <nav class="px-6 py-5 flex items-center justify-between max-w-4xl mx-auto">
+    <span class="text-sm font-semibold tracking-widest uppercase text-stone-400">Sovereignty</span>
+    <a href="#waitlist" class="text-xs text-stone-500 hover:text-stone-300 transition-colors">Early access →</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="px-6 pt-20 pb-28 max-w-2xl mx-auto text-center">
+    <h1 class="fade text-4xl sm:text-5xl font-bold leading-tight tracking-tight mb-5 text-stone-100">
+      Stop chasing.<br />Start building.
+    </h1>
+    <p class="fade fade-2 text-base sm:text-lg text-stone-400 leading-relaxed mb-10 max-w-lg mx-auto">
+      The men who attract the most aren't running the most game.
+      They're building lives so full that the right people walk in on their own.
+    </p>
+    <a href="#waitlist" class="fade fade-3 inline-block bg-[#c9a96e] text-[#0a0a09] text-sm font-semibold px-7 py-3 rounded-full hover:opacity-90 transition-opacity">
+      Get early access
+    </a>
+  </section>
+
+  <!-- Misconceptions -->
+  <section class="px-6 pb-28 max-w-3xl mx-auto">
+    <p class="text-xs uppercase tracking-widest text-stone-600 mb-8 text-center">What the culture gets wrong</p>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+
+      <div class="bg-[#111110] border border-[#1e1d1b] rounded-2xl p-6">
+        <p class="text-xs text-[#c9a96e] uppercase tracking-widest mb-3">Myth</p>
+        <p class="text-base font-medium text-stone-200 mb-3">"Cold approach is how real men do it."</p>
+        <p class="text-sm text-stone-500 leading-relaxed">You're interrupting a stranger to audition for her approval. That's not confidence — it's desperation with better posture.</p>
+      </div>
+
+      <div class="bg-[#111110] border border-[#1e1d1b] rounded-2xl p-6">
+        <p class="text-xs text-[#c9a96e] uppercase tracking-widest mb-3">Myth</p>
+        <p class="text-base font-medium text-stone-200 mb-3">"Just be more confident."</p>
+        <p class="text-sm text-stone-500 leading-relaxed">Performed confidence is still a performance. Women feel the difference between a man who needs to seem confident and one who simply is.</p>
+      </div>
+
+      <div class="bg-[#111110] border border-[#1e1d1b] rounded-2xl p-6">
+        <p class="text-xs text-[#c9a96e] uppercase tracking-widest mb-3">Myth</p>
+        <p class="text-base font-medium text-stone-200 mb-3">"Put yourself out there more."</p>
+        <p class="text-sm text-stone-500 leading-relaxed">Volume is a losing strategy. You don't need to be in more places — you need to be someone worth finding in the places you already are.</p>
+      </div>
+
+      <div class="bg-[#111110] border border-[#1e1d1b] rounded-2xl p-6">
+        <p class="text-xs text-[#c9a96e] uppercase tracking-widest mb-3">Myth</p>
+        <p class="text-base font-medium text-stone-200 mb-3">"Keep pushing. Persistence wins."</p>
+        <p class="text-sm text-stone-500 leading-relaxed">She already knows how she feels. More pressure doesn't change that — it just confirms you need the yes more than you let on.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- The principle -->
+  <section class="px-6 pb-28 max-w-xl mx-auto text-center">
+    <p class="text-2xl sm:text-3xl font-semibold text-stone-100 leading-snug mb-4">
+      One principle.
+    </p>
+    <p class="text-stone-400 text-base leading-relaxed">
+      Live a life so deliberate, so full, so genuinely yours —
+      that the right woman doesn't need to be convinced.
+      She recognises it and steps in.
+    </p>
+  </section>
+
+  <!-- Waitlist -->
+  <section id="waitlist" class="px-6 pb-32 max-w-md mx-auto text-center">
+    <div class="bg-[#111110] border border-[#1e1d1b] rounded-2xl p-8">
+      <p class="text-base font-semibold text-stone-100 mb-1">Early access</p>
+      <p class="text-xs text-stone-500 mb-6">The app is in development. Drop your email — no spam, just a ping when it's ready.</p>
+      <form action="https://formspree.io/f/mvzyelnv" method="POST" onsubmit="handleSubmit(event)" class="flex flex-col gap-3">
+        <input
+          id="email"
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          required
+          class="w-full bg-[#0a0a09] border border-[#1e1d1b] rounded-xl px-4 py-3 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-[#c9a96e] transition-colors"
+        />
+        <button
+          type="submit"
+          class="w-full bg-[#c9a96e] text-[#0a0a09] text-sm font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity"
+        >
+          Notify me
+        </button>
+      </form>
+      <p id="thanks" class="hidden text-sm text-[#c9a96e] mt-4">You're in. We'll reach out when it's ready.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="px-6 py-8 border-t border-[#1e1d1b] text-center">
+    <p class="text-xs text-stone-700">© 2026 Sovereignty. No community. No course. No grift.</p>
+  </footer>
+
+  <script>
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (res.ok) {
+          form.style.display = 'none';
+          document.getElementById('thanks').classList.remove('hidden');
+        } else {
+          btn.textContent = 'Try again';
+          btn.disabled = false;
+        }
+      } catch {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+      }
+    }
+  </script>
+
+</body>
+</html>
