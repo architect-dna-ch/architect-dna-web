@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zugcafé — Who's nearby right now</title>
+<meta name="description" content="Post that you're open for coffee, a card game, or company — right now, wherever you are. Visible for 5 minutes to people nearby. No account, no matching, no swiping.">
+<meta property="og:title" content="Zugcafé — Who's nearby right now">
+<meta property="og:description" content="Post that you're open for coffee, a card game, or company. Visible for 5 minutes to people nearby.">
+<meta property="og:url" content="https://architect-dna.ch/zugcafe">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1e1308">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e1308;
+  --bg2:#2a1c0e;
+  --bg3:#352314;
+  --border:#4a3020;
+  --border2:#5a3c28;
+  --text:#f5ede0;
+  --text2:#9a8a78;
+  --text3:#5a4e42;
+  --accent:#e8a040;
+  --accent2:#c8882a;
+  --coffee:#c8882a;
+  --game:#8878e8;
+  --company:#7eb87a;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh}
+
+header{position:sticky;top:0;z-index:100;background:rgba(30,19,8,0.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:920px;margin:0 auto;display:flex;align-items:center;height:60px;gap:16px}
+.logo{font-size:16px;font-weight:900;letter-spacing:-.02em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:15px}
+.logo-domain{font-size:11px;color:var(--text3);letter-spacing:.02em}
+.header-nav{margin-left:auto;display:flex;gap:4px}
+.header-nav a{font-size:12px;font-weight:700;color:var(--text2);text-decoration:none;padding:7px 14px;border-radius:20px;transition:.15s}
+.header-nav a:hover{color:var(--accent);background:rgba(232,160,64,0.08)}
+
+.hero{position:relative;overflow:hidden;padding:76px 24px 56px;background:var(--bg)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,160,64,0.07) 0%, transparent 65%);pointer-events:none}
+.hero-inner{max-width:640px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.hero-icon{width:88px;height:88px;margin:0 auto 24px;border-radius:22px;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:42px}
+.hero-kicker{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero-title{font-size:clamp(36px,7vw,56px);font-weight:900;letter-spacing:-.03em;line-height:1.05;margin-bottom:16px}
+.hero-desc{font-size:17px;color:var(--text2);max-width:440px;margin:0 auto 32px;line-height:1.7}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:15px 30px;border-radius:14px;font-size:14px;font-weight:800;text-decoration:none;transition:.18s;background:var(--accent);color:#1a1006;box-shadow:0 8px 24px rgba(232,160,64,0.25)}
+.btn-primary:hover{filter:brightness(1.08);box-shadow:0 8px 32px rgba(232,160,64,0.4)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:14px;font-size:13px;font-weight:700;text-decoration:none;transition:.18s;background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-secondary:hover{color:var(--text);border-color:var(--accent2);background:var(--bg2)}
+.hero-note{font-size:12px;color:var(--text3)}
+
+section{max-width:920px;margin:0 auto;padding:56px 24px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+h2{font-size:clamp(22px,3.5vw,28px);font-weight:900;letter-spacing:-.02em;margin-bottom:10px}
+
+.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:28px}
+.type-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px;transition:.2s}
+.type-card:hover{border-color:var(--border2);background:var(--bg3)}
+.type-card-icon{font-size:30px;margin-bottom:14px}
+.type-card-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.type-card-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:28px}
+.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px}
+.feature-icon{font-size:26px;margin-bottom:14px}
+.feature-title{font-size:15px;font-weight:800;margin-bottom:8px}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+.install-banner{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px;text-align:center;margin-top:8px}
+.install-steps{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:24px;text-align:left}
+.install-step{max-width:200px}
+.install-step-num{font-size:12px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.install-step-text{font-size:13px;color:var(--text2);line-height:1.6}
+
+.divider{border:none;border-top:1px solid var(--border);max-width:920px;margin:0 auto}
+footer{border-top:1px solid var(--border);padding:28px 24px}
+.footer-inner{max-width:920px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-links{display:flex;gap:18px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none}
+.footer-links a:hover{color:var(--accent)}
+
+@media(max-width:600px){
+  .hero{padding:56px 20px 44px}
+  section{padding:40px 20px}
+  .header-nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">☕</div>
+      Zugcafé
+      <span class="logo-domain">architect-dna.ch</span>
+    </a>
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="https://zugcafe.architect-dna.ch">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-icon">☕</div>
+    <div class="hero-kicker">Trains · Cafés · Parks</div>
+    <div class="hero-title">Who's nearby<br>right now?</div>
+    <p class="hero-desc">
+      Post that you're open for coffee, a card game, or just company — visible for 5 minutes to anyone nearby. One tap to join. No account, no matching, no swiping.
+    </p>
+    <div class="hero-cta">
+      <a href="https://zugcafe.architect-dna.ch" class="btn-primary">
+        <span>☕</span> Open Zugcafé
+      </a>
+      <a href="#how-it-works" class="btn-secondary">How it works</a>
+    </div>
+    <div class="hero-note">Free · Works in your browser · Add to Home Screen for the full app feel</div>
+  </div>
+</div>
+
+<section id="how-it-works">
+  <div class="section-label">How it works</div>
+  <h2>Say what you're open to. Someone joins.</h2>
+  <p style="color:var(--text2);font-size:14px;margin-top:8px">Every post is visible for exactly 5 minutes, to people within 2km. Then it's gone.</p>
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="type-card-icon">☕</div>
+      <div class="type-card-title">Coffee</div>
+      <div class="type-card-desc">Post you're grabbing a coffee and open to company. Someone nearby taps join, you meet up.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-card-icon">🃏</div>
+      <div class="type-card-title">Card game</div>
+      <div class="type-card-desc">Open a live UNO room right in the app — up to 4 players, no extra app to install.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-card-icon">🌿</div>
+      <div class="type-card-title">Just company</div>
+      <div class="type-card-desc">Sometimes you just don't want to sit alone. Post it — no agenda needed.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <div class="section-label">Also inside</div>
+  <h2>Built for the moment, not the profile.</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <div class="feature-title">Rooms</div>
+      <div class="feature-desc">Every join opens a private chat or game room — shareable by link, nearby-filtered so old rooms fade out of view after 24h.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚆</div>
+      <div class="feature-title">Open Seats</div>
+      <div class="feature-desc">Post where you'll be later — "Café Marta, Bern HB, 3pm" — no RSVP needed, people just show up.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">No account</div>
+      <div class="feature-desc">Just a name. Nothing to sign up for, nothing to manage. Location is only used to show what's nearby.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <div class="install-banner">
+    <div class="section-label" style="justify-content:center">Get it on your phone</div>
+    <h2 style="text-align:center">It's a website. It installs like an app.</h2>
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div class="install-step-text">Open <strong>zugcafe.architect-dna.ch</strong> in Safari or Chrome.</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div class="install-step-text">Tap Share → <strong>Add to Home Screen</strong> (iOS) or the install icon in the address bar (Android/Desktop).</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">3</div>
+        <div class="install-step-text">It opens full-screen, with its own icon — no App Store needed.</div>
+      </div>
+    </div>
+    <div class="hero-cta" style="margin-top:28px">
+      <a href="https://zugcafe.architect-dna.ch" class="btn-primary"><span>☕</span> Open Zugcafé</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 Zugcafé · Architect-DNA · Bern, Switzerland</div>
+    <div class="footer-links">
+      <a href="https://zugcafe.architect-dna.ch">Open App</a>
+      <a href="/">architect-dna.ch</a>
+      <a href="mailto:systems@architect-dna.ch">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

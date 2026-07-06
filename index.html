@@ -22,7 +22,9 @@
   --mono:'SF Mono','Fira Code','Courier New',monospace;
 }
 html{scroll-behavior:smooth}
+html{overflow-x:hidden}
 body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;transition:opacity .35s ease}
+body.split-active{overflow:hidden;height:100dvh}
 body.leaving{opacity:0}
 
 /* ── HEADER ── */
@@ -68,18 +70,17 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdr
 .scroll-nav.left{left:16px}
 .scroll-nav.right{right:16px}
 .nav-arrow{width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid var(--border2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;box-shadow:0 2px 12px rgba(0,0,0,.08);color:var(--text)}
-.nav-arrow:hover{background:var(--text);color:#fff;border-color:var(--text)}
+.nav-arrow:hover{}
 .scroll-outer{overflow:hidden;padding:20px 0 32px;cursor:default;user-select:none}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 transparent}30%{box-shadow:0 0 0 4px rgba(26,26,26,.18),0 0 18px 2px rgba(26,26,26,.1)}70%{box-shadow:0 0 0 3px rgba(26,26,26,.1)}}
 @keyframes arrowPulse{0%,100%{box-shadow:0 2px 12px rgba(0,0,0,.08)}40%{box-shadow:0 0 0 5px rgba(26,26,26,.12),0 2px 20px rgba(0,0,0,.18)}80%{box-shadow:0 0 0 2px rgba(26,26,26,.06)}}
 .glow-pulse{animation:glowPulse 1.6s ease forwards}
 .arrow-pulse{animation:arrowPulse 1.6s ease forwards}
 .scroll-track{display:flex;gap:20px;padding:0 calc(50vw - 200px);will-change:transform;transition:none}
-.proj-card{flex-shrink:0;width:320px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .3s,box-shadow .3s;transform:scale(.9);opacity:.55;text-decoration:none;color:inherit;position:relative;overflow:hidden;cursor:pointer}
-.proj-card.active{transform:scale(1);opacity:1;box-shadow:0 8px 40px rgba(0,0,0,.1)}
+.proj-card{flex-shrink:0;width:320px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:0;transition:box-shadow .3s;text-decoration:none;color:inherit;position:relative;overflow:hidden;cursor:pointer}
+.proj-card.active{box-shadow:0 8px 40px rgba(0,0,0,.1)}
 .proj-card-arrow{font-size:16px;color:var(--text3);transition:.15s;margin-left:auto}
 .proj-card.active .proj-card-arrow{color:var(--text)}
-.proj-card:hover .proj-card-arrow{transform:translate(2px,-2px)}
 .proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,var(--text))}
 .proj-card-icon{font-size:36px;margin-bottom:20px}
 .proj-card-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-family:var(--mono)}
@@ -187,6 +188,11 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 @media(max-width:700px){
   .hero{padding:60px 20px 48px}
   .header-nav{display:none}
+  header{padding:0 16px}
+  .logo-domain{display:none}
+  #vc-toggle{margin-left:auto}
+  .vct-half{padding:5px 9px;font-size:9px;letter-spacing:.06em}
+  .vct-half span.vct-emoji{display:none}
   .about-inner{grid-template-columns:1fr}
   .stack-icons{grid-template-columns:1fr 1fr}
   .projects-head{padding:0 20px;flex-wrap:wrap;gap:4px}
@@ -257,6 +263,7 @@ body.vc-mode #email-toast{background:#0c0f1a;border:1px solid rgba(255,255,255,.
   position:fixed;inset:0;z-index:9000;
   display:flex;flex-direction:row;overflow:hidden;
   transition:opacity .45s ease, transform .45s ease;
+  overscroll-behavior:none;touch-action:pan-x;
 }
 #split-intro.dismissed{opacity:0;pointer-events:none}
 .split-half{
@@ -320,17 +327,17 @@ body.vc-mode #email-toast{background:#0c0f1a;border:1px solid rgba(255,255,255,.
   .split-half{
     flex:0 0 calc(50dvh - 1px)!important;
     height:calc(50dvh - 1px);
-    overflow:hidden;padding:20px;width:100%;gap:8px;
-    justify-content:center;
+    overflow:hidden;padding:32px 28px;width:100%;gap:14px;
+    justify-content:center;align-items:center;
   }
-  .split-half:hover,.split-half:focus{flex:0 0 calc(50dvh - 1px)!important}
-  .split-half:active{filter:brightness(.9)}
-  .split-eyebrow{font-size:9px;margin-bottom:0}
-  .split-title{font-size:clamp(28px,9vw,44px)!important;line-height:.9}
-  .split-sub{display:none}
-  .split-cta{padding:8px 16px;font-size:12px;margin-top:0}
+  .split-half:hover{flex:0 0 calc(50dvh - 1px)!important}
+  .split-half:active{opacity:.88}
+  .split-eyebrow{font-size:11px;margin-bottom:2px}
+  .split-title{font-size:clamp(38px,11vw,52px)!important;line-height:.92}
+  .split-sub{display:block;font-size:13px;max-width:280px;opacity:.55;margin-top:2px}
+  .split-cta{padding:12px 26px;font-size:14px;margin-top:6px}
   .split-divider{width:100%;height:1.5px;min-height:1.5px;flex-shrink:0}
-  .split-divider::after{content:'↕'}
+  .split-divider::after{content:'↕';background:#111}
   #split-intro.pick-left .split-left{flex:0 0 100dvh!important;height:100dvh}
   #split-intro.pick-left .split-right{flex:0 0 0!important;height:0;opacity:0}
   #split-intro.pick-left .split-divider{opacity:0}
@@ -479,8 +486,8 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
       <a href="#" onclick="copyEmail(event)" class="nav-cta">Contact →</a>
     </nav>
     <button id="vc-toggle" onclick="switchTheme(event)" title="Switch identity" aria-label="Switch between Architect-DNA and VOID CELL">
-      <span class="vct-half vct-adna">🏛 ARCHITECT·DNA</span>
-      <span class="vct-half vct-vc">🕹 VOID·CELL</span>
+      <span class="vct-half vct-adna"><span class="vct-emoji">🏛 </span>ARCHITECT·DNA</span>
+      <span class="vct-half vct-vc"><span class="vct-emoji">🕹 </span>VOID·CELL</span>
     </button>
   </div>
 </header>
@@ -528,7 +535,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
       <div class="section-label" id="proj-label">Work</div>
       <h2 id="proj-h2">What we ship</h2>
     </div>
-    <p id="proj-hint">← Move mouse or use arrows →</p>
+    <p id="proj-hint" style="display:none"></p>
   </div>
 
   <div class="scroll-zone">
@@ -538,16 +545,40 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
     <div class="scroll-track" id="scroll-track">
 
       <!-- ── ADNA FEATURED ── -->
-      <a class="proj-card" data-mode="adna" href="/fitra" style="--card-accent:#00c9a7">
-        <div class="proj-card-icon">🌙</div>
-        <div class="proj-card-tag">Life OS · Wellbeing · Privacy · AI</div>
-        <div class="proj-card-name">FITRA</div>
-        <div class="proj-card-desc">Your whole-life operating system. Five human needs — body, safety, belonging, esteem, soul — in one private daily practice. 12 minutes a day.</div>
+      <a class="proj-card" data-mode="adna" href="/anchor" style="--card-accent:#c4a882">
+        <div class="proj-card-icon">⚓</div>
+        <div class="proj-card-tag">AI · Companion · Daily Practice</div>
+        <div class="proj-card-name">Anchor</div>
+        <div class="proj-card-desc">Your personal AI companion. Knows your situation. Reflects what you logged, surfaces wins you missed, pulls you out of loops in 10 seconds.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">architect-dna.ch/fitra</span>
-          <span class="proj-card-status s-lab">Concept</span>
-          <span class="proj-card-arrow">↗</span>
+          <span class="proj-card-url">anchor.architect-dna.ch</span>
+          <span class="proj-card-status s-live">Live</span>
         </div>
+        <span class="proj-card-arrow">→</span>
+      </a>
+
+      <a class="proj-card" data-mode="adna" href="/einspruch" style="--card-accent:#e11d48">
+        <div class="proj-card-icon">📋</div>
+        <div class="proj-card-tag">Legal · AI · Citizens · Switzerland</div>
+        <div class="proj-card-name">Einspruch</div>
+        <div class="proj-card-desc">AI-powered legal objection tool for Swiss citizens. Draft Einspruch, Rekurs and Beschwerde letters in minutes — in plain language.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">einspruch.architect-dna.ch</span>
+          <span class="proj-card-status s-beta">Beta</span>
+        </div>
+        <span class="proj-card-arrow">→</span>
+      </a>
+
+      <a class="proj-card" data-mode="adna" href="/sovereignty" style="--card-accent:#7c3aed">
+        <div class="proj-card-icon">🛡️</div>
+        <div class="proj-card-tag">Privacy · Identity · Data Rights</div>
+        <div class="proj-card-name">Souverénity</div>
+        <div class="proj-card-desc">Own your digital identity. No central server, no tracking, no lock-in. On-device. Your data stays yours — forever.</div>
+        <div class="proj-card-footer">
+          <span class="proj-card-url">sovereign.architect-dna.ch</span>
+          <span class="proj-card-status s-beta">Beta</span>
+        </div>
+        <span class="proj-card-arrow">→</span>
       </a>
 
       <a class="proj-card" data-mode="adna" href="/void-freq" target="_blank" style="--card-accent:#00c8b4">
@@ -558,20 +589,20 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         <div class="proj-card-footer">
           <span class="proj-card-url">architect-dna.ch/void-freq</span>
           <span class="proj-card-status s-new">Live on App Store</span>
-          <span class="proj-card-arrow">↗</span>
         </div>
+        <span class="proj-card-arrow">↗</span>
       </a>
 
-      <a class="proj-card" data-mode="adna" href="/vault" target="_blank" style="--card-accent:#a855f7">
-        <div class="proj-card-icon">🗝️</div>
-        <div class="proj-card-tag">AI · Prompts · Templates</div>
-        <div class="proj-card-name">Prompt Vault</div>
-        <div class="proj-card-desc">Precision AI prompt templates. Fill in the blanks, copy, launch. Structured workflows for Claude, GPT, Gemini.</div>
+      <a class="proj-card" data-mode="adna" href="/zugcafe" style="--card-accent:#e8a040">
+        <div class="proj-card-icon">☕</div>
+        <div class="proj-card-tag">Nearby · Live · PWA</div>
+        <div class="proj-card-name">Zugcafé</div>
+        <div class="proj-card-desc">Who's nearby right now. Post you're open for coffee, a card game, or company — visible 5 minutes, one tap to join.</div>
         <div class="proj-card-footer">
-          <span class="proj-card-url">vault.architect-dna.ch</span>
+          <span class="proj-card-url">zugcafe.architect-dna.ch</span>
           <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
         </div>
+        <span class="proj-card-arrow">→</span>
       </a>
 
       <a class="proj-card" data-mode="adna" href="/lia" style="--card-accent:#3b82f6">
@@ -582,8 +613,8 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
         <div class="proj-card-footer">
           <span class="proj-card-url">architect-dna.ch/lia</span>
           <span class="proj-card-status s-live">Live</span>
-          <span class="proj-card-arrow">↗</span>
         </div>
+        <span class="proj-card-arrow">↗</span>
       </a>
 
       <!-- ── VC FEATURED (3) ── -->
@@ -639,6 +670,28 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 
   <div class="extra-grid" id="extra-grid">
     <!-- ADNA overflow -->
+    <a class="proj-card" data-mode="adna" href="/fitra" style="--card-accent:#00c9a7">
+      <div class="proj-card-icon">🌙</div>
+      <div class="proj-card-tag">Life OS · Wellbeing · Privacy · AI</div>
+      <div class="proj-card-name">FITRA</div>
+      <div class="proj-card-desc">Your whole-life operating system. Five human needs — body, safety, belonging, esteem, soul — in one private daily practice. 12 minutes a day.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">architect-dna.ch/fitra</span>
+        <span class="proj-card-status s-lab">Concept</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
+    <a class="proj-card" data-mode="adna" href="/vault" target="_blank" style="--card-accent:#a855f7">
+      <div class="proj-card-icon">🗝️</div>
+      <div class="proj-card-tag">AI · Prompts · Templates</div>
+      <div class="proj-card-name">Prompt Vault</div>
+      <div class="proj-card-desc">Precision AI prompt templates. Fill in the blanks, copy, launch. Structured workflows for Claude, GPT, Gemini.</div>
+      <div class="proj-card-footer">
+        <span class="proj-card-url">vault.architect-dna.ch</span>
+        <span class="proj-card-status s-live">Live</span>
+        <span class="proj-card-arrow">↗</span>
+      </div>
+    </a>
     <a class="proj-card" data-mode="adna" href="/qr" target="_blank" style="--card-accent:#3b82f6">
       <div class="proj-card-icon">🪪</div>
       <div class="proj-card-tag">CV · QR Code · No Install</div>
@@ -1242,7 +1295,10 @@ function chooseSide(mode){
     intro.classList.add('dismissed');
     localStorage.setItem('adna_mode', mode);
   }, 480);
-  setTimeout(()=>{ intro.style.display='none'; }, 940);
+  setTimeout(()=>{
+    intro.style.display='none';
+    document.body.classList.remove('split-active');
+  }, 940);
 }
 
 function switchToMode(toVC){
@@ -1400,6 +1456,7 @@ function switchTheme(e){
   setTimeout(()=>{
     switchToMode(toVC);
     localStorage.setItem('adna_mode', toVC ? 'vc' : 'adna');
+    history.pushState(null,'', toVC ? '/void-cell' : '/');
     if(toVC) goTo(0);
 
     // fade ripple out
@@ -1416,15 +1473,28 @@ function switchTheme(e){
 
 // ── Init: split intro or restore saved mode ───────────────────────────────────
 (function initMode(){
+  const path = location.pathname;
+  const hash = location.hash;
   const saved = localStorage.getItem('adna_mode');
   const intro = document.getElementById('split-intro');
+
+  // /void-cell path or #void-cell hash → VOID CELL mode, clean URL
+  if(path === '/void-cell' || hash === '#void-cell'){
+    intro.style.display = 'none';
+    switchToMode(true);
+    localStorage.setItem('adna_mode','vc');
+    history.replaceState(null,'','/void-cell');
+    return;
+  }
+
   if(saved){
     intro.style.display = 'none';
     if(saved === 'vc') switchToMode(true);
     else filterCards('adna');
   } else {
-    // First visit — show split, hide main content until chosen
-    filterCards('adna'); // default state behind the overlay
+    // split intro is visible — lock body scroll so the page can't be scrolled underneath
+    document.body.classList.add('split-active');
+    filterCards('adna');
   }
 })();
 
@@ -1553,6 +1623,27 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
   opacity:0;transition:opacity .3s;
 }
 #konami-msg.show{opacity:1;}
+
+/* ── PULSEBOT DEMO WIDGET ── */
+#pb-demo{position:fixed;bottom:24px;left:24px;z-index:8000;display:flex;flex-direction:column;align-items:flex-start}
+#pb-bubble{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.4);transition:transform .2s;border:none}
+#pb-bubble:hover{transform:scale(1.08)}
+#pb-bubble:active{transform:scale(.95)}
+.pb-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(139,92,246,.75);font-family:var(--mono);margin-top:4px;width:52px;text-align:center}
+#pb-win{width:300px;background:#12121f;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);margin-bottom:12px;transform-origin:bottom left;transform:scale(0) translateY(8px);opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.34,1.36,.64,1),opacity .14s}
+#pb-win.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.pb-head{background:linear-gradient(135deg,#8b5cf6,#ec4899);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.pb-head-info .pb-head-name{font-size:14px;font-weight:700;color:#fff}
+.pb-head-info .pb-head-status{font-size:11px;color:rgba(255,255,255,.7)}
+.pb-head-close{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:16px;line-height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#pb-msgs{padding:16px;height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.pb-msg{max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;font-family:var(--font)}
+.pb-msg.bot{background:#1a1a2e;color:#f0f0ff;border-radius:10px 10px 10px 2px}
+.pb-msg.user{background:rgba(139,92,246,.22);color:#f0f0ff;margin-left:auto;border-radius:10px 10px 2px 10px}
+.pb-input-row{padding:12px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:8px}
+.pb-input{flex:1;background:#1a1a2e;border:1px solid rgba(255,255,255,.14);color:#f0f0ff;padding:8px 11px;border-radius:8px;font-size:13px;font-family:var(--font);outline:none}
+.pb-input::placeholder{color:rgba(240,240,255,.3)}
+.pb-send{padding:8px 14px;background:linear-gradient(135deg,#8b5cf6,#ec4899);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
 </style>
 
 <div id="claude-egg">
@@ -1637,6 +1728,74 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
   <div id="konami-bunny">🐰</div>
   <div id="konami-msg">Claude says hi 🥚</div>
 </div>
+
+<!-- ── PULSEBOT DEMO WIDGET ── -->
+<div id="pb-demo">
+  <div id="pb-win">
+    <div class="pb-head">
+      <div class="pb-head-info">
+        <div class="pb-head-name">PulseBot</div>
+        <div class="pb-head-status">● Online · Ready to help</div>
+      </div>
+      <button class="pb-head-close" onclick="pbToggle()" aria-label="Close">×</button>
+    </div>
+    <div id="pb-msgs">
+      <div class="pb-msg bot">Hey 👋 I'm PulseBot. Ask me anything about Architect-DNA or how to add me to your site.</div>
+    </div>
+    <div class="pb-input-row">
+      <input class="pb-input" id="pb-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')pbSend()">
+      <button class="pb-send" onclick="pbSend()">→</button>
+    </div>
+  </div>
+  <button id="pb-bubble" onclick="pbToggle()" aria-label="Open PulseBot chat">💬</button>
+  <div class="pb-label">PulseBot</div>
+</div>
+
+<script>
+(function(){
+  const API='/api/chat';
+  const CTX='You are PulseBot, the AI assistant for Architect-DNA — a Swiss indie software studio based in Bern. Answer questions helpfully and concisely in the same language the user writes in (German or English). Facts: Architect-DNA builds privacy-first apps and browser games. Apps: FITRA (life OS), VOID FREQ (ambient focus), LIA (legal vault), Rida (Muslim companion), Calm, Noise, Sakina (waswas companion). Games: Nexus Breach, KART, BLOOM, Grid Fall, Sprint, Ares Race, Sector Zero — all free, no install. PulseBot is an embeddable AI chatbot for Swiss KMUs, CHF 49/149/499/month, 30-day free trial, no credit card, one line of code to install, DSGVO-konform. Contact: systems@architect-dna.ch. Based in Bern, Switzerland.';
+
+  let open=false;
+  window.pbToggle=function(){
+    open=!open;
+    document.getElementById('pb-win').classList.toggle('open',open);
+    if(open) document.getElementById('pb-input').focus();
+  };
+
+  window.pbSend=function(){
+    const inp=document.getElementById('pb-input');
+    const text=inp.value.trim(); if(!text) return;
+    pbAdd(text,'user'); inp.value='';
+    const typing=pbTyping();
+    fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:text,context:CTX})
+    })
+    .then(r=>r.json())
+    .then(d=>{ typing.remove(); pbAdd(d.answer||'Entschuldigung, ein Fehler ist aufgetreten.','bot'); })
+    .catch(()=>{ typing.remove(); pbAdd('Verbindungsfehler — bitte versuche es nochmal.','bot'); });
+  };
+
+  function pbAdd(text,type){
+    const el=document.createElement('div');
+    el.className='pb-msg '+type; el.textContent=text;
+    const c=document.getElementById('pb-msgs');
+    c.appendChild(el); c.scrollTop=c.scrollHeight;
+    return el;
+  }
+
+  function pbTyping(){
+    const el=document.createElement('div');
+    el.className='pb-msg bot';
+    el.innerHTML='<span style="opacity:.5">···</span>';
+    const c=document.getElementById('pb-msgs');
+    c.appendChild(el); c.scrollTop=c.scrollHeight;
+    return el;
+  }
+})();
+</script>
 
 </body>
 </html>
