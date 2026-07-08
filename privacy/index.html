@@ -4,51 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Privacy Policy · Architect-DNA</title>
-<meta name="description" content="Privacy policy for architect-dna.ch and all subdomains. Privacy by design. No tracking. No cookies.">
+<meta name="description" content="Privacy policy for architect-dna.ch and all subdomains. Privacy by design where possible — and honest disclosure where it isn't.">
 <meta name="robots" content="index,follow">
 <meta property="og:title" content="Privacy Policy · Architect-DNA">
 <meta property="og:url" content="https://architect-dna.ch/privacy">
-<meta name="theme-color" content="#0c0e18">
+<meta name="theme-color" content="#FAFAF8">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0c0e18;--bg2:#10121e;
-  --surface:rgba(255,255,255,.04);--surface2:rgba(255,255,255,.07);
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
-  --text:#f0f0f8;--text2:rgba(240,240,248,.55);--text3:rgba(240,240,248,.28);
-  --accent:#7c6cfa;--accent2:#00e5c0;--red:#ff4466;
-  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;--green:#1a7a3c;
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
   --r:14px;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh}
 
-header{position:sticky;top:0;z-index:100;background:rgba(12,14,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px}
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px}
 .header-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
-.logo{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text);text-decoration:none}
-.logo span{color:var(--accent)}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:11px;color:var(--text3)}
 .header-right{margin-left:auto}
 .nav-link{font-size:12px;color:var(--text3);text-decoration:none;letter-spacing:.04em;transition:color .15s}
 .nav-link:hover{color:var(--text2)}
 
-.hero{padding:64px 24px 48px;border-bottom:1px solid var(--border)}
+.hero{padding:64px 32px 48px;border-bottom:1px solid var(--border)}
 .hero-inner{max-width:860px;margin:0 auto}
-.kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(124,108,250,.6);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.kicker::before{content:'';width:14px;height:1px;background:rgba(124,108,250,.4)}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.kicker::before{content:'';width:14px;height:1px;background:var(--red)}
 h1{font-size:clamp(36px,6vw,60px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin-bottom:16px}
 .meta{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:.06em;margin-bottom:20px}
 .hero-desc{font-size:15px;color:var(--text2);max-width:560px;line-height:1.7}
 
-/* quick facts balloons */
-.facts-section{padding:48px 24px;border-bottom:1px solid var(--border)}
+.facts-section{padding:48px 32px;border-bottom:1px solid var(--border)}
 .facts-inner{max-width:860px;margin:0 auto}
-.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(124,108,250,.5);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.section-label::before{content:'';width:14px;height:1px;background:rgba(124,108,250,.4)}
+.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';width:14px;height:1px;background:var(--border2)}
 .balloons{display:flex;flex-direction:column;gap:10px}
 .balloon{
   display:inline-flex;align-items:center;gap:10px;
-  background:rgba(0,229,192,.07);border:1px solid rgba(0,229,192,.18);
+  background:var(--bg2);border:1px solid var(--border);
   border-radius:100px;padding:11px 20px;
   font-size:14px;color:var(--text2);line-height:1;width:fit-content;
   transform:scale(.4) translateY(20px);opacity:0;
@@ -56,46 +55,45 @@ h1{font-size:clamp(36px,6vw,60px);font-weight:900;letter-spacing:-.04em;line-hei
   transform-origin:left center;will-change:transform,opacity;
 }
 .balloon.popped{transform:scale(1) translateY(0);opacity:1}
-.balloon::before{content:'✓';color:var(--accent2);font-weight:900;font-size:13px;flex-shrink:0}
+.balloon::before{content:'✓';color:var(--green);font-weight:900;font-size:13px;flex-shrink:0}
+.balloon.balloon-warn::before{content:'!';color:var(--red)}
 
-/* full policy */
-.policy-section{padding:48px 24px;border-bottom:1px solid var(--border)}
+.policy-section{padding:48px 32px;border-bottom:1px solid var(--border)}
 .policy-inner{max-width:860px;margin:0 auto}
 .policy-block{margin-bottom:36px}
 .policy-block h3{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;color:var(--text)}
 .policy-block p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:10px}
 .policy-block ul{font-size:14px;color:var(--text2);line-height:1.8;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
 .policy-block ul li{display:flex;align-items:flex-start;gap:8px}
-.policy-block ul li::before{content:'·';color:var(--accent);flex-shrink:0;margin-top:2px}
-.policy-block a{color:var(--accent2);text-decoration:none}
+.policy-block ul li::before{content:'·';color:var(--red);flex-shrink:0;margin-top:2px}
+.policy-block a{color:var(--red);text-decoration:none}
 .policy-block a:hover{text-decoration:underline}
-code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.07);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;color:var(--text)}
+.callout{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:16px 18px;margin:12px 0}
+.callout p{margin-bottom:0}
+code{font-family:var(--mono);font-size:12px;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;color:var(--text)}
 
-/* version history */
-.archive-section{padding:48px 24px 64px}
+.archive-section{padding:48px 32px 64px}
 .archive-inner{max-width:860px;margin:0 auto}
 details{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 details[open]{border-color:var(--border2)}
-summary{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text2);background:var(--surface);user-select:none;list-style:none;transition:background .15s,color .15s}
-summary:hover{background:var(--surface2);color:var(--text)}
+summary{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text2);background:var(--bg2);user-select:none;list-style:none;transition:background .15s,color .15s}
+summary:hover{color:var(--text)}
 summary::-webkit-details-marker{display:none}
 .sum-right{font-family:var(--mono);font-size:10px;color:var(--text3);display:flex;align-items:center;gap:8px}
 .chevron{transition:transform .2s;display:inline-block}
 details[open] .chevron{transform:rotate(180deg)}
-.archive-body{padding:24px 20px;background:rgba(0,0,0,.2);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:28px}
-.version-block{}
+.archive-body{padding:24px 20px;background:var(--bg);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:28px}
 .version-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.v-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 9px}
+.v-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:3px 9px}
 .v-date{font-size:12px;color:var(--text3)}
 .v-changes{display:flex;flex-direction:column;gap:5px}
 .v-change{font-size:12px;color:var(--text2);display:flex;gap:10px;align-items:flex-start;line-height:1.5}
 .v-change .badge{font-family:var(--mono);font-size:9px;color:var(--text3);flex-shrink:0;margin-top:2px;letter-spacing:.04em;text-transform:uppercase;min-width:32px}
 .v-divider{height:1px;background:var(--border)}
 
-footer{padding:36px 24px;border-top:1px solid var(--border)}
+footer{padding:36px 32px;border-top:1px solid var(--border)}
 .footer-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .footer-logo{font-size:13px;font-weight:900;letter-spacing:-.02em}
-.footer-logo span{color:var(--accent)}
 .footer-links{display:flex;gap:20px}
 .footer-links a{font-size:12px;color:var(--text3);text-decoration:none;transition:color .15s}
 .footer-links a:hover{color:var(--text2)}
@@ -106,7 +104,14 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
 
 <header>
   <div class="header-inner">
-    <a class="logo" href="https://architect-dna.ch">Architect<span>-DNA</span></a>
+    <a class="logo" href="https://architect-dna.ch">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/><path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
     <div class="header-right">
       <a class="nav-link" href="https://architect-dna.ch">← Back</a>
     </div>
@@ -117,8 +122,8 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
   <div class="hero-inner">
     <div class="kicker">Legal</div>
     <h1>Privacy<br>Policy</h1>
-    <div class="meta">Last updated: 2026-05-21 · architect-dna.ch and all subdomains</div>
-    <p class="hero-desc">Built privacy-first. Where technically possible, all data stays on your device and never leaves it. No analytics. No cookies. No exceptions.</p>
+    <div class="meta">Last updated: 2026-07-08 · architect-dna.ch and all subdomains</div>
+    <p class="hero-desc">Privacy-first by default. Where an app genuinely needs server-side data to work — like showing you who's nearby — we disclose exactly what's stored and for how long, instead of pretending otherwise.</p>
   </div>
 </div>
 
@@ -127,14 +132,13 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
   <div class="facts-inner">
     <div class="section-label">In short</div>
     <div class="balloons" id="balloons">
-      <span class="balloon">No cookies — ever</span>
-      <span class="balloon">No analytics or tracking scripts</span>
-      <span class="balloon">No personal data collected or stored server-side</span>
-      <span class="balloon">All user data lives in your browser's localStorage</span>
-      <span class="balloon">Audio synthesis runs entirely in your browser</span>
+      <span class="balloon">Most apps: no cookies, no accounts, everything stays in your browser</span>
+      <span class="balloon">No advertising networks, no fingerprinting, no data resale — anywhere</span>
+      <span class="balloon">Audio synthesis (VOID FREQ, Noise) runs entirely in your browser</span>
       <span class="balloon">Encryption (LIA) is client-side — only ciphertext stored</span>
       <span class="balloon">GPS coordinates (VELO NOIR) never transmitted</span>
-      <span class="balloon">No advertising networks, no fingerprinting</span>
+      <span class="balloon balloon-warn">Zugcafé is the exception — it stores nickname, activity type, and location server-side to show you what's nearby. Details below.</span>
+      <span class="balloon balloon-warn">Einspruch uses Vercel Analytics (cookieless) and Stripe for premium payments. Details below.</span>
     </div>
   </div>
 </div>
@@ -146,11 +150,11 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
 
     <div class="policy-block">
       <h3>Scope</h3>
-      <p>This policy applies to all services under <strong>architect-dna.ch</strong> and its subdomains, as well as native mobile apps published by Architect-DNA: VOID FREQ (iOS), VOID CELL (Nexus Breach, Grid Fall, Sector Zero), Rida, Konnekt, Noise, Prompt Vault, LIA, CV Card, VELO NOIR, Podcast DNA, TACZ, and any future services.</p>
+      <p>This policy applies to all services under <strong>architect-dna.ch</strong> and its subdomains, as well as native mobile apps published by Architect-DNA: VOID FREQ (iOS), VOID CELL (Nexus Breach, Grid Fall, Sector Zero), Rida, Konnekt, Noise, Prompt Vault, LIA, CV Card, VELO NOIR, Podcast DNA, TACZ, Zugcafé, Einspruch, and any future services.</p>
     </div>
 
     <div class="policy-block">
-      <h3>Data We Collect</h3>
+      <h3>Data We Collect — Most Apps</h3>
       <p>Most services collect <strong>no personal data</strong>. Specifically:</p>
       <ul>
         <li>User settings, API keys, ride logs, and mission progress are stored in your browser's <code>localStorage</code> on your own device — never on our servers.</li>
@@ -158,7 +162,30 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
         <li>Passkey credentials are managed entirely by your device's authenticator via WebAuthn. We do not receive or store biometric data.</li>
         <li>Rider cards and crew codes (VELO NOIR) are text strings you share manually — we do not relay or store them.</li>
         <li>Konnekt profiles are encoded in the share URL itself — no profile data is stored on any server.</li>
-        <li>Noise audio is synthesized locally via the Web Audio API — no audio data is transmitted.</li>
+        <li>Noise and VOID FREQ audio is synthesized locally via the Web Audio API — no audio data is transmitted.</li>
+      </ul>
+    </div>
+
+    <div class="policy-block">
+      <h3>Zugcafé — Server-Side Data (Exception)</h3>
+      <div class="callout">
+        <p>Zugcafé is the one app that genuinely needs a server, because it shows you real people near you right now. We store, on a Supabase server:</p>
+      </div>
+      <ul>
+        <li>The nickname you choose (not tied to any account — just a name you type in).</li>
+        <li>A random device identifier stored in your browser, used only to recognize "your" posts — not linked to your identity.</li>
+        <li>The activity type, note, and precise GPS coordinates you post when sharing that you're open for coffee, a card game, or company.</li>
+        <li>Chat messages sent inside a Room, and any Room's approximate location (used only to keep the Rooms list local and recent).</li>
+      </ul>
+      <p>"Activities" (the nearby feed posts) expire and stop being shown after 5 minutes. Rooms disappear from the public browse list after 24 hours or once you're more than 5km away, but a room's direct link — and its message history — is not automatically deleted, so anyone who already has the link can still open it later. Anyone with a room's URL can read that room's messages; there is no per-user access control. Do not share anything in a Zugcafé chat you wouldn't want a stranger with the link to read.</p>
+    </div>
+
+    <div class="policy-block">
+      <h3>Einspruch — Payments and Analytics (Exception)</h3>
+      <ul>
+        <li>Einspruch uses <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener">Vercel Analytics</a>, a cookieless, non-fingerprinting page-view analytics tool, to see aggregate usage. It does not set cookies or track you across sites.</li>
+        <li>Premium letter credits are purchased via <strong>Stripe</strong> — we never see or store your card details. Stripe's own privacy policy applies to payment processing: <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</li>
+        <li>Your drafted letter text is sent to an AI provider (Anthropic Claude for premium, Groq/Llama for the free tier) to generate the letter. See the Third-Party Services section below. We do not store your letter content on our servers after the response is returned.</li>
       </ul>
     </div>
 
@@ -175,29 +202,31 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
     <div class="policy-block">
       <h3>Cookies and Tracking</h3>
       <ul>
-        <li>We do not use cookies.</li>
-        <li>We do not use analytics or tracking scripts of any kind.</li>
-        <li>We do not use advertising networks.</li>
-        <li>We do not fingerprint your device or browser.</li>
-        <li>We do not use third-party SDKs that collect data.</li>
+        <li>We do not use cookies anywhere, on any app.</li>
+        <li>The only analytics used anywhere in the portfolio is Vercel Analytics on Einspruch — cookieless, no cross-site tracking. No other app has any analytics or tracking script.</li>
+        <li>We do not use advertising networks, on any app.</li>
+        <li>We do not fingerprint your device or browser, on any app.</li>
       </ul>
     </div>
 
     <div class="policy-block">
       <h3>Third-Party Services</h3>
-      <p>Some applications optionally use <strong>Anthropic Claude APIs</strong>. When you use an AI feature, your input is transmitted to Anthropic's servers. See <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a>. We do not store AI conversation history on our end.</p>
+      <p>Some applications use <strong>Anthropic Claude</strong> and/or <strong>Groq</strong> (Llama models) APIs for AI features — including the PulseBot chat widget on this site, and Einspruch's letter generation. When you use one of these features, your input is transmitted to that provider's servers. See <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a> and <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">groq.com/privacy-policy</a>. We do not store AI conversation history on our end.</p>
+      <p>Zugcafé's data (see above) is hosted on <strong>Supabase</strong>. See <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a>.</p>
+      <p>Einspruch's payments are processed by <strong>Stripe</strong>. See <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
       <p>Map tiles are loaded from <strong>OpenStreetMap</strong> servers. Your IP address may be visible to OSM when fetching map tiles.</p>
       <p>The site is hosted on <strong>Vercel</strong>. Vercel may log request metadata (IP, user agent) per their infrastructure policy. See <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">vercel.com/legal/privacy-policy</a>.</p>
     </div>
 
     <div class="policy-block">
       <h3>Data Retention and Deletion</h3>
-      <p>All locally stored data can be deleted by clearing your browser's site data for the respective subdomain, or via in-app reset functions where provided. There is no server-side data to delete because we do not store it.</p>
+      <p>For apps that store data only in your browser, clearing your browser's site data (or using an in-app reset) deletes it completely — there is no server-side copy to remove.</p>
+      <p>For Zugcafé, activity posts expire automatically after 5 minutes. Room and message data is not on an automatic deletion schedule; contact us to request deletion of a specific room or message.</p>
     </div>
 
     <div class="policy-block">
       <h3>Your Rights (GDPR / nDSG)</h3>
-      <p>As a user in Switzerland or the EU, you have the right to access, correct, and delete any personal data we hold. Since all data is stored locally on your device, you are already in full control. Contact us for any questions.</p>
+      <p>As a user in Switzerland or the EU, you have the right to access, correct, and delete any personal data we hold. For most apps, all data is already stored locally on your device and you're already in full control. For Zugcafé data or Einspruch payment records, contact us and we will act on your request.</p>
     </div>
 
     <div class="policy-block">
@@ -212,17 +241,33 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
 <div class="archive-section">
   <div class="archive-inner">
     <div class="section-label" style="margin-bottom:16px">Version history</div>
-    <details>
+    <details open>
       <summary>
         <span>Privacy policy changelog</span>
-        <span class="sum-right"><span>3 versions</span><span class="chevron">▾</span></span>
+        <span class="sum-right"><span>4 versions</span><span class="chevron">▾</span></span>
       </summary>
       <div class="archive-body">
 
         <div class="version-block">
           <div class="version-head">
+            <span class="v-tag">v4.0</span>
+            <span class="v-date">2026-07-08 — Current</span>
+          </div>
+          <div class="v-changes">
+            <div class="v-change"><span class="badge">ADD</span>Zugcafé added to scope. Unlike every other app, it stores nickname, activity/note, and precise GPS location server-side (Supabase) so it can show nearby posts — disclosed explicitly rather than folded into the "no server-side data" claim.</div>
+            <div class="v-change"><span class="badge">ADD</span>Einspruch added to scope, including Stripe payment processing and Vercel Analytics (cookieless) — corrects the prior blanket "no analytics" statement, which was no longer accurate once Einspruch shipped.</div>
+            <div class="v-change"><span class="badge">ADD</span>Groq (Llama models) disclosed as an AI provider, used by the PulseBot widget on this site and Einspruch's free tier.</div>
+            <div class="v-change"><span class="badge">ADD</span>Supabase disclosed as Zugcafé's hosting provider for server-side data.</div>
+            <div class="v-change"><span class="badge">UPD</span>Page restyled to match the current architect-dna.ch light theme (was a legacy dark purple/teal palette).</div>
+          </div>
+        </div>
+
+        <div class="v-divider"></div>
+
+        <div class="version-block">
+          <div class="version-head">
             <span class="v-tag">v3.0</span>
-            <span class="v-date">2026-05-21 — Current</span>
+            <span class="v-date">2026-05-21</span>
           </div>
           <div class="v-changes">
             <div class="v-change"><span class="badge">ADD</span>VOID FREQ now available as native iOS app on the App Store — no additional data collection beyond web version</div>
@@ -272,18 +317,17 @@ footer{padding:36px 24px;border-top:1px solid var(--border)}
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">Architect<span>-DNA</span></div>
+    <div class="footer-logo">Architect-DNA</div>
     <div class="footer-links">
       <a href="https://architect-dna.ch">Portfolio</a>
-      <a href="https://architect-dna.ch/noise">Noise</a>
-      <a href="https://konnekt.architect-dna.ch">Konnekt</a>
+      <a href="https://architect-dna.ch/zugcafe">Zugcafé</a>
+      <a href="https://architect-dna.ch/void-freq">VOID FREQ</a>
     </div>
     <div class="footer-copy">© 2026 Architect-DNA · Bern, Switzerland</div>
   </div>
 </footer>
 
 <script>
-// Balloon pop on scroll into view
 const balloons=[...document.querySelectorAll('.balloon')];
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
