@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FITRA — Your Whole-Life OS · Architect-DNA Systems</title>
+<meta name="description" content="Five human needs. One private home. FITRA is a privacy-first life OS that maps every essential human need — from sleep to soul — without ever leaving your device.">
+<meta property="og:title" content="FITRA — Your Whole-Life OS">
+<meta property="og:description" content="Physiological · Safety · Belonging · Esteem · Self-Actualization. One home. Total privacy.">
+<meta property="og:url" content="https://architect-dna.ch/fitra">
+<meta name="theme-color" content="#080b14">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b14;--bg2:#0e1220;--bg3:#141824;
+  --text:#f0f0f8;--text2:rgba(240,240,248,.58);--text3:rgba(240,240,248,.28);
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+  --teal:#00c9a7;--violet:#a78bfa;
+  --c1:#34d399;--c2:#60a5fa;--c3:#f472b6;--c4:#fbbf24;--c5:#a78bfa;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --r:16px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(8,11,20,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px}
+.header-inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
+.logo{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-icon{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--teal),var(--violet));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.logo span{color:var(--teal)}
+.back-link{margin-left:auto;font-size:12px;color:var(--text3);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;font-family:var(--mono);letter-spacing:.04em}
+.back-link:hover{color:var(--text2)}
+.back-link::before{content:'←'}
+.header-cta{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;background:var(--teal);color:#080b14;text-decoration:none;transition:filter .15s;margin-left:12px}
+.header-cta:hover{filter:brightness(1.1)}
+
+/* ── HERO ── */
+.hero{padding:108px 24px 80px;position:relative;overflow:hidden}
+.hero::before{
+  content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:800px;height:600px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,201,167,.09) 0%,rgba(167,139,250,.06) 50%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{max-width:1060px;margin:0 auto}
+.hero-kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,201,167,.65);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.hero-kicker::before{content:'';width:22px;height:1px;background:rgba(0,201,167,.5)}
+.hero-title{font-size:clamp(64px,12vw,120px);font-weight:900;letter-spacing:-.055em;line-height:.87;margin-bottom:28px}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,var(--teal) 0%,var(--violet) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:18px;color:var(--text2);max-width:520px;line-height:1.75;margin-bottom:40px}
+.hero-sub strong{color:var(--text);font-weight:700}
+.hero-needs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:44px}
+.need-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:24px;border:1px solid var(--border2);font-size:13px;font-weight:600;background:rgba(255,255,255,.03);cursor:default;transition:border-color .2s,background .2s}
+.need-chip:hover{background:rgba(255,255,255,.06)}
+.need-chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nc-1 .dot{background:var(--c1)} .nc-1:hover{border-color:rgba(52,211,153,.35)}
+.nc-2 .dot{background:var(--c2)} .nc-2:hover{border-color:rgba(96,165,250,.35)}
+.nc-3 .dot{background:var(--c3)} .nc-3:hover{border-color:rgba(244,114,182,.35)}
+.nc-4 .dot{background:var(--c4)} .nc-4:hover{border-color:rgba(251,191,36,.35)}
+.nc-5 .dot{background:var(--c5)} .nc-5:hover{border-color:rgba(167,139,250,.35)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;border-radius:var(--r);font-size:14px;font-weight:800;letter-spacing:.02em;background:var(--teal);color:#080b14;text-decoration:none;box-shadow:0 0 40px rgba(0,201,167,.25);transition:filter .15s,transform .12s}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:15px 24px;border-radius:var(--r);border:1px solid var(--border2);font-size:14px;font-weight:700;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.28);color:var(--text)}
+.btn-ghost .mono{font-family:var(--mono);font-size:12px;opacity:.6}
+
+/* ── SECTION ── */
+.section{max-width:1060px;margin:0 auto;padding:80px 24px}
+.section-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:12px;margin-bottom:36px}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-h2{font-size:clamp(28px,5vw,46px);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin-bottom:14px}
+.section-lead{font-size:16px;color:var(--text2);max-width:540px;line-height:1.75;margin-bottom:48px}
+
+/* ── MASLOW LAYERS ── */
+.layers-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.layers-grid{grid-template-columns:1fr}}
+.layer-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px 32px;position:relative;overflow:hidden;transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s,border-color .25s;cursor:default}
+.layer-card:hover{transform:translateY(-4px);box-shadow:0 16px 64px rgba(0,0,0,.5)}
+.layer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.lc-1::before{background:var(--c1)} .lc-1:hover{border-color:rgba(52,211,153,.22)}
+.lc-2::before{background:var(--c2)} .lc-2:hover{border-color:rgba(96,165,250,.22)}
+.lc-3::before{background:var(--c3)} .lc-3:hover{border-color:rgba(244,114,182,.22)}
+.lc-4::before{background:var(--c4)} .lc-4:hover{border-color:rgba(251,191,36,.22)}
+.lc-5{grid-column:1/-1;background:linear-gradient(135deg,rgba(167,139,250,.06) 0%,rgba(0,201,167,.04) 100%)}
+.lc-5::before{background:linear-gradient(90deg,var(--c5),var(--teal))} .lc-5:hover{border-color:rgba(167,139,250,.28)}
+.layer-number{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.35;margin-bottom:12px}
+.layer-emoji{font-size:40px;margin-bottom:18px;line-height:1}
+.layer-title{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}
+.lc-1 .layer-title{color:var(--c1)} .lc-2 .layer-title{color:var(--c2)}
+.lc-3 .layer-title{color:var(--c3)} .lc-4 .layer-title{color:var(--c4)} .lc-5 .layer-title{color:var(--c5)}
+.layer-need{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:16px}
+.layer-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px}
+.layer-features{display:flex;flex-direction:column;gap:8px}
+.feat{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2)}
+.feat-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.feat strong{color:var(--text);font-weight:600}
+.feat span{color:var(--text3)}
+.layer-tag{display:inline-flex;align-items:center;gap:5px;margin-top:24px;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.lc-1 .layer-tag{background:rgba(52,211,153,.08);color:var(--c1);border:1px solid rgba(52,211,153,.18)}
+.lc-2 .layer-tag{background:rgba(96,165,250,.08);color:var(--c2);border:1px solid rgba(96,165,250,.18)}
+.lc-3 .layer-tag{background:rgba(244,114,182,.08);color:var(--c3);border:1px solid rgba(244,114,182,.18)}
+.lc-4 .layer-tag{background:rgba(251,191,36,.08);color:var(--c4);border:1px solid rgba(251,191,36,.18)}
+.lc-5 .layer-tag{background:rgba(167,139,250,.08);color:var(--c5);border:1px solid rgba(167,139,250,.18)}
+
+/* ── HOW IT WORKS ── */
+.flow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:680px){.flow-grid{grid-template-columns:1fr}}
+.flow-step{padding:28px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;position:relative}
+.flow-step-num{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--text3);margin-bottom:14px}
+.flow-step h3{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.flow-step p{font-size:13px;color:var(--text2);line-height:1.65}
+.flow-connector{display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:20px;padding-top:36px}
+@media(max-width:680px){.flow-connector{display:none}}
+
+/* ── AI SECTION ── */
+.ai-section{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px 44px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:720px){.ai-section{grid-template-columns:1fr;padding:32px 24px}}
+.ai-chat-mock{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.chat-bubble{max-width:82%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.6}
+.chat-bubble.user{background:rgba(0,201,167,.1);border:1px solid rgba(0,201,167,.2);color:var(--text);margin-left:auto;text-align:right;border-radius:12px 12px 3px 12px}
+.chat-bubble.ai{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2);border-radius:12px 12px 12px 3px}
+.chat-bubble.ai strong{color:var(--teal)}
+.ai-model-tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-top:4px;text-align:right}
+.ai-text h3{font-size:22px;font-weight:900;letter-spacing:-.03em;margin-bottom:12px}
+.ai-text p{font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:16px}
+.model-pills{display:flex;gap:8px;flex-wrap:wrap}
+.mpill{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;padding:5px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text3)}
+
+/* ── PRINCIPLES ── */
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.principle{padding:28px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;transition:border-color .2s}
+.principle:hover{border-color:var(--border2)}
+.principle-icon{font-size:26px;margin-bottom:16px}
+.principle h3{font-size:14px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.principle p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── STACK ── */
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.stack-pill{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.stack-pill:hover{border-color:var(--border2)}
+.sp-icon{font-size:20px;flex-shrink:0}
+.sp-label{font-size:13px;font-weight:700;color:var(--text)}
+.sp-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+/* ── CTA BANNER ── */
+.cta-banner{background:linear-gradient(135deg,rgba(0,201,167,.08) 0%,rgba(167,139,250,.06) 100%);border:1px solid rgba(0,201,167,.18);border-radius:24px;padding:64px 48px;text-align:center}
+@media(max-width:680px){.cta-banner{padding:40px 24px}}
+.cta-banner h2{font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px}
+.cta-banner p{font-size:16px;color:var(--text2);max-width:460px;margin:0 auto 36px;line-height:1.75}
+.cta-banner .btn-primary{margin:0 auto}
+
+/* ── ARABIC QUOTE ── */
+.quote-block{text-align:center;padding:48px 24px}
+.quote-ar{font-size:clamp(22px,4vw,32px);font-weight:700;color:var(--text);line-height:1.5;margin-bottom:12px;letter-spacing:.02em}
+.quote-tr{font-size:14px;color:var(--text3);font-style:italic;margin-bottom:6px}
+.quote-src{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);opacity:.55}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:28px 24px}
+.footer-inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:var(--text3)}
+.footer-copy span{color:var(--teal)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:var(--text3);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text2)}
+
+/* ── DAILY WHEEL MOCK ── */
+.wheel-wrap{position:relative;width:280px;height:280px;margin:0 auto}
+.wheel-ring{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.wheel-center{width:90px;height:90px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:28px;z-index:5;position:relative}
+.arc-segment{position:absolute;width:100%;height:100%;border-radius:50%}
+.wheel-label{position:absolute;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.wl-top   {top:10px;  left:50%;transform:translateX(-50%);color:var(--c1)}
+.wl-right {top:50%;   right:6px;transform:translateY(-50%);color:var(--c2)}
+.wl-brgt  {bottom:16px;right:20px;color:var(--c3)}
+.wl-blft  {bottom:16px;left:20px;color:var(--c4)}
+.wl-left  {top:50%;   left:4px;transform:translateY(-50%);color:var(--c5)}
+.progress-ring{position:absolute;inset:18px;border-radius:50%;border:2.5px solid var(--border);overflow:hidden}
+
+/* Segmented ring drawn via conic-gradient */
+.wheel-conic{position:absolute;inset:20px;border-radius:50%;background:conic-gradient(
+  var(--c1) 0deg 56deg,
+  rgba(255,255,255,.04) 56deg 72deg,
+  var(--c2) 72deg 115deg,
+  rgba(255,255,255,.04) 115deg 131deg,
+  var(--c3) 131deg 163deg,
+  rgba(255,255,255,.04) 163deg 179deg,
+  var(--c4) 179deg 226deg,
+  rgba(255,255,255,.04) 226deg 242deg,
+  var(--c5) 242deg 318deg,
+  rgba(255,255,255,.04) 318deg 360deg
+);opacity:.35}
+.wheel-conic-fill{position:absolute;inset:44px;border-radius:50%;background:var(--bg)}
+
+/* ── PULSE BAR ── */
+.pulse-bars{display:flex;align-items:flex-end;gap:5px;height:64px}
+.pbar{border-radius:4px 4px 0 0;width:18px;transition:height .3s}
+
+@media(max-width:480px){
+  .ai-text h3{font-size:18px}
+  .hero-title{font-size:clamp(52px,16vw,80px)}
+}
+
+/* ── WIDGETS ── */
+.widget{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 18px;transition:border-color .2s}
+.widget:hover{border-color:var(--border2)}
+.w-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.w-emoji{font-size:18px}
+.w-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);font-family:var(--mono)}
+.w-val{font-size:28px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1.1;margin-top:4px}
+.w-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.w-btn{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--text2);font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s;font-family:var(--font)}
+.w-btn:hover,.w-btn.active{background:var(--teal);color:#080b14;border-color:var(--teal)}
+.w-btn-big{background:var(--teal);color:#080b14;border:none;font-size:13px;font-weight:800;padding:9px 16px;border-radius:10px;cursor:pointer;transition:filter .15s;font-family:var(--font);letter-spacing:-.01em}
+.w-btn-big:hover{filter:brightness(1.1)}
+.w-input{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;font-family:var(--font);transition:border-color .15s;min-width:0}
+.w-input:focus{border-color:rgba(0,201,167,.4)}
+.w-input::placeholder{color:var(--text3)}
+.win-item{font-size:13px;color:var(--text2);padding:6px 10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.14);border-radius:8px;display:flex;align-items:center;gap:8px}
+.win-item::before{content:'⭐';font-size:11px}
+.drop-in{animation:dropIn .25s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.water-drop{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--border);transition:background .2s}
+.water-drop.filled{background:var(--c2)}
+.dhikr-pulse{animation:dhikrPulse .18s ease}
+@keyframes dhikrPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="../" class="logo">
+      <div class="logo-icon">ف</div>
+      FITRA<span>.</span>
+    </a>
+    <a href="../" class="back-link">architect-dna.ch</a>
+    <a href="#cta" class="header-cta">Early Access</a>
+  </div>
+</header>
+
+<!-- ── DAILY DASHBOARD ── -->
+<section id="dashboard" style="max-width:1060px;margin:0 auto;padding:32px 24px 0">
+
+  <!-- greeting -->
+  <div id="greeting" style="font-size:13px;color:var(--text3);font-family:var(--mono);letter-spacing:.08em;margin-bottom:20px"></div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+
+    <!-- SLEEP -->
+    <div class="widget" id="w-sleep">
+      <div class="w-top"><span class="w-emoji">😴</span><span class="w-label">Sleep</span></div>
+      <div id="sleep-display" class="w-val">—</div>
+      <div class="w-sub">hours last night</div>
+      <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+        <button class="w-btn" onclick="logSleep(5)">5h</button>
+        <button class="w-btn" onclick="logSleep(6)">6h</button>
+        <button class="w-btn" onclick="logSleep(7)">7h</button>
+        <button class="w-btn" onclick="logSleep(8)">8h</button>
+        <button class="w-btn" onclick="logSleep(9)">9h+</button>
+      </div>
+    </div>
+
+    <!-- WATER -->
+    <div class="widget" id="w-water">
+      <div class="w-top"><span class="w-emoji">💧</span><span class="w-label">Water</span></div>
+      <div id="water-display" class="w-val">0 / 8</div>
+      <div class="w-sub">glasses today</div>
+      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+        <button class="w-btn-big" onclick="addWater()" style="flex:1">+ Glass</button>
+        <button class="w-btn" onclick="resetWater()" style="opacity:.4;font-size:11px">↺</button>
+      </div>
+      <div id="water-bar" style="margin-top:10px;display:flex;gap:3px"></div>
+    </div>
+
+    <!-- WINS -->
+    <div class="widget" id="w-wins" style="grid-column:span 1">
+      <div class="w-top"><span class="w-emoji">⭐</span><span class="w-label">Today's Wins</span></div>
+      <div id="wins-list" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;min-height:60px"></div>
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <input id="win-input" class="w-input" placeholder="One win…" maxlength="80" onkeydown="if(event.key==='Enter')addWin()">
+        <button class="w-btn-big" onclick="addWin()" style="padding:0 14px">+</button>
+      </div>
+    </div>
+
+    <!-- DHIKR -->
+    <div class="widget" id="w-dhikr">
+      <div class="w-top"><span class="w-emoji">📿</span><span class="w-label">Dhikr</span></div>
+      <div id="dhikr-phrase" style="font-size:16px;color:var(--text);margin:8px 0 2px;font-weight:700;letter-spacing:.01em"></div>
+      <div id="dhikr-count" class="w-val" style="font-size:36px;line-height:1;margin:4px 0">0</div>
+      <div class="w-sub">of <span id="dhikr-goal">33</span> · <span id="dhikr-name" style="color:var(--c5)"></span></div>
+      <button class="w-btn-big" id="dhikr-btn" onclick="tapDhikr()" style="margin-top:12px;width:100%;font-size:20px;padding:14px">تَسْبِيح</button>
+      <button class="w-btn" onclick="nextDhikr()" style="margin-top:8px;width:100%;font-size:11px;opacity:.5">Next →</button>
+    </div>
+
+    <!-- GRATITUDE -->
+    <div class="widget" id="w-gratitude" style="grid-column:span 2">
+      <div class="w-top"><span class="w-emoji">🙏</span><span class="w-label">Gratitude</span></div>
+      <div id="gratitude-display" style="font-size:14px;color:var(--text2);line-height:1.6;min-height:40px;margin-top:6px;font-style:italic"></div>
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <input id="gratitude-input" class="w-input" placeholder="Today I'm grateful for…" maxlength="160" onkeydown="if(event.key==='Enter')saveGratitude()">
+        <button class="w-btn-big" onclick="saveGratitude()" style="padding:0 14px">✓</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- daily score -->
+  <div id="score-bar" style="margin-top:18px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3)">Fitra Score</div>
+    <div id="score-segments" style="display:flex;gap:5px;flex:1"></div>
+    <div id="score-pct" style="font-size:20px;font-weight:900;letter-spacing:-.03em;color:var(--teal)">0%</div>
+  </div>
+
+  <div style="text-align:center;margin:10px 0 4px">
+    <button onclick="clearAll()" style="background:none;border:none;font-size:10px;color:var(--text3);cursor:pointer;font-family:var(--mono);letter-spacing:.08em">↺ clear day (debug)</button>
+  </div>
+</section>
+
+<!-- divider -->
+<div style="max-width:1060px;margin:28px auto 0;padding:0 24px"><div style="height:1px;background:var(--border)"></div></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Concept · Human Needs OS · Architect-DNA Systems</div>
+    <h1 class="hero-title"><em>FITRA</em></h1>
+    <p class="hero-sub">
+      <strong>فِطْرَة</strong> — your innate factory state.<br>
+      Five layers of human need. One private home. Zero servers.
+    </p>
+    <div class="hero-needs">
+      <div class="need-chip nc-1"><div class="dot"></div> Body</div>
+      <div class="need-chip nc-2"><div class="dot"></div> Safety</div>
+      <div class="need-chip nc-3"><div class="dot"></div> Belonging</div>
+      <div class="need-chip nc-4"><div class="dot"></div> Esteem</div>
+      <div class="need-chip nc-5"><div class="dot"></div> Soul</div>
+    </div>
+    <div class="hero-cta">
+      <a href="#layers" class="btn-primary">Explore the 5 Layers</a>
+      <a href="#ai" class="btn-ghost">How AI fits in <span class="mono">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUOTE ── -->
+<div class="quote-block">
+  <div class="quote-ar">كُلُّ مَوْلُودٍ يُولَدُ عَلَى الْفِطْرَةِ</div>
+  <div class="quote-tr">Every child is born upon the Fitra — the pure, whole human nature.</div>
+  <div class="quote-src">Sahih Muslim · 2658</div>
+</div>
+
+<!-- ── LAYERS ── -->
+<section class="section" id="layers">
+  <div class="section-eyebrow">Maslow Reimagined</div>
+  <h2 class="section-h2">Five layers.<br>Everything you need.</h2>
+  <p class="section-lead">Most apps solve one need and ignore the rest. FITRA maps your whole human stack — from physiology to purpose — in a single, coherent daily practice.</p>
+
+  <div class="layers-grid">
+
+    <!-- 1. BODY -->
+    <div class="layer-card lc-1">
+      <div class="layer-number">Layer 01 / 05</div>
+      <div class="layer-emoji">🫁</div>
+      <div class="layer-title">BODY</div>
+      <div class="layer-need">Physiological Needs</div>
+      <p class="layer-desc">Your foundation. If your body isn't cared for, nothing above it can hold. FITRA starts every day with a 60-second body check-in.</p>
+      <div class="layer-features">
+        <div class="feat"><span class="feat-icon">😴</span><div><strong>Sleep quality</strong> <span>— log duration + mood on wake</span></div></div>
+        <div class="feat"><span class="feat-icon">💧</span><div><strong>Hydration tracker</strong> <span>— gentle taps through the day</span></div></div>
+        <div class="feat"><span class="feat-icon">🌬️</span><div><strong>Breathing guide</strong> <span>— 4-7-8, box, coherent</span></div></div>
+        <div class="feat"><span class="feat-icon">🚶</span><div><strong>Movement prompt</strong> <span>— adaptive to your schedule</span></div></div>
+      </div>
+      <div class="layer-tag">On-device · Offline</div>
+    </div>
+
+    <!-- 2. SHIELD -->
+    <div class="layer-card lc-2">
+      <div class="layer-number">Layer 02 / 05</div>
+      <div class="layer-emoji">🛡️</div>
+      <div class="layer-title">SHIELD</div>
+      <div class="layer-need">Safety Needs</div>
+      <p class="layer-desc">Financial anxiety, legal exposure, and missing emergency information quietly erode wellbeing. SHIELD puts you in control.</p>
+      <div class="layer-features">
+        <div class="feat"><span class="feat-icon">🔐</span><div><strong>Document vault</strong> <span>— encrypted, local-first (LIA integration)</span></div></div>
+        <div class="feat"><span class="feat-icon">💶</span><div><strong>Budget snapshot</strong> <span>— monthly cashflow at a glance</span></div></div>
+        <div class="feat"><span class="feat-icon">🚨</span><div><strong>Emergency card</strong> <span>— offline-accessible contacts + info</span></div></div>
+        <div class="feat"><span class="feat-icon">⚖️</span><div><strong>Legal quick-ref</strong> <span>— links to ANWALT.GPT for CH law</span></div></div>
+      </div>
+      <div class="layer-tag">GDPR · DSG · Zero-server</div>
+    </div>
+
+    <!-- 3. BOND -->
+    <div class="layer-card lc-3">
+      <div class="layer-number">Layer 03 / 05</div>
+      <div class="layer-emoji">🤝</div>
+      <div class="layer-title">BOND</div>
+      <div class="layer-need">Love & Belonging</div>
+      <p class="layer-desc">Relationships decay silently. BOND surfaces the people who matter, prompts micro-connections, and builds gratitude into your day.</p>
+      <div class="layer-features">
+        <div class="feat"><span class="feat-icon">👥</span><div><strong>Relationship pulse</strong> <span>— last contact, next touchpoint</span></div></div>
+        <div class="feat"><span class="feat-icon">🙏</span><div><strong>Gratitude prompts</strong> <span>— one person, one specific thing</span></div></div>
+        <div class="feat"><span class="feat-icon">🌙</span><div><strong>Dua for others</strong> <span>— pray for someone daily</span></div></div>
+        <div class="feat"><span class="feat-icon">💬</span><div><strong>Message nudge</strong> <span>— "You haven't reached out to X in 12 days"</span></div></div>
+      </div>
+      <div class="layer-tag">Private · No social graph</div>
+    </div>
+
+    <!-- 4. RISE -->
+    <div class="layer-card lc-4">
+      <div class="layer-number">Layer 04 / 05</div>
+      <div class="layer-emoji">⭐</div>
+      <div class="layer-title">RISE</div>
+      <div class="layer-need">Esteem Needs</div>
+      <p class="layer-desc">Self-worth is built through small consistent wins. RISE gives you a daily stage to acknowledge progress and track growth across domains.</p>
+      <div class="layer-features">
+        <div class="feat"><span class="feat-icon">🎯</span><div><strong>Daily wins</strong> <span>— 3 things you did well, every evening</span></div></div>
+        <div class="feat"><span class="feat-icon">🏔️</span><div><strong>Goal milestones</strong> <span>— visual progress on what matters</span></div></div>
+        <div class="feat"><span class="feat-icon">🃏</span><div><strong>Learn streaks</strong> <span>— spaced-repetition flash cards</span></div></div>
+        <div class="feat"><span class="feat-icon">🔍</span><div><strong>Evening reflection</strong> <span>— AI-guided 5-min review</span></div></div>
+      </div>
+      <div class="layer-tag">No vanity metrics</div>
+    </div>
+
+    <!-- 5. SOUL — full-width -->
+    <div class="layer-card lc-5">
+      <div class="layer-number">Layer 05 / 05</div>
+      <div class="layer-emoji">🌙</div>
+      <div class="layer-title">SOUL</div>
+      <div class="layer-need">Self-Actualization</div>
+      <p class="layer-desc">The highest layer: meaning, creativity, and spiritual alignment. SOUL doesn't tell you what your purpose is — it gives you a private space to uncover it, with an AI companion that listens without judgment and never phones home.</p>
+      <div class="layer-features" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="feat"><span class="feat-icon">✍️</span><div><strong>Private journal</strong> <span>— encrypted, AI-analysed locally</span></div></div>
+        <div class="feat"><span class="feat-icon">☯️</span><div><strong>Ikigai compass</strong> <span>— purpose mapping across 4 quadrants</span></div></div>
+        <div class="feat"><span class="feat-icon">📿</span><div><strong>Dhikr counter</strong> <span>— SubhanAllah, Alhamdulillah, Allahu Akbar</span></div></div>
+        <div class="feat"><span class="feat-icon">🤖</span><div><strong>Deep AI reflection</strong> <span>— Claude Sonnet synthesis of your week</span></div></div>
+        <div class="feat"><span class="feat-icon">🎨</span><div><strong>Creative capture</strong> <span>— voice memos, sketches, ideas</span></div></div>
+        <div class="feat"><span class="feat-icon">🌅</span><div><strong>Morning intention</strong> <span>— set your north star for the day</span></div></div>
+      </div>
+      <div class="layer-tag">Claude Sonnet · Fully private</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="section" style="border-top:1px solid var(--border);padding-top:80px">
+  <div class="section-eyebrow">Daily Rhythm</div>
+  <h2 class="section-h2">12 minutes.<br>Your whole life, cared for.</h2>
+  <p class="section-lead">FITRA structures your day into three brief rituals — morning intention, midday pulse, evening close — totalling under 12 minutes.</p>
+
+  <div class="flow-grid">
+    <div class="flow-step">
+      <div class="flow-step-num">06:30 — MORNING</div>
+      <h3>🌅 Open the day</h3>
+      <p>Body check-in (sleep quality, first water). Set today's intention. One dua. One person to connect with. <em style="color:var(--text3)">~4 min</em></p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">13:00 — MIDDAY</div>
+      <h3>⚡ Pulse check</h3>
+      <p>Hydration tap. Goal progress nudge. One learning card. Budget glance if Monday. <em style="color:var(--text3)">~2 min</em></p>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">21:00 — EVENING</div>
+      <h3>🌙 Close the loop</h3>
+      <p>Three daily wins. Evening reflection (AI-guided). Gratitude for one person. Dhikr. Journal if you want. <em style="color:var(--text3)">~6 min</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI ── -->
+<section class="section" style="border-top:1px solid var(--border);padding-top:80px" id="ai">
+  <div class="section-eyebrow">AI Integration</div>
+  <div class="ai-section">
+    <div class="ai-text">
+      <h3>Two models.<br>One for speed.<br>One for depth.</h3>
+      <p>Quick check-ins use <strong style="color:var(--c1)">Claude Haiku</strong> — instant, lightweight, on-device-style responses that don't break your rhythm. Deep evening reflections use <strong style="color:var(--c5)">Claude Sonnet</strong> — synthesising your week's data into insights that actually move the needle.</p>
+      <p style="font-size:13px;color:var(--text3)">All AI calls are scoped to your local data. No cloud storage. No training on your content. GDPR + DSG compliant by architecture.</p>
+      <div class="model-pills">
+        <div class="mpill">claude-haiku-4-5</div>
+        <div class="mpill">claude-sonnet-4-6</div>
+        <div class="mpill">on-device IndexedDB</div>
+        <div class="mpill">no telemetry</div>
+      </div>
+    </div>
+    <div class="ai-chat-mock">
+      <div class="chat-bubble user">I slept 5h, skipped gym, argued with my brother. Rough day.</div>
+      <div class="chat-bubble ai">
+        Rough, but you showed up here — that counts.<br><br>
+        Your sleep debt is <strong>3h this week</strong> — that's likely amplifying the conflict sensitivity. One thing that often helps: 10 min of sunlight before 9am resets cortisol.<br><br>
+        What's one thing your brother would say you did right today?
+      </div>
+      <div class="ai-model-tag">claude-sonnet-4-6 · private · local context only</div>
+      <div class="chat-bubble user">He'd say I called him first after.</div>
+      <div class="chat-bubble ai">That's your win for today. Log it in RISE — it matters more than the gym.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRINCIPLES ── -->
+<section class="section" style="border-top:1px solid var(--border);padding-top:80px">
+  <div class="section-eyebrow">Design Principles</div>
+  <h2 class="section-h2">Built different.<br>Intentionally.</h2>
+  <div class="principles-grid">
+    <div class="principle">
+      <div class="principle-icon">🔒</div>
+      <h3>Local-first</h3>
+      <p>All data lives on your device. IndexedDB. No backend, no leak surface, no subscription for basic privacy.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">⏱️</div>
+      <h3>Time-aware</h3>
+      <p>Features appear when they're relevant. Morning layers in the morning. Evening layers at night. No noise.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">🚫</div>
+      <h3>Anti-engagement</h3>
+      <p>No streaks designed to guilt you. No gamification that hijacks dopamine. FITRA closes when you're done.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">🌙</div>
+      <h3>Faith-aware</h3>
+      <p>Prayer times, Dua library, Dhikr counter, Quranic reflection — woven in naturally, never forced.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">🇨🇭</div>
+      <h3>Swiss-grade</h3>
+      <p>GDPR + DSG compliant. Sub-200ms load. Deployed on Vercel Edge. Precision over flash.</p>
+    </div>
+    <div class="principle">
+      <div class="principle-icon">🔗</div>
+      <h3>Ecosystem-connected</h3>
+      <p>Deep links into LIA (vault), ANWALT.GPT (law), bimpb apps (sleep, breathe, goals). One shell, many roots.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── TECH STACK ── -->
+<section class="section" style="border-top:1px solid var(--border);padding-top:80px">
+  <div class="section-eyebrow">Tech Stack</div>
+  <h2 class="section-h2">Built on proven ground.</h2>
+  <div class="stack-grid">
+    <div class="stack-pill"><div class="sp-icon">⚡</div><div><div class="sp-label">Next.js 15</div><div class="sp-sub">App Router · RSC</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🎨</div><div><div class="sp-label">shadcn/ui</div><div class="sp-sub">Tailwind · Radix</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🤖</div><div><div class="sp-label">Claude API</div><div class="sp-sub">Haiku + Sonnet</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🗄️</div><div><div class="sp-label">IndexedDB</div><div class="sp-sub">Dexie.js · local</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🔐</div><div><div class="sp-label">Web Crypto</div><div class="sp-sub">AES-256 vault</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🚀</div><div><div class="sp-label">Vercel Edge</div><div class="sp-sub">CH region · fast</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">📱</div><div><div class="sp-label">PWA</div><div class="sp-sub">Offline-first · iOS</div></div></div>
+    <div class="stack-pill"><div class="sp-icon">🔔</div><div><div class="sp-label">Push API</div><div class="sp-sub">Ritual reminders</div></div></div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="section" id="cta">
+  <div class="cta-banner">
+    <h2>Every human need.<br>One private home.</h2>
+    <p>FITRA is in concept stage. If this resonates — or if you want to co-build it — reach out.</p>
+    <a href="mailto:hi@architect-dna.ch?subject=FITRA Early Access" class="btn-primary">Get Early Access →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 <span>Architect-DNA Systems</span> · Bern, Switzerland · FITRA concept</div>
+    <div class="footer-links">
+      <a href="../privacy/">Privacy</a>
+      <a href="mailto:hi@architect-dna.ch">Contact</a>
+      <a href="../">All projects</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── KEY ──
+const KEY = 'fitra_' + new Date().toISOString().slice(0,10);
+const load = k => { try { return JSON.parse(localStorage.getItem(KEY+'_'+k)) } catch { return null } };
+const save = (k,v) => localStorage.setItem(KEY+'_'+k, JSON.stringify(v));
+
+// ── GREETING ──
+(function(){
+  const h = new Date().getHours();
+  const g = h < 5 ? 'الليل خيراً' : h < 12 ? 'Günaydın' : h < 17 ? 'Guten Mittag' : h < 21 ? 'Guten Abend' : 'Gute Nacht';
+  const phase = h < 12 ? '🌅 Morning ritual' : h < 17 ? '⚡ Midday pulse' : '🌙 Evening close';
+  document.getElementById('greeting').innerHTML = `${g} &nbsp;·&nbsp; <span style="color:var(--teal)">${phase}</span>`;
+})();
+
+// ── SLEEP ──
+function logSleep(h) {
+  save('sleep', h);
+  document.querySelectorAll('#w-sleep .w-btn').forEach(b => b.classList.toggle('active', b.textContent.startsWith(h)));
+  document.getElementById('sleep-display').textContent = h + 'h';
+  document.getElementById('sleep-display').style.color = h >= 7 ? 'var(--c1)' : h >= 6 ? 'var(--c4)' : 'var(--c3)';
+  updateScore();
+}
+(function(){
+  const s = load('sleep');
+  if (s) logSleep(s);
+})();
+
+// ── WATER ──
+function renderWater() {
+  const n = load('water') || 0;
+  document.getElementById('water-display').textContent = n + ' / 8';
+  document.getElementById('water-display').style.color = n >= 8 ? 'var(--c1)' : n >= 4 ? 'var(--c4)' : 'var(--text)';
+  const bar = document.getElementById('water-bar');
+  bar.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const d = document.createElement('div');
+    d.className = 'water-drop' + (i < n ? ' filled' : '');
+    bar.appendChild(d);
+  }
+  updateScore();
+}
+function addWater() {
+  const n = Math.min((load('water') || 0) + 1, 8);
+  save('water', n);
+  renderWater();
+}
+function resetWater() { save('water', 0); renderWater(); }
+renderWater();
+
+// ── WINS ──
+function renderWins() {
+  const wins = load('wins') || [];
+  const el = document.getElementById('wins-list');
+  el.innerHTML = wins.length ? '' : '<div style="font-size:12px;color:var(--text3);padding:4px 0">No wins yet — add your first one ↓</div>';
+  wins.forEach(w => {
+    const d = document.createElement('div');
+    d.className = 'win-item drop-in';
+    d.textContent = w;
+    el.appendChild(d);
+  });
+  updateScore();
+}
+function addWin() {
+  const inp = document.getElementById('win-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  const wins = load('wins') || [];
+  if (wins.length >= 5) return;
+  wins.push(val);
+  save('wins', wins);
+  inp.value = '';
+  renderWins();
+}
+renderWins();
+
+// ── DHIKR ──
+const DHIKRS = [
+  { ar: 'سُبْحَانَ اللهِ', name: 'SubhanAllah', goal: 33 },
+  { ar: 'الْحَمْدُ للهِ',  name: 'Alhamdulillah', goal: 33 },
+  { ar: 'اللهُ أَكْبَرُ',  name: 'Allahu Akbar', goal: 34 },
+  { ar: 'لَا إِلَهَ إِلَّا اللهُ', name: 'La ilaha illallah', goal: 100 },
+];
+let dhikrIdx = load('dhikr_idx') || 0;
+function renderDhikr() {
+  const d = DHIKRS[dhikrIdx];
+  const count = load('dhikr_' + dhikrIdx) || 0;
+  document.getElementById('dhikr-phrase').textContent = d.ar;
+  document.getElementById('dhikr-name').textContent = d.name;
+  document.getElementById('dhikr-goal').textContent = d.goal;
+  const el = document.getElementById('dhikr-count');
+  el.textContent = count;
+  el.style.color = count >= d.goal ? 'var(--c1)' : 'var(--c5)';
+  updateScore();
+}
+function tapDhikr() {
+  const d = DHIKRS[dhikrIdx];
+  let count = load('dhikr_' + dhikrIdx) || 0;
+  if (count >= d.goal) return;
+  count++;
+  save('dhikr_' + dhikrIdx, count);
+  const btn = document.getElementById('dhikr-btn');
+  btn.classList.add('dhikr-pulse');
+  btn.addEventListener('animationend', () => btn.classList.remove('dhikr-pulse'), { once: true });
+  renderDhikr();
+}
+function nextDhikr() {
+  dhikrIdx = (dhikrIdx + 1) % DHIKRS.length;
+  save('dhikr_idx', dhikrIdx);
+  renderDhikr();
+}
+renderDhikr();
+
+// ── GRATITUDE ──
+(function(){
+  const g = load('gratitude');
+  if (g) document.getElementById('gratitude-display').textContent = '❝ ' + g + ' ❞';
+})();
+function saveGratitude() {
+  const inp = document.getElementById('gratitude-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  save('gratitude', val);
+  document.getElementById('gratitude-display').textContent = '❝ ' + val + ' ❞';
+  inp.value = '';
+  updateScore();
+}
+
+// ── SCORE ──
+function updateScore() {
+  const checks = [
+    load('sleep') != null,
+    (load('water') || 0) >= 4,
+    (load('wins') || []).length >= 1,
+    (() => { for(let i=0;i<DHIKRS.length;i++) { if((load('dhikr_'+i)||0) >= DHIKRS[i].goal) return true; } return false; })(),
+    load('gratitude') != null,
+  ];
+  const done = checks.filter(Boolean).length;
+  const pct = Math.round(done / checks.length * 100);
+  const colors = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)'];
+  const labels = ['Sleep', 'Water', 'Wins', 'Dhikr', 'Gratitude'];
+  const segs = document.getElementById('score-segments');
+  segs.innerHTML = '';
+  checks.forEach((ok, i) => {
+    const s = document.createElement('div');
+    s.title = labels[i];
+    s.style.cssText = `flex:1;height:8px;border-radius:4px;background:${ok ? colors[i] : 'rgba(255,255,255,.07)'};transition:background .3s`;
+    segs.appendChild(s);
+  });
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').style.color = pct === 100 ? 'var(--c1)' : 'var(--teal)';
+}
+updateScore();
+
+// ── CLEAR ──
+function clearAll() {
+  if (!confirm('Clear today\'s data?')) return;
+  ['sleep','water','wins','gratitude','dhikr_idx',...DHIKRS.map((_,i)=>'dhikr_'+i)]
+    .forEach(k => localStorage.removeItem(KEY+'_'+k));
+  location.reload();
+}
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// ── LAYER TILT ──
+document.querySelectorAll('.layer-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    card.style.transform = `translateY(-4px) rotateX(${-y*3}deg) rotateY(${x*3}deg)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+</script>
+</body>
+</html>
