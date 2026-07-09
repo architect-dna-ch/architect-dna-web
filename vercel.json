@@ -3,8 +3,7 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/game-studio", "destination": "/", "permanent": true },
-    { "source": "/games", "destination": "/", "permanent": true },
-    { "source": "/meetmind", "destination": "https://meetmind.architect-dna.ch", "permanent": false }
+    { "source": "/games", "destination": "/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/api/wg/set", "destination": "/api/wg/set.js" },
