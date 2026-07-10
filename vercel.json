@@ -3,7 +3,8 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/game-studio", "destination": "/", "permanent": true },
-    { "source": "/games", "destination": "/", "permanent": true }
+    { "source": "/games", "destination": "/", "permanent": true },
+    { "source": "/einspruch", "destination": "https://einspruch.architect-dna.ch", "permanent": false }
   ],
   "rewrites": [
     { "source": "/api/wg/set", "destination": "/api/wg/set.js" },

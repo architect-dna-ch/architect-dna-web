@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1584px;
+    height: 396px;
+    overflow: hidden;
+    background: #FAFAF8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+    LinkedIn scale: 1584px banner → ~760px display → 0.48× factor.
+    Target display sizes: h1≈40px, tagline≈14px, services≈13px.
+    File sizes: h1=84px, tagline=30px, services=26px.
+    All content starts at x=520 to clear the ~370px wide profile photo arc.
+    Using fixed padding-top instead of flex centering to prevent overflow clipping.
+  */
+  .banner {
+    width: 1584px;
+    height: 396px;
+    background: #FAFAF8;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 36px 80px 0 520px;
+    overflow: hidden;
+  }
+
+  .banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(26,26,26,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,26,26,.03) 1px, transparent 1px);
+    background-size: 96px 96px;
+    pointer-events: none;
+  }
+
+  .accent-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: #B5271E;
+  }
+
+  /* logo mark — top-left, above photo */
+  .logo-corner {
+    position: absolute;
+    top: 26px;
+    left: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+  }
+  .logo-mark {
+    width: 44px;
+    height: 44px;
+    border: 2.5px solid #1A1A1A;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFAF8;
+  }
+  .logo-domain {
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 20px;
+    color: #9A9A98;
+    font-weight: 500;
+  }
+
+  /* ── LEFT BLOCK ── */
+  .left {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #B5271E;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 3px;
+    background: #B5271E;
+    flex-shrink: 0;
+  }
+
+  .chips {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .chip {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 5px 16px;
+    background: #F0EFEB;
+    border: 1.5px solid #E0E0D8;
+    border-radius: 30px;
+    color: #5A5A58;
+    white-space: nowrap;
+  }
+
+  h1 {
+    font-size: 84px;
+    font-weight: 900;
+    letter-spacing: -.05em;
+    line-height: .92;
+    color: #1A1A1A;
+    margin-bottom: 18px;
+  }
+  h1 em {
+    font-style: normal;
+    color: #9A9A98;
+  }
+
+  .tagline {
+    font-size: 30px;
+    color: #5A5A58;
+    line-height: 1.45;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 1px;
+    height: 240px;
+    background: #E0E0D8;
+    margin: 8px 60px 0;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  /* ── SERVICES ── */
+  .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    z-index: 1;
+  }
+
+  .services-label {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #9A9A98;
+    margin-bottom: 20px;
+  }
+
+  .svc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .svc-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .svc-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #B5271E;
+    flex-shrink: 0;
+  }
+
+  .svc-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1A1A1A;
+    letter-spacing: -.02em;
+    white-space: nowrap;
+  }
+
+  .watermark {
+    position: absolute;
+    right: -20px;
+    top: -50px;
+    font-size: 440px;
+    font-weight: 900;
+    letter-spacing: -.08em;
+    color: rgba(26,26,26,.025);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="accent-bar"></div>
+  <div class="watermark">A</div>
+
+  <div class="logo-corner">
+    <div class="logo-mark">
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="none" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round">
+        <polyline points="2,10 7,4 12,10"/>
+      </svg>
+    </div>
+    <span class="logo-domain">architect-dna.ch</span>
+  </div>
+
+  <div class="left">
+    <div class="eyebrow">Software Studio · Switzerland</div>
+    <div class="chips">
+      <span class="chip">🇨🇭 Bern</span>
+      <span class="chip">WebAuthn · Passkeys</span>
+      <span class="chip">Zero tracking</span>
+    </div>
+    <h1>Architect<br><em>DNA</em></h1>
+    <p class="tagline">Privacy-first apps for web, iOS & Android.<br>No tracking. No lock-in.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="right">
+    <div class="services-label">What we build</div>
+    <div class="svc-list">
+      <div class="svc-item">
+        <div class="svc-dot"></div>
+        <div class="svc-name">Web Applications</div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-dot"></div>
+        <div class="svc-name">iOS & Android Apps</div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-dot"></div>
+        <div class="svc-name">AI Integration</div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-dot"></div>
+        <div class="svc-name">Privacy Architecture</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
