@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dewign — Webdesign für lokale Unternehmen</title>
+<meta name="description" content="Dewign baut Webseiten für lokale Schweizer Unternehmen. Case Study: Hemen's Takeaway, Bern — von der Speisekarte bis zur Website live.">
+<meta name="theme-color" content="#FAFAF8">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none}
+.nav-cta{margin-left:auto;font-size:13px;font-weight:700;color:var(--red);text-decoration:none}
+
+.hero{max-width:900px;margin:0 auto;padding:80px 32px 40px}
+.kicker{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:20px}
+h1{font-size:clamp(32px,5.5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:22px}
+.lead{font-size:18px;color:var(--text2);max-width:600px;line-height:1.7}
+
+.services{max-width:900px;margin:0 auto;padding:20px 32px 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.services{grid-template-columns:1fr}}
+.svc{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.svc-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.svc-desc{font-size:13px;color:var(--text2)}
+
+.case{max-width:900px;margin:0 auto;padding:40px 32px}
+.case-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.case h2{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+.case p{color:var(--text2);max-width:640px;margin-bottom:8px}
+
+.gallery{max-width:900px;margin:0 auto;padding:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:680px){.gallery{grid-template-columns:repeat(2,1fr)}}
+.gallery img{width:100%;height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+.gallery .wide{grid-column:span 2}
+@media(max-width:680px){.gallery .wide{grid-column:span 2}}
+
+.cta-block{max-width:900px;margin:0 auto;padding:60px 32px 90px;text-align:center}
+.cta-block h3{font-size:24px;font-weight:800;margin-bottom:14px}
+.cta-block p{color:var(--text2);margin-bottom:24px}
+.btn{display:inline-block;background:var(--text);color:#fff;padding:14px 28px;border-radius:10px;font-weight:700;text-decoration:none;font-size:15px}
+
+footer{padding:32px;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:12px}
+footer a{color:var(--text3)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">← Architect-DNA</a>
+    <a class="nav-cta" href="mailto:systems@architect-dna.ch?subject=Dewign%20Anfrage">Anfrage senden</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="kicker">DEWIGN · WEBDESIGN</div>
+  <h1>Webseiten für lokale Unternehmen, die tatsächlich Kunden bringen.</h1>
+  <p class="lead">Kein Website-Baukasten-Gefühl. Dewign baut schlanke, schnelle Webseiten für Restaurants, KMU und lokale Betriebe — von der ersten Skizze bis live im Betrieb.</p>
+</div>
+
+<div class="services">
+  <div class="svc"><div class="svc-title">Webdesign</div><div class="svc-desc">Individuelles Design statt Vorlage — abgestimmt auf Marke, Speisekarte, Öffnungszeiten und Standort.</div></div>
+  <div class="svc"><div class="svc-title">Suchmaschinenoptimierung</div><div class="svc-desc">Damit man in Bern nach "Kebab" sucht — und die Seite tatsächlich gefunden wird.</div></div>
+  <div class="svc"><div class="svc-title">Webshop-Lösungen</div><div class="svc-desc">Online-Bestellung direkt über die eigene Seite, ohne Provision an Dritte.</div></div>
+</div>
+
+<div class="case">
+  <div class="case-label">Case Study</div>
+  <h2>Hemen's Takeaway, Bern</h2>
+  <p>Pizza, Kebab und Frühstück am Bahnhof Bern — die Website musste vor allem eines können: die Speisekarte klar zeigen und Online-Bestellungen zur Kasse ohne Umwege bringen (hemenstakeaway.ch).</p>
+  <p>Fotos direkt vor Ort — Ladenbau, Speisen, Signaletik — statt Stockfotos.</p>
+</div>
+
+<div class="gallery">
+  <img class="wide" src="images/IMG_3430.jpg" alt="Hemen's Ladenfront mit Leuchtschrift">
+  <img src="images/IMG_3426.jpg" alt="Hemen's Eingang">
+  <img src="images/IMG_3421.jpg" alt="Hemen's Zubereitung">
+  <img src="images/IMG_3420.jpg" alt="Frische Zutaten">
+  <img src="images/IMG_3435.jpg" alt="Hemen's Döner">
+  <img src="images/IMG_3438.jpg" alt="Hemen's Döner im Park">
+  <img src="images/IMG_3424.jpg" alt="Zubereitung mit Hemen's Verpackung">
+  <img src="images/IMG_3423.jpg" alt="Hemen's Getränkekühlschrank">
+  <img src="images/IMG_3422.jpg" alt="Hemen's Kühlschrank Innenansicht">
+  <img class="wide" src="images/IMG_3339.jpg" alt="Am Rechner: Dewign-Website im Elementor-Editor">
+</div>
+
+<div class="cta-block">
+  <h3>Eigenes Projekt?</h3>
+  <p>Restaurant, Praxis, Handwerksbetrieb — kurz schreiben, was gebraucht wird.</p>
+  <a class="btn" href="mailto:systems@architect-dna.ch?subject=Dewign%20Anfrage">Anfrage senden →</a>
+</div>
+
+<footer>
+  Dewign · Ein Projekt von Architect-DNA · Schweiz · <a href="mailto:systems@architect-dna.ch">systems@architect-dna.ch</a>
+</footer>
+
+</body>
+</html>
