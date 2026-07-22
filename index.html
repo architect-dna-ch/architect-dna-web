@@ -187,7 +187,10 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 
 @media(max-width:700px){
   .hero{padding:60px 20px 48px}
-  .header-nav{display:none}
+  .header-nav{gap:0}
+  .header-nav a{font-size:11px;padding:4px 6px}
+  .header-nav .nav-cta{padding:4px 8px}
+  .header-nav a[href="#about"],.header-nav a[href="#services"]{display:none}
   header{padding:0 16px}
   .logo-domain{display:none}
   #vc-toggle{margin-left:auto}
