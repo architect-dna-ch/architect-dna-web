@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>You weren't supposed to find this — architect-dna.ch</title>
+<meta name="description" content="A secret page. You found it. Now you're part of this.">
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:title" content="MUAHAHAHA">
+<meta property="og:description" content="You found the void cell. Proceed with caution and a healthy sense of humor.">
+<meta name="theme-color" content="#060810">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden}
+:root{
+  --bg:#060810;--bg2:#0c0f1a;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.16);
+  --text:#f0f0f8;--text2:rgba(240,240,248,.6);--text3:rgba(240,240,248,.32);
+  --orange:#ff6b00;--green:#00e87a;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  -webkit-font-smoothing:antialiased;line-height:1.6;min-height:100vh;
+  position:relative;
+}
+#field{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+a{color:inherit}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:64px 24px 96px}
+
+.back{
+  display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;
+  color:var(--text3);text-decoration:none;font-family:var(--mono);letter-spacing:.02em;
+  transition:color .15s;
+}
+.back:hover{color:var(--green)}
+
+.term{
+  margin-top:40px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:18px 20px;font-family:var(--mono);font-size:12.5px;color:var(--green);
+  min-height:120px;white-space:pre-wrap;
+}
+.term .cursor{display:inline-block;width:7px;height:13px;background:var(--green);
+  vertical-align:-2px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+h1{
+  margin-top:44px;font-size:clamp(44px,10vw,92px);font-weight:900;letter-spacing:-.04em;
+  line-height:.94;color:var(--orange);text-shadow:0 0 34px rgba(255,107,0,.35);
+}
+.sub{
+  margin-top:22px;font-size:clamp(15px,2vw,18px);color:var(--text2);max-width:52ch;
+}
+.sub b{color:var(--text)}
+
+.section-label{
+  margin-top:64px;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text3);display:flex;align-items:center;gap:12px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+
+.roadmap{margin-top:24px;display:flex;flex-direction:column;gap:2px}
+.phase{
+  display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:16px;
+  padding:14px 16px;border:1px solid var(--border);border-radius:9px;background:var(--bg2);
+  font-size:14px;
+}
+.phase + .phase{margin-top:8px}
+.phase .n{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.phase .t b{color:var(--text)}
+.phase .t span{display:block;font-size:12px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.phase .s{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;
+  padding:4px 9px;border-radius:20px;white-space:nowrap}
+.phase.done{border-color:rgba(0,232,122,.28)}
+.phase.done .s{background:rgba(0,232,122,.12);color:var(--green)}
+.phase.locked{opacity:.45}
+.phase.locked .s{background:rgba(255,255,255,.06);color:var(--text3)}
+
+.manifesto{
+  margin-top:20px;padding:22px 24px;border:1px solid var(--border);border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,107,0,.05),transparent);font-size:14.5px;
+  color:var(--text2);line-height:1.75;
+}
+.manifesto b{color:var(--text)}
+
+.exit{
+  margin-top:56px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;padding-top:28px;border-top:1px solid var(--border);
+}
+.exit p{font-size:12.5px;color:var(--text3);font-family:var(--mono);max-width:40ch}
+.exit a{
+  text-decoration:none;font-weight:700;font-size:13.5px;color:#000;background:var(--orange);
+  padding:11px 20px;border-radius:8px;white-space:nowrap;box-shadow:0 0 24px rgba(255,107,0,.25);
+}
+.exit a:hover{background:#ff8c33}
+
+@media(max-width:560px){
+  .phase{grid-template-columns:20px 1fr;grid-template-rows:auto auto}
+  .phase .s{grid-column:1/-1;justify-self:start;margin-top:6px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="field"></canvas>
+
+<div class="wrap">
+  <a class="back" href="/">← back to the surface</a>
+
+  <div class="term" id="term"></div>
+
+  <h1>MUAHAHAHA</h1>
+  <p class="sub">You weren't supposed to find <b>/miuahahahah</b>. There's no link to it anywhere. And yet — here you are, reading a supervillain monologue on a Swiss software studio's website. <b>Welcome to Void Cell.</b></p>
+
+  <div class="section-label">World Domination Roadmap</div>
+  <div class="roadmap">
+    <div class="phase done"><span class="n">01</span><span class="t"><b>Infiltrate Swiss bureaucracy from within</b><span>einspruch.architect-dna.ch</span></span><span class="s">SHIPPED</span></div>
+    <div class="phase done"><span class="n">02</span><span class="t"><b>Digitize the espresso supply chain</b><span>zugcafe</span></span><span class="s">SHIPPED</span></div>
+    <div class="phase done"><span class="n">03</span><span class="t"><b>Declare sovereignty</b><span>sovereignty</span></span><span class="s">SHIPPED</span></div>
+    <div class="phase done"><span class="n">04</span><span class="t"><b>Reach void frequency</b><span>void-freq</span></span><span class="s">SHIPPED</span></div>
+    <div class="phase done"><span class="n">05</span><span class="t"><b>Take a meeting about eliminating meetings</b><span>meetmind</span></span><span class="s">SHIPPED</span></div>
+    <div class="phase locked"><span class="n">06</span><span class="t"><b>Convince every last skeptic</b><span>you, probably, right now</span></span><span class="s">IN PROGRESS</span></div>
+    <div class="phase locked"><span class="n">07</span><span class="t"><b>???</b><span>classified</span></span><span class="s">LOCKED</span></div>
+    <div class="phase locked"><span class="n">08</span><span class="t"><b>Profit</b><span>the usual</span></span><span class="s">LOCKED</span></div>
+  </div>
+
+  <div class="manifesto">
+    In seriousness, for the record: this is <b>architect-dna.ch</b> — a small, privacy-first software studio in Switzerland, building web, iOS and Android apps. No world domination in progress, just one person and an unreasonable number of side projects. This page exists because a client asked for a surprise, and a straight face is overrated.
+  </div>
+
+  <div class="exit">
+    <p>No bureaucracies were harmed in the making of this page. Yet.</p>
+    <a href="/">Return to civilian identity →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var lines = [
+    "$ whoami",
+    "architect-dna // void cell",
+    "$ sudo take-over-the-world --dry-run",
+    "permission granted (it's your own machine, obviously)",
+    "$ status",
+    "6 shipped, 2 classified, 0 regrets",
+  ];
+  var el = document.getElementById('term');
+  var i = 0, j = 0;
+  function tick(){
+    if(i >= lines.length){ el.innerHTML += '<span class="cursor"></span>'; return; }
+    var line = lines[i];
+    if(j <= line.length){
+      var done = lines.slice(0,i).join('\n');
+      el.textContent = (done ? done + '\n' : '') + line.slice(0,j);
+      j++;
+      setTimeout(tick, 16 + Math.random()*22);
+    } else {
+      el.textContent += '\n';
+      i++; j = 0;
+      setTimeout(tick, 260);
+    }
+  }
+  tick();
+})();
+
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var c = document.getElementById('field');
+  if(reduce || !c){ if(c) c.remove(); return; }
+  var ctx = c.getContext('2d');
+  var w,h,embers=[];
+  function resize(){ w=c.width=innerWidth; h=c.height=innerHeight; }
+  resize(); addEventListener('resize', resize);
+  var N = Math.min(50, Math.floor(innerWidth/26));
+  for(var k=0;k<N;k++){
+    embers.push({
+      x: Math.random()*w, y: Math.random()*h + h*0.2,
+      r: 0.6 + Math.random()*1.6,
+      vy: 0.15 + Math.random()*0.35,
+      vx: (Math.random()-0.5)*0.15,
+      a: 0.15 + Math.random()*0.35,
+      c: Math.random() < 0.75 ? '255,107,0' : '0,232,122'
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(var k=0;k<embers.length;k++){
+      var e = embers[k];
+      e.y -= e.vy; e.x += e.vx;
+      if(e.y < -10){ e.y = h+10; e.x = Math.random()*w; }
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba('+e.c+','+e.a+')';
+      ctx.arc(e.x, e.y, e.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
