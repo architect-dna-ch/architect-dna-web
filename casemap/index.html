@@ -50,6 +50,22 @@ h1{
 }
 h1 span{color:var(--red);}
 
+.toprow{display:flex; align-items:flex-start; justify-content:space-between; gap:16px;}
+.actions{display:flex; gap:8px; flex-shrink:0; margin-top:2px;}
+.actions button{
+  font-family:var(--font-mono);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  border:1px solid var(--ink);
+  background:var(--ink);
+  color:var(--paper);
+  padding:8px 14px;
+  cursor:pointer;
+}
+.actions button.secondary{background:transparent; color:var(--ink);}
+.actions button:hover{opacity:0.8;}
+
 .filters{
   display:flex;
   gap:8px;
@@ -83,13 +99,14 @@ main{
 
 #graph{
   flex:1;
+  overflow:auto;
   background:var(--paper);
   background-image:
     repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.015) 3px);
 }
 
 #sidebar{
-  width:340px;
+  width:360px;
   flex-shrink:0;
   border-left:1px solid var(--ink);
   background:var(--paper-dark);
@@ -132,6 +149,18 @@ main{
 .doc-status.draft{color:var(--grey); border-color:var(--grey); transform:rotate(0);}
 .doc-status.blocked{color:var(--red); border-color:var(--red);}
 
+.doc-deadline{
+  font-family:var(--font-mono);
+  font-size:12px;
+  font-weight:700;
+  padding:6px 10px;
+  margin-bottom:14px;
+  border-left:3px solid var(--red);
+  background:rgba(163,35,31,0.08);
+}
+.doc-deadline.ok{border-left-color:var(--teal); background:rgba(46,74,68,0.08);}
+.doc-deadline.soon{border-left-color:var(--gold); background:rgba(138,109,31,0.08);}
+
 .doc-section{margin-top:16px;}
 .doc-section h3{
   font-family:var(--font-mono);
@@ -159,30 +188,121 @@ main{
 .legend div{margin-bottom:5px; display:flex; align-items:center; gap:6px;}
 .legend .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
 
+/* Edit form */
+.field{margin-bottom:12px;}
+.field label{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-soft);
+  margin-bottom:4px;
+}
+.field input, .field select, .field textarea{
+  width:100%;
+  font-family:var(--font-serif);
+  font-size:14px;
+  padding:7px 8px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--ink);
+}
+.field textarea{resize:vertical; min-height:60px;}
+.field-row{display:flex; gap:8px;}
+.field-row .field{flex:1;}
+.form-actions{display:flex; gap:8px; margin-top:16px;}
+.form-actions button{
+  font-family:var(--font-mono);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  border:1px solid var(--ink);
+  padding:8px 14px;
+  cursor:pointer;
+  background:var(--ink);
+  color:var(--paper);
+}
+.form-actions button.secondary{background:transparent; color:var(--ink);}
+.form-actions button.danger{background:var(--red); border-color:var(--red); color:var(--paper);}
+
+.edit-link{
+  font-family:var(--font-mono);
+  font-size:10px;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  cursor:pointer;
+  text-decoration:underline;
+  margin-left:8px;
+}
+.edit-link:hover{color:var(--red);}
+
+/* Deadline list view */
+.deadline-list{padding:20px 24px; overflow-y:auto; height:100%;}
+.deadline-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  background:var(--paper-dark);
+  margin-bottom:8px;
+  cursor:pointer;
+}
+.deadline-row:hover{border-color:var(--ink);}
+.deadline-date{
+  font-family:var(--font-mono);
+  font-size:13px;
+  font-weight:700;
+  width:100px;
+  flex-shrink:0;
+}
+.deadline-date.overdue{color:var(--red);}
+.deadline-date.soon{color:var(--gold);}
+.deadline-title{flex:1; font-size:14px;}
+.deadline-recipient{
+  font-family:var(--font-mono);
+  font-size:10px;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+}
+.deadline-empty{color:var(--ink-soft); font-style:italic; font-size:14px; padding:20px;}
+
 </style>
 </head>
 <body>
   <header>
-    <div class="eyebrow">Architect-DNA · Persönliches Übersichtstool</div>
-    <h1>Case <span>Map</span></h1>
+    <div class="toprow">
+      <div>
+        <div class="eyebrow">Architect-DNA · Persönliches Übersichtstool</div>
+        <h1>Case <span>Map</span></h1>
+      </div>
+      <div class="actions">
+        <button class="secondary" id="btnDeadlines">Fristen</button>
+        <button class="secondary" id="btnGraphView">Karte</button>
+        <button id="btnNew">+ Neues Dokument</button>
+      </div>
+    </div>
     <div class="filters" id="filters"></div>
   </header>
 
   <main>
     <div id="graph"></div>
+    <div id="deadlineView" class="deadline-list" style="display:none; flex:1;"></div>
     <aside id="sidebar">
       <div class="placeholder">Auf einen Knoten klicken für Details.</div>
     </aside>
   </main>
 
   <script>
-const EMBEDDED_DOCS = [
+const DEFAULT_DOCS = [
   {
     "id": "doc1",
     "title": "Aufsichtsbeschwerde Belp",
     "recipient": "RSTA",
     "status": "sent",
     "date": "2026-07-07",
+    "deadline": "",
     "references": [],
     "attachments": ["11 Beschwerdepunkte"],
     "summary": "Aufsichtsbeschwerde an Gemeinderat Belp und Regierungsstatthalteramt Bern-Mittelland. 11 Punkte: unrechtmässige Zahlungsstopps, verweigerte Kautionshilfe, verweigerte SIL Handy/Laptop, verletztes rechtliches Gehör, unzulässiger Familienkontaktdruck trotz dokumentierter Bedrohungslage."
@@ -193,9 +313,10 @@ const EMBEDDED_DOCS = [
     "recipient": "RSTA",
     "status": "blocked",
     "date": "2026-07-21",
+    "deadline": "2026-08-04",
     "references": ["doc1"],
     "attachments": ["Assura Mahnstopp-Antrag"],
-    "summary": "Nachtrag zur Aufsichtsbeschwerde betreffend Zuständigkeit für Krankenkassenprämien. Wartet auf Bestätigung der Assura-Stundung, bevor Nachtrag final abgeschickt wird."
+    "summary": "Nachtrag zur Aufsichtsbeschwerde betreffend Zuständigkeit für Krankenkassenprämien. Wartet auf Bestätigung der Assura-Stundung, bevor Nachtrag final abgeschickt wird. Belp-Stellungnahmefrist im Hauptverfahren: 04.08.2026."
   },
   {
     "id": "doc3",
@@ -203,9 +324,10 @@ const EMBEDDED_DOCS = [
     "recipient": "privat",
     "status": "sent",
     "date": "2026-07-18",
+    "deadline": "2026-08-14",
     "references": [],
     "attachments": [],
-    "summary": "Antrag an Assura auf Zahlungsaufschub, via Proton Mail versendet. Grundlage für Nachtrag RSTA (doc2)."
+    "summary": "Antrag an Assura auf Zahlungsaufschub, via Proton Mail versendet. Grundlage für Nachtrag RSTA (doc2). Zahlungsaufforderung fällig 14.08.2026."
   },
   {
     "id": "doc4",
@@ -213,6 +335,7 @@ const EMBEDDED_DOCS = [
     "recipient": "MüB",
     "status": "ready",
     "date": "2026-07-15",
+    "deadline": "",
     "references": ["doc5"],
     "attachments": ["E-Mail Corinne Klaey 08.05."],
     "summary": "Korrigierte Forderung CHF 1'853.40 an Sozialdienst Münchenbuchsee. Ersetzt defekte V5. Stützt sich auf digital signierte E-Mail von Corinne Klaey als Kernbeweis gegen rückwirkende Anrechnung des Märzlohns."
@@ -223,6 +346,7 @@ const EMBEDDED_DOCS = [
     "recipient": "MüB",
     "status": "blocked",
     "date": "2026-05-20",
+    "deadline": "",
     "references": [],
     "attachments": [],
     "summary": "Ursprüngliche Forderungsversion mit Berechnungsfehler. Nicht mehr verwenden — nur als Referenz für V6 relevant."
@@ -233,6 +357,7 @@ const EMBEDDED_DOCS = [
     "recipient": "MüB",
     "status": "draft",
     "date": "2026-08-01",
+    "deadline": "",
     "references": ["doc4"],
     "attachments": [],
     "summary": "Persönliche Anmeldung bei Einwohnerdienste Bern für Case-Transfer. 4–6 Wochen Bearbeitungszeit erwartet — Kollisionsrisiko mit offener V6-Forderung."
@@ -243,6 +368,7 @@ const EMBEDDED_DOCS = [
     "recipient": "AVA",
     "status": "sent",
     "date": "2026-07-23",
+    "deadline": "",
     "references": ["doc8", "doc9"],
     "attachments": ["Entscheid Nr. 349983855", "Entscheid 4-Einstelltage"],
     "summary": "Konsolidierte Einsprache gegen zwei Einstelltage-Entscheide sowie Stellungnahme zu fehlendem Nachweis Stellensuche Juni. Adressiert an AVA Recht und Dienste, Bern."
@@ -253,6 +379,7 @@ const EMBEDDED_DOCS = [
     "recipient": "AVA",
     "status": "sent",
     "date": "2026-07-01",
+    "deadline": "",
     "references": [],
     "attachments": [],
     "summary": "Einsprache gegen Entscheid Nr. 349983855 vom 01.07.2026."
@@ -263,6 +390,7 @@ const EMBEDDED_DOCS = [
     "recipient": "AVA",
     "status": "sent",
     "date": "2026-07-23",
+    "deadline": "",
     "references": [],
     "attachments": [],
     "summary": "Einsprache gegen weiteren Einstelltage-Entscheid vom 23.07.2026."
@@ -273,6 +401,7 @@ const EMBEDDED_DOCS = [
     "recipient": "AVA",
     "status": "ready",
     "date": "2026-07-25",
+    "deadline": "",
     "references": [],
     "attachments": [],
     "summary": "Korrektur eines fehlerhaften 'Konkurs der Firma'-Eintrags, gestützt auf Art. 28/31 ATSG."
@@ -283,16 +412,19 @@ const EMBEDDED_DOCS = [
     "recipient": "Belp",
     "status": "draft",
     "date": "2026-08-01",
+    "deadline": "",
     "references": ["doc1", "doc4"],
     "attachments": [],
     "summary": "Ankündigt freiwilligen Ausstieg aus dem Sozialhilfesystem — bedingt durch gesicherte Mietzahlung. Hängt von Ausgang doc1 (Belp) und doc4 (MüB-Forderung) ab."
   }
-]
-;
+];
+
+const STORAGE_KEY = 'casemap_docs_v1';
 
 let docsById = {};
 let activeFilter = 'all';
 let positions = {};
+let currentView = 'graph';
 
 const STATUS_COLOR = {
   draft:   '#8a8578',
@@ -302,18 +434,33 @@ const STATUS_COLOR = {
 };
 const STATUS_LABEL = { draft:'Entwurf', ready:'Bereit', sent:'Gesendet', blocked:'Blockiert' };
 
+function loadDocs(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try { return JSON.parse(saved); } catch(e) { /* fall through */ }
+  }
+  return DEFAULT_DOCS;
+}
+
+function saveDocs(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.values(docsById)));
+}
+
 function init(docs){
+  docsById = {};
   docs.forEach(d => docsById[d.id] = d);
-  const recipients = [...new Set(docs.map(d => d.recipient))];
-  buildFilters(recipients);
-  layoutByRecipient(docs, recipients);
+  rebuildFilters();
+  layoutByRecipient();
   render();
 }
 
-function buildFilters(recipients){
+function rebuildFilters(){
+  const docs = Object.values(docsById);
+  const recipients = [...new Set(docs.map(d => d.recipient))];
   const container = document.getElementById('filters');
-  container.appendChild(makeFilterBtn('Alle', 'all', true));
-  recipients.forEach(r => container.appendChild(makeFilterBtn(r, r, false)));
+  container.innerHTML = '';
+  container.appendChild(makeFilterBtn('Alle', 'all', activeFilter === 'all'));
+  recipients.forEach(r => container.appendChild(makeFilterBtn(r, r, activeFilter === r)));
 }
 
 function makeFilterBtn(label, value, active){
@@ -331,12 +478,15 @@ function makeFilterBtn(label, value, active){
 
 // Simple deterministic layout: group nodes into columns by recipient,
 // stack vertically within each column.
-function layoutByRecipient(docs, recipients){
+function layoutByRecipient(){
+  const docs = Object.values(docsById);
+  const recipients = [...new Set(docs.map(d => d.recipient))];
   const colWidth = 220;
   const rowHeight = 90;
   const startX = 130;
   const startY = 90;
 
+  positions = {};
   recipients.forEach((r, colIdx) => {
     const docsInCol = docs.filter(d => d.recipient === r);
     docsInCol.forEach((d, rowIdx) => {
@@ -350,6 +500,7 @@ function layoutByRecipient(docs, recipients){
 }
 
 function render(){
+  if (currentView !== 'graph') return;
   const graph = document.getElementById('graph');
   graph.innerHTML = '';
 
@@ -358,22 +509,25 @@ function render(){
   );
   const visibleIds = new Set(visibleDocs.map(d => d.id));
 
-  const maxX = Math.max(...Object.values(positions).map(p => p.x)) + 200;
-  const maxY = Math.max(...Object.values(positions).map(p => p.y)) + 100;
+  if (visibleDocs.length === 0) {
+    graph.innerHTML = '<div style="padding:40px; color:#8a8578; font-style:italic;">Keine Dokumente.</div>';
+    return;
+  }
+
+  const maxX = Math.max(...visibleDocs.map(d => positions[d.id].x)) + 200;
+  const maxY = Math.max(...visibleDocs.map(d => positions[d.id].y)) + 100;
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('width', maxX);
   svg.setAttribute('height', maxY);
   svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
 
-  // Arrow marker def
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   defs.innerHTML = `<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
     <path d="M0,0 L10,5 L0,10 z" fill="#8a8578"></path>
   </marker>`;
   svg.appendChild(defs);
 
-  // Column labels
   const seenCols = new Set();
   visibleDocs.forEach(d => {
     const pos = positions[d.id];
@@ -392,7 +546,6 @@ function render(){
     }
   });
 
-  // Edges (only between visible nodes)
   visibleDocs.forEach(d => {
     (d.references || []).forEach(refId => {
       if (visibleIds.has(refId) && positions[refId]) {
@@ -413,7 +566,6 @@ function render(){
     });
   });
 
-  // Nodes
   visibleDocs.forEach(d => {
     const pos = positions[d.id];
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -429,6 +581,17 @@ function render(){
     rect.setAttribute('stroke', '#201d17');
     rect.setAttribute('stroke-width', '1.5');
     g.appendChild(rect);
+
+    if (d.deadline && isOverdue(d.deadline)) {
+      const flag = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      flag.setAttribute('cx', '164');
+      flag.setAttribute('cy', '6');
+      flag.setAttribute('r', '5');
+      flag.setAttribute('fill', '#a3231f');
+      flag.setAttribute('stroke', '#f2ede2');
+      flag.setAttribute('stroke-width', '1');
+      g.appendChild(flag);
+    }
 
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', '10');
@@ -483,6 +646,24 @@ function wrapText(textEl, str, maxWidth, lineHeight){
   });
 }
 
+function daysUntil(dateStr){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(dateStr + 'T00:00:00');
+  return Math.round((target - today) / 86400000);
+}
+function isOverdue(dateStr){ return daysUntil(dateStr) < 0; }
+function isSoon(dateStr){ const d = daysUntil(dateStr); return d >= 0 && d <= 7; }
+
+function deadlineBadge(dateStr){
+  if (!dateStr) return '';
+  const days = daysUntil(dateStr);
+  let cls = 'ok', text = `noch ${days} Tage`;
+  if (days < 0) { cls = ''; text = `überfällig seit ${Math.abs(days)} Tagen`; }
+  else if (days === 0) { cls = 'soon'; text = 'heute fällig'; }
+  else if (days <= 7) { cls = 'soon'; text = `noch ${days} Tage`; }
+  return `<div class="doc-deadline ${cls}">Frist: ${dateStr} — ${text}</div>`;
+}
+
 function showDetail(id){
   const d = docsById[id];
   const sidebar = document.getElementById('sidebar');
@@ -496,9 +677,10 @@ function showDetail(id){
     : `<p style="color:#8a8578; font-style:italic;">Keine Beilagen erfasst.</p>`;
 
   sidebar.innerHTML = `
-    <div class="doc-title">${d.title}</div>
+    <div class="doc-title">${d.title} <span class="edit-link" onclick="showEditForm('${d.id}')">Bearbeiten</span></div>
     <div class="doc-meta">${d.recipient} · ${d.date}</div>
     <div class="doc-status ${d.status}">${STATUS_LABEL[d.status]}</div>
+    ${deadlineBadge(d.deadline)}
     <div class="doc-section">
       <h3>Zusammenfassung</h3>
       <p>${d.summary}</p>
@@ -520,8 +702,154 @@ function showDetail(id){
   `;
 }
 
+function showEditForm(id){
+  const isNew = !id;
+  const d = isNew
+    ? { id: 'doc' + (Date.now()), title:'', recipient:'', status:'draft', date:new Date().toISOString().slice(0,10), deadline:'', references:[], attachments:[], summary:'' }
+    : docsById[id];
 
-init(EMBEDDED_DOCS);
+  const allDocs = Object.values(docsById).filter(x => x.id !== d.id);
+  const refOptions = allDocs.map(x =>
+    `<option value="${x.id}" ${d.references.includes(x.id) ? 'selected' : ''}>${x.title}</option>`
+  ).join('');
+
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = `
+    <div class="doc-title">${isNew ? 'Neues Dokument' : 'Bearbeiten'}</div>
+    <div class="field">
+      <label>Titel</label>
+      <input id="f-title" value="${escapeAttr(d.title)}">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Empfänger</label>
+        <input id="f-recipient" value="${escapeAttr(d.recipient)}" placeholder="z.B. RSTA, Belp, MüB">
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select id="f-status">
+          <option value="draft" ${d.status==='draft'?'selected':''}>Entwurf</option>
+          <option value="ready" ${d.status==='ready'?'selected':''}>Bereit</option>
+          <option value="sent" ${d.status==='sent'?'selected':''}>Gesendet</option>
+          <option value="blocked" ${d.status==='blocked'?'selected':''}>Blockiert</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Datum</label>
+        <input id="f-date" type="date" value="${d.date}">
+      </div>
+      <div class="field">
+        <label>Frist (optional)</label>
+        <input id="f-deadline" type="date" value="${d.deadline || ''}">
+      </div>
+    </div>
+    <div class="field">
+      <label>Zusammenfassung</label>
+      <textarea id="f-summary">${escapeHtml(d.summary)}</textarea>
+    </div>
+    <div class="field">
+      <label>Beilagen (eine pro Zeile)</label>
+      <textarea id="f-attachments">${(d.attachments||[]).join('\n')}</textarea>
+    </div>
+    <div class="field">
+      <label>Referenziert (Mehrfachauswahl mit Cmd/Ctrl)</label>
+      <select id="f-references" multiple size="4">${refOptions}</select>
+    </div>
+    <div class="form-actions">
+      <button onclick="saveForm('${d.id}', ${isNew})">Speichern</button>
+      <button class="secondary" onclick="${isNew ? 'showPlaceholder()' : `showDetail('${d.id}')`}">Abbrechen</button>
+      ${isNew ? '' : `<button class="danger" onclick="deleteDoc('${d.id}')">Löschen</button>`}
+    </div>
+  `;
+}
+
+function escapeHtml(s){ return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+function saveForm(id, isNew){
+  const references = Array.from(document.getElementById('f-references').selectedOptions).map(o => o.value);
+  const attachments = document.getElementById('f-attachments').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const doc = {
+    id,
+    title: document.getElementById('f-title').value.trim() || 'Ohne Titel',
+    recipient: document.getElementById('f-recipient').value.trim() || 'Unbekannt',
+    status: document.getElementById('f-status').value,
+    date: document.getElementById('f-date').value,
+    deadline: document.getElementById('f-deadline').value,
+    references,
+    attachments,
+    summary: document.getElementById('f-summary').value.trim()
+  };
+  docsById[id] = doc;
+  saveDocs();
+  rebuildFilters();
+  layoutByRecipient();
+  render();
+  renderDeadlines();
+  showDetail(id);
+}
+
+function deleteDoc(id){
+  if (!confirm('Dokument wirklich löschen?')) return;
+  delete docsById[id];
+  Object.values(docsById).forEach(d => {
+    d.references = (d.references || []).filter(r => r !== id);
+  });
+  saveDocs();
+  rebuildFilters();
+  layoutByRecipient();
+  render();
+  renderDeadlines();
+  showPlaceholder();
+}
+
+function showPlaceholder(){
+  document.getElementById('sidebar').innerHTML = '<div class="placeholder">Auf einen Knoten klicken für Details.</div>';
+}
+
+function renderDeadlines(){
+  const view = document.getElementById('deadlineView');
+  const docs = Object.values(docsById).filter(d => d.deadline);
+  docs.sort((a,b) => a.deadline.localeCompare(b.deadline));
+
+  if (docs.length === 0) {
+    view.innerHTML = '<div class="deadline-empty">Keine Fristen erfasst.</div>';
+    return;
+  }
+
+  view.innerHTML = docs.map(d => {
+    const days = daysUntil(d.deadline);
+    const cls = days < 0 ? 'overdue' : (days <= 7 ? 'soon' : '');
+    const label = days < 0 ? `−${Math.abs(days)}d` : `+${days}d`;
+    return `
+      <div class="deadline-row" onclick="switchView('graph'); showDetail('${d.id}')">
+        <div class="deadline-date ${cls}">${d.deadline}<br><span style="font-size:10px;">${label}</span></div>
+        <div>
+          <div class="deadline-title">${d.title}</div>
+          <div class="deadline-recipient">${d.recipient} · ${STATUS_LABEL[d.status]}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function switchView(view){
+  currentView = view;
+  document.getElementById('graph').style.display = view === 'graph' ? 'block' : 'none';
+  document.getElementById('deadlineView').style.display = view === 'deadlines' ? 'block' : 'none';
+  document.getElementById('btnGraphView').classList.toggle('secondary', view !== 'graph');
+  document.getElementById('btnDeadlines').classList.toggle('secondary', view !== 'deadlines');
+  if (view === 'graph') render();
+  if (view === 'deadlines') renderDeadlines();
+}
+
+document.getElementById('btnNew').onclick = () => showEditForm(null);
+document.getElementById('btnDeadlines').onclick = () => switchView('deadlines');
+document.getElementById('btnGraphView').onclick = () => switchView('graph');
+
+init(loadDocs());
   </script>
 </body>
 </html>
