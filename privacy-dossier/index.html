@@ -5,95 +5,226 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Dossier — Dashboard</title>
 <style>
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-  --font-mono: 'SF Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
-  --paper:#f2ede2; --paper-dark:#e8e0cf; --ink:#201d17; --ink-soft:#5a5648;
-  --red:#a3231f; --gold:#8a6d1f; --teal:#2e4a44; --grey:#8a8578; --line:#c9beaa;
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;--gold:#8a6d1f;--teal:#2e4a44;--grey:#8a8578;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
 }
-*{box-sizing:border-box; margin:0; padding:0;}
-body{background:var(--paper); color:var(--ink); font-family:var(--font-serif); min-height:100vh;}
-header{border-bottom:3px double var(--ink); padding:20px 24px 14px;}
-.eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; color:var(--ink-soft); text-transform:uppercase;}
-h1{font-size:28px; font-weight:700; margin-top:2px;}
-h1 span{color:var(--red);}
-.toolbar{display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--line); background:var(--paper-dark);}
-.toolbar .count{font-family:var(--font-mono); font-size:12px; color:var(--ink-soft);}
-.toolbar button{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.04em; border:1px solid var(--ink); background:var(--ink); color:var(--paper); padding:8px 14px; cursor:pointer;}
-.toolbar button:disabled{opacity:0.35; cursor:not-allowed;}
-table{width:100%; border-collapse:collapse;}
-th{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); text-align:left; padding:10px 24px; border-bottom:1px solid var(--line);}
-td{padding:14px 24px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle;}
-tr:hover{background:rgba(0,0,0,0.02);}
+body{background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+header{position:sticky; top:0; z-index:100; background:rgba(250,250,248,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border); padding:0 32px;}
+.header-inner{max-width:1000px; margin:0 auto; display:flex; align-items:center; height:56px; gap:20px;}
+.back-link{font-size:13px; font-weight:600; color:var(--text2); text-decoration:none;}
+.back-link:hover{color:var(--text);}
+.header-nav{margin-left:auto; display:flex; gap:2px;}
+.header-nav a{font-size:13px; font-weight:600; color:var(--text2); text-decoration:none; padding:6px 12px; border-radius:8px;}
+.header-nav a:hover{background:var(--bg2); color:var(--text);}
+.header-nav a.active{background:var(--text); color:var(--bg);}
+
+.wrap{max-width:1000px; margin:0 auto; padding:40px 32px 100px;}
+.eyebrow{font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--red); margin-bottom:10px; display:flex; align-items:center; gap:10px;}
+.eyebrow::before{content:''; width:28px; height:2px; background:var(--red); border-radius:1px; flex-shrink:0;}
+h1{font-size:32px; font-weight:900; letter-spacing:-.03em; margin-bottom:24px;}
+
+.toolbar{display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:4px;}
+.count{font-family:var(--mono); font-size:12px; color:var(--text2);}
+.btn{display:inline-flex; align-items:center; gap:7px; padding:10px 18px; border-radius:9px; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; border:none; font-family:var(--font);}
+.btn-dark{background:var(--text); color:var(--bg);}
+.btn-dark:hover{background:#2a2820;}
+.btn-dark:disabled{opacity:.35; cursor:not-allowed;}
+.btn-ghost{color:var(--text2); border:1px solid var(--border2); background:transparent;}
+.btn-ghost:hover{background:var(--bg2); color:var(--text);}
+.toolbar-actions{display:flex; gap:8px;}
+
+table{width:100%; border-collapse:collapse; margin-top:8px;}
+th{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--text2); text-align:left; padding:12px 10px; border-bottom:1px solid var(--border);}
+td{padding:14px 10px; border-bottom:1px solid var(--border); font-size:14px; vertical-align:middle;}
+tr:hover{background:var(--bg2);}
 td.checkbox-cell{width:30px;}
 .company{font-weight:700;}
-.stamp{display:inline-block; font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:4px 9px; border:2px solid; transform:rotate(-2deg);}
-.stamp.overdue{color:var(--red); border-color:var(--red);}
-.stamp.pending{color:var(--gold); border-color:var(--gold);}
-.stamp.draft{color:var(--grey); border-color:var(--grey); transform:rotate(0);}
-.stamp.done{color:var(--teal); border-color:var(--teal);}
-.deadline{font-family:var(--font-mono); font-size:12px;}
+.status-select{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:5px 9px; border-radius:6px; border:1.5px solid; background:transparent; cursor:pointer;}
+.status-select.overdue{color:var(--red); border-color:var(--red);}
+.status-select.pending{color:var(--gold); border-color:var(--gold);}
+.status-select.draft{color:var(--grey); border-color:var(--grey);}
+.status-select.done{color:var(--teal); border-color:var(--teal);}
+.deadline{font-family:var(--mono); font-size:12px; color:var(--text2);}
 .deadline.overdue{color:var(--red); font-weight:700;}
+.deadline.soon{color:var(--gold); font-weight:700;}
+.del-link{font-family:var(--mono); font-size:10px; color:var(--text3); cursor:pointer; text-decoration:underline;}
+.del-link:hover{color:var(--red);}
+.empty{color:var(--text3); font-style:italic; font-size:14px; padding:32px 0; text-align:center;}
+
+.privacy-note{margin-top:32px; padding:14px 16px; border-left:3px solid var(--red); background:rgba(181,39,30,.05); font-size:12px; color:var(--text2); line-height:1.6;}
+
+dialog{border:none; border-radius:12px; padding:0; max-width:400px; width:90%;}
+dialog::backdrop{background:rgba(0,0,0,.3);}
+.dialog-inner{padding:24px;}
+.field{margin-bottom:12px;}
+.field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--text2); margin-bottom:4px;}
+.field input, .field select{width:100%; font-family:var(--font); font-size:14px; padding:8px 10px; border:1px solid var(--border); border-radius:8px;}
+.dialog-actions{display:flex; gap:8px; margin-top:16px;}
 </style>
 </head>
 <body>
 <header>
-  <div class="eyebrow">Privacy Dossier · Dashboard</div>
-  <h1>Meine <span>Anfragen</span></h1>
+  <div class="header-inner">
+    <a class="back-link" href="/">← architect-dna.ch</a>
+    <nav class="header-nav">
+      <a href="/privacy-dossier/" class="active">Dashboard</a>
+      <a href="/privacy-dossier/engine.html">Neue Anfrage</a>
+    </nav>
+  </div>
 </header>
-<div class="toolbar">
-  <div class="count" id="selCount">0 ausgewählt</div>
-  <button id="bulkSend" disabled>Ausgewählte senden</button>
+<div class="wrap">
+  <div class="eyebrow">Privacy Dossier</div>
+  <h1>Meine Anfragen</h1>
+
+  <div class="toolbar">
+    <div class="count" id="selCount">0 ausgewählt</div>
+    <div class="toolbar-actions">
+      <button class="btn btn-ghost" id="btnAdd">+ Manuell erfassen</button>
+      <button class="btn btn-dark" id="bulkDone" disabled>Als erledigt markieren</button>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th class="checkbox-cell"><input type="checkbox" id="selectAll"></th>
+        <th>Firma</th><th>Anfrageart</th><th>Status</th><th>Frist</th><th></th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="empty" id="emptyState" style="display:none;">Noch keine Anfragen erfasst. Nutze „Neue Anfrage" oder „Manuell erfassen".</div>
+
+  <div class="privacy-note">
+    Alle Daten hier leben ausschliesslich in deinem Browser (localStorage) — kein Backend, kein
+    Cookie, kein Tracking-Skript, keine Drittanbieter. Löschst du den Browserverlauf, sind auch
+    diese Einträge weg; exportiere Wichtiges bei Bedarf manuell.
+  </div>
 </div>
-<table>
-  <thead>
-    <tr>
-      <th class="checkbox-cell"><input type="checkbox" id="selectAll"></th>
-      <th>Firma</th><th>Anfrageart</th><th>Status</th><th>Frist</th>
-    </tr>
-  </thead>
-  <tbody id="rows"></tbody>
-</table>
+
+<dialog id="addDialog">
+  <div class="dialog-inner">
+    <h3 style="margin-bottom:14px; font-size:16px;">Anfrage manuell erfassen</h3>
+    <div class="field"><label>Firma</label><input id="d-company"></div>
+    <div class="field"><label>Anfrageart</label>
+      <select id="d-type"><option>Auskunftsersuchen</option><option>Löschungsbegehren</option><option>Widerspruch gegen die Datenbearbeitung</option></select>
+    </div>
+    <div class="field"><label>Frist (Datum)</label><input type="date" id="d-deadline"></div>
+    <div class="dialog-actions">
+      <button class="btn btn-dark" id="d-save">Speichern</button>
+      <button class="btn btn-ghost" id="d-cancel">Abbrechen</button>
+    </div>
+  </div>
+</dialog>
 
 <script>
-const DATA = [
-  {company:'Sovendus GmbH', type:'Auskunft (Art. 25 DSG)', status:'overdue', deadline:'2026-07-20'},
-  {company:'SiteGround Hosting', type:'Löschung (Art. 32 DSG)', status:'pending', deadline:'2026-08-10'},
-  {company:'PostFinance AG', type:'Auskunft (Art. 25 DSG)', status:'pending', deadline:'2026-08-15'},
-  {company:'Zalando SE', type:'Widerspruch (Art. 21 DSGVO)', status:'draft', deadline:''},
-  {company:'Digitec Galaxus AG', type:'Löschung (Art. 17 DSGVO)', status:'done', deadline:''},
-];
-const STAMP_LABEL = {overdue:'Frist überschritten', pending:'Unterwegs', draft:'Entwurf bereit', done:'Erledigt'};
+const STORAGE_KEY = 'privacy_dossier_requests_v1';
+const STATUS_LABEL = {overdue:'Frist überschritten', pending:'Unterwegs', draft:'Entwurf bereit', done:'Erledigt'};
+
+function loadRequests(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { try { return JSON.parse(saved); } catch(e) {} }
+  return [];
+}
+function saveRequests(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
 
 function daysUntil(d){ if(!d) return null; const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(d+'T00:00:00')-t)/86400000); }
 
+function effectiveStatus(r){
+  if (r.status === 'done') return 'done';
+  const days = daysUntil(r.deadline);
+  if (days !== null && days < 0) return 'overdue';
+  return r.status || 'pending';
+}
+
 function render(){
+  const list = loadRequests();
   const tbody = document.getElementById('rows');
-  tbody.innerHTML = DATA.map((r,i) => {
+  document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+
+  tbody.innerHTML = list.map((r,i) => {
     const days = daysUntil(r.deadline);
-    const overdue = days !== null && days < 0;
+    const status = effectiveStatus(r);
+    const deadlineCls = status === 'overdue' ? 'overdue' : (days !== null && days <= 7 ? 'soon' : '');
     return `<tr>
-      <td class="checkbox-cell"><input type="checkbox" class="rowsel" data-i="${i}"></td>
+      <td class="checkbox-cell"><input type="checkbox" class="rowsel" data-id="${r.id}"></td>
       <td class="company">${r.company}</td>
       <td>${r.type}</td>
-      <td><span class="stamp ${r.status}">${STAMP_LABEL[r.status]}</span></td>
-      <td class="deadline ${overdue?'overdue':''}">${r.deadline || '—'}</td>
+      <td>
+        <select class="status-select ${status}" onchange="setStatus('${r.id}', this.value)">
+          <option value="draft" ${r.status==='draft'?'selected':''}>Entwurf bereit</option>
+          <option value="pending" ${r.status==='pending'?'selected':''}>Unterwegs</option>
+          <option value="done" ${r.status==='done'?'selected':''}>Erledigt</option>
+        </select>
+      </td>
+      <td class="deadline ${deadlineCls}">${r.deadline || '—'}</td>
+      <td><span class="del-link" onclick="deleteReq('${r.id}')">Löschen</span></td>
     </tr>`;
   }).join('');
+
   document.querySelectorAll('.rowsel').forEach(cb => cb.onchange = updateCount);
+  updateCount();
+}
+
+function setStatus(id, status){
+  const list = loadRequests();
+  const r = list.find(x => x.id === id);
+  if (r) r.status = status;
+  saveRequests(list);
+  render();
+}
+
+function deleteReq(id){
+  if (!confirm('Eintrag löschen?')) return;
+  saveRequests(loadRequests().filter(x => x.id !== id));
+  render();
 }
 
 function updateCount(){
   const n = document.querySelectorAll('.rowsel:checked').length;
   document.getElementById('selCount').textContent = n + ' ausgewählt';
-  document.getElementById('bulkSend').disabled = n === 0;
+  document.getElementById('bulkDone').disabled = n === 0;
 }
 
 document.getElementById('selectAll').onchange = (e) => {
   document.querySelectorAll('.rowsel').forEach(cb => cb.checked = e.target.checked);
   updateCount();
 };
-document.getElementById('bulkSend').onclick = () => alert('Demo: würde ' + document.querySelectorAll('.rowsel:checked').length + ' Anfrage(n) versenden.');
+document.getElementById('bulkDone').onclick = () => {
+  const ids = Array.from(document.querySelectorAll('.rowsel:checked')).map(cb => cb.dataset.id);
+  const list = loadRequests();
+  list.forEach(r => { if (ids.includes(r.id)) r.status = 'done'; });
+  saveRequests(list);
+  render();
+};
+
+const dialog = document.getElementById('addDialog');
+document.getElementById('btnAdd').onclick = () => {
+  document.getElementById('d-company').value = '';
+  document.getElementById('d-deadline').value = '';
+  dialog.showModal();
+};
+document.getElementById('d-cancel').onclick = () => dialog.close();
+document.getElementById('d-save').onclick = () => {
+  const company = document.getElementById('d-company').value.trim();
+  if (!company) return;
+  const list = loadRequests();
+  list.push({
+    id: 'req' + Date.now(),
+    company,
+    type: document.getElementById('d-type').value,
+    status: 'draft',
+    sentDate: new Date().toISOString().slice(0,10),
+    deadline: document.getElementById('d-deadline').value
+  });
+  saveRequests(list);
+  dialog.close();
+  render();
+};
 
 render();
 </script>
