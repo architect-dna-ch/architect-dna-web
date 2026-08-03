@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Dossier — Anfrage-Generator</title>
+<style>
+:root{
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  --paper:#f2ede2; --paper-dark:#e8e0cf; --ink:#201d17; --ink-soft:#5a5648;
+  --red:#a3231f; --line:#c9beaa;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--paper); color:var(--ink); font-family:var(--font-serif); display:flex; min-height:100vh;}
+header{position:fixed; top:0; left:0; right:0; border-bottom:3px double var(--ink); padding:20px 24px 14px; background:var(--paper); z-index:10;}
+.eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; color:var(--ink-soft); text-transform:uppercase;}
+h1{font-size:26px; font-weight:700;}
+h1 span{color:var(--red);}
+main{display:flex; width:100%; padding-top:100px;}
+.form-col{width:380px; flex-shrink:0; padding:24px; border-right:1px solid var(--ink); background:var(--paper-dark); overflow-y:auto; height:calc(100vh - 100px);}
+.preview-col{flex:1; padding:32px 48px; overflow-y:auto; height:calc(100vh - 100px);}
+.field{margin-bottom:14px;}
+.field label{display:block; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:4px;}
+.field input, .field select, .field textarea{width:100%; font-family:var(--font-serif); font-size:14px; padding:8px; border:1px solid var(--line); background:var(--paper);}
+.field textarea{min-height:60px;}
+.letter{background:#fff; border:1px solid var(--line); padding:40px; max-width:640px; font-size:14px; line-height:1.7; box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.letter .date{text-align:right; font-family:var(--font-mono); font-size:12px; margin-bottom:24px;}
+.letter h2{font-size:16px; margin-bottom:16px;}
+.letter p{margin-bottom:12px;}
+.legal-cite{font-family:var(--font-mono); font-size:11px; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Privacy Dossier · Anfrage-Generator</div>
+  <h1>Neue <span>Anfrage</span></h1>
+</header>
+<main>
+  <div class="form-col">
+    <div class="field">
+      <label>Firma</label>
+      <input id="f-company" placeholder="z.B. Sovendus GmbH" oninput="update()">
+    </div>
+    <div class="field">
+      <label>Adresse der Firma</label>
+      <textarea id="f-address" placeholder="Strasse, PLZ Ort, Land" oninput="update()"></textarea>
+    </div>
+    <div class="field">
+      <label>Anfrageart</label>
+      <select id="f-type" onchange="update()">
+        <option value="auskunft">Auskunft</option>
+        <option value="loeschung">Löschung</option>
+        <option value="widerspruch">Widerspruch</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Rechtsgrundlage</label>
+      <select id="f-basis" onchange="update()">
+        <option value="dsg">Schweizer DSG (Firma mit CH-Bezug)</option>
+        <option value="dsgvo">EU-DSGVO (Firma mit EU-Bezug)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Ihr Name</label>
+      <input id="f-name" placeholder="Vorname Nachname" oninput="update()">
+    </div>
+    <div class="field">
+      <label>Ihre Adresse</label>
+      <textarea id="f-myaddress" placeholder="Strasse, PLZ Ort" oninput="update()"></textarea>
+    </div>
+    <div class="field">
+      <label>Kundennummer / Referenz (optional)</label>
+      <input id="f-ref" oninput="update()">
+    </div>
+  </div>
+  <div class="preview-col">
+    <div class="letter" id="letter"></div>
+  </div>
+</main>
+
+<script>
+const TYPE_LABEL = {
+  auskunft: 'Auskunftsersuchen',
+  loeschung: 'Löschungsbegehren',
+  widerspruch: 'Widerspruch gegen die Datenbearbeitung'
+};
+
+const CITATIONS = {
+  dsg: {
+    auskunft: 'Art. 25 des Bundesgesetzes über den Datenschutz (DSG)',
+    loeschung: 'Art. 32 Abs. 2 lit. c DSG i.V.m. Art. 6 Abs. 1 DSG',
+    widerspruch: 'Art. 30 Abs. 2 lit. b DSG'
+  },
+  dsgvo: {
+    auskunft: 'Art. 15 der Verordnung (EU) 2016/679 (DSGVO)',
+    loeschung: 'Art. 17 DSGVO',
+    widerspruch: 'Art. 21 DSGVO'
+  }
+};
+
+function update(){
+  const company = document.getElementById('f-company').value || '[Firma]';
+  const address = document.getElementById('f-address').value || '[Adresse der Firma]';
+  const type = document.getElementById('f-type').value;
+  const basis = document.getElementById('f-basis').value;
+  const name = document.getElementById('f-name').value || '[Ihr Name]';
+  const myaddress = document.getElementById('f-myaddress').value || '[Ihre Adresse]';
+  const ref = document.getElementById('f-ref').value;
+  const citation = CITATIONS[basis][type];
+  const today = new Date().toLocaleDateString('de-CH');
+
+  let body = '';
+  if (type === 'auskunft') {
+    body = `<p>Gestützt auf ${citation} ersuche ich Sie um Auskunft darüber, ob und welche Personendaten über mich bei Ihnen bearbeitet werden.</p>
+    <p>Ich bitte Sie insbesondere um Mitteilung folgender Angaben:</p>
+    <ul style="margin-left:20px; margin-bottom:12px;">
+      <li>Zweck der Bearbeitung</li>
+      <li>Herkunft der Daten, sofern nicht bei mir selbst erhoben</li>
+      <li>Empfänger bzw. Kategorien von Empfängern, an die Daten weitergegeben wurden</li>
+      <li>Aufbewahrungsdauer bzw. Kriterien für deren Festlegung</li>
+    </ul>`;
+  } else if (type === 'loeschung') {
+    body = `<p>Gestützt auf ${citation} ersuche ich Sie um vollständige Löschung sämtlicher über mich gespeicherten Personendaten, soweit keine gesetzliche Aufbewahrungspflicht entgegensteht.</p>
+    <p>Sollte eine vollständige Löschung aus rechtlichen Gründen nicht möglich sein, bitte ich um Mitteilung, welche Daten aus welchem Grund weiterhin aufbewahrt werden.</p>`;
+  } else {
+    body = `<p>Gestützt auf ${citation} widerspreche ich hiermit der Bearbeitung meiner Personendaten zu Zwecken der Direktwerbung sowie jeglicher darüberhinausgehenden, nicht für die Vertragserfüllung erforderlichen Bearbeitung.</p>
+    <p>Ich bitte um Bestätigung, dass mein Widerspruch berücksichtigt wurde, sowie um Mitteilung, ab welchem Zeitpunkt dies wirksam ist.</p>`;
+  }
+
+  document.getElementById('letter').innerHTML = `
+    <div>${name}<br>${myaddress.replace(/\n/g,'<br>')}</div>
+    <br>
+    <div>${company}<br>${address.replace(/\n/g,'<br>')}</div>
+    <div class="date">${today}</div>
+    <h2>${TYPE_LABEL[type]}${ref ? ' — Referenz/Kundennummer: ' + ref : ''}</h2>
+    <p>Sehr geehrte Damen und Herren</p>
+    ${body}
+    <p>Ich bitte um Erledigung innert der gesetzlichen Frist von 30 Tagen.</p>
+    <p>Freundliche Grüsse<br>${name}</p>
+    <p class="legal-cite">Rechtsgrundlage: ${citation}</p>
+  `;
+}
+
+update();
+</script>
+</body>
+</html>

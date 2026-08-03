@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Overlay Assistant</title>
+<style>
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:#0f1416; color:#f0efeb; font-family:-apple-system,'Helvetica Neue',sans-serif; max-width:640px; margin:0 auto; padding:64px 32px; line-height:1.6;}
+.eyebrow{font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#25D366; margin-bottom:20px;}
+h1{font-size:clamp(32px,6vw,48px); font-weight:900; letter-spacing:-0.03em; margin-bottom:16px;}
+p{font-size:15px; color:#e0ddd3; margin-bottom:14px;}
+.warn{padding:16px; border-left:3px solid #B5271E; background:rgba(181,39,30,0.08); font-size:13px; margin:24px 0;}
+a.btn{display:inline-block; margin-top:16px; padding:12px 22px; background:#25D366; color:#111; font-weight:700; text-decoration:none; border-radius:6px;}
+ol{margin:16px 0 16px 20px; font-size:14px;}
+li{margin-bottom:8px;}
+</style>
+</head>
+<body>
+  <div class="eyebrow">Chrome Extension · Persönlicher Gebrauch</div>
+  <h1>WhatsApp Overlay Assistant</h1>
+  <p>On-demand Antwort-/Ton-Vorschläge für WhatsApp Web. Liest den sichtbaren Chat nur, wenn
+  du aktiv auf den Vorschlag-Button klickst — kein Dauer-Scraping, kein Auto-Send.</p>
+  <div class="warn">
+    WhatsApp ToS untersagen automatisiertes Auslesen von Chats über inoffizielle Wege, auch beim
+    eigenen Account. Dieses Tool ist für den persönlichen Gebrauch bei niedrigem Volumen gedacht,
+    nicht im Chrome Web Store veröffentlicht, und nicht für andere Nutzer bestimmt.
+  </div>
+  <a class="btn" href="/whatsapp-overlay/whatsapp-overlay.zip">Extension herunterladen (.zip)</a>
+  <h2 style="margin-top:32px; font-size:14px; color:#8a8578;">Installation (unpacked)</h2>
+  <ol>
+    <li>ZIP entpacken</li>
+    <li>chrome://extensions öffnen, Entwicklermodus aktivieren</li>
+    <li>„Entpackte Erweiterung laden" → entpackten Ordner wählen</li>
+    <li>Extension-Icon anklicken, Claude API Key hinterlegen</li>
+    <li>Auf web.whatsapp.com den grünen Kreis unten rechts nutzen</li>
+  </ol>
+</body>
+</html>
