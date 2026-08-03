@@ -1,4 +1,5 @@
 import { head } from '@vercel/blob';
+import { Readable } from 'node:stream';
 
 export default async function handler(req, res) {
   const { key } = req.query;
@@ -7,10 +8,9 @@ export default async function handler(req, res) {
   try {
     const blob = await head(key);
     const upstream = await fetch(blob.url);
-    const buffer = Buffer.from(await upstream.arrayBuffer());
     res.setHeader('Content-Type', blob.contentType || 'image/jpeg');
-    res.setHeader('Cache-Control', 'private, max-age=3600');
-    res.status(200).send(buffer);
+    res.setHeader('Cache-Control', 'private, max-age=86400, immutable');
+    Readable.fromWeb(upstream.body).pipe(res);
   } catch (e) {
     res.status(404).end();
   }

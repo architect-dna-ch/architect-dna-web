@@ -113,7 +113,7 @@ function render(){
     grid.innerHTML = addTile + '<div class="empty">Noch keine Fotos. Klicke auf „+", um das erste hochzuladen.</div>';
   } else {
     grid.innerHTML = addTile + photos.map(p =>
-      `<div class="tile" onclick="openLightbox('${p.id}')"><img src="/api/gallery/image?key=${encodeURIComponent(p.key)}" loading="lazy"></div>`
+      `<div class="tile" onclick="openLightbox('${p.id}')"><img src="/api/gallery/image?key=${encodeURIComponent(p.key)}" loading="lazy" decoding="async"></div>`
     ).join('');
   }
   document.getElementById('addTile').onclick = openUploadDialog;
@@ -166,37 +166,54 @@ document.getElementById('fileInput').onchange = (e) => {
   reader.readAsDataURL(file);
 };
 
+// Resize/compress in-browser before upload — no dependency, native Canvas API.
+// Cuts a typical 8-12MB phone photo down to a few hundred KB before it ever
+// leaves the device, which is where nearly all the upload time was going.
+function compressImage(file, maxDim = 1920, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        if (width > height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+        else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Komprimierung fehlgeschlagen')), 'image/jpeg', quality);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
 document.getElementById('btnUpload').onclick = async () => {
   if (!selectedFile) return;
   const btn = document.getElementById('btnUpload');
   const status = document.getElementById('uploadStatus');
   btn.disabled = true;
-  status.textContent = 'Wird hochgeladen…';
+  status.textContent = 'Komprimiere…';
 
-  const reader = new FileReader();
-  reader.onload = async () => {
-    const dataUrl = reader.result;
-    const base64 = dataUrl.split(',')[1];
-    try {
-      const res = await fetch('/api/gallery/upload', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          filename: selectedFile.name,
-          contentType: selectedFile.type,
-          dataBase64: base64,
-          caption: document.getElementById('captionInput').value.trim()
-        })
-      });
-      if (!res.ok) throw new Error((await res.json()).error || 'Fehler');
-      uploadDialog.close();
-      await loadPhotos();
-    } catch (err) {
-      status.textContent = 'Fehler: ' + err.message;
-      btn.disabled = false;
-    }
-  };
-  reader.readAsDataURL(selectedFile);
+  try {
+    const compressed = await compressImage(selectedFile);
+    status.textContent = `Lade hoch (${(compressed.size/1024).toFixed(0)} KB)…`;
+    const caption = encodeURIComponent(document.getElementById('captionInput').value.trim());
+    const filename = encodeURIComponent(selectedFile.name.replace(/\.[^.]+$/, '') + '.jpg');
+    const res = await fetch(`/api/gallery/upload?filename=${filename}&caption=${caption}`, {
+      method: 'POST',
+      headers: { 'content-type': 'image/jpeg' },
+      body: compressed
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Fehler');
+    uploadDialog.close();
+    await loadPhotos();
+  } catch (err) {
+    status.textContent = 'Fehler: ' + err.message;
+    btn.disabled = false;
+  }
 };
 
 loadPhotos();
