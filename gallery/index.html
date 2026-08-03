@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+body{background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased;}
+header{position:sticky; top:0; z-index:100; background:rgba(250,250,248,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border); padding:0 32px;}
+.header-inner{max-width:900px; margin:0 auto; display:flex; align-items:center; height:56px; gap:20px;}
+.back-link{font-size:13px; font-weight:600; color:var(--text2); text-decoration:none;}
+.back-link:hover{color:var(--text);}
+.title{margin-left:auto; font-weight:900; letter-spacing:-.02em; font-size:15px;}
+.title span{color:var(--red);}
+
+.wrap{max-width:900px; margin:0 auto; padding:32px 20px 100px;}
+.grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:3px;}
+.tile{position:relative; aspect-ratio:1; background:var(--bg2); overflow:hidden; cursor:pointer;}
+.tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .2s;}
+.tile:hover img{transform:scale(1.04);}
+.tile.add{display:flex; align-items:center; justify-content:center; border:2px dashed var(--border2); color:var(--text3); font-size:32px; font-weight:300;}
+.tile.add:hover{border-color:var(--text3); color:var(--text2);}
+.empty{grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text3); font-style:italic; font-size:14px;}
+
+/* Lightbox */
+#lightbox{position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; z-index:1000; flex-direction:column; padding:24px;}
+#lightbox.show{display:flex;}
+#lightbox img{max-width:100%; max-height:75vh; object-fit:contain; border-radius:4px;}
+#lightbox .caption{color:#f0efeb; font-size:14px; margin-top:16px; max-width:500px; text-align:center;}
+#lightbox .lb-actions{display:flex; gap:12px; margin-top:20px;}
+#lightbox button{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; padding:9px 16px; border-radius:8px; border:1px solid rgba(255,255,255,.3); background:transparent; color:#f0efeb; cursor:pointer;}
+#lightbox button:hover{background:rgba(255,255,255,.1);}
+#lightbox button.danger{border-color:var(--red); color:#ff8a80;}
+#lbClose{position:absolute; top:20px; right:24px; font-size:28px; color:#f0efeb; cursor:pointer; background:none; border:none;}
+
+/* Upload modal */
+dialog{border:none; border-radius:14px; padding:0; max-width:380px; width:90%;}
+dialog::backdrop{background:rgba(0,0,0,.4);}
+.dialog-inner{padding:24px;}
+.dialog-inner h3{font-size:16px; margin-bottom:16px;}
+.field{margin-bottom:14px;}
+.field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--text2); margin-bottom:5px;}
+.field input, .field textarea{width:100%; padding:9px 10px; border:1px solid var(--border); border-radius:8px; font-family:var(--font); font-size:14px;}
+.preview-thumb{width:100%; max-height:200px; object-fit:contain; border-radius:8px; margin-bottom:12px; background:var(--bg2);}
+.btn{display:inline-flex; align-items:center; gap:7px; padding:10px 18px; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; border:none; font-family:var(--font);}
+.btn-dark{background:var(--text); color:var(--bg);}
+.btn-dark:disabled{opacity:.4; cursor:not-allowed;}
+.btn-ghost{color:var(--text2); border:1px solid var(--border2); background:transparent;}
+.dialog-actions{display:flex; gap:8px; margin-top:6px;}
+.status-msg{font-size:12px; color:var(--text2); margin-top:8px; font-family:var(--mono);}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="back-link" href="/">← architect-dna.ch</a>
+    <div class="title">gallery <span>·</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<div id="lightbox">
+  <button id="lbClose">×</button>
+  <img id="lbImg" src="">
+  <div class="caption" id="lbCaption"></div>
+  <div class="lb-actions">
+    <button class="danger" id="lbDelete">Löschen</button>
+  </div>
+</div>
+
+<dialog id="uploadDialog">
+  <div class="dialog-inner">
+    <h3>Neues Foto</h3>
+    <input type="file" id="fileInput" accept="image/*" style="margin-bottom:14px;">
+    <img id="previewThumb" class="preview-thumb" style="display:none;">
+    <div class="field">
+      <label>Bildunterschrift (optional)</label>
+      <textarea id="captionInput" rows="2"></textarea>
+    </div>
+    <div class="status-msg" id="uploadStatus"></div>
+    <div class="dialog-actions">
+      <button class="btn btn-dark" id="btnUpload" disabled>Hochladen</button>
+      <button class="btn btn-ghost" id="btnCancelUpload">Abbrechen</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+let photos = [];
+let selectedFile = null;
+
+async function loadPhotos(){
+  const r = await fetch('/api/gallery/list');
+  photos = await r.json();
+  render();
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  const addTile = `<div class="tile add" id="addTile">+</div>`;
+  if (photos.length === 0) {
+    grid.innerHTML = addTile + '<div class="empty">Noch keine Fotos. Klicke auf „+", um das erste hochzuladen.</div>';
+  } else {
+    grid.innerHTML = addTile + photos.map(p =>
+      `<div class="tile" onclick="openLightbox('${p.id}')"><img src="/api/gallery/image?key=${encodeURIComponent(p.key)}" loading="lazy"></div>`
+    ).join('');
+  }
+  document.getElementById('addTile').onclick = openUploadDialog;
+}
+
+function openLightbox(id){
+  const p = photos.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('lbImg').src = `/api/gallery/image?key=${encodeURIComponent(p.key)}`;
+  document.getElementById('lbCaption').textContent = p.caption || '';
+  document.getElementById('lightbox').classList.add('show');
+  document.getElementById('lightbox').dataset.id = id;
+}
+document.getElementById('lbClose').onclick = () => document.getElementById('lightbox').classList.remove('show');
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') document.getElementById('lightbox').classList.remove('show');
+});
+document.getElementById('lbDelete').onclick = async () => {
+  const id = document.getElementById('lightbox').dataset.id;
+  if (!confirm('Dieses Foto endgültig löschen?')) return;
+  await fetch('/api/gallery/delete', {
+    method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ id })
+  });
+  document.getElementById('lightbox').classList.remove('show');
+  await loadPhotos();
+};
+
+const uploadDialog = document.getElementById('uploadDialog');
+function openUploadDialog(){
+  document.getElementById('fileInput').value = '';
+  document.getElementById('captionInput').value = '';
+  document.getElementById('previewThumb').style.display = 'none';
+  document.getElementById('btnUpload').disabled = true;
+  document.getElementById('uploadStatus').textContent = '';
+  selectedFile = null;
+  uploadDialog.showModal();
+}
+document.getElementById('btnCancelUpload').onclick = () => uploadDialog.close();
+
+document.getElementById('fileInput').onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById('previewThumb').src = reader.result;
+    document.getElementById('previewThumb').style.display = 'block';
+    document.getElementById('btnUpload').disabled = false;
+  };
+  reader.readAsDataURL(file);
+};
+
+document.getElementById('btnUpload').onclick = async () => {
+  if (!selectedFile) return;
+  const btn = document.getElementById('btnUpload');
+  const status = document.getElementById('uploadStatus');
+  btn.disabled = true;
+  status.textContent = 'Wird hochgeladen…';
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const dataUrl = reader.result;
+    const base64 = dataUrl.split(',')[1];
+    try {
+      const res = await fetch('/api/gallery/upload', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          filename: selectedFile.name,
+          contentType: selectedFile.type,
+          dataBase64: base64,
+          caption: document.getElementById('captionInput').value.trim()
+        })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Fehler');
+      uploadDialog.close();
+      await loadPhotos();
+    } catch (err) {
+      status.textContent = 'Fehler: ' + err.message;
+      btn.disabled = false;
+    }
+  };
+  reader.readAsDataURL(selectedFile);
+};
+
+loadPhotos();
+</script>
+</body>
+</html>
