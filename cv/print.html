@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Muharrem Akdemir — CV</title>
+<style>
+@page { size: A4; margin: 12mm 13mm 10mm 13mm; }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:9.4pt}
+.page{max-width:186mm;margin:0 auto;padding:0}
+
+/* ── HEADER ── */
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:12px;border-bottom:2.5px solid var(--text)}
+.head-left{flex:1}
+.name{font-size:25pt;font-weight:900;letter-spacing:-.045em;line-height:1;margin-bottom:6px}
+.role{font-size:10.5pt;font-weight:700;color:var(--text);margin-bottom:2px}
+.role2{font-size:9pt;color:var(--text3);margin-bottom:9px}
+.contact{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:8.6pt;color:var(--text2)}
+.contact span{display:inline-flex;align-items:center;gap:5px}
+.contact .k{color:var(--text3);font-family:var(--mono);font-size:7.6pt;text-transform:uppercase;letter-spacing:.06em}
+.head-right{text-align:right;flex-shrink:0}
+.logo-mark{width:34px;height:34px;border:2.5px solid var(--text);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:6px}
+.logo-mark svg{width:17px;height:17px}
+.brand{font-size:8.4pt;font-weight:800;letter-spacing:-.01em;color:var(--text)}
+.brand-domain{font-family:var(--mono);font-size:7.4pt;color:var(--text3);display:block;margin-top:1px}
+
+/* ── SECTIONS ── */
+.sec{margin-top:13px}
+.sec-label{font-size:8pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:9px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.profile{font-size:9.6pt;line-height:1.62;color:var(--text2)}
+.profile strong{color:var(--text);font-weight:700}
+
+/* ── EXPERIENCE ── */
+.job{padding:9px 0 9px 13px;border-left:2.5px solid var(--accent,var(--text));margin-bottom:9px;break-inside:avoid;page-break-inside:avoid}
+.job:last-child{margin-bottom:0}
+.job-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:2px}
+.job-title{font-size:10.6pt;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.job-period{font-size:7.8pt;font-weight:700;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;flex-shrink:0}
+.job-company{font-size:9pt;font-weight:600;color:var(--text2);margin-bottom:5px}
+.job ul{list-style:none;display:flex;flex-direction:column;gap:3px}
+.job li{font-size:9pt;color:var(--text2);line-height:1.5;padding-left:13px;position:relative}
+.job li::before{content:'';position:absolute;left:1px;top:6px;width:4.5px;height:4.5px;border-radius:50%;background:var(--accent,var(--text3));opacity:.6}
+.job-note{font-size:8.4pt;color:var(--text3);font-style:italic;margin-top:5px;padding-left:13px;line-height:1.45}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:7.6pt;font-weight:600;padding:2.5px 7px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:var(--mono)}
+
+/* ── PROJECTS ── */
+.proj-intro{font-size:9.2pt;color:var(--text2);line-height:1.55;margin-bottom:9px}
+.proj-intro strong{color:var(--text)}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.proj{border:1px solid var(--border);border-radius:8px;padding:8px 10px;break-inside:avoid;position:relative;overflow:hidden}
+.proj::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--accent,var(--text))}
+.proj-name{font-size:9.6pt;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.proj-desc{font-size:8.2pt;color:var(--text2);line-height:1.42;margin-bottom:4px}
+.proj-url{font-size:7.4pt;font-family:var(--mono);color:var(--text3)}
+
+/* ── SKILLS ── */
+.skill{margin-bottom:8px}
+.skill:last-child{margin-bottom:0}
+.skill-label{font-size:8.8pt;font-weight:800;margin-bottom:5px}
+.skill-tags{display:flex;flex-wrap:wrap;gap:4px}
+.skill-tag{font-size:8.2pt;font-weight:600;padding:3px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text2)}
+
+/* ── EDU ── */
+.edu{padding:8px 0 8px 13px;border-left:2.5px solid var(--border2);margin-bottom:8px;break-inside:avoid}
+.edu:last-child{margin-bottom:0}
+.edu-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:2px}
+.edu-title{font-size:10pt;font-weight:800;letter-spacing:-.02em}
+.edu-period{font-size:7.8pt;font-weight:700;font-family:var(--mono);color:var(--text3);text-transform:uppercase;white-space:nowrap}
+.edu-org{font-size:8.8pt;font-weight:600;color:var(--text2);margin-bottom:4px}
+.edu ul{list-style:none;display:flex;flex-direction:column;gap:2.5px}
+.edu li{font-size:8.8pt;color:var(--text2);line-height:1.45;padding-left:12px;position:relative}
+.edu li::before{content:'';position:absolute;left:1px;top:6px;width:4px;height:4px;border-radius:50%;background:var(--text3);opacity:.5}
+
+/* ── BOTTOM TWO-COL ── */
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:13px}
+.lang-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--border);font-size:9.2pt}
+.lang-row:last-child{border-bottom:none}
+.lang-name{font-weight:700}
+.lang-level{font-size:8.2pt;color:var(--text3);font-family:var(--mono)}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:8.4pt;font-weight:600;padding:3px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text2)}
+
+.foot{margin-top:14px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:7.6pt;color:var(--text3);font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <div class="head-left">
+      <div class="name">Muharrem Akdemir</div>
+      <div class="role">Informatiker EFZ — Fachrichtung Applikationsentwicklung</div>
+      <div class="role2">Application Support · Application Management · IoT & Workplace</div>
+      <div class="contact">
+        <span><span class="k">Mail</span> ma.akd@proton.me</span>
+        <span><span class="k">Tel</span> 078 447 91 43</span>
+        <span><span class="k">Ort</span> Region Bern, CH (Belp)</span>
+        <span><span class="k">Web</span> architect-dna.ch</span>
+      </div>
+    </div>
+    <div class="head-right">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/><path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <div class="brand">architect&#8209;dna<span class="brand-domain">.ch</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Profil</div>
+    <p class="profile">Praxisorientierter Informatiker EFZ mit solider Full-Stack-Erfahrung aus der Ausbildung bei der <strong>Mobiliar</strong> (Microservices, B2E-Software, Mobile App) und anschliessender Tätigkeit als Application Engineer bei <strong>Blaser Swisslube</strong> (Automatisierung geschäftskritischer Belegprozesse via Lasernet). Kombiniert technisches Tiefenverständnis mit ausgeprägter Lösungsorientierung und Macher-Mentalität. Berufsbegleitende BM2 an der WKS Bern (laufend seit Sommer 2026). Verfügbar ab sofort für Application Support / Application Management (60–100%).</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Berufserfahrung</div>
+
+    <div class="job" style="--accent:#B5271E">
+      <div class="job-top">
+        <div class="job-title">Telefonbefrager für Marktstudien</div>
+        <div class="job-period">Sept 2025 — Feb 2026</div>
+      </div>
+      <div class="job-company">M.I.S. Trend, Bern</div>
+      <ul>
+        <li>Durchführung verlässlicher, standardisierter Befragungen für nationale Studien (u. a. MACH)</li>
+        <li>Professionelle, empathische Kommunikation am Telefon und präzise Datenerfassung unter Zeitdruck</li>
+        <li>Hohes Mass an Selbständigkeit und Zuverlässigkeit in der Repräsentation des Unternehmens</li>
+      </ul>
+      <div class="tags"><span class="tag">Kommunikation</span><span class="tag">Datenerfassung</span><span class="tag">Selbständigkeit</span></div>
+    </div>
+
+    <div class="job" style="--accent:#1a6ec8">
+      <div class="job-top">
+        <div class="job-title">Application Engineer — Lasernet Spezialist</div>
+        <div class="job-period">Okt 2024 — März 2025</div>
+      </div>
+      <div class="job-company">Blaser Swisslube AG, Hasle-Rüegsau</div>
+      <ul>
+        <li>Technische Betreuung und Weiterentwicklung des Dokumenten-I/O-Management-Systems (Lasernet) für den automatisierten Rechnungs- und Belegfluss</li>
+        <li>Sicherstellung der fehlerfreien Verarbeitung und Verteilung geschäftskritischer Enterprise-Output-Prozesse</li>
+        <li>Eigenständige Programmierung erster Komponenten; anschliessend starke Einbindung in Konzept- und Abstimmungsarbeiten ausserhalb des Fachbereichs</li>
+      </ul>
+      <div class="tags"><span class="tag">Lasernet</span><span class="tag">Dokumenten-I/O</span><span class="tag">Enterprise Output</span><span class="tag">Prozessautomatisierung</span></div>
+      <div class="job-note">Arbeitsverhältnis im gegenseitigen Einvernehmen per Ende März 2025 aufgelöst (gesundheitliche Stabilisierung).</div>
+    </div>
+
+    <div class="job" style="--accent:#6450dc">
+      <div class="job-top">
+        <div class="job-title">Berufliche Neuorientierung</div>
+        <div class="job-period">April — Aug 2025</div>
+      </div>
+      <div class="job-company">Bewerbungsphase und Aufbau einer selbstständigen Tätigkeit</div>
+      <ul>
+        <li>Aktive Stellensuche im IT-Bereich</li>
+        <li>Aufbau eines eigenen Produktportfolios (architect-dna.ch)</li>
+        <li>Bewältigung einer familiären Krisensituation</li>
+      </ul>
+      <div class="tags"><span class="tag">Stellensuche</span><span class="tag">Produktportfolio</span><span class="tag">Selbstständigkeit</span></div>
+    </div>
+
+    <div class="job" style="--accent:#1a7a3c">
+      <div class="job-top">
+        <div class="job-title">Mitarbeiter Gastronomie & Service</div>
+        <div class="job-period">März — Sept 2024</div>
+      </div>
+      <div class="job-company">Tasty Bites</div>
+      <ul>
+        <li>Herzliche Gästebetreuung und speditiver Service in einem dynamischen Betrieb</li>
+        <li>Verantwortung für Kassenführung, Abrechnungen und Einhaltung von Qualitätsstandards</li>
+        <li>Multitasking und bewährte Belastbarkeit in hektischen Peak-Zeiten</li>
+      </ul>
+      <div class="tags"><span class="tag">Kundenkontakt</span><span class="tag">Kassenführung</span><span class="tag">Belastbarkeit</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Eigene Projekte (Open Source) — seit April 2026, laufend</div>
+    <p class="proj-intro">Eigenständige Konzeption, Entwicklung und Betrieb eines wachsenden Produktportfolios. Aufbau der <strong>BIMP B-Infrastruktur mit über 30 Mini-Tools</strong> während eines stationären Aufenthalts (Ende Februar bis 2. April 2026), anschliessend laufende Weiterentwicklung und vollständiges <strong>UX/UI-Redesign</strong> in Zusammenarbeit mit Claude Code.</p>
+    <div class="proj-grid">
+      <div class="proj" style="--accent:#B5271E">
+        <div class="proj-name">Einspruch</div>
+        <div class="proj-desc">Einsprache-Briefvorlage für die Schweiz (Krankenkasse, Vermieter, Behörden) mit korrekten Gesetzesartikeln (KVG, OR, ATSG).</div>
+        <div class="proj-url">einspruch.architect-dna.ch</div>
+      </div>
+      <div class="proj" style="--accent:#6450dc">
+        <div class="proj-name">Anchor</div>
+        <div class="proj-desc">Persönlicher AI-Begleiter mit täglicher Reflexion und Notfall-Modus.</div>
+        <div class="proj-url">architect-dna.ch/anchor</div>
+      </div>
+      <div class="proj" style="--accent:#1a6ec8">
+        <div class="proj-name">LIA</div>
+        <div class="proj-desc">Zero-Knowledge-verschlüsselter Rechtsdokumenten-Tresor für iOS.</div>
+        <div class="proj-url">architect-dna.ch/lia</div>
+      </div>
+      <div class="proj" style="--accent:#1a7a3c">
+        <div class="proj-name">Zugcafé</div>
+        <div class="proj-desc">Spontane Begegnungen in der Nähe, ohne Account.</div>
+        <div class="proj-url">architect-dna.ch/zugcafe</div>
+      </div>
+      <div class="proj" style="--accent:#007a52">
+        <div class="proj-name">VOID FREQ</div>
+        <div class="proj-desc">Fokus-Studio mit Ambient-Sound (Brown Noise, Rain, Lo-fi, Binaural).</div>
+        <div class="proj-url">architect-dna.ch/freq</div>
+      </div>
+      <div class="proj" style="--accent:#9A9A98">
+        <div class="proj-name">Sovereignty</div>
+        <div class="proj-desc">Täglicher Feed von Denkfehlern und Prinzipien.</div>
+        <div class="proj-url">architect-dna.ch/sovereignty</div>
+      </div>
+      <div class="proj" style="--accent:#B5271E">
+        <div class="proj-name">Globus</div>
+        <div class="proj-desc">Chrome-Extension, die Lesezeichen als begehbare Weltkugel darstellt.</div>
+        <div class="proj-url">architect-dna.ch/globus</div>
+      </div>
+      <div class="proj" style="--accent:#1a6ec8">
+        <div class="proj-name">DORA</div>
+        <div class="proj-desc">Lernwerkzeug-Prototyp: Active Recall, Mikro-Lektionen, verteilte Wiederholung.</div>
+        <div class="proj-url">architect-dna-ch.github.io/dora</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Technologien</div>
+    <div class="skill">
+      <div class="skill-label">IT & Workplace Support</div>
+      <div class="skill-tags">
+        <span class="skill-tag">First- & Second-Level-Support</span>
+        <span class="skill-tag">Windows 10/11</span>
+        <span class="skill-tag">Client-Management</span>
+        <span class="skill-tag">Hardware- & Software-Konfiguration</span>
+        <span class="skill-tag">Microsoft 365 (M365)</span>
+      </div>
+    </div>
+    <div class="skill">
+      <div class="skill-label">Development & Cloud</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Full-Stack Development</span>
+        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">API-Anbindungen</span>
+        <span class="skill-tag">Deployment via Railway / Vercel</span>
+        <span class="skill-tag">Systemarchitektur</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">Automatisierung & AI-Tools</span>
+      </div>
+    </div>
+    <div class="skill">
+      <div class="skill-label">Soft Skills</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Lösungsorientierung (Macher-Mentalität)</span>
+        <span class="skill-tag">Hohe Belastbarkeit im Multitasking</span>
+        <span class="skill-tag">Kommunikation im multikulturellen Umfeld</span>
+        <span class="skill-tag">Dienstleistungsorientierung</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Ausbildung</div>
+    <div class="edu">
+      <div class="edu-top">
+        <div class="edu-title">Berufsmaturität 2 (BMS 2) — Wirtschaft & Dienstleistungen</div>
+        <div class="edu-period">seit Sommer 2026</div>
+      </div>
+      <div class="edu-org">WKS KV Bildung, Bern</div>
+      <ul><li>Berufsbegleitendes Modell (Teilzeit), vereinbar mit einem 60–100%-Pensum</li></ul>
+    </div>
+    <div class="edu">
+      <div class="edu-top">
+        <div class="edu-title">Informatiker EFZ — Fachrichtung Applikationsentwicklung</div>
+        <div class="edu-period">2019 — 2023</div>
+      </div>
+      <div class="edu-org">Die Mobiliar / GIBB Bern</div>
+      <ul>
+        <li>Entwicklung von Microservices in modernem Enterprise-Umfeld</li>
+        <li>B2E-Software zur internen Effizienzsteigerung</li>
+        <li>Mobile-App-Projekt im Lernenden-Team (End-to-End)</li>
+        <li>Systemarchitektur, API-Anbindungen, Datenbankdesign, Agile Work</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div>
+      <div class="sec-label">Sprachen</div>
+      <div class="lang-row"><span class="lang-name">Deutsch</span><span class="lang-level">Muttersprache</span></div>
+      <div class="lang-row"><span class="lang-name">Kurdisch</span><span class="lang-level">Muttersprache</span></div>
+      <div class="lang-row"><span class="lang-name">Englisch</span><span class="lang-level">Gute Kenntnisse</span></div>
+    </div>
+    <div>
+      <div class="sec-label">Interessen</div>
+      <div class="pills">
+        <span class="pill">Piano</span>
+        <span class="pill">Zeichnen</span>
+        <span class="pill">Interior Design (Fusion Style)</span>
+        <span class="pill">Open-Source-Projekte</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Muharrem Akdemir · CV</span>
+    <span>architect-dna.ch/cv</span>
+  </div>
+
+</div>
+</body>
+</html>
