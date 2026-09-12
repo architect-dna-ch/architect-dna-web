@@ -13,6 +13,7 @@
     { "source": "/api/brief", "destination": "/api/brief/index.js" },
     { "source": "/api/concepts/get", "destination": "/api/concepts/get.js" },
     { "source": "/api/concepts/save", "destination": "/api/concepts/save.js" },
+    { "source": "/", "has": [{"type": "host", "value": "cv.architect-dna.ch"}], "destination": "/cv/index.html" },
     { "source": "/", "has": [{"type": "host", "value": "clyedo.architect-dna.ch"}], "destination": "/clyedo/app.html" },
     { "source": "/", "has": [{"type": "host", "value": "calm.architect-dna.ch"}], "destination": "/calm/app.html" },
     { "source": "/", "has": [{"type": "host", "value": "gridfal.architect-dna.ch"}], "destination": "/gridfal/play.html" },

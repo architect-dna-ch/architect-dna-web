@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muharrem Akdemir — CV · Informatiker EFZ</title>
+<meta name="description" content="Muharrem Akdemir — Informatiker EFZ, Applikationsentwicklung. Application Support, Application Management, IoT & Workplace. Region Bern, Schweiz.">
+<meta property="og:title" content="Muharrem Akdemir — CV">
+<meta property="og:description" content="Informatiker EFZ — Application Support · Application Management · IoT & Workplace">
+<meta property="og:url" content="https://cv.architect-dna.ch">
+<meta name="theme-color" content="#FAFAF8">
+<link rel="icon" href="/icon.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--border2:rgba(0,0,0,.12);
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;
+  --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;height:56px;gap:20px}
+.logo{font-size:14px;font-weight:900;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo-mark{width:28px;height:28px;border:2px solid var(--text);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:14px;height:14px}
+.logo-domain{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.header-nav{margin-left:auto;display:flex;gap:2px;align-items:center}
+.header-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s}
+.header-nav a:hover{background:var(--bg2);color:var(--text)}
+.header-nav .nav-cta{background:var(--text);color:var(--bg);padding:6px 14px;border-radius:8px}
+.header-nav .nav-cta:hover{background:#2a2820;color:#fff}
+
+/* ── LAYOUT ── */
+.wrap{max-width:900px;margin:0 auto;padding:0 32px}
+.hero{padding:64px 0 40px}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:28px;height:2px;background:var(--red);border-radius:1px;flex-shrink:0}
+.hero h1{font-size:clamp(38px,6vw,60px);font-weight:900;letter-spacing:-.045em;line-height:1;margin-bottom:14px}
+.hero-role{font-size:clamp(15px,2vw,18px);font-weight:600;color:var(--text2);margin-bottom:6px}
+.hero-role2{font-size:14px;color:var(--text3);margin-bottom:26px}
+.contact-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.contact-chip{font-size:12.5px;font-weight:600;padding:6px 13px;background:#fff;border:1px solid var(--border);border-radius:20px;color:var(--text2);text-decoration:none;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.contact-chip:hover{border-color:var(--border2);color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.contact-chip .dot-live{width:6px;height:6px;border-radius:50%;background:#1a7a3c;flex-shrink:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;padding:10px 18px;border-radius:10px;text-decoration:none;transition:.15s;border:1px solid transparent;cursor:pointer;font-family:var(--font)}
+.btn-primary{background:var(--text);color:var(--bg)}
+.btn-primary:hover{background:#2a2820}
+.btn-ghost{background:#fff;border-color:var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--bg2);color:var(--text)}
+
+/* ── SECTIONS ── */
+section{padding:34px 0}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.profile-text{font-size:16.5px;line-height:1.7;color:var(--text2);max-width:720px}
+.profile-text strong{color:var(--text);font-weight:700}
+
+/* ── EXPERIENCE ACCORDION ── */
+.exp-list{display:flex;flex-direction:column;gap:12px}
+.exp{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:box-shadow .25s,border-color .25s}
+.exp:hover{border-color:var(--border2)}
+.exp.open{box-shadow:0 8px 32px rgba(0,0,0,.07)}
+.exp-head{display:flex;align-items:flex-start;gap:16px;padding:20px 22px;cursor:pointer;user-select:none;position:relative}
+.exp-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--text));opacity:0;transition:.25s}
+.exp.open .exp-head::before{opacity:1}
+.exp-main{flex:1;min-width:0}
+.exp-period{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:6px}
+.exp-title{font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.3;margin-bottom:3px}
+.exp-company{font-size:13.5px;color:var(--text2);font-weight:600}
+.exp-toggle{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.25s;margin-top:2px}
+.exp-toggle svg{width:13px;height:13px;transition:transform .3s;stroke:var(--text2)}
+.exp.open .exp-toggle{background:var(--text);border-color:var(--text)}
+.exp.open .exp-toggle svg{transform:rotate(180deg);stroke:var(--bg)}
+.exp-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1)}
+.exp-body-inner{padding:0 22px 22px 22px;border-top:1px solid var(--border);margin-top:0;padding-top:18px}
+.exp-body ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.exp-body li{font-size:14.5px;color:var(--text2);line-height:1.6;padding-left:20px;position:relative}
+.exp-body li::before{content:'';position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--accent,var(--text3));opacity:.55}
+.exp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+.exp-tag{font-size:11px;font-weight:600;padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text2);font-family:var(--mono)}
+.exp-note{margin-top:14px;font-size:13px;color:var(--text3);font-style:italic;line-height:1.55;padding-left:20px;border-left:2px solid var(--border)}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.proj{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 18px 16px;text-decoration:none;color:inherit;transition:.2s;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.proj::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--text))}
+.proj:hover{box-shadow:0 8px 28px rgba(0,0,0,.08);transform:translateY(-2px)}
+.proj-name{font-size:15.5px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+.proj-desc{font-size:13px;color:var(--text2);line-height:1.5;flex:1;margin-bottom:12px}
+.proj-url{font-size:10.5px;font-family:var(--mono);color:var(--text3);display:flex;align-items:center;gap:6px}
+.proj-url .arrow{transition:.15s}
+.proj:hover .proj-url .arrow{transform:translateX(3px);color:var(--text)}
+.proj-status{position:absolute;top:14px;right:14px;font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:9px}
+.s-live{background:rgba(26,122,60,.08);color:#1a7a3c;border:1px solid rgba(26,122,60,.15)}
+.s-new{background:rgba(0,150,100,.1);color:#007a52;border:1px solid rgba(0,150,100,.2)}
+
+/* ── SKILLS ── */
+.skill-block{margin-bottom:20px}
+.skill-block:last-child{margin-bottom:0}
+.skill-label{font-size:12px;font-weight:800;letter-spacing:.02em;color:var(--text);margin-bottom:9px}
+.skill-tags{display:flex;flex-wrap:wrap;gap:7px}
+.skill-tag{font-size:12.5px;font-weight:600;padding:6px 12px;background:#fff;border:1px solid var(--border);border-radius:9px;color:var(--text2)}
+
+/* ── TIMELINE (education) ── */
+.edu{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:12px}
+.edu-period{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:6px}
+.edu-title{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px}
+.edu-org{font-size:13.5px;color:var(--text2);font-weight:600;margin-bottom:10px}
+.edu ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.edu li{font-size:14px;color:var(--text2);line-height:1.55;padding-left:18px;position:relative}
+.edu li::before{content:'';position:absolute;left:2px;top:8px;width:5px;height:5px;border-radius:50%;background:var(--text3);opacity:.5}
+
+/* ── LANG / INTERESTS ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.lang-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}
+.lang-row:last-child{border-bottom:none}
+.lang-name{font-size:14.5px;font-weight:700}
+.lang-level{font-size:12.5px;color:var(--text3);font-family:var(--mono)}
+.pill-row{display:flex;flex-wrap:wrap;gap:7px}
+.pill{font-size:12.5px;font-weight:600;padding:6px 12px;background:#fff;border:1px solid var(--border);border-radius:20px;color:var(--text2)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);margin-top:40px;padding:28px 32px}
+.footer-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12.5px;color:var(--text3)}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12.5px;color:var(--text3);text-decoration:none;transition:.15s}
+.footer-links a:hover{color:var(--text)}
+
+@media(max-width:640px){
+  header{padding:0 18px}
+  .wrap{padding:0 18px}
+  .hero{padding:44px 0 28px}
+  .two-col{grid-template-columns:1fr;gap:20px}
+  .header-nav a:not(.nav-cta){display:none}
+  .exp-head{padding:16px 16px}
+  .exp-body-inner{padding:0 16px 18px 16px}
+  footer{padding:24px 18px}
+}
+@media print{
+  header,footer,.actions,.exp-toggle{display:none!important}
+  .exp-body{max-height:none!important;overflow:visible!important}
+  .exp{break-inside:avoid;box-shadow:none}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7 1L1 4v6l6 3 6-3V4L7 1z"/><path d="M7 1v12M1 4l6 3 6-3"/>
+        </svg>
+      </div>
+      <span>architect&#8209;dna<span class="logo-domain">.ch</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="#erfahrung">Erfahrung</a>
+      <a href="#projekte">Projekte</a>
+      <a href="#ausbildung">Ausbildung</a>
+      <a href="mailto:ma.akd@proton.me" class="nav-cta">Kontakt →</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Curriculum Vitae</div>
+    <h1>Muharrem Akdemir</h1>
+    <p class="hero-role">Informatiker EFZ — Fachrichtung Applikationsentwicklung</p>
+    <p class="hero-role2">Application Support · Application Management · IoT & Workplace</p>
+    <div class="contact-row">
+      <a class="contact-chip" href="mailto:ma.akd@proton.me">✉ ma.akd@proton.me</a>
+      <a class="contact-chip" href="tel:+41784479143">☎ 078 447 91 43</a>
+      <span class="contact-chip">📍 Region Bern, CH (Belp)</span>
+      <span class="contact-chip"><span class="dot-live"></span>Verfügbar 60–100%</span>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="/cv/Muharrem-Akdemir-CV.pdf" download>↓ PDF herunterladen</a>
+      <a class="btn btn-ghost" href="https://architect-dna.ch">Portfolio ansehen →</a>
+    </div>
+  </div>
+
+  <section id="profil">
+    <div class="section-label">Profil</div>
+    <p class="profile-text">Praxisorientierter Informatiker EFZ mit solider Full-Stack-Erfahrung aus der Ausbildung bei der <strong>Mobiliar</strong> (Microservices, B2E-Software, Mobile App) und anschliessender Tätigkeit als Application Engineer bei <strong>Blaser Swisslube</strong> (Automatisierung geschäftskritischer Belegprozesse via Lasernet). Kombiniert technisches Tiefenverständnis mit ausgeprägter Lösungsorientierung und Macher-Mentalität. Berufsbegleitende BM2 an der WKS Bern (laufend seit Sommer 2026). Verfügbar ab sofort für Application Support / Application Management (60–100%).</p>
+  </section>
+
+  <section id="erfahrung">
+    <div class="section-label">Berufserfahrung</div>
+    <div class="exp-list">
+
+      <article class="exp" style="--accent:#B5271E">
+        <div class="exp-head" onclick="toggleExp(this)">
+          <div class="exp-main">
+            <div class="exp-period">Sept 2025 — Feb 2026 · Bern</div>
+            <div class="exp-title">Telefonbefrager für Marktstudien</div>
+            <div class="exp-company">M.I.S. Trend, Bern</div>
+          </div>
+          <div class="exp-toggle"><svg viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 5l4 4 4-4"/></svg></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-body-inner">
+            <ul>
+              <li>Durchführung verlässlicher, standardisierter Befragungen für nationale Studien (u. a. MACH)</li>
+              <li>Professionelle, empathische Kommunikation am Telefon und präzise Datenerfassung unter Zeitdruck</li>
+              <li>Hohes Mass an Selbständigkeit und Zuverlässigkeit in der Repräsentation des Unternehmens</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="exp-tag">Kommunikation</span>
+              <span class="exp-tag">Datenerfassung</span>
+              <span class="exp-tag">Selbständigkeit</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="exp" style="--accent:#1a6ec8">
+        <div class="exp-head" onclick="toggleExp(this)">
+          <div class="exp-main">
+            <div class="exp-period">Okt 2024 — März 2025 · Hasle-Rüegsau</div>
+            <div class="exp-title">Application Engineer — Lasernet Spezialist</div>
+            <div class="exp-company">Blaser Swisslube AG, Hasle-Rüegsau</div>
+          </div>
+          <div class="exp-toggle"><svg viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 5l4 4 4-4"/></svg></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-body-inner">
+            <ul>
+              <li>Technische Betreuung und Weiterentwicklung des Dokumenten-I/O-Management-Systems (Lasernet) für den automatisierten Rechnungs- und Belegfluss</li>
+              <li>Sicherstellung der fehlerfreien Verarbeitung und Verteilung geschäftskritischer Enterprise-Output-Prozesse</li>
+              <li>Eigenständige Programmierung erster Komponenten; anschliessend starke Einbindung in Konzept- und Abstimmungsarbeiten ausserhalb des Fachbereichs</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="exp-tag">Lasernet</span>
+              <span class="exp-tag">Dokumenten-I/O</span>
+              <span class="exp-tag">Enterprise Output</span>
+              <span class="exp-tag">Prozessautomatisierung</span>
+            </div>
+            <div class="exp-note">Arbeitsverhältnis im gegenseitigen Einvernehmen per Ende März 2025 aufgelöst (gesundheitliche Stabilisierung).</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="exp" style="--accent:#6450dc">
+        <div class="exp-head" onclick="toggleExp(this)">
+          <div class="exp-main">
+            <div class="exp-period">April — August 2025 · Bern</div>
+            <div class="exp-title">Berufliche Neuorientierung</div>
+            <div class="exp-company">Bewerbungsphase und Aufbau einer selbstständigen Tätigkeit</div>
+          </div>
+          <div class="exp-toggle"><svg viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 5l4 4 4-4"/></svg></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-body-inner">
+            <ul>
+              <li>Aktive Stellensuche im IT-Bereich</li>
+              <li>Aufbau eines eigenen Produktportfolios (architect-dna.ch)</li>
+              <li>Bewältigung einer familiären Krisensituation</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="exp-tag">Stellensuche</span>
+              <span class="exp-tag">Produktportfolio</span>
+              <span class="exp-tag">Selbstständigkeit</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="exp" style="--accent:#1a7a3c">
+        <div class="exp-head" onclick="toggleExp(this)">
+          <div class="exp-main">
+            <div class="exp-period">März — Sept 2024 · Bern</div>
+            <div class="exp-title">Mitarbeiter Gastronomie & Service</div>
+            <div class="exp-company">Tasty Bites</div>
+          </div>
+          <div class="exp-toggle"><svg viewBox="0 0 14 14" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 5l4 4 4-4"/></svg></div>
+        </div>
+        <div class="exp-body">
+          <div class="exp-body-inner">
+            <ul>
+              <li>Herzliche Gästebetreuung und speditiver Service in einem dynamischen Betrieb</li>
+              <li>Verantwortung für Kassenführung, Abrechnungen und Einhaltung von Qualitätsstandards</li>
+              <li>Multitasking und bewährte Belastbarkeit in hektischen Peak-Zeiten</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="exp-tag">Kundenkontakt</span>
+              <span class="exp-tag">Kassenführung</span>
+              <span class="exp-tag">Belastbarkeit</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="projekte">
+    <div class="section-label">Eigene Projekte (Open Source) — seit April 2026, laufend</div>
+    <p class="profile-text" style="margin-bottom:22px">Eigenständige Konzeption, Entwicklung und Betrieb eines wachsenden Produktportfolios. Aufbau der <strong>BIMP B-Infrastruktur mit über 30 Mini-Tools</strong> während eines stationären Aufenthalts (Ende Februar bis 2. April 2026), anschliessend laufende Weiterentwicklung und vollständiges <strong>UX/UI-Redesign</strong> in Zusammenarbeit mit Claude Code.</p>
+    <div class="proj-grid">
+      <a class="proj" style="--accent:#B5271E" href="https://einspruch.architect-dna.ch" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">Einspruch</div>
+        <div class="proj-desc">Einsprache-Briefvorlage für die Schweiz (Krankenkasse, Vermieter, Behörden) mit korrekten Gesetzesartikeln (KVG, OR, ATSG).</div>
+        <div class="proj-url">einspruch.architect-dna.ch <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#6450dc" href="https://architect-dna.ch/anchor" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">Anchor</div>
+        <div class="proj-desc">Persönlicher AI-Begleiter mit täglicher Reflexion und Notfall-Modus.</div>
+        <div class="proj-url">architect-dna.ch/anchor <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#1a6ec8" href="https://architect-dna.ch/lia" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">LIA</div>
+        <div class="proj-desc">Zero-Knowledge-verschlüsselter Rechtsdokumenten-Tresor für iOS.</div>
+        <div class="proj-url">architect-dna.ch/lia <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#1a7a3c" href="https://architect-dna.ch/zugcafe" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">Zugcafé</div>
+        <div class="proj-desc">Spontane Begegnungen in der Nähe, ohne Account.</div>
+        <div class="proj-url">architect-dna.ch/zugcafe <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#007a52" href="https://architect-dna.ch/freq" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">VOID FREQ</div>
+        <div class="proj-desc">Fokus-Studio mit Ambient-Sound (Brown Noise, Rain, Lo-fi, Binaural).</div>
+        <div class="proj-url">architect-dna.ch/freq <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#9A9A98" href="https://architect-dna.ch/sovereignty" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">Sovereignty</div>
+        <div class="proj-desc">Täglicher Feed von Denkfehlern und Prinzipien.</div>
+        <div class="proj-url">architect-dna.ch/sovereignty <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#B5271E" href="https://architect-dna.ch/globus" target="_blank" rel="noopener">
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-name">Globus</div>
+        <div class="proj-desc">Chrome-Extension, die Lesezeichen als begehbare Weltkugel darstellt.</div>
+        <div class="proj-url">architect-dna.ch/globus <span class="arrow">→</span></div>
+      </a>
+      <a class="proj" style="--accent:#1a6ec8" href="https://architect-dna-ch.github.io/dora/" target="_blank" rel="noopener">
+        <span class="proj-status s-new">Neu</span>
+        <div class="proj-name">DORA</div>
+        <div class="proj-desc">Lernwerkzeug-Prototyp: Active Recall, Mikro-Lektionen, verteilte Wiederholung.</div>
+        <div class="proj-url">architect-dna-ch.github.io/dora <span class="arrow">→</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-label">Technologien</div>
+    <div class="skill-block">
+      <div class="skill-label">IT & Workplace Support</div>
+      <div class="skill-tags">
+        <span class="skill-tag">First- & Second-Level-Support</span>
+        <span class="skill-tag">Windows 10/11</span>
+        <span class="skill-tag">Client-Management</span>
+        <span class="skill-tag">Hardware- & Software-Konfiguration</span>
+        <span class="skill-tag">Microsoft 365 (M365)</span>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-label">Development & Cloud</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Full-Stack Development</span>
+        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">API-Anbindungen</span>
+        <span class="skill-tag">Deployment via Railway / Vercel</span>
+        <span class="skill-tag">Systemarchitektur</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">Automatisierung & AI-Tools</span>
+      </div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-label">Soft Skills</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Lösungsorientierung (Macher-Mentalität)</span>
+        <span class="skill-tag">Hohe Belastbarkeit im Multitasking</span>
+        <span class="skill-tag">Kommunikation im multikulturellen Umfeld</span>
+        <span class="skill-tag">Dienstleistungsorientierung</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="ausbildung">
+    <div class="section-label">Ausbildung</div>
+    <div class="edu">
+      <div class="edu-period">seit Sommer 2026 · Bern</div>
+      <div class="edu-title">Berufsmaturität 2 (BMS 2) — Wirtschaft & Dienstleistungen</div>
+      <div class="edu-org">WKS KV Bildung, Bern</div>
+      <ul>
+        <li>Berufsbegleitendes Modell (Teilzeit), vereinbar mit einem 60–100%-Pensum</li>
+      </ul>
+    </div>
+    <div class="edu">
+      <div class="edu-period">2019 — 2023 · Bern</div>
+      <div class="edu-title">Informatiker EFZ — Fachrichtung Applikationsentwicklung</div>
+      <div class="edu-org">Die Mobiliar / GIBB Bern</div>
+      <ul>
+        <li>Entwicklung von Microservices in modernem Enterprise-Umfeld</li>
+        <li>B2E-Software zur internen Effizienzsteigerung</li>
+        <li>Mobile-App-Projekt im Lernenden-Team (End-to-End)</li>
+        <li>Systemarchitektur, API-Anbindungen, Datenbankdesign, Agile Work</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="sprachen">
+    <div class="section-label">Sprachen & Interessen</div>
+    <div class="two-col">
+      <div>
+        <div class="lang-row"><span class="lang-name">Deutsch</span><span class="lang-level">Muttersprache</span></div>
+        <div class="lang-row"><span class="lang-name">Kurdisch</span><span class="lang-level">Muttersprache</span></div>
+        <div class="lang-row"><span class="lang-name">Englisch</span><span class="lang-level">Gute Kenntnisse</span></div>
+      </div>
+      <div>
+        <div class="pill-row">
+          <span class="pill">Piano</span>
+          <span class="pill">Zeichnen</span>
+          <span class="pill">Interior Design (Fusion Style)</span>
+          <span class="pill">Open-Source-Projekte</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Muharrem Akdemir · Bern, Switzerland</span>
+    <div class="footer-links">
+      <a href="https://architect-dna.ch">architect-dna.ch</a>
+      <a href="mailto:ma.akd@proton.me">Kontakt</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Accordion: expandable experience sections ────────────────────────────────
+function toggleExp(head){
+  const card = head.closest('.exp');
+  const body = card.querySelector('.exp-body');
+  const isOpen = card.classList.contains('open');
+
+  if(isOpen){
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => { body.style.maxHeight = '0px'; });
+    card.classList.remove('open');
+  } else {
+    card.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    // after transition, allow natural height (handles resize / nested content)
+    body.addEventListener('transitionend', function done(e){
+      if(e.propertyName === 'max-height' && card.classList.contains('open')){
+        body.style.maxHeight = 'none';
+      }
+      body.removeEventListener('transitionend', done);
+    });
+  }
+}
+
+// ── Open the most recent role by default ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const first = document.querySelector('.exp');
+  if(first){
+    const body = first.querySelector('.exp-body');
+    first.classList.add('open');
+    body.style.maxHeight = 'none';
+  }
+});
+
+// ── Recalculate open panels on resize ────────────────────────────────────────
+let rt;
+window.addEventListener('resize', () => {
+  clearTimeout(rt);
+  rt = setTimeout(() => {
+    document.querySelectorAll('.exp.open .exp-body').forEach(b => {
+      b.style.maxHeight = 'none';
+    });
+  }, 120);
+});
+</script>
+
+</body>
+</html>
