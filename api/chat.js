@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-20b',
       messages: [
         { role: 'system', content: context || 'You are PulseBot, a helpful assistant.' },
         { role: 'user', content: question }
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   });
 
   const data = await r.json();
-  if (!r.ok) return res.status(200).json({ answer: `Groq error ${r.status}: ${data.error?.message || JSON.stringify(data)}` });
+  if (!r.ok) return res.status(200).json({ answer: 'Sorry, I\'m having trouble responding right now. Please try again in a moment.' });
   const answer = data.choices?.[0]?.message?.content?.trim() || 'Keine Antwort erhalten.';
   res.status(200).json({ answer });
 }

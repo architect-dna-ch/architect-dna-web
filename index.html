@@ -39,6 +39,14 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.94);backdr
 .header-nav a:hover{background:var(--bg2);color:var(--text)}
 .header-nav .nav-cta{background:var(--text);color:var(--bg);padding:6px 14px;border-radius:8px}
 .header-nav .nav-cta:hover{background:#2a2820;color:#fff}
+.menu-btn{display:none;background:none;border:none;padding:8px;margin-left:8px;cursor:pointer;flex-shrink:0}
+.menu-btn svg{width:20px;height:20px;display:block;color:var(--text)}
+#mobile-nav{display:none;flex-direction:column;padding:4px 16px 14px;border-bottom:1px solid var(--border);background:var(--bg)}
+#mobile-nav.open{display:flex}
+#mobile-nav a{font-size:15px;font-weight:600;color:var(--text2);text-decoration:none;padding:12px 4px;border-bottom:1px solid var(--border2)}
+#mobile-nav a:last-child{border-bottom:none}
+#mobile-nav a:hover{color:var(--text)}
+body.vc-mode #mobile-nav a{color:var(--text3)}
 
 /* ── HERO ── */
 .hero{max-width:1100px;margin:0 auto;padding:100px 32px 72px}
@@ -187,10 +195,8 @@ footer{border-top:1px solid var(--border);padding:28px 32px}
 
 @media(max-width:700px){
   .hero{padding:60px 20px 48px}
-  .header-nav{gap:0}
-  .header-nav a{font-size:11px;padding:4px 6px}
-  .header-nav .nav-cta{padding:4px 8px}
-  .header-nav a[href="#about"],.header-nav a[href="#services"]{display:none}
+  .header-nav{display:none}
+  .menu-btn{display:flex;align-items:center;justify-content:center}
   header{padding:0 16px}
   .logo-domain{display:none}
   #vc-toggle{margin-left:auto}
@@ -492,7 +498,17 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
       <span class="vct-half vct-adna"><span class="vct-emoji">🏛 </span>ARC·DNA</span>
       <span class="vct-half vct-vc"><span class="vct-emoji">🕹 </span>VOID·CELL</span>
     </button>
+    <button class="menu-btn" id="menu-btn" onclick="toggleMobileNav()" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+    </button>
   </div>
+  <nav id="mobile-nav">
+    <a href="#projects" onclick="closeMobileNav()">Work</a>
+    <a href="#projects" class="nav-vc-only" onclick="closeMobileNav()">Play ↓</a>
+    <a href="#about" onclick="closeMobileNav()">About</a>
+    <a href="#services" class="nav-adna-only" onclick="closeMobileNav()">Services</a>
+    <a href="#" onclick="closeMobileNav();copyEmail(event)">Contact →</a>
+  </nav>
 </header>
 
 <!-- ── SPLIT INTRO ── -->
@@ -505,9 +521,9 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   </div>
   <div class="split-divider"></div>
   <div class="split-half split-right" onclick="chooseSide('vc')">
-    <div class="split-eyebrow">Game Studio · 5 Titles</div>
+    <div class="split-eyebrow">Game Studio · 7 Titles</div>
     <div class="split-title"><em>VOID</em><br><span>CELL</span></div>
-    <div class="split-sub">Five browser games. Pure canvas. No install. Play right now.</div>
+    <div class="split-sub">Seven browser games. Pure canvas. No install. Play right now.</div>
     <div class="split-cta">Enter Games →</div>
   </div>
 </div>
@@ -1431,7 +1447,7 @@ const VC_CONTENT = {
   eyebrow: 'Game Studio · 7 Titles · Browser',
   h1: '<span class="vc-void">VOID</span><br><span class="vc-cell">CELL</span>',
   line: 'Seven browser games. Pure canvas. No install. Nexus Breach, KART, BLOOM, Sector Zero, Grid Fall, Sprint, Ares Race.',
-  chips: ['🕹 5 Titles Live','Canvas Engine','No Install','Free Forever'],
+  chips: ['🕹 7 Titles Live','Canvas Engine','No Install','Free Forever'],
   btnPrimary: {text:'Enter Studio →', href:'/games'},
   btnSecondary: {text:'Play Now ↗', href:'/games', blank:true},
   projLabel: 'TITLES',
@@ -1439,7 +1455,7 @@ const VC_CONTENT = {
   projHint: '7 canvas games · all live · no install',
   aboutLabel: 'ENGINE',
   aboutText: 'Hand-rolled. Canvas-first. Zero frameworks.',
-  aboutSub: 'Six games built on raw Canvas 2D and WebGL — no Unity, no engines. Grid Fall processes 1000+ particles per frame. KART runs genuine friction physics with drift and momentum. Everything under 500KB. Play in your browser right now.',
+  aboutSub: 'Seven games built on raw Canvas 2D and WebGL — no Unity, no engines. Grid Fall processes 1000+ particles per frame. KART runs genuine friction physics with drift and momentum. Everything under 500KB. Play in your browser right now.',
   pills: VC_PILLS,
 };
 const ADNA_CONTENT = {
@@ -1458,7 +1474,19 @@ const ADNA_CONTENT = {
   pills: ADNA_PILLS,
 };
 
+function toggleMobileNav(){
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('menu-btn');
+  const open = nav.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('menu-btn').setAttribute('aria-expanded', 'false');
+}
+
 function switchTheme(e){
+  closeMobileNav();
   const btn = document.getElementById('vc-toggle');
   const rect = btn.getBoundingClientRect();
   const x = rect.left + rect.width / 2;
@@ -1652,6 +1680,14 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
 
 /* ── PULSEBOT DEMO WIDGET ── */
 #pb-demo{position:fixed;bottom:24px;left:24px;z-index:8000;display:flex;flex-direction:column;align-items:flex-start}
+@media(max-width:700px){
+  /* Section headings (e.g. "The Lineup") sit flush left, same corner as this
+     launcher — move it to the right on mobile so it never sits on top of them. */
+  #pb-demo{left:auto;right:16px;bottom:16px;align-items:flex-end}
+  #pb-bubble{width:46px;height:46px;font-size:18px}
+  .pb-label{display:none}
+  #pb-win{width:calc(100vw - 32px);max-width:320px;transform-origin:bottom right}
+}
 #pb-bubble{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.4);transition:transform .2s;border:none}
 #pb-bubble:hover{transform:scale(1.08)}
 #pb-bubble:active{transform:scale(.95)}
