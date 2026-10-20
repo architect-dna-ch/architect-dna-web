@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brand FX Demo</title>
+<style>
+:root{--bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;--red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code','Courier New',monospace}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg)}
+body{font-family:var(--font);color:var(--text);line-height:1.5;padding-bottom:40px}
+header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;
+  background:rgba(250,250,248,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+header b{letter-spacing:-.03em}
+nav{display:flex;gap:18px;font-size:14px;color:var(--text2)}
+nav a{color:inherit;text-decoration:none}
+section{max-width:880px;margin:0 auto;padding:96px 20px}
+h1{font-size:clamp(44px,9vw,92px);line-height:.95;letter-spacing:-.05em}
+h1 span{color:var(--red)}
+h2{font-size:clamp(30px,5vw,48px);letter-spacing:-.04em;line-height:1}
+p.lead{font-size:19px;color:var(--text2);max-width:540px;margin:22px 0 32px}
+.btn{display:inline-block;padding:13px 20px;border-radius:7px;font:600 15px var(--font);text-decoration:none;cursor:pointer;border:1px solid var(--text);transition:background .15s}
+.btn-dark{background:var(--text);color:var(--bg)}
+.btn-ghost{background:transparent;color:var(--text);margin-left:8px}
+.try{font:12px/1.7 var(--mono);color:var(--text2);border:1px dashed var(--border);border-radius:8px;padding:14px 16px;margin-top:40px;max-width:540px}
+.try b{color:var(--red);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:32px}
+.card{border:1px solid var(--border);border-radius:8px;padding:18px;min-height:150px;background:rgba(250,250,248,.6)}
+.card small{font:11px var(--mono);color:var(--text3)}
+form{display:grid;gap:10px;max-width:520px;margin-top:28px}
+label{font-size:13px;color:var(--text2);display:grid;gap:4px}
+input,textarea{font:15px var(--font);padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg)}
+textarea{min-height:110px}
+#status{font:12px var(--mono);color:var(--red);min-height:18px}
+</style>
+</head>
+<body>
+<header><b>Architect-DNA</b><nav><a href="#work">Work</a><a href="#contact">Contact →</a></nav></header>
+
+<section>
+  <h1>Architect<span>.</span><br>DNA Systems</h1>
+  <p class="lead">Privacy-first apps for web, iOS &amp; Android. Built in Switzerland — engineered to stand when the ground moves.</p>
+  <a class="btn btn-ghost" href="#work">See our work</a>
+  <a class="btn btn-dark" href="#contact" data-fx-target data-fx-hint="let's build →">Contact</a>
+  <div class="try">
+    <b>1.</b> Stop moving the mouse for 3 seconds — the fox shows you the way.<br>
+    <b>2.</b> Move toward the Contact button — it leans toward you.<br>
+    <b>3.</b> Scroll fast — watch the ground and the seismograph.<br>
+    <b>4.</b> Send the form at the bottom — earthquake.
+  </div>
+</section>
+
+<section id="work">
+  <h2>What we ship</h2>
+  <div class="grid">
+    <div class="card"><small>01 · AI</small><h3>Pulsebot</h3></div>
+    <div class="card"><small>02 · LAW</small><h3>Einspruch</h3></div>
+    <div class="card"><small>03 · AUDIO</small><h3>Void Freq</h3></div>
+    <div class="card"><small>04 · CIVIC</small><h3>SBB Civic Portal</h3></div>
+    <div class="card"><small>05 · SOCIAL</small><h3>Konnekt</h3></div>
+    <div class="card"><small>06 · FOCUS</small><h3>Anchor</h3></div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Let's build something worth using.</h2>
+  <form data-fx-quake onsubmit="event.preventDefault();this.reset();document.getElementById('status').textContent='Message sent (demo — nothing was sent).'">
+    <label>Name<input name="name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Project<textarea name="message" required></textarea></label>
+    <button class="btn btn-dark" type="submit">Send Message →</button>
+    <div id="status" role="status"></div>
+  </form>
+</section>
+
+<script src="brand-fx.js" defer></script>
+</body>
+</html>

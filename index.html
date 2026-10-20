@@ -543,7 +543,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
   </div>
   <div class="hero-cta" id="hero-cta">
     <a class="btn btn-dark" href="#projects" id="hero-btn-primary">See our work</a>
-    <a class="btn btn-ghost" href="#" onclick="copyEmail(event)" id="hero-btn-secondary">Contact</a>
+    <a class="btn btn-ghost" href="#" onclick="copyEmail(event)" id="hero-btn-secondary" data-fx-target data-fx-hint="say hi →">Contact</a>
   </div>
 </div>
 
@@ -1415,6 +1415,8 @@ async function submitContact(e){
       body: JSON.stringify(data)
     });
     if(r.ok){
+      const br = btn.getBoundingClientRect();
+      window.ArchitectFX?.quake(br.left + br.width / 2, br.top + br.height / 2);
       form.reset();
       document.getElementById('cf-success').style.display = 'block';
       btn.style.display = 'none';
@@ -1859,5 +1861,6 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
 })();
 </script>
 
+<script src="/fx/brand-fx.js" defer></script>
 </body>
 </html>
