@@ -92,6 +92,12 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
 .pill{font-size:8.4pt;font-weight:600;padding:3px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text2)}
 
 .foot{margin-top:14px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:7.6pt;color:var(--text3);font-family:var(--mono)}
+.avail{display:inline-block;margin-top:7px;font-size:8.8pt;font-weight:800;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:6px;padding:3px 9px}
+.target{font-size:9pt;color:var(--text2);margin:10px 0 0}
+.target strong{color:var(--text)}
+.target[hidden]{display:none}
+.job li strong,.edu li strong,.proj-intro strong{color:var(--text);font-weight:700}
+.soft{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -110,6 +116,7 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
           <span><span class="k">Ort</span> Region Bern, CH</span>
           <span><span class="k">Web</span> architect-dna.ch</span>
         </div>
+        <div class="avail">Ab sofort verfügbar · Pensum 40–60 % · Mittwoch bis Freitag</div>
       </div>
     </div>
     <div class="head-right">
@@ -122,9 +129,18 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
     </div>
   </div>
 
+  <p class="target" hidden></p>
+
   <div class="sec">
     <div class="sec-label">Profil</div>
-    <p class="profile">Praxisorientierter Informatiker EFZ mit solider Full-Stack-Erfahrung aus der Ausbildung bei der <strong>Mobiliar</strong> (Microservices, B2E-Software, Mobile App) und anschliessender Tätigkeit als Application Engineer bei <strong>Blaser Swisslube</strong> (Automatisierung geschäftskritischer Belegprozesse via Lasernet). Kombiniert technisches Tiefenverständnis mit ausgeprägter Lösungsorientierung und Macher-Mentalität. Berufsbegleitende BM2 an der WKS Bern (laufend seit Sommer 2026). Verfügbar ab sofort für Application Support / Application Management (max. 60%).</p>
+    <p class="profile">Informatiker EFZ (Applikationsentwicklung) mit Erfahrung in <strong>Application Support</strong> und <strong>Application Management</strong>: Bei Blaser Swisslube habe ich das Output-Management-System <strong>Lasernet</strong> betreut und geschäftskritische Belegprozesse automatisiert. Ich verbinde Entwicklerwissen (<strong>Microservices, APIs, Datenbanken</strong>) mit Support-Praxis (<strong>1st- &amp; 2nd-Level-Support, Windows 10/11, Microsoft 365</strong>) – so verstehe ich Fehler bis in den Code und kann sie den Anwendern verständlich erklären. Berufsbegleitend absolviere ich die BM2 an der WKS Bern. <strong>Ab sofort verfügbar, 40–60 %, Mittwoch bis Freitag.</strong></p>
+    <div class="soft">
+      <span class="skill-tag">Teamfähigkeit – Lernenden-Team Mobile App, Abstimmung über Fachbereiche hinweg</span>
+      <span class="skill-tag">Lösungsorientierung (Macher-Mentalität)</span>
+      <span class="skill-tag">Belastbarkeit im Multitasking</span>
+      <span class="skill-tag">Kommunikation im multikulturellen Umfeld</span>
+      <span class="skill-tag">Dienstleistungsorientierung</span>
+    </div>
   </div>
 
   <div class="sec">
@@ -137,11 +153,9 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
       </div>
       <div class="job-company">M.I.S. Trend, Bern</div>
       <ul>
-        <li>Durchführung verlässlicher, standardisierter Befragungen für nationale Studien (u. a. MACH)</li>
-        <li>Professionelle, empathische Kommunikation am Telefon und präzise Datenerfassung unter Zeitdruck</li>
-        <li>Hohes Mass an Selbständigkeit und Zuverlässigkeit in der Repräsentation des Unternehmens</li>
+        <li><strong>Standardisierte Befragungen</strong> für nationale Studien (u. a. MACH) mit <strong>präziser Datenerfassung</strong> unter Zeitdruck</li>
+        <li><strong>Professionelle, empathische Kommunikation</strong> am Telefon – selbständig und zuverlässig</li>
       </ul>
-      <div class="tags"><span class="tag">Kommunikation</span><span class="tag">Datenerfassung</span><span class="tag">Selbständigkeit</span></div>
     </div>
 
     <div class="job" style="--accent:#1a6ec8">
@@ -151,86 +165,57 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
       </div>
       <div class="job-company">Blaser Swisslube AG, Hasle-Rüegsau</div>
       <ul>
-        <li>Technische Betreuung und Weiterentwicklung des Dokumenten-I/O-Management-Systems (Lasernet) für den automatisierten Rechnungs- und Belegfluss</li>
-        <li>Sicherstellung der fehlerfreien Verarbeitung und Verteilung geschäftskritischer Enterprise-Output-Prozesse</li>
-        <li>Eigenständige Programmierung erster Komponenten; anschliessend starke Einbindung in Konzept- und Abstimmungsarbeiten ausserhalb des Fachbereichs</li>
+        <li><strong>Application Management</strong> des Output-Management-Systems <strong>Lasernet</strong>: Betreuung und Weiterentwicklung für den automatisierten Rechnungs- und Belegfluss</li>
+        <li><strong>Fehlerfreie Verarbeitung</strong> geschäftskritischer Enterprise-Output-Prozesse sichergestellt</li>
+        <li><strong>Eigene Komponenten programmiert</strong>; danach <strong>Konzept- und Abstimmungsarbeit</strong> mit anderen Fachbereichen</li>
       </ul>
-      <div class="tags"><span class="tag">Lasernet</span><span class="tag">Dokumenten-I/O</span><span class="tag">Enterprise Output</span><span class="tag">Prozessautomatisierung</span></div>
-      <div class="job-note">Arbeitsverhältnis im gegenseitigen Einvernehmen per Ende März 2025 aufgelöst (gesundheitliche Stabilisierung).</div>
     </div>
 
     <div class="job" style="--accent:#6450dc">
       <div class="job-top">
-        <div class="job-title">Berufliche Neuorientierung</div>
+        <div class="job-title">Stellensuche &amp; eigene Projekte</div>
         <div class="job-period">April — Aug 2025</div>
       </div>
-      <div class="job-company">Bewerbungsphase und Aufbau einer selbstständigen Tätigkeit</div>
       <ul>
-        <li>Aktive Stellensuche im IT-Bereich</li>
-        <li>Aufbau eines eigenen Produktportfolios (architect-dna.ch)</li>
-        <li>Bewältigung einer familiären Krisensituation</li>
+        <li>Stellensuche im IT-Bereich und <strong>Aufbau eines eigenen Produktportfolios</strong> (architect-dna.ch)</li>
       </ul>
-      <div class="tags"><span class="tag">Stellensuche</span><span class="tag">Produktportfolio</span><span class="tag">Selbstständigkeit</span></div>
     </div>
 
     <div class="job" style="--accent:#1a7a3c">
       <div class="job-top">
-        <div class="job-title">Mitarbeiter Gastronomie & Service</div>
+        <div class="job-title">Mitarbeiter Gastronomie &amp; Service</div>
         <div class="job-period">März — Sept 2024</div>
       </div>
       <div class="job-company">Tasty Bites</div>
       <ul>
-        <li>Herzliche Gästebetreuung und speditiver Service in einem dynamischen Betrieb</li>
-        <li>Verantwortung für Kassenführung, Abrechnungen und Einhaltung von Qualitätsstandards</li>
-        <li>Multitasking und bewährte Belastbarkeit in hektischen Peak-Zeiten</li>
+        <li><strong>Kundenkontakt</strong>, <strong>Kassenführung</strong> und Abrechnungen; <strong>belastbar</strong> in Peak-Zeiten</li>
       </ul>
-      <div class="tags"><span class="tag">Kundenkontakt</span><span class="tag">Kassenführung</span><span class="tag">Belastbarkeit</span></div>
     </div>
   </div>
 
-  <div class="sec">
-    <div class="sec-label">Eigene Projekte (Open Source) — seit April 2026, laufend</div>
-    <p class="proj-intro">Eigenständige Konzeption, Entwicklung und Betrieb eines wachsenden Produktportfolios. Aufbau der <strong>BIMP B-Infrastruktur mit über 30 Mini-Tools</strong> während eines stationären Aufenthalts (Ende Februar bis 2. April 2026), anschliessend laufende Weiterentwicklung und vollständiges <strong>UX/UI-Redesign</strong> in Zusammenarbeit mit Claude Code.</p>
+  <div class="sec" style="break-inside:avoid;page-break-inside:avoid">
+    <div class="sec-label">Eigene Projekte (Open Source) — laufend</div>
+    <p class="proj-intro">Konzeption, Entwicklung und Betrieb von <strong>über 30 Web-Tools und Apps</strong> – von der Idee bis zum Deployment (Vercel, Railway, GitHub), inkl. vollständigem <strong>UX/UI-Redesign</strong> mit AI-gestützter Entwicklung (Claude Code). Auswahl:</p>
     <div class="proj-grid">
       <div class="proj" style="--accent:#B5271E">
         <div class="proj-name">Einspruch</div>
         <div class="proj-desc">Einsprache-Briefvorlage für die Schweiz (Krankenkasse, Vermieter, Behörden) mit korrekten Gesetzesartikeln (KVG, OR, ATSG).</div>
         <div class="proj-url">einspruch.architect-dna.ch</div>
       </div>
-      <div class="proj" style="--accent:#6450dc">
-        <div class="proj-name">Anchor</div>
-        <div class="proj-desc">Persönlicher AI-Begleiter mit täglicher Reflexion und Notfall-Modus.</div>
-        <div class="proj-url">architect-dna.ch/anchor</div>
-      </div>
       <div class="proj" style="--accent:#1a6ec8">
         <div class="proj-name">LIA</div>
         <div class="proj-desc">Zero-Knowledge-verschlüsselter Rechtsdokumenten-Tresor für iOS.</div>
         <div class="proj-url">architect-dna.ch/lia</div>
-      </div>
-      <div class="proj" style="--accent:#1a7a3c">
-        <div class="proj-name">Zugcafé</div>
-        <div class="proj-desc">Spontane Begegnungen in der Nähe, ohne Account.</div>
-        <div class="proj-url">architect-dna.ch/zugcafe</div>
       </div>
       <div class="proj" style="--accent:#007a52">
         <div class="proj-name">VOID FREQ</div>
         <div class="proj-desc">Fokus-Studio mit Ambient-Sound (Brown Noise, Rain, Lo-fi, Binaural).</div>
         <div class="proj-url">architect-dna.ch/freq</div>
       </div>
-      <div class="proj" style="--accent:#9A9A98">
-        <div class="proj-name">Sovereignty</div>
-        <div class="proj-desc">Täglicher Feed von Denkfehlern und Prinzipien.</div>
-        <div class="proj-url">architect-dna.ch/sovereignty</div>
-      </div>
-      <div class="proj" style="--accent:#B5271E">
+      <div class="proj" style="--accent:#6450dc">
         <div class="proj-name">Globus</div>
         <div class="proj-desc">Chrome-Extension, die Lesezeichen als begehbare Weltkugel darstellt.</div>
         <div class="proj-url">architect-dna.ch/globus</div>
-      </div>
-      <div class="proj" style="--accent:#1a6ec8">
-        <div class="proj-name">DORA</div>
-        <div class="proj-desc">Lernwerkzeug-Prototyp: Active Recall, Mikro-Lektionen, verteilte Wiederholung.</div>
-        <div class="proj-url">architect-dna-ch.github.io/dora</div>
       </div>
     </div>
   </div>
@@ -259,15 +244,6 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
         <span class="skill-tag">Automatisierung & AI-Tools</span>
       </div>
     </div>
-    <div class="skill">
-      <div class="skill-label">Soft Skills</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Lösungsorientierung (Macher-Mentalität)</span>
-        <span class="skill-tag">Hohe Belastbarkeit im Multitasking</span>
-        <span class="skill-tag">Kommunikation im multikulturellen Umfeld</span>
-        <span class="skill-tag">Dienstleistungsorientierung</span>
-      </div>
-    </div>
   </div>
 
   <div class="sec">
@@ -278,7 +254,7 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
         <div class="edu-period">seit Sommer 2026</div>
       </div>
       <div class="edu-org">WKS KV Bildung, Bern</div>
-      <ul><li>Berufsbegleitendes Modell (Teilzeit), vereinbar mit einem Pensum bis max. 60%</li></ul>
+      <ul><li>Berufsbegleitend (Teilzeit), vereinbar mit einem Pensum von 40–60 % (Mittwoch bis Freitag)</li></ul>
     </div>
     <div class="edu">
       <div class="edu-top">
@@ -287,9 +263,9 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
       </div>
       <div class="edu-org">Die Mobiliar / GIBB Bern</div>
       <ul>
-        <li>Entwicklung von Microservices in modernem Enterprise-Umfeld</li>
-        <li>B2E-Software zur internen Effizienzsteigerung</li>
-        <li>Mobile-App-Projekt im Lernenden-Team (End-to-End)</li>
+        <li>Entwicklung von <strong>Microservices</strong> in modernem Enterprise-Umfeld</li>
+        <li><strong>B2E-Software</strong> zur internen Effizienzsteigerung</li>
+        <li><strong>Mobile-App-Projekt</strong> im Lernenden-Team (End-to-End)</li>
         <li>Systemarchitektur, API-Anbindungen, Datenbankdesign, Agile Work</li>
       </ul>
     </div>
@@ -298,7 +274,7 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
   <div class="bottom">
     <div>
       <div class="sec-label">Sprachen</div>
-      <div class="lang-row"><span class="lang-name">Deutsch</span><span class="lang-level">Muttersprache</span></div>
+      <div class="lang-row"><span class="lang-name">Deutsch</span><span class="lang-level">Muttersprache, Schweizerdeutsch</span></div>
       <div class="lang-row"><span class="lang-name">Kurdisch</span><span class="lang-level">Muttersprache</span></div>
       <div class="lang-row"><span class="lang-name">Englisch</span><span class="lang-level">Gute Kenntnisse</span></div>
     </div>
@@ -319,5 +295,17 @@ html,body{background:#fff;color:var(--text);font-family:var(--font);-webkit-font
   </div>
 
 </div>
+<script>
+// Tailor per application: print.html?firma=Swisscom&stelle=Application%20Support%20Engineer
+(() => {
+  const q = new URLSearchParams(location.search), firma = q.get('firma'), stelle = q.get('stelle');
+  if (!firma && !stelle) return;
+  const el = document.querySelector('.target'), b = t => { const s = document.createElement('strong'); s.textContent = t; return s; };
+  el.append('Bewerbung');
+  if (stelle) el.append(' als ', b(stelle));
+  if (firma) el.append(' bei ', b(firma));
+  el.hidden = false;
+})();
+</script>
 </body>
 </html>
