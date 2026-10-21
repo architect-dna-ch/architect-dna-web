@@ -3,22 +3,35 @@
    1. Guide fox — an ink-line fox watches the cursor. When the visitor hesitates, it trots
       to the element marked [data-fx-target], leaves a paw trail, and the target leans
       toward the cursor as it gets close (a "magnetic" pull).
-   2. Seismic — scroll speed shakes a blueprint grid behind the page and draws a
+   2. Talking fox — click the fox to ask it anything. It answers in a thought bubble: first
+      in fox (yips, gekkers, wow-wows — audible once sound is on), then "translated" into
+      plain language. When a visitor lingers on a part of a page it offers a suggestion
+      based on what's on screen and which page they're on (AI via the chat API, with a
+      local fallback). Hint a section with data-fx-say="…" (+ data-fx-href / data-fx-cta).
+   3. Seismic — scroll speed shakes a blueprint grid behind the page and draws a
       seismograph along the bottom edge. Submitting a form[data-fx-quake] (or clicking a
       button[data-fx-quake]) sets off an earthquake: the ground cracks and buttons jump.
 
    Usage:
      <a href="#contact" data-fx-target data-fx-hint="say hi →">Contact</a>
+     <section id="work" data-fx-say="Six apps here — Einspruch is the newest.">…</section>
      <form data-fx-quake>…</form>
      <script src="/fx/brand-fx.js" defer></script>
 
-   Optional config before the script: window.ArchitectFXConfig = { idleMs, fox, seismo }
-   API: ArchitectFX.quake(x, y, strength), ArchitectFX.guide(), ArchitectFX.home()
-   Respects prefers-reduced-motion (no shaking, no running). */
+   Optional config before the script:
+     window.ArchitectFXConfig = { idleMs, dwellMs, fox, talk, seismo, api, context }
+   API: ArchitectFX.quake(x, y, strength), .guide(), .home(), .talk(), .suggest()
+   Respects prefers-reduced-motion (no shaking, no running, no typing animation). */
 (() => {
-  const CFG = Object.assign({ idleMs: 3500, fox: true, seismo: true }, window.ArchitectFXConfig || {});
+  const DEFAULT_CTX = 'You are the fox: the mascot and assistant of Architect-DNA, a Swiss indie software studio based in Bern. Answer helpfully and concisely (max 3 short sentences) in the same language the visitor writes in (German or English). Facts: Architect-DNA builds privacy-first apps and browser games. Apps: FITRA (life OS), VOID FREQ (ambient focus), LIA (legal vault), Rida (Muslim companion), Calm, Noise, Sakina (waswas companion), Einspruch (legal objections). Games: Nexus Breach, KART, BLOOM, Grid Fall, Sprint, Ares Race, Sector Zero — all free, no install. PulseBot is an embeddable AI chatbot for Swiss KMUs, CHF 49/149/499/month, 30-day free trial, no credit card, one line of code to install, DSGVO-konform. Contact: systems@architect-dna.ch. Based in Bern, Switzerland.';
+  const CFG = Object.assign({
+    idleMs: 3500, dwellMs: 6000, fox: true, talk: true, seismo: true,
+    api: '/api/chat', context: DEFAULT_CTX
+  }, window.ArchitectFXConfig || {});
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const INK = '#1A1A1A', RUST = '#B5271E', BG = '#FAFAF8';
+  const FONT = "-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif";
+  const MONO = "'SF Mono','Fira Code','Courier New',monospace";
   const FOX_W = 96, FOX_H = 64, SEISMO_H = 28;
 
   const css = `
@@ -35,21 +48,49 @@
   transition:transform .9s cubic-bezier(.45,.05,.3,1)}
 .fx-fox svg{width:100%;height:100%;overflow:visible;transition:transform .2s}
 .fx-fox.flip svg{transform:scaleX(-1)}
+.fx-hit{position:absolute;left:10px;right:2px;top:6px;bottom:10px;padding:0;border:0;border-radius:12px;background:transparent;
+  cursor:pointer;pointer-events:auto}
+.fx-hit:focus-visible{outline:2px solid ${RUST};outline-offset:2px}
 .fx-fox .fx-leg{transform-box:fill-box;transform-origin:50% 0}
 .fx-fox.run .fx-leg-a{animation:fxleg .18s infinite alternate}
 .fx-fox.run .fx-leg-b{animation:fxleg .18s infinite alternate-reverse}
 .fx-fox .fx-tail{transform-box:fill-box;transform-origin:100% 80%}
 .fx-fox.wag .fx-tail{animation:fxwag .28s infinite alternate}
+.fx-fox .fx-head{transform-box:fill-box;transform-origin:20% 90%}
+.fx-fox.talk .fx-head{animation:fxtalk .14s infinite alternate}
 .fx-fox.hop svg{animation:fxhop .5s ease-out}
 .fx-fox.flip.hop svg{animation:fxhopflip .5s ease-out}
 @keyframes fxleg{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
 @keyframes fxwag{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
+@keyframes fxtalk{from{transform:rotate(0)}to{transform:rotate(-7deg)}}
 @keyframes fxhop{40%{transform:translateY(-26px)}}
 @keyframes fxhopflip{0%,100%{transform:scaleX(-1)}40%{transform:scaleX(-1) translateY(-26px)}}
 .fx-bubble{position:absolute;bottom:100%;left:50%;transform:translate(-50%,2px);background:${INK};color:${BG};
-  font:600 12px/1 -apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;letter-spacing:-.01em;
-  padding:7px 10px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s}
+  font:600 12px/1 ${FONT};letter-spacing:-.01em;padding:7px 10px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s}
 .fx-bubble.show{opacity:1;transform:translate(-50%,-6px)}
+.fx-think{position:fixed;left:12px;bottom:${SEISMO_H + FOX_H + 16}px;z-index:9993;width:min(300px,calc(100vw - 24px));
+  background:${BG};color:${INK};border:1.5px solid ${INK};border-radius:20px;padding:10px 14px 12px;
+  font:14px/1.45 ${FONT};text-align:left;transform-origin:25% 100%;animation:fxpop .24s cubic-bezier(.34,1.4,.64,1)}
+.fx-think[hidden]{display:none}
+.fx-think::before,.fx-think::after{content:'';position:absolute;border:1.5px solid ${INK};background:${BG};border-radius:50%}
+.fx-think::before{width:14px;height:14px;left:58px;bottom:-21px}
+.fx-think::after{width:8px;height:8px;left:72px;bottom:-34px}
+@keyframes fxpop{from{opacity:0;transform:scale(.6)}}
+.fx-t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;
+  font:600 10px/1 ${MONO};letter-spacing:.08em;text-transform:uppercase;color:#9A9A98}
+.fx-t-head button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:4px;cursor:pointer}
+.fx-t-head button:hover,.fx-t-head button:focus-visible{color:${INK}}
+.fx-t-raw{margin:0;font:italic 600 15px/1.35 ${MONO};color:${RUST};transition:opacity .3s,font-size .3s}
+.fx-t-raw.done{opacity:.5;font-size:11px;text-decoration:line-through;text-decoration-color:rgba(181,39,30,.45)}
+.fx-t-out{margin:6px 0 0;max-height:38vh;overflow:auto;white-space:pre-wrap}
+.fx-t-out:empty{display:none}
+.fx-t-cta{display:inline-block;margin-top:10px;padding:7px 11px;border-radius:6px;background:${INK};color:${BG}!important;
+  font:600 13px/1 ${FONT};text-decoration:none}
+.fx-t-cta[hidden]{display:none}
+.fx-t-ask{display:flex;gap:6px;margin:10px 0 0;padding-top:10px;border-top:1px solid #E0E0D8}
+.fx-t-ask input{flex:1;min-width:0;padding:8px 10px;border:1px solid #E0E0D8;border-radius:6px;background:#fff;color:${INK};font:13px ${FONT}}
+.fx-t-ask input:focus{outline:2px solid rgba(181,39,30,.35);outline-offset:1px}
+.fx-t-ask button{padding:0 12px;border:0;border-radius:6px;background:${INK};color:${BG};font:700 14px ${FONT};cursor:pointer}
 .fx-paw{position:fixed;width:7px;height:9px;border-radius:50%;background:${INK};opacity:0;z-index:9989;pointer-events:none;
   animation:fxpaw 1.6s forwards}
 @keyframes fxpaw{15%{opacity:.22}100%{opacity:0}}
@@ -62,6 +103,8 @@
 
   const target = () => document.querySelector('[data-fx-target]');
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const tidy = s => (s || '').replace(/\s+/g, ' ').trim();
   // True when the element's centre is on screen and not covered by an overlay.
   const visible = (el, r) => {
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
@@ -69,6 +112,12 @@
     const hit = document.elementFromPoint(cx, cy);
     return !!hit && (el.contains(hit) || hit.contains(el));
   };
+  // Storage can throw (private mode, blocked site data) — treat that as empty.
+  const store = (area, prefix) => ({
+    get: k => { try { return area().getItem(prefix + k); } catch { return null; } },
+    set: (k, v) => { try { area().setItem(prefix + k, v); } catch {} }
+  });
+  const local = store(() => localStorage, 'fx:'), session = store(() => sessionStorage, 'fx:');
   let mouse = { x: -1, y: -1 };
 
   /* ---------- Seismic ---------- */
@@ -108,7 +157,7 @@
       i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     });
     ctx.stroke();
-    ctx.font = '600 10px "SF Mono","Fira Code","Courier New",monospace';
+    ctx.font = `600 10px ${MONO}`;
     ctx.fillStyle = quakeAmt > 0.05 ? RUST : 'rgba(26,26,26,.45)';
     ctx.fillText(label || `SEISMO  M ${(peak * 6).toFixed(1)}`, 12, 11);
   }
@@ -187,16 +236,128 @@
   });
   sizeCanvas();
 
-  /* ---------- Guide fox ---------- */
+  /* ---------- Fox voice (Web Audio) ---------- */
+  // Syllable → [start Hz, end Hz, seconds]. Rough imitations of real fox calls:
+  // yips and barks ("wow"), gekkering, the vixen scream ("eeek"), contact "mrrp".
+  const VOICE = {
+    yip: [900, 1600, .07], wow: [700, 1150, .16], gekk: [620, 480, .05], ack: [520, 440, .06],
+    ha: [800, 700, .05], eeek: [1900, 1300, .3], mrrp: [400, 700, .12], wa: [600, 900, .06],
+    pa: [650, 850, .05], huff: [300, 200, .1]
+  };
+  const CALLS = ['Yip', 'Yip-yip', 'Gekk-gekk-gekk', 'Wow-wow', 'Ack-ack-ack', 'Ha-ha-ha-ha', 'Eeek', 'Mrrp', 'Wa-pa-pa-pa', 'Huff'];
+  let audio = null;
+
+  function foxCalls() {
+    const n = 2 + Math.floor(Math.random() * 2), picked = [];
+    while (picked.length < n) {
+      const c = CALLS[Math.floor(Math.random() * CALLS.length)];
+      if (!picked.includes(c)) picked.push(c);
+    }
+    const seps = ['! ', '… ', ' — '];
+    const text = picked.map((c, i) => i ? seps[Math.floor(Math.random() * seps.length)] + c.toLowerCase() : c).join('') + '!';
+    return { text, calls: picked };
+  }
+
+  function voice(calls) {
+    if (local.get('sound') !== 'on') return;
+    try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch { return; }
+    if (audio.state === 'suspended') audio.resume();
+    let t = audio.currentTime + 0.03;
+    for (const call of calls) {
+      for (const syl of call.toLowerCase().split('-')) {
+        const [f0, f1, d] = VOICE[syl] || VOICE.yip;
+        const o = audio.createOscillator(), g = audio.createGain(), bp = audio.createBiquadFilter();
+        o.type = 'sawtooth';
+        bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = 1.2;
+        o.frequency.setValueAtTime(f0, t);
+        o.frequency.exponentialRampToValueAtTime(f1, t + d);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.09, t + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        o.connect(bp).connect(g).connect(audio.destination);
+        o.start(t); o.stop(t + d + 0.02);
+        t += d + 0.035;
+      }
+      t += 0.14;
+    }
+  }
+
+  /* ---------- Page awareness ---------- */
+  // The innermost hinted element or section crossing the reading line (45% down the viewport).
+  function currentTopic() {
+    const line = innerHeight * 0.45;
+    let best = null, bestH = Infinity;
+    for (const el of document.querySelectorAll('[data-fx-say], section[id], article[id], main')) {
+      const r = el.getBoundingClientRect();
+      if (r.height && r.top <= line && r.bottom >= line && r.height < bestH && visible(el, { left: r.left, top: line - 1, width: r.width, height: 2 })) {
+        best = el; bestH = r.height;
+      }
+    }
+    if (!best) return null;
+    const h = best.querySelector('h1,h2,h3,[class*="title"],[class*="label"]');
+    const heading = tidy(h && h.innerText) || best.id || document.title;
+    const links = [...best.querySelectorAll('a[href]')]
+      .map(a => ({ href: a.getAttribute('href'), label: tidy(a.textContent || a.getAttribute('aria-label')).slice(0, 40) }))
+      .filter(l => l.label && l.href !== '#' && !l.href.startsWith('javascript:'))
+      .slice(0, 12);
+    return {
+      key: location.pathname + '#' + (best.id || heading),
+      heading: heading.slice(0, 80),
+      text: tidy(best.innerText).slice(0, 600),
+      say: best.dataset.fxSay || '',
+      href: best.dataset.fxHref || '',
+      cta: best.dataset.fxCta || '',
+      links
+    };
+  }
+
+  function pageContext(tp) {
+    return `\n\nThe visitor is on the page "${document.title}" (${location.pathname})` +
+      (tp ? `, looking at the part titled "${tp.heading}". What they can see: ${tp.text}` : '.');
+  }
+
+  async function ask(question, context) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 9000);
+    try {
+      const r = await fetch(CFG.api, {
+        method: 'POST', signal: ctrl.signal,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, context })
+      });
+      const d = await r.json();
+      return tidy(d.answer) || null;
+    } catch { return null; } finally { clearTimeout(timer); }
+  }
+
+  async function suggestionFor(tp) {
+    const cached = session.get('s:' + tp.key);
+    if (cached) { try { return JSON.parse(cached); } catch {} }
+    const lang = (document.documentElement.lang || 'en').startsWith('de') ? 'German' : 'English';
+    const sys = CFG.context + `\n\nWrite ONE short suggestion (max 25 words) for a visitor who is reading the part of the page described below. Point them to a concrete next step. Write in ${lang}. No greeting, no emoji, no quotation marks. If one of the listed links fits, end with " || " followed by that link's href exactly.`;
+    const q = `Page: ${document.title} (${location.pathname})\nSection: ${tp.heading}\nAuthor hint: ${tp.say || '-'}\nVisible text: ${tp.text}\nLinks:\n${tp.links.map(l => `- ${l.label}: ${l.href}`).join('\n') || '-'}`;
+    const answer = CFG.api ? await ask(q, sys) : null;
+    let res;
+    if (answer) {
+      const [text, href] = answer.split('||').map(s => s.trim().replace(/^["“]|["”]$/g, ''));
+      const link = tp.links.find(l => l.href === href);
+      res = link ? { text, href: link.href, cta: link.label + ' →' } : { text, href: tp.href, cta: tp.cta };
+    } else {
+      res = { text: tp.say || `Curious about “${tp.heading}”? Click me and ask — I translate.`, href: tp.href, cta: tp.cta };
+    }
+    session.set('s:' + tp.key, JSON.stringify(res));
+    return res;
+  }
+
+  /* ---------- Fox ---------- */
   let fox = null;
   if (CFG.fox) fox = makeFox();
 
   function makeFox() {
     const el = document.createElement('div');
     el.className = 'fx-fox';
-    el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = `<div class="fx-bubble"></div>
-<svg viewBox="0 0 96 64">
+    el.innerHTML = `<div class="fx-bubble" aria-hidden="true"></div>
+<svg viewBox="0 0 96 64" aria-hidden="true">
   <path class="fx-tail" d="M28 38 C14 40 2 30 6 16 C10 22 16 26 26 30 Z" fill="${RUST}"/>
   <g stroke="${INK}" stroke-width="2.5" stroke-linecap="round">
     <line class="fx-leg fx-leg-a" x1="32" y1="47" x2="32" y2="58"/>
@@ -205,15 +366,18 @@
     <line class="fx-leg fx-leg-a" x1="58" y1="47" x2="58" y2="58"/>
   </g>
   <ellipse cx="44" cy="40" rx="20" ry="10" fill="${BG}" stroke="${INK}" stroke-width="2.5"/>
-  <path d="M60 36 L66 12 L73 24 L80 12 L84 30 L93 38 L80 46 L62 44 Z" fill="${BG}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M84 30 L93 38 L80 46 Z" fill="${RUST}" opacity=".9"/>
-  <circle cx="93" cy="38" r="2.2" fill="${INK}"/>
-  <circle cx="75" cy="31" r="3.6" fill="${BG}" stroke="${INK}" stroke-width="1.6"/>
-  <circle class="fx-pupil" cx="75" cy="31" r="1.8" fill="${INK}"/>
+  <g class="fx-head">
+    <path d="M60 36 L66 12 L73 24 L80 12 L84 30 L93 38 L80 46 L62 44 Z" fill="${BG}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M84 30 L93 38 L80 46 Z" fill="${RUST}" opacity=".9"/>
+    <circle cx="93" cy="38" r="2.2" fill="${INK}"/>
+    <circle cx="75" cy="31" r="3.6" fill="${BG}" stroke="${INK}" stroke-width="1.6"/>
+    <circle class="fx-pupil" cx="75" cy="31" r="1.8" fill="${INK}"/>
+  </g>
 </svg>`;
     document.body.append(el);
     const bubble = el.querySelector('.fx-bubble'), pupil = el.querySelector('.fx-pupil');
     let pos = { x: 0, y: 0 }, facing = 1, state = 'home', idleTimer, sayTimer, homeTimer;
+    let dwellKey = '', dwellSince = 0;
 
     const homePos = () => ({ x: 14, y: innerHeight - FOX_H - SEISMO_H + 8 });
 
@@ -259,14 +423,9 @@
 
     function guide() {
       const t = target();
-      if (!t) return;
+      if (!t || think.open) return false;
       const r = t.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) {
-        say(r.top > innerHeight ? 'this way ↓' : 'up here ↑');
-        wag(true); setTimeout(() => wag(false), 1800);
-        return;
-      }
-      if (!visible(t, r)) return;
+      if (!visible(t, r)) return false;
       // Sit on top of the target, or just under it when there's no room above.
       const x = clamp(r.left + r.width / 2 - FOX_W / 2, 8, innerWidth - FOX_W - 8);
       let y = r.top - FOX_H + 6;
@@ -283,23 +442,41 @@
       state = 'guiding';
       clearTimeout(homeTimer);
       homeTimer = setTimeout(goHome, 9000);
+      return true;
     }
+    // Resolves once the fox is back in its corner.
     function goHome() {
-      if (state === 'home') return;
+      if (state === 'home') return Promise.resolve();
       state = 'home';
       wag(false);
       bubble.classList.remove('show');
       const h = homePos();
       place(h.x, h.y);
-      setTimeout(() => { if (state === 'home') { facing = 1; el.classList.remove('flip'); } }, reduce ? 0 : 900);
+      return wait(reduce ? 0 : 900).then(() => {
+        if (state === 'home') { facing = 1; el.classList.remove('flip'); }
+      });
+    }
+
+    function onIdle() {
+      if (think.open) return;
+      if (guide()) return;
+      if (!CFG.talk) return;
+      const tp = currentTopic();
+      if (!tp) return;
+      if (tp.key !== dwellKey) {
+        dwellKey = tp.key; dwellSince = Date.now();
+        idleTimer = setTimeout(onIdle, CFG.dwellMs);
+      } else if (Date.now() - dwellSince >= CFG.dwellMs) {
+        think.suggest(tp);
+      }
     }
     function resetIdle() {
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(guide, CFG.idleMs);
+      idleTimer = setTimeout(onIdle, CFG.idleMs);
     }
 
     function look() {
-      const ex = pos.x + (facing > 0 ? 75 : FOX_W - 75) * FOX_W / 96, ey = pos.y + 31 * FOX_H / 64;
+      const ex = pos.x + (facing > 0 ? 75 : FOX_W - 75), ey = pos.y + 31;
       let dx = mouse.x - ex, dy = mouse.y - ey;
       const d = Math.hypot(dx, dy) || 1;
       dx = (dx / d) * 1.5 * facing; dy = (dy / d) * 1.5;
@@ -322,11 +499,141 @@
       }
     }
 
+    /* Thought bubble: fox talk → translation. */
+    const think = (() => {
+      const box = document.createElement('div');
+      box.className = 'fx-think';
+      box.hidden = true;
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-label', 'Fox assistant');
+      box.innerHTML = `<div class="fx-t-head"><span>fox → human</span><span>
+  <button type="button" class="fx-t-sound"></button><button type="button" class="fx-t-close" aria-label="Close">✕</button></span></div>
+<p class="fx-t-raw" aria-hidden="true"></p>
+<p class="fx-t-out" aria-live="polite"></p>
+<a class="fx-t-cta" hidden></a>
+<form class="fx-t-ask"><input name="q" maxlength="300" autocomplete="off" placeholder="Ask the fox anything…" aria-label="Ask the fox"><button aria-label="Send">→</button></form>`;
+      document.body.append(box);
+      const raw = box.querySelector('.fx-t-raw'), out = box.querySelector('.fx-t-out');
+      const cta = box.querySelector('.fx-t-cta'), form = box.querySelector('form'), input = form.q;
+      const soundBtn = box.querySelector('.fx-t-sound');
+      let run = 0, hideTimer, auto = false, dismissals = 0, lastAuto = 0;
+      const shown = new Set();
+
+      const paintSound = () => {
+        const on = local.get('sound') === 'on';
+        soundBtn.textContent = on ? '♪ on' : '♪ off';
+        soundBtn.setAttribute('aria-label', on ? 'Mute fox' : 'Unmute fox');
+      };
+      paintSound();
+
+      async function type(node, text, ms, id) {
+        if (reduce) { node.textContent = text; return; }
+        node.textContent = '';
+        for (let i = 0; i < text.length; i += 2) {
+          if (id !== run) return;
+          node.textContent = text.slice(0, i + 2);
+          await wait(ms);
+        }
+      }
+
+      function hold() { clearTimeout(hideTimer); }
+      function autoHide() {
+        hold();
+        hideTimer = setTimeout(() => { if (!box.matches(':hover, :focus-within')) close(); else autoHide(); }, 11000);
+      }
+
+      async function speak(answer, { isAuto = false } = {}) {
+        const id = ++run;
+        auto = isAuto;
+        hold();
+        if (state !== 'home') await goHome();
+        if (id !== run) return;
+        box.hidden = false;
+        api.open = true;
+        raw.classList.remove('done');
+        out.textContent = '';
+        cta.hidden = true;
+        const fx = foxCalls();
+        voice(fx.calls);
+        el.classList.add('talk');
+        wag(true);
+        await type(raw, fx.text, 38, id);
+        const res = await answer;
+        if (id !== run) return;
+        el.classList.remove('talk');
+        raw.classList.add('done');
+        await type(out, res.text, 16, id);
+        if (id !== run) return;
+        if (res.href) {
+          cta.href = res.href;
+          cta.textContent = res.cta || 'Show me →';
+          cta.hidden = false;
+        }
+        wag(false);
+        if (auto) autoHide();
+      }
+
+      function close() {
+        run++;
+        hold();
+        box.hidden = true;
+        api.open = false;
+        el.classList.remove('talk');
+        wag(false);
+        if (auto && ++dismissals >= 2) api.quiet = true;
+      }
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const q = tidy(input.value);
+        if (!q) return;
+        input.value = '';
+        const answer = (CFG.api ? ask(q, CFG.context + pageContext(currentTopic())) : Promise.resolve(null))
+          .then(a => ({ text: a || 'My translator glitched. Try again — or write to systems@architect-dna.ch.' }));
+        speak(answer);
+      });
+      soundBtn.addEventListener('click', () => {
+        local.set('sound', local.get('sound') === 'on' ? 'off' : 'on');
+        paintSound();
+        if (local.get('sound') === 'on') voice(['Yip']);
+      });
+      box.querySelector('.fx-t-close').addEventListener('click', close);
+      box.addEventListener('keydown', e => { if (e.key === 'Escape') { close(); hit.focus(); } });
+      box.addEventListener('focusin', () => { auto = false; hold(); });
+
+      const api = {
+        open: false, quiet: false,
+        toggle() {
+          if (api.open) return close();
+          if (local.get('sound') === null) { local.set('sound', 'on'); paintSound(); }
+          const tp = currentTopic();
+          const where = tp ? `“${tp.heading}”` : document.title;
+          speak(Promise.resolve({ text: `Hi! I'm the Architect-DNA fox. You're looking at ${where} — ask me anything about it.` }))
+            .then(() => { if (api.open) input.focus({ preventScroll: true }); });
+        },
+        suggest(tp = currentTopic()) {
+          if (!tp || api.open || api.quiet || shown.has(tp.key) || Date.now() - lastAuto < 25000) return;
+          shown.add(tp.key);
+          lastAuto = Date.now();
+          speak(suggestionFor(tp), { isAuto: true });
+        },
+        close
+      };
+      return api;
+    })();
+
+    const hit = document.createElement('button');
+    hit.type = 'button';
+    hit.className = 'fx-hit';
+    hit.setAttribute('aria-label', 'Talk to the fox');
+    if (CFG.talk) el.append(hit);
+    hit.addEventListener('click', () => { hop(); think.toggle(); });
+
     addEventListener('mousemove', e => {
       mouse = { x: e.clientX, y: e.clientY };
       look(); magnet(); resetIdle();
     }, { passive: true });
-    addEventListener('scroll', () => { goHome(); resetIdle(); }, { passive: true });
+    addEventListener('scroll', () => { if (state === 'guiding') goHome(); resetIdle(); }, { passive: true });
     addEventListener('keydown', resetIdle);
     addEventListener('touchstart', resetIdle, { passive: true });
     addEventListener('resize', () => { if (state === 'home') { const h = homePos(); place(h.x, h.y, false); } });
@@ -342,7 +649,7 @@
     const h = homePos();
     place(h.x, h.y, false);
     resetIdle();
-    return { guide, home: goHome, say, hop };
+    return { guide, home: goHome, say, hop, think };
   }
 
   function burst(x, y) {
@@ -362,6 +669,8 @@
   window.ArchitectFX = {
     quake,
     guide: () => fox && fox.guide(),
-    home: () => fox && fox.home()
+    home: () => fox && fox.home(),
+    talk: () => fox && fox.think.toggle(),
+    suggest: () => fox && fox.think.suggest()
   };
 })();

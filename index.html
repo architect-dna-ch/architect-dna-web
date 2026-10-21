@@ -548,7 +548,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 </div>
 
 <!-- ── PROJECTS ── -->
-<section id="projects">
+<section id="projects" data-fx-say="Everything here is live — pick one and try it in your browser, no install.">
   <div class="projects-head">
     <div>
       <div class="section-label" id="proj-label">Work</div>
@@ -971,7 +971,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 </section>
 
 <!-- ── ABOUT ── -->
-<section id="about">
+<section id="about" data-fx-say="Small Swiss studio, privacy first. Want to see how we work with clients?" data-fx-href="#services" data-fx-cta="See services →">
   <div class="section-label" id="about-label">About</div>
   <div class="about-inner">
     <div>
@@ -990,7 +990,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 </section>
 
 <!-- ── SERVICES ── -->
-<section id="services">
+<section id="services" data-fx-say="We take few projects a year — send a short brief and get a fixed-fee estimate." data-fx-href="#contact" data-fx-cta="Start a project →">
   <div class="section-label">Services</div>
   <div class="about-text" style="max-width:560px;margin-bottom:8px">We take on a small number of projects each year.</div>
   <p class="about-sub" style="max-width:560px">Privacy-first software built fast and clean. No bloat, no tracking, no lock-in. Swiss quality, async-friendly for global teams.</p>
@@ -1019,7 +1019,7 @@ body.vc-mode .vc-badge{opacity:1;transform:translateX(0)}
 </section>
 
 <!-- ── CONTACT ── -->
-<section id="contact">
+<section id="contact" data-fx-say="Two lines about your idea are enough. We reply within 48 hours.">
   <div class="section-label">Start a Project</div>
   <div class="contact-inner">
     <div class="contact-left">
@@ -1680,34 +1680,6 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
 }
 #konami-msg.show{opacity:1;}
 
-/* ── PULSEBOT DEMO WIDGET ── */
-#pb-demo{position:fixed;bottom:24px;left:24px;z-index:8000;display:flex;flex-direction:column;align-items:flex-start}
-@media(max-width:700px){
-  /* Section headings (e.g. "The Lineup") sit flush left, same corner as this
-     launcher — move it to the right on mobile so it never sits on top of them. */
-  #pb-demo{left:auto;right:16px;bottom:16px;align-items:flex-end}
-  #pb-bubble{width:46px;height:46px;font-size:18px}
-  .pb-label{display:none}
-  #pb-win{width:calc(100vw - 32px);max-width:320px;transform-origin:bottom right}
-}
-#pb-bubble{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 24px rgba(139,92,246,.4);transition:transform .2s;border:none}
-#pb-bubble:hover{transform:scale(1.08)}
-#pb-bubble:active{transform:scale(.95)}
-.pb-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(139,92,246,.75);font-family:var(--mono);margin-top:4px;width:52px;text-align:center}
-#pb-win{width:300px;background:#12121f;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);margin-bottom:12px;transform-origin:bottom left;transform:scale(0) translateY(8px);opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.34,1.36,.64,1),opacity .14s}
-#pb-win.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
-.pb-head{background:linear-gradient(135deg,#8b5cf6,#ec4899);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-.pb-head-info .pb-head-name{font-size:14px;font-weight:700;color:#fff}
-.pb-head-info .pb-head-status{font-size:11px;color:rgba(255,255,255,.7)}
-.pb-head-close{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:26px;height:26px;color:#fff;font-size:16px;line-height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#pb-msgs{padding:16px;height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
-.pb-msg{max-width:85%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;font-family:var(--font)}
-.pb-msg.bot{background:#1a1a2e;color:#f0f0ff;border-radius:10px 10px 10px 2px}
-.pb-msg.user{background:rgba(139,92,246,.22);color:#f0f0ff;margin-left:auto;border-radius:10px 10px 2px 10px}
-.pb-input-row{padding:12px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:8px}
-.pb-input{flex:1;background:#1a1a2e;border:1px solid rgba(255,255,255,.14);color:#f0f0ff;padding:8px 11px;border-radius:8px;font-size:13px;font-family:var(--font);outline:none}
-.pb-input::placeholder{color:rgba(240,240,255,.3)}
-.pb-send{padding:8px 14px;background:linear-gradient(135deg,#8b5cf6,#ec4899);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
 </style>
 
 <div id="claude-egg">
@@ -1792,74 +1764,6 @@ body.vc-mode .ce-label{color:rgba(255,140,51,.5)}
   <div id="konami-bunny">🐰</div>
   <div id="konami-msg">Claude says hi 🥚</div>
 </div>
-
-<!-- ── PULSEBOT DEMO WIDGET ── -->
-<div id="pb-demo">
-  <div id="pb-win">
-    <div class="pb-head">
-      <div class="pb-head-info">
-        <div class="pb-head-name">PulseBot</div>
-        <div class="pb-head-status">● Online · Ready to help</div>
-      </div>
-      <button class="pb-head-close" onclick="pbToggle()" aria-label="Close">×</button>
-    </div>
-    <div id="pb-msgs">
-      <div class="pb-msg bot">Hey 👋 I'm PulseBot. Ask me anything about Architect-DNA or how to add me to your site.</div>
-    </div>
-    <div class="pb-input-row">
-      <input class="pb-input" id="pb-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')pbSend()">
-      <button class="pb-send" onclick="pbSend()">→</button>
-    </div>
-  </div>
-  <button id="pb-bubble" onclick="pbToggle()" aria-label="Open PulseBot chat">💬</button>
-  <div class="pb-label">PulseBot</div>
-</div>
-
-<script>
-(function(){
-  const API='/api/chat';
-  const CTX='You are PulseBot, the AI assistant for Architect-DNA — a Swiss indie software studio based in Bern. Answer questions helpfully and concisely in the same language the user writes in (German or English). Facts: Architect-DNA builds privacy-first apps and browser games. Apps: FITRA (life OS), VOID FREQ (ambient focus), LIA (legal vault), Rida (Muslim companion), Calm, Noise, Sakina (waswas companion). Games: Nexus Breach, KART, BLOOM, Grid Fall, Sprint, Ares Race, Sector Zero — all free, no install. PulseBot is an embeddable AI chatbot for Swiss KMUs, CHF 49/149/499/month, 30-day free trial, no credit card, one line of code to install, DSGVO-konform. Contact: systems@architect-dna.ch. Based in Bern, Switzerland.';
-
-  let open=false;
-  window.pbToggle=function(){
-    open=!open;
-    document.getElementById('pb-win').classList.toggle('open',open);
-    if(open) document.getElementById('pb-input').focus();
-  };
-
-  window.pbSend=function(){
-    const inp=document.getElementById('pb-input');
-    const text=inp.value.trim(); if(!text) return;
-    pbAdd(text,'user'); inp.value='';
-    const typing=pbTyping();
-    fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({question:text,context:CTX})
-    })
-    .then(r=>r.json())
-    .then(d=>{ typing.remove(); pbAdd(d.answer||'Entschuldigung, ein Fehler ist aufgetreten.','bot'); })
-    .catch(()=>{ typing.remove(); pbAdd('Verbindungsfehler — bitte versuche es nochmal.','bot'); });
-  };
-
-  function pbAdd(text,type){
-    const el=document.createElement('div');
-    el.className='pb-msg '+type; el.textContent=text;
-    const c=document.getElementById('pb-msgs');
-    c.appendChild(el); c.scrollTop=c.scrollHeight;
-    return el;
-  }
-
-  function pbTyping(){
-    const el=document.createElement('div');
-    el.className='pb-msg bot';
-    el.innerHTML='<span style="opacity:.5">···</span>';
-    const c=document.getElementById('pb-msgs');
-    c.appendChild(el); c.scrollTop=c.scrollHeight;
-    return el;
-  }
-})();
-</script>
 
 <script src="/fx/brand-fx.js" defer></script>
 </body>
