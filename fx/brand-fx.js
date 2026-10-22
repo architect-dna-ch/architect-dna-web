@@ -8,7 +8,9 @@
       plain language. When a visitor lingers on a part of a page it offers a suggestion
       based on what's on screen and which page they're on (AI via the chat API, with a
       local fallback). Hint a section with data-fx-say="…" (+ data-fx-href / data-fx-cta).
-   3. Seismic — scroll speed shakes a blueprint grid behind the page and draws a
+   3. Hunt — now and then (or when asked: "hunt", "Hase", "rabbit" in the fox chat) a rabbit
+      pops out of a burrow; the fox stalks, chases and pounces. Click the rabbit to save it.
+   4. Seismic — scroll speed shakes a blueprint grid behind the page and draws a
       seismograph along the bottom edge. Submitting a form[data-fx-quake] (or clicking a
       button[data-fx-quake]) sets off an earthquake: the ground cracks and buttons jump.
 
@@ -20,7 +22,7 @@
 
    Optional config before the script:
      window.ArchitectFXConfig = { idleMs, dwellMs, fox, talk, seismo, api, context }
-   API: ArchitectFX.quake(x, y, strength), .guide(), .home(), .talk(), .suggest()
+   API: ArchitectFX.quake(x, y, strength), .guide(), .home(), .talk(), .suggest(), .hunt()
    Respects prefers-reduced-motion (no shaking, no running, no typing animation). */
 (() => {
   const DEFAULT_CTX = 'You are the fox: the mascot and assistant of Architect-DNA, a Swiss indie software studio based in Bern. Answer helpfully and concisely (max 3 short sentences) in the same language the visitor writes in (German or English). Facts: Architect-DNA builds privacy-first apps and browser games. Apps: FITRA (life OS), VOID FREQ (ambient focus), LIA (legal vault), Rida (Muslim companion), Calm, Noise, Sakina (waswas companion), Einspruch (legal objections). Games: Nexus Breach, KART, BLOOM, Grid Fall, Sprint, Ares Race, Sector Zero — all free, no install. PulseBot is an embeddable AI chatbot for Swiss KMUs, CHF 49/149/499/month, 30-day free trial, no credit card, one line of code to install, DSGVO-konform. Contact: systems@architect-dna.ch. Based in Bern, Switzerland.';
@@ -91,6 +93,30 @@
 .fx-t-ask input{flex:1;min-width:0;padding:8px 10px;border:1px solid #E0E0D8;border-radius:6px;background:#fff;color:${INK};font:13px ${FONT}}
 .fx-t-ask input:focus{outline:2px solid rgba(181,39,30,.35);outline-offset:1px}
 .fx-t-ask button{padding:0 12px;border:0;border-radius:6px;background:${INK};color:${BG};font:700 14px ${FONT};cursor:pointer}
+.fx-fox.stalk svg{transform:translateY(5px) scaleY(.86)}
+.fx-fox.flip.stalk svg{transform:scaleX(-1) translateY(5px) scaleY(.86)}
+.fx-fox.stalk .fx-leg-a{animation:fxleg .5s infinite alternate}
+.fx-fox.stalk .fx-leg-b{animation:fxleg .5s infinite alternate-reverse}
+.fx-fox.pounce svg{animation:fxpounce .7s ease-in-out}
+.fx-fox.flip.pounce svg{animation:fxpounceflip .7s ease-in-out}
+@keyframes fxpounce{45%{transform:translateY(-64px) rotate(-16deg)}80%{transform:translateY(-6px) rotate(14deg)}}
+@keyframes fxpounceflip{0%,100%{transform:scaleX(-1)}45%{transform:scaleX(-1) translateY(-64px) rotate(-16deg)}80%{transform:scaleX(-1) translateY(-6px) rotate(14deg)}}
+.fx-rabbit{position:fixed;left:0;top:0;width:48px;height:40px;z-index:9989;padding:0;border:0;background:none;cursor:pointer}
+.fx-rabbit:focus-visible{outline:2px solid ${RUST};outline-offset:2px;border-radius:8px}
+.fx-rabbit svg{width:100%;height:100%;overflow:visible;pointer-events:none}
+.fx-rabbit.flip svg{transform:scaleX(-1)}
+.fx-rabbit.pop svg{animation:fxrpop .45s ease-out}
+.fx-rabbit.hopping svg{animation:fxrhop .3s ease-in-out infinite}
+.fx-rabbit.flip.hopping svg{animation:fxrhopflip .3s ease-in-out infinite}
+.fx-rabbit .fx-ears{transform-box:fill-box;transform-origin:50% 100%}
+.fx-rabbit.twitch .fx-ears{animation:fxtwitch .12s 4 alternate}
+@keyframes fxrpop{from{transform:translateY(26px);opacity:0}}
+@keyframes fxrhop{50%{transform:translateY(-14px)}}
+@keyframes fxrhopflip{0%,100%{transform:scaleX(-1)}50%{transform:scaleX(-1) translateY(-14px)}}
+@keyframes fxtwitch{to{transform:rotate(-12deg)}}
+.fx-hole{position:fixed;width:34px;height:8px;border-radius:50%;background:${INK};opacity:.85;z-index:9990;pointer-events:none;
+  animation:fxholein .3s ease-out;transition:opacity .6s}
+@keyframes fxholein{from{transform:scaleX(0)}}
 .fx-paw{position:fixed;width:7px;height:9px;border-radius:50%;background:${INK};opacity:0;z-index:9989;pointer-events:none;
   animation:fxpaw 1.6s forwards}
 @keyframes fxpaw{15%{opacity:.22}100%{opacity:0}}
@@ -377,7 +403,7 @@
     document.body.append(el);
     const bubble = el.querySelector('.fx-bubble'), pupil = el.querySelector('.fx-pupil');
     let pos = { x: 0, y: 0 }, facing = 1, state = 'home', idleTimer, sayTimer, homeTimer;
-    let dwellKey = '', dwellSince = 0;
+    let dwellKey = '', dwellSince = 0, lastAct = Date.now();
 
     const homePos = () => ({ x: 14, y: innerHeight - FOX_H - SEISMO_H + 8 });
 
@@ -423,7 +449,7 @@
 
     function guide() {
       const t = target();
-      if (!t || think.open) return false;
+      if (!t || think.open || state === 'hunting') return false;
       const r = t.getBoundingClientRect();
       if (!visible(t, r)) return false;
       // Sit on top of the target, or just under it when there's no room above.
@@ -449,6 +475,7 @@
       if (state === 'home') return Promise.resolve();
       state = 'home';
       wag(false);
+      el.classList.remove('stalk', 'pounce');
       bubble.classList.remove('show');
       const h = homePos();
       place(h.x, h.y);
@@ -458,7 +485,7 @@
     }
 
     function onIdle() {
-      if (think.open) return;
+      if (think.open || state === 'hunting') return;
       if (guide()) return;
       if (!CFG.talk) return;
       const tp = currentTopic();
@@ -471,6 +498,7 @@
       }
     }
     function resetIdle() {
+      lastAct = Date.now();
       clearTimeout(idleTimer);
       idleTimer = setTimeout(onIdle, CFG.idleMs);
     }
@@ -588,6 +616,7 @@
         const q = tidy(input.value);
         if (!q) return;
         input.value = '';
+        if (/\b(hunt|jag|hase|hasen|rabbit|bunny)/i.test(q)) { close(); hunt(); return; }
         const answer = (CFG.api ? ask(q, CFG.context + pageContext(currentTopic())) : Promise.resolve(null))
           .then(a => ({ text: a || 'My translator glitched. Try again — or write to systems@architect-dna.ch.' }));
         speak(answer);
@@ -622,6 +651,159 @@
       return api;
     })();
 
+    /* Hunt: rabbit pops up on the ground line, fox stalks, chases and pounces. */
+    const groundY = () => innerHeight - SEISMO_H + 2;
+    let huntSeq = 0, rabbit = null, holes = [], lastHunt = 0;
+    const bootAt = Date.now();
+
+    function makeHole(x) {
+      const h = document.createElement('span');
+      h.className = 'fx-hole';
+      h.style.left = `${x}px`;
+      h.style.top = `${groundY() - 5}px`;
+      document.body.append(h);
+      holes.push(h);
+    }
+    function rabbitTo(x, ms, hopping = true) {
+      const r = rabbit;
+      if (!r) return Promise.resolve();
+      r.classList.toggle('flip', x < r.x);
+      r.style.transition = `transform ${ms}ms linear`;
+      r.style.transform = `translate(${x}px,${groundY() - 36}px)`;
+      r.x = x;
+      if (hopping) r.classList.add('hopping');
+      return wait(ms).then(() => r.classList.remove('hopping'));
+    }
+    function foxTo(x, ms, mode) {
+      const y = homePos().y;
+      facing = x < pos.x ? -1 : 1;
+      el.classList.toggle('flip', facing < 0);
+      el.style.transition = `transform ${ms}ms ${mode === 'pounce' ? 'cubic-bezier(.3,0,.4,1)' : 'linear'}`;
+      el.style.transform = `translate(${x}px,${y}px)`;
+      pos = { x, y };
+      el.classList.add(mode);
+      return wait(ms).then(() => el.classList.remove(mode));
+    }
+    function faceRabbit() {
+      if (!rabbit) return;
+      facing = rabbit.x + 24 > pos.x + FOX_W / 2 ? 1 : -1;
+      el.classList.toggle('flip', facing < 0);
+    }
+    function clearHunt() {
+      if (rabbit) { const r = rabbit; rabbit = null; r.style.transition = 'opacity .3s'; r.style.opacity = 0; setTimeout(() => r.remove(), 320); }
+      holes.forEach(h => { h.style.opacity = 0; setTimeout(() => h.remove(), 650); });
+      holes = [];
+    }
+    function endHunt() {
+      clearHunt();
+      el.classList.remove('stalk', 'pounce');
+      if (state === 'hunting') { state = 'returning'; goHome(); }
+    }
+
+    async function hunt() {
+      if (reduce) { say('not today.', 1500); return false; }
+      if (state !== 'home' || think.open || rabbit) return false;
+      state = 'hunting';
+      lastHunt = Date.now();
+      const id = ++huntSeq, alive = () => state === 'hunting' && huntSeq === id && rabbit;
+      const W = innerWidth, minX = 60, maxX = W - 60;
+      let rx = clamp(W * (.45 + Math.random() * .3), 170, maxX);
+
+      rabbit = document.createElement('button');
+      rabbit.type = 'button';
+      rabbit.className = 'fx-rabbit pop';
+      rabbit.setAttribute('aria-label', 'Rabbit — click to help it escape');
+      rabbit.innerHTML = `<svg viewBox="0 0 48 40" aria-hidden="true">
+  <circle cx="9" cy="27" r="3.6" fill="${BG}" stroke="${INK}" stroke-width="2"/>
+  <ellipse cx="22" cy="28" rx="13" ry="8.5" fill="${BG}" stroke="${INK}" stroke-width="2.2"/>
+  <line x1="17" y1="36" x2="27" y2="36" stroke="${INK}" stroke-width="2.2" stroke-linecap="round"/>
+  <g class="fx-ears" fill="${BG}" stroke="${INK}" stroke-width="2" stroke-linejoin="round">
+    <path d="M32 16 C29 5 32 0 35 2 C37 5 36 11 35.5 15"/>
+    <path d="M36.5 15 C38 5 42 2 43.5 4 C44.5 8 41.5 13 39 16.5"/>
+  </g>
+  <circle cx="35" cy="21.5" r="7" fill="${BG}" stroke="${INK}" stroke-width="2.2"/>
+  <circle cx="37.6" cy="20.5" r="1.3" fill="${INK}"/>
+  <circle cx="41.6" cy="22.6" r="1.1" fill="${RUST}"/>
+</svg>`;
+      rabbit.x = rx;
+      rabbit.style.transform = `translate(${rx}px,${groundY() - 36}px)`;
+      document.body.append(rabbit);
+      makeHole(rx + 7);
+      rabbit.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!rabbit) return;
+        const saved = (+local.get('saved') || 0) + 1;
+        local.set('saved', String(saved));
+        const r = rabbit.getBoundingClientRect();
+        burst(r.left + r.width / 2, r.top + r.height / 2, BG, INK);
+        say(`hey! · ${saved} saved`, 2000);
+        huntSeq++;
+        endHunt();
+      });
+      setTimeout(() => rabbit && rabbit.classList.remove('pop'), 460);
+
+      await wait(900);
+      if (!alive()) return endHunt();
+      say('!', 900);
+      el.classList.add('stalk');
+      await foxTo(Math.max(14, rx - 170), 2400, 'stalk');
+      if (!alive()) return endHunt();
+      faceRabbit();
+
+      const hops = 2 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < hops; i++) {
+        rabbit.classList.add('twitch');
+        await wait(420);
+        if (!alive()) return endHunt();
+        rabbit.classList.remove('twitch');
+        let dir = Math.random() < .7 ? 1 : -1;
+        let nx = rx + dir * (110 + Math.random() * 120);
+        if (nx > maxX || nx < minX) { dir = -dir; nx = rx + dir * (110 + Math.random() * 120); }
+        nx = clamp(nx, minX, maxX);
+        const chase = clamp(nx - dir * 110, 8, W - FOX_W - 8);
+        await Promise.all([rabbitTo(nx, 700), wait(150).then(() => foxTo(chase, 750, 'run'))]);
+        rx = nx;
+        if (!alive()) return endHunt();
+        faceRabbit();
+      }
+
+      const escapes = Math.random() < .6;
+      faceRabbit();
+      const landX = clamp(facing > 0 ? rx + 24 - 80 : rx + 24 - 16, 8, W - FOX_W - 8);
+      if (escapes) {
+        makeHole(rx + 7);
+        rabbit.style.transition = 'transform .35s ease-in, opacity .2s .15s';
+        rabbit.style.transform = `translate(${rx}px,${groundY() - 10}px)`;
+        rabbit.style.opacity = 0;
+      }
+      await foxTo(landX, 700, 'pounce');
+      if (state !== 'hunting' || huntSeq !== id) return endHunt();
+      quakeAmt = Math.max(quakeAmt, .3);
+      wake();
+      burst(landX + FOX_W / 2, groundY() - 4, 'rgba(26,26,26,.35)');
+      if (escapes) {
+        say('…?', 1600);
+      } else if (rabbit) {
+        const r = rabbit.getBoundingClientRect();
+        burst(r.left + r.width / 2, r.top + r.height / 2, BG, INK);
+        rabbit.remove();
+        rabbit = null;
+        say('got it!', 1600);
+        wag(true);
+      }
+      await wait(1700);
+      wag(false);
+      if (huntSeq === id) endHunt();
+    }
+
+    // Now and then, when the visitor is idle: at most once every 3 minutes.
+    setInterval(() => {
+      const now = Date.now();
+      if (document.hidden || reduce || now - bootAt < 25000 || now - lastHunt < 180000 || now - lastAct < 6000) return;
+      if (state !== 'home' || think.open || Math.random() < .5) return;
+      hunt();
+    }, 10000);
+
     const hit = document.createElement('button');
     hit.type = 'button';
     hit.className = 'fx-hit';
@@ -649,14 +831,16 @@
     const h = homePos();
     place(h.x, h.y, false);
     resetIdle();
-    return { guide, home: goHome, say, hop, think };
+    return { guide, home: goHome, say, hop, think, hunt };
   }
 
-  function burst(x, y) {
+  function burst(x, y, color = RUST, border = '') {
     for (let i = 0; i < 14; i++) {
       const s = document.createElement('span');
       s.className = 'fx-spark';
       s.style.left = `${x}px`; s.style.top = `${y}px`;
+      s.style.background = color;
+      if (border) s.style.border = `1px solid ${border}`;
       document.body.append(s);
       const a = Math.random() * Math.PI * 2, d = 30 + Math.random() * 50;
       s.animate([
@@ -671,6 +855,7 @@
     guide: () => fox && fox.guide(),
     home: () => fox && fox.home(),
     talk: () => fox && fox.think.toggle(),
-    suggest: () => fox && fox.think.suggest()
+    suggest: () => fox && fox.think.suggest(),
+    hunt: () => fox && fox.hunt()
   };
 })();
