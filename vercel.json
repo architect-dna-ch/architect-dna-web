@@ -4,7 +4,8 @@
   "redirects": [
     { "source": "/game-studio", "destination": "/", "permanent": true },
     { "source": "/games", "destination": "/", "permanent": true },
-    { "source": "/einspruch", "destination": "https://einspruch.architect-dna.ch/fallpruefung", "permanent": false }
+    { "source": "/einspruch", "destination": "https://einspruch.architect-dna.ch/fallpruefung", "permanent": false },
+    { "source": "/freq", "destination": "/void-freq", "permanent": true }
   ],
   "rewrites": [
     { "source": "/api/wg/set", "destination": "/api/wg/set.js" },

@@ -21,7 +21,8 @@
      <script src="/fx/brand-fx.js" defer></script>
 
    Optional config before the script:
-     window.ArchitectFXConfig = { idleMs, dwellMs, fox, talk, seismo, api, context }
+     window.ArchitectFXConfig = { idleMs, dwellMs, fox, talk, seismo, api, context, contextExtra,
+       theme: { ink, accent, bg, field, line, muted, font, mono } }   // theme matches a subpage's look
    API: ArchitectFX.quake(x, y, strength), .guide(), .home(), .talk(), .suggest(), .hunt()
    Respects prefers-reduced-motion (no shaking, no running, no typing animation). */
 (() => {
@@ -31,14 +32,23 @@
     api: '/api/chat', context: DEFAULT_CTX
   }, window.ArchitectFXConfig || {});
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const INK = '#1A1A1A', RUST = '#B5271E', BG = '#FAFAF8';
-  const FONT = "-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif";
-  const MONO = "'SF Mono','Fira Code','Courier New',monospace";
+  if (CFG.contextExtra) CFG.context += '\n\n' + CFG.contextExtra;
+  const THEME = Object.assign({
+    ink: '#1A1A1A', accent: '#B5271E', bg: '#FAFAF8', field: '#fff', line: '#E0E0D8', muted: '#9A9A98',
+    font: "-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif",
+    mono: "'SF Mono','Fira Code','Courier New',monospace"
+  }, CFG.theme || {});
+  const INK = THEME.ink, RUST = THEME.accent, BG = THEME.bg, FONT = THEME.font, MONO = THEME.mono;
+  // '#rrggbb' + alpha → rgba() for tints of the theme colours.
+  const tint = (hex, a) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
+  };
   const FOX_W = 96, FOX_H = 64, SEISMO_H = 28;
 
   const css = `
 .fx-ground{position:fixed;inset:-40px;z-index:-1;pointer-events:none;will-change:transform;
-  background-image:linear-gradient(rgba(26,26,26,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(26,26,26,.055) 1px,transparent 1px);
+  background-image:linear-gradient(${tint(INK, .055)} 1px,transparent 1px),linear-gradient(90deg,${tint(INK, .055)} 1px,transparent 1px);
   background-size:32px 32px}
 .fx-seismo{position:fixed;left:0;right:0;bottom:0;height:${SEISMO_H}px;z-index:9990;pointer-events:none}
 .fx-cracks{position:fixed;inset:0;width:100%;height:100%;z-index:9989;pointer-events:none;overflow:visible}
@@ -79,19 +89,19 @@
 .fx-think::after{width:8px;height:8px;left:72px;bottom:-34px}
 @keyframes fxpop{from{opacity:0;transform:scale(.6)}}
 .fx-t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;
-  font:600 10px/1 ${MONO};letter-spacing:.08em;text-transform:uppercase;color:#9A9A98}
+  font:600 10px/1 ${MONO};letter-spacing:.08em;text-transform:uppercase;color:${THEME.muted}}
 .fx-t-head button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:4px;cursor:pointer}
 .fx-t-head button:hover,.fx-t-head button:focus-visible{color:${INK}}
 .fx-t-raw{margin:0;font:italic 600 15px/1.35 ${MONO};color:${RUST};transition:opacity .3s,font-size .3s}
-.fx-t-raw.done{opacity:.5;font-size:11px;text-decoration:line-through;text-decoration-color:rgba(181,39,30,.45)}
+.fx-t-raw.done{opacity:.5;font-size:11px;text-decoration:line-through;text-decoration-color:${tint(RUST, .45)}}
 .fx-t-out{margin:6px 0 0;max-height:38vh;overflow:auto;white-space:pre-wrap}
 .fx-t-out:empty{display:none}
 .fx-t-cta{display:inline-block;margin-top:10px;padding:7px 11px;border-radius:6px;background:${INK};color:${BG}!important;
   font:600 13px/1 ${FONT};text-decoration:none}
 .fx-t-cta[hidden]{display:none}
-.fx-t-ask{display:flex;gap:6px;margin:10px 0 0;padding-top:10px;border-top:1px solid #E0E0D8}
-.fx-t-ask input{flex:1;min-width:0;padding:8px 10px;border:1px solid #E0E0D8;border-radius:6px;background:#fff;color:${INK};font:13px ${FONT}}
-.fx-t-ask input:focus{outline:2px solid rgba(181,39,30,.35);outline-offset:1px}
+.fx-t-ask{display:flex;gap:6px;margin:10px 0 0;padding-top:10px;border-top:1px solid ${THEME.line}}
+.fx-t-ask input{flex:1;min-width:0;padding:8px 10px;border:1px solid ${THEME.line};border-radius:6px;background:${THEME.field};color:${INK};font:13px ${FONT}}
+.fx-t-ask input:focus{outline:2px solid ${tint(RUST, .35)};outline-offset:1px}
 .fx-t-ask button{padding:0 12px;border:0;border-radius:6px;background:${INK};color:${BG};font:700 14px ${FONT};cursor:pointer}
 .fx-fox.stalk svg{transform:translateY(5px) scaleY(.86)}
 .fx-fox.flip.stalk svg{transform:scaleX(-1) translateY(5px) scaleY(.86)}
@@ -121,7 +131,7 @@
   animation:fxpaw 1.6s forwards}
 @keyframes fxpaw{15%{opacity:.22}100%{opacity:0}}
 .fx-spark{position:fixed;width:6px;height:6px;border-radius:1px;background:${RUST};z-index:9992;pointer-events:none}
-.fx-pull{outline:2px solid rgba(181,39,30,.35)!important;outline-offset:5px}
+.fx-pull{outline:2px solid ${tint(RUST, .35)}!important;outline-offset:5px}
 `;
   const style = document.createElement('style');
   style.textContent = css;
@@ -176,7 +186,7 @@
     const w = innerWidth, mid = SEISMO_H / 2 + 3;
     ctx.clearRect(0, 0, w, SEISMO_H);
     ctx.lineWidth = 1.2;
-    ctx.strokeStyle = quakeAmt > 0.05 ? RUST : 'rgba(26,26,26,.35)';
+    ctx.strokeStyle = quakeAmt > 0.05 ? RUST : tint(INK, .35);
     ctx.beginPath();
     trace.forEach((v, i) => {
       const x = w - (trace.length - 1 - i) * 3, y = mid + v * (SEISMO_H / 2 - 2);
@@ -184,7 +194,7 @@
     });
     ctx.stroke();
     ctx.font = `600 10px ${MONO}`;
-    ctx.fillStyle = quakeAmt > 0.05 ? RUST : 'rgba(26,26,26,.45)';
+    ctx.fillStyle = quakeAmt > 0.05 ? RUST : tint(INK, .45);
     ctx.fillText(label || `SEISMO  M ${(peak * 6).toFixed(1)}`, 12, 11);
   }
 
@@ -780,7 +790,7 @@
       if (state !== 'hunting' || huntSeq !== id) return endHunt();
       quakeAmt = Math.max(quakeAmt, .3);
       wake();
-      burst(landX + FOX_W / 2, groundY() - 4, 'rgba(26,26,26,.35)');
+      burst(landX + FOX_W / 2, groundY() - 4, tint(INK, .35));
       if (escapes) {
         say('…?', 1600);
       } else if (rabbit) {

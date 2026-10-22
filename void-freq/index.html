@@ -51,7 +51,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(241,231,211,0.92);backd
 .header-nav a:hover{color:var(--rust);background:var(--rustD)}
 
 /* ── HERO ── */
-.hero{position:relative;overflow:hidden;padding:80px 24px 64px;background:var(--bg)}
+.hero{position:relative;overflow:hidden;padding:80px 24px 64px;background:transparent}
 .hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
 @media(max-width:700px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}}
 .hero-kicker{font-family:var(--label);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--rust);margin-bottom:20px;display:flex;align-items:center;gap:10px}
@@ -163,7 +163,7 @@ footer{border-top:1px solid var(--border);padding:32px 24px}
 </header>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" data-fx-say="Free in the browser, nothing to install — one click and the sound starts." data-fx-href="https://freq.architect-dna.ch" data-fx-cta="Open the web app →">
   <div class="hero-inner">
     <div>
       <div class="hero-kicker">Focus Studio · Void Cell</div>
@@ -173,7 +173,7 @@ footer{border-top:1px solid var(--border);padding:32px 24px}
         Scientifically designed soundscapes for deep work. Brown noise, binaural beats, lo-fi rhythms and generative drones — synthesized live in your browser, no files, no streaming.
       </p>
       <div class="hero-cta">
-        <a href="https://freq.architect-dna.ch" class="btn-primary">
+        <a href="https://freq.architect-dna.ch" class="btn-primary" data-fx-target data-fx-hint="press play →">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><polygon points="5,2 13,8 5,14" fill="currentColor"/></svg>
           Open Free Web App
         </a>
@@ -194,7 +194,7 @@ footer{border-top:1px solid var(--border);padding:32px 24px}
 </div>
 
 <!-- CHANNELS -->
-<section>
+<section id="channels" data-fx-say="Not sure where to start? Deep Focus — brown noise with a 40 Hz carrier — is the classic for long work sessions." data-fx-href="https://freq.architect-dna.ch" data-fx-cta="Try Deep Focus →">
   <div class="section-label">Table of Channels</div>
   <h2>Five environments. One focus.</h2>
   <p style="color:var(--text2);font-size:15px;margin-top:10px;font-style:italic">Every channel is synthesized in real time using the Web Audio API — no downloads, no buffering.</p>
@@ -250,7 +250,7 @@ footer{border-top:1px solid var(--border);padding:32px 24px}
 <hr class="divider">
 
 <!-- FEATURES -->
-<section>
+<section id="session" data-fx-say="Set a timer, pick a channel, and let it run. Works offline once loaded." data-fx-href="#download" data-fx-cta="Get the iOS app →">
   <div class="section-label">Colophon</div>
   <h2>Built for the session.</h2>
   <div class="features-grid">
@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--border);padding:32px 24px}
 <hr class="divider">
 
 <!-- PRICE -->
-<section id="download">
+<section id="download" data-fx-say="Free on iPhone and the web — no subscription, no in-app purchases.">
   <div class="section-label">Get It</div>
   <div class="price-banner">
     <div class="price-label">iOS App</div>
@@ -404,5 +404,13 @@ if(canvas){
   draw();
 }
 </script>
+<script>
+window.ArchitectFXConfig = {
+  theme: { ink: '#211c14', accent: '#a8402a', bg: '#f1e7d3', field: '#f8f1e3', line: 'rgba(33,28,20,0.14)', muted: 'rgba(33,28,20,0.45)',
+           font: "'Georgia','Iowan Old Style','Times New Roman',serif", mono: "'Georgia',serif" },
+  contextExtra: 'The visitor is on the VOID FREQ page: an ambient sound engine for focus by Void Cell / Architect-DNA. Five channels synthesized live with the Web Audio API (no files, no streaming): Deep Focus (brown noise + 40 Hz gamma carrier) and four others listed on the page. Free on the web at freq.architect-dna.ch and free on iOS (App Store), no account, no ads, no subscription, no in-app purchases.'
+};
+</script>
+<script src="/fx/brand-fx.js" defer></script>
 </body>
 </html>
