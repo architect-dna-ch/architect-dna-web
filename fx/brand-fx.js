@@ -22,7 +22,8 @@
 
    Optional config before the script:
      window.ArchitectFXConfig = { idleMs, dwellMs, fox, talk, seismo, api, context, contextExtra,
-       theme: { ink, accent, bg, field, line, muted, font, mono } }   // theme matches a subpage's look
+       theme: { ink, accent, bg, field, line, muted, font, mono },   // theme matches a subpage's look
+       themeDark: { … } }                                              // overrides when the OS is in dark mode
    API: ArchitectFX.quake(x, y, strength), .guide(), .home(), .talk(), .suggest(), .hunt()
    Respects prefers-reduced-motion (no shaking, no running, no typing animation). */
 (() => {
@@ -37,7 +38,8 @@
     ink: '#1A1A1A', accent: '#B5271E', bg: '#FAFAF8', field: '#fff', line: '#E0E0D8', muted: '#9A9A98',
     font: "-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif",
     mono: "'SF Mono','Fira Code','Courier New',monospace"
-  }, CFG.theme || {});
+  }, CFG.theme || {},
+     CFG.themeDark && matchMedia('(prefers-color-scheme: dark)').matches ? CFG.themeDark : {});
   const INK = THEME.ink, RUST = THEME.accent, BG = THEME.bg, FONT = THEME.font, MONO = THEME.mono;
   // '#rrggbb' + alpha → rgba() for tints of the theme colours.
   const tint = (hex, a) => {

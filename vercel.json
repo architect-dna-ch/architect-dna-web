@@ -1,6 +1,9 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "headers": [
+    { "source": "/home/sw.js", "headers": [{ "key": "Service-Worker-Allowed", "value": "/home" }, { "key": "Cache-Control", "value": "no-cache" }] }
+  ],
   "redirects": [
     { "source": "/game-studio", "destination": "/", "permanent": true },
     { "source": "/games", "destination": "/", "permanent": true },

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC-DNA Home</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="/home/manifest.webmanifest">
+<link rel="icon" href="/home/icon-192.png">
+<link rel="apple-touch-icon" href="/home/icon-192.png">
+<style>
+:root{
+  --bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;
+  --text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;--red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code','Roboto Mono','Courier New',monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#121211;--bg2:#1C1C1A;--border:#2C2C29;--text:#ECEBE6;--text2:#A9A8A2;--text3:#6F6E69;--red:#C9402F}
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{min-height:100dvh;color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;
+  padding:calc(env(safe-area-inset-top) + 28px) 20px calc(env(safe-area-inset-bottom) + 120px)}
+main{max-width:460px;margin:0 auto}
+.label{display:flex;align-items:center;gap:10px;font:700 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}
+.label::before{content:'';width:22px;height:2px;background:var(--red)}
+.label .live{margin-left:auto;display:flex;align-items:center;gap:6px;letter-spacing:.1em}
+.label .live::before{content:'';width:6px;height:6px;border-radius:50%;background:#1a7a3c}
+.clock{margin-top:34px;font-weight:900;font-size:clamp(84px,27vw,120px);line-height:.86;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.clock .colon{color:var(--red)}
+.date{margin-top:12px;font-size:17px;color:var(--text2);letter-spacing:-.01em}
+.greet{margin-top:2px;font-size:17px;font-weight:700;letter-spacing:-.02em}
+
+.card{margin-top:26px;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:14px 14px 12px}
+.card-k{font:700 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.focus{width:100%;border:0;background:transparent;color:var(--text);font:700 20px/1.3 var(--font);letter-spacing:-.02em;outline:none}
+.focus::placeholder{color:var(--text3);font-weight:600}
+
+form.search{margin-top:12px;display:flex;gap:8px}
+.search input{flex:1;min-width:0;height:48px;padding:0 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);font:16px var(--font);outline:none}
+.search input:focus{border-color:var(--red)}
+.search button{width:48px;border:0;border-radius:8px;background:var(--text);color:var(--bg);font:700 18px var(--font)}
+
+.sec{margin-top:26px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);
+  color:var(--text);text-decoration:none;font-size:11.5px;font-weight:600;letter-spacing:-.01em;transition:transform .12s}
+.tile:active{transform:scale(.94)}
+.tile svg{width:24px;height:24px;stroke:var(--text);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tile.accent svg{stroke:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{padding:8px 12px;border:1px solid var(--border);border-radius:20px;background:var(--bg);color:var(--text2);text-decoration:none;font-size:13px;font-weight:600}
+.chip b{color:var(--text)}
+.hint{margin-top:22px;font:11px/1.6 var(--mono);color:var(--text3)}
+</style>
+</head>
+<body>
+<main>
+  <div class="label">Architect · DNA <span class="live" id="net">online</span></div>
+
+  <div class="clock" id="clock" aria-live="off">--<span class="colon">:</span>--</div>
+  <div class="date" id="date"></div>
+  <div class="greet" id="greet"></div>
+
+  <div class="card">
+    <div class="card-k">Heute zählt</div>
+    <input class="focus" id="focus" maxlength="80" autocomplete="off" placeholder="Eine Sache für heute…" aria-label="Fokus für heute">
+  </div>
+
+  <form class="search" action="https://www.google.com/search" method="get" role="search">
+    <input name="q" placeholder="Suchen…" aria-label="Suchen" enterkeyhint="search">
+    <button aria-label="Suchen">→</button>
+  </form>
+
+  <div class="sec" data-fx-say="Shortcuts to your phone apps. Tip: shake the phone for a quake.">
+    <div class="label">Apps</div>
+    <div class="tiles">
+      <a class="tile" href="tel:"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Telefon</a>
+      <a class="tile" href="sms:"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5A8 8 0 1 1 21 12z"/></svg>SMS</a>
+      <a class="tile" href="https://mail.proton.me"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Mail</a>
+      <a class="tile" href="https://calendar.google.com"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>Kalender</a>
+      <a class="tile" href="https://maps.google.com"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Karten</a>
+      <a class="tile" href="intent:#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Kamera</a>
+      <a class="tile" href="https://www.sbb.ch"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="14" rx="3"/><path d="M6 11h12M9 21l1.5-4M15 21l-1.5-4"/><circle cx="9.5" cy="14" r=".6"/><circle cx="14.5" cy="14" r=".6"/></svg>SBB</a>
+      <a class="tile accent" href="https://claude.ai"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg>Claude</a>
+    </div>
+  </div>
+
+  <div class="sec" data-fx-say="Your own projects — one tap away." data-fx-href="https://architect-dna.ch" data-fx-cta="architect-dna.ch →">
+    <div class="label">Projekte</div>
+    <div class="chips">
+      <a class="chip" href="https://freq.architect-dna.ch"><b>VOID FREQ</b> · Fokus</a>
+      <a class="chip" href="https://einspruch.architect-dna.ch"><b>Einspruch</b></a>
+      <a class="chip" href="/lia"><b>LIA</b></a>
+      <a class="chip" href="https://architect-dna-ch.github.io/dora/"><b>DORA</b></a>
+      <a class="chip" href="/cv"><b>CV</b></a>
+      <a class="chip" href="https://github.com/architect-dna-ch"><b>GitHub</b></a>
+      <a class="chip" href="/"><b>architect-dna.ch</b></a>
+    </div>
+  </div>
+
+  <p class="hint">Fuchs antippen zum Fragen · Handy schütteln = Erdbeben</p>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const pad = n => String(n).padStart(2, '0');
+
+  function tick() {
+    const d = new Date(), h = d.getHours();
+    $('clock').innerHTML = `${pad(h)}<span class="colon">:</span>${pad(d.getMinutes())}`;
+    $('date').textContent = `${days[d.getDay()]}, ${d.getDate()}. ${months[d.getMonth()]}`;
+    $('greet').textContent = h < 5 ? 'Gute Nacht, Muharrem.' : h < 11 ? 'Guten Morgen, Muharrem.' : h < 17 ? 'Hallo, Muharrem.' : h < 22 ? 'Guten Abend, Muharrem.' : 'Gute Nacht, Muharrem.';
+    setTimeout(tick, (60 - d.getSeconds()) * 1000 + 50);
+  }
+  tick();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+
+  // Today's focus: kept on this phone only, cleared the next day.
+  const today = new Date().toDateString();
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+  };
+  if (store.get('home:focus-day') === today) $('focus').value = store.get('home:focus') || '';
+  $('focus').addEventListener('input', e => { store.set('home:focus', e.target.value); store.set('home:focus-day', today); });
+
+  const net = () => { $('net').textContent = navigator.onLine ? 'online' : 'offline'; };
+  addEventListener('online', net); addEventListener('offline', net); net();
+
+  // Shake the phone → earthquake (ArchitectFX from /fx/brand-fx.js).
+  let last = 0;
+  addEventListener('devicemotion', e => {
+    const a = e.acceleration || {};
+    const m = Math.hypot(a.x || 0, a.y || 0, a.z || 0);
+    if (m > 18 && Date.now() - last > 2500 && window.ArchitectFX) {
+      last = Date.now();
+      ArchitectFX.quake(innerWidth / 2, innerHeight * .4, Math.min(1, m / 30));
+    }
+  });
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/home/sw.js', { scope: '/home' }).catch(() => {});
+})();
+</script>
+<script>
+window.ArchitectFXConfig = {
+  idleMs: 6000,
+  themeDark: { ink: '#ECEBE6', accent: '#C9402F', bg: '#121211', field: '#1C1C1A', line: '#2C2C29', muted: '#6F6E69' },
+  contextExtra: 'The visitor is Muharrem himself, using this page as the home screen of his Pixel 9a phone. Be brief, friendly and practical, like a personal assistant.'
+};
+</script>
+<script src="/fx/brand-fx.js" defer></script>
+</body>
+</html>
