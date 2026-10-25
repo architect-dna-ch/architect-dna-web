@@ -15,6 +15,7 @@
     { "source": "/api/wg/get", "destination": "/api/wg/get.js" },
     { "source": "/api/reach", "destination": "/api/reach/index.js" },
     { "source": "/api/brief", "destination": "/api/brief/index.js" },
+    { "source": "/api/diag", "destination": "/api/diag/index.js" },
     { "source": "/api/concepts/get", "destination": "/api/concepts/get.js" },
     { "source": "/api/concepts/save", "destination": "/api/concepts/save.js" },
     { "source": "/", "has": [{"type": "host", "value": "cv.architect-dna.ch"}], "destination": "/cv/index.html" },
