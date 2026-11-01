@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cut">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1d3fd6">
+<title>Français Test 2</title>
+<style>
+:root{
+  --bg:#f6f4ee; --card:#ffffff; --ink:#15161a; --ink2:#55575f; --ink3:#9a9ca3;
+  --line:#e3e0d6; --blue:#1d3fd6; --blue2:#e8edff; --red:#e0312b; --red2:#fde9e7;
+  --green:#14a05a; --green2:#e3f6ec; --amber:#d98a00; --amber2:#fff3d9;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#101116;--card:#191b22;--ink:#f1f1f3;--ink2:#a7a9b2;--ink3:#6c6f79;--line:#2a2d36;
+  --blue:#6f8bff;--blue2:#1d2340;--red:#ff5a52;--red2:#3a1a19;--green:#3ccf80;--green2:#123224;--amber:#ffb43c;--amber2:#3a2c10}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 96px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .in{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{font-weight:800;letter-spacing:-.03em;font-size:17px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.flag{display:inline-flex;width:20px;height:14px;border-radius:3px;overflow:hidden}
+.flag i{flex:1}.flag i:nth-child(1){background:#1d3fd6}.flag i:nth-child(2){background:#fff}.flag i:nth-child(3){background:#e0312b}
+.stats{margin-left:auto;display:flex;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:700;white-space:nowrap}
+.pill.combo{background:var(--amber2);border-color:transparent;color:var(--amber);display:none}
+.pill.combo.on{display:inline-flex;animation:pop .25s}
+.lvlbar{height:3px;background:var(--line)}
+.lvlbar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--red));width:0;transition:width .5s}
+
+/* home */
+.hero{padding:28px 0 8px}
+.hero h1{font-size:clamp(34px,8vw,54px);line-height:.95;letter-spacing:-.05em;margin:0 0 10px;font-weight:850}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero h1 b{color:var(--red)}
+.hero p{margin:0;color:var(--ink2);font-size:15px;line-height:1.5}
+.dash{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.box .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);font-weight:700}
+.box .v{font-size:26px;font-weight:850;letter-spacing:-.03em;margin-top:4px}
+.box .s{font-size:12px;color:var(--ink2);margin-top:2px}
+.goal{display:flex;align-items:center;gap:14px}
+.ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;background:conic-gradient(var(--green) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center}
+.ring span{width:44px;height:44px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:12px;font-weight:800}
+.countdown input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--bg);color:var(--ink);margin-top:6px;width:100%}
+
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin:28px 0 10px;font-weight:800}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:6px;transition:transform .12s,border-color .12s;position:relative;overflow:hidden}
+.mode:hover{border-color:var(--blue);transform:translateY(-2px)}
+.mode:active{transform:scale(.98)}
+.mode .ic{font-size:26px}
+.mode .t{font-weight:800;font-size:16px;letter-spacing:-.02em}
+.mode .d{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.mode.big{grid-column:1/-1;background:linear-gradient(120deg,var(--blue),#4b2bd6 60%,var(--red));color:#fff;border:0}
+.mode.big .d{color:rgba(255,255,255,.85)}
+.mode .tag{position:absolute;top:12px;right:12px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:var(--red2);color:var(--red)}
+.mode.big .tag{background:rgba(255,255,255,.2);color:#fff}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:650}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.secs{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;text-align:left;width:100%}
+.sec .n{font-weight:700;font-size:14px}
+.sec .n small{color:var(--ink3);font-weight:600;margin-left:4px}
+.sec .c{font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:9px;transition:width .4s}
+
+/* play */
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink2);font-weight:650;padding:16px 0 4px}
+.phead{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.phead .ttl{font-weight:800;font-size:18px;letter-spacing:-.02em}
+.phead .cnt{margin-left:auto;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:700}
+.prog{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:18px}
+.prog i{display:block;height:100%;width:0;background:var(--blue);border-radius:9px;transition:width .3s}
+.q{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px}
+.q .lab{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:800;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.q .lab .sp{margin-left:auto}
+.q .prompt{font-size:clamp(22px,5.4vw,30px);font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.q .prompt.sent{font-size:clamp(18px,4.6vw,23px);font-weight:650;letter-spacing:-.01em;line-height:1.4}
+.q .prompt .gap{display:inline-block;min-width:64px;border-bottom:3px solid var(--blue);color:var(--blue);text-align:center;padding:0 4px}
+.q .hint{color:var(--ink2);font-size:14px;margin-top:6px}
+.opts{display:grid;gap:8px;margin-top:18px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;font-size:16px;font-weight:650;display:flex;gap:10px;align-items:center;transition:.12s}
+.opt:hover:not(:disabled){border-color:var(--blue)}
+.opt .kb{font-size:11px;font-family:var(--mono);color:var(--ink3);border:1px solid var(--line);border-radius:5px;padding:1px 5px;flex:none}
+.opt.ok{border-color:var(--green);background:var(--green2)}
+.opt.bad{border-color:var(--red);background:var(--red2);animation:shake .35s}
+.opt:disabled{cursor:default}
+.inp{width:100%;margin-top:18px;font:inherit;font-size:20px;font-weight:650;padding:14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);outline:none}
+.inp:focus{border-color:var(--blue)}
+.inp.ok{border-color:var(--green);background:var(--green2)}
+.inp.bad{border-color:var(--red);background:var(--red2);animation:shake .35s}
+.inp.near{border-color:var(--amber);background:var(--amber2)}
+.acc{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.acc button{min-width:34px;padding:6px 0;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-weight:700;font-size:15px}
+.row{display:flex;gap:8px;margin-top:14px}
+.btn{flex:1;padding:14px;border-radius:12px;font-weight:800;font-size:15px;background:var(--blue);color:#fff;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--ink2);border:1px solid var(--line);flex:0 0 auto;padding:14px 16px}
+.btn.red{background:var(--red)}
+.btn.green{background:var(--green)}
+.fb{margin-top:14px;border-radius:14px;padding:14px;display:none;font-size:14.5px;line-height:1.5}
+.fb.on{display:block;animation:fade .2s}
+.fb.ok{background:var(--green2);color:var(--ink)}
+.fb.bad{background:var(--red2)}
+.fb.near{background:var(--amber2)}
+.fb .h{font-weight:850;font-size:16px;margin-bottom:2px}
+.fb.ok .h{color:var(--green)}.fb.bad .h{color:var(--red)}.fb.near .h{color:var(--amber)}
+.fb .sol{font-weight:800;font-size:17px}
+.fb .why{color:var(--ink2);margin-top:6px}
+.xpfly{position:fixed;pointer-events:none;font-weight:900;color:var(--green);font-size:20px;z-index:60;animation:fly 1s forwards}
+
+/* flashcards */
+.fc{perspective:1200px;margin-top:4px}
+.fcin{position:relative;height:280px;transition:transform .45s cubic-bezier(.2,.7,.3,1);transform-style:preserve-3d;cursor:pointer}
+.fc.flip .fcin{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:20px;background:var(--card);border:1px solid var(--line);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.face.b{transform:rotateY(180deg);background:linear-gradient(160deg,var(--blue2),var(--card))}
+.face .w{font-size:clamp(26px,7vw,40px);font-weight:850;letter-spacing:-.03em;line-height:1.15}
+.face .m{font-size:13px;color:var(--ink3);margin-top:10px;font-weight:600}
+.face .sec2{position:absolute;top:14px;left:16px;font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.06em}
+.face .bx{position:absolute;top:14px;right:16px;display:flex;gap:3px}
+.face .bx i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.face .bx i.f{background:var(--green)}
+.spk{width:40px;height:40px;border-radius:50%;background:var(--bg);border:1px solid var(--line);font-size:18px;display:inline-grid;place-items:center;margin-top:14px}
+.small{font-size:12.5px;color:var(--ink3);text-align:center;margin-top:10px}
+
+/* theory */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:6px 0 14px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.th{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 18px;line-height:1.55;font-size:15px}
+.th h3{margin:0 0 8px;font-size:22px;letter-spacing:-.03em}
+.th h4{margin:20px 0 6px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
+.th p{margin:6px 0}
+.th table{width:100%;border-collapse:collapse;font-size:14.5px;margin:6px 0}
+.th td,.th th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.th th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)}
+.th .ex{background:var(--bg);border-left:3px solid var(--blue);padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-size:14.5px}
+.th .ex.r{border-color:var(--red)}
+.th .ex.g{border-color:var(--green)}
+.th b.i{color:var(--blue)}.th b.p{color:var(--red)}.th b.a{color:var(--green)}
+.th .tip{background:var(--amber2);border-radius:10px;padding:10px 12px;margin:12px 0;font-size:14px}
+.th ul{padding-left:20px;margin:6px 0}
+.th li{margin:3px 0}
+.th .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.th .col{border-radius:12px;padding:12px;font-size:14px}
+.th .col.i{background:var(--blue2)}.th .col.p{background:var(--red2)}
+.th .col strong{display:block;margin-bottom:4px}
+
+/* results */
+.res{text-align:center;padding:26px 0 0}
+.res .big{font-size:72px;font-weight:900;letter-spacing:-.05em;line-height:1}
+.res .note{display:inline-block;margin-top:12px;font-size:15px;font-weight:800;padding:6px 14px;border-radius:999px;background:var(--blue2);color:var(--blue)}
+.res .msg{font-size:20px;font-weight:800;margin-top:14px;letter-spacing:-.02em}
+.res .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.miss{text-align:left;margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.miss div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.miss .y{color:var(--red);text-decoration:line-through;margin-right:6px}
+.miss .c{color:var(--green);font-weight:800}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:750;z-index:70;transition:transform .35s;max-width:90vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:80}
+
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes fly{to{transform:translateY(-60px);opacity:0}}
+@media (max-width:420px){.opts.two{grid-template-columns:1fr}.th .cols{grid-template-columns:1fr}.brand .full{display:none}}
+</style>
+</head>
+<body>
+<canvas id="cf"></canvas>
+<div class="top">
+  <div class="in">
+    <div class="brand"><span class="flag"><i></i><i></i><i></i></span><span>Test 2</span><span class="full" style="color:var(--ink3);font-weight:650">· Français</span></div>
+    <div class="stats">
+      <span class="pill combo" id="combo">🔥 x1</span>
+      <span class="pill" title="Tage in Folge" id="streak">📅 0</span>
+      <span class="pill" title="Level" id="lvl">⭐ 1</span>
+      <button class="pill" id="snd" title="Ton an/aus">🔊</button>
+    </div>
+  </div>
+  <div class="lvlbar"><i id="lvlbar"></i></div>
+</div>
+
+<div class="wrap">
+
+<!-- HOME -->
+<section class="view on" id="v-home">
+  <div class="hero">
+    <h1>Allez, <em>on y</em> <b>va&nbsp;!</b></h1>
+    <p>Cornelsen Kapitel 5 <b>Verpflegung</b> + 6 <b>Einkaufen</b> · Grammatik: <b>Imparfait / Passé composé</b> + <b>Accord du participe passé</b>.</p>
+  </div>
+  <div class="dash">
+    <div class="box goal"><div class="ring" id="ring"><span id="ringv">0%</span></div><div><div class="k">Tagesziel</div><div class="s" id="goalTxt">0 / 200 XP</div><div class="s" id="xpTot"></div></div></div>
+    <div class="box countdown"><div class="k">Test in</div><div class="v" id="cdV">–</div><input type="date" id="testDate" aria-label="Testdatum"></div>
+  </div>
+
+  <h2>Trainieren</h2>
+  <div class="modes">
+    <button class="mode big" data-go="exam"><span class="tag">Simulation</span><span class="ic">📝</span><span class="t">Probetest</span><span class="d">30 Punkte · Vokabeln + Grammatik gemischt · Note 1–6 am Schluss</span></button>
+    <button class="mode" data-go="cards"><span class="ic">🃏</span><span class="t">Karteikarten</span><span class="d">Umdrehen, anhören, einordnen. Lernkartei mit 5 Fächern.</span></button>
+    <button class="mode" data-go="vquiz"><span class="ic">⚡️</span><span class="t">Vokabel-Sprint</span><span class="d">15 Fragen: Multiple Choice + Eintippen. Schwache Wörter zuerst.</span></button>
+    <button class="mode" data-go="theory"><span class="ic">📘</span><span class="t">Grammatik-Spick</span><span class="d">Alle Regeln kompakt: Bildung, Gebrauch, Accord.</span></button>
+    <button class="mode" data-go="signal"><span class="ic">🚦</span><span class="t">Signalwörter</span><span class="d">«autrefois» oder «soudain»? Blitzschnell zuordnen.</span></button>
+    <button class="mode" data-go="choice"><span class="ic">⚖️</span><span class="t">Imparfait oder PC?</span><span class="d">Die richtige Zeit im Satz wählen – mit Begründung.</span></button>
+    <button class="mode" data-go="conj"><span class="ic">✍️</span><span class="t">Konjugieren</span><span class="d">Formen selbst eintippen. Mit être-Angleichung.</span></button>
+    <button class="mode" data-go="accord"><span class="ic">🎯</span><span class="t">Accord-Jagd</span><span class="d">-e, -s, -es oder nichts? Die Endung des Participe.</span></button>
+  </div>
+
+  <h2>Vokabel-Auswahl</h2>
+  <div class="chips" id="filters"></div>
+  <div class="secs" id="secs"></div>
+  <p class="small">Grün = sitzt (3× hintereinander gewusst). Fortschritt wird auf diesem Gerät gespeichert.</p>
+</section>
+
+<!-- PLAY -->
+<section class="view" id="v-play">
+  <button class="back" data-home>← Zurück</button>
+  <div class="phead"><span class="ttl" id="pTitle"></span><span class="cnt" id="pCnt"></span></div>
+  <div class="prog"><i id="pBar"></i></div>
+  <div id="qbox"></div>
+</section>
+
+<!-- CARDS -->
+<section class="view" id="v-cards">
+  <button class="back" data-home>← Zurück</button>
+  <div class="phead"><span class="ttl">Karteikarten</span><span class="cnt" id="cCnt"></span></div>
+  <div class="chips" style="margin-bottom:12px"><button class="chip on" data-dir="de">DE → FR</button><button class="chip" data-dir="fr">FR → DE</button></div>
+  <div class="fc" id="fc"><div class="fcin"><div class="face f" id="fFront"></div><div class="face b" id="fBack"></div></div></div>
+  <div class="row"><button class="btn red" id="cAgain">Nochmal ✗</button><button class="btn green" id="cKnow">Gewusst ✓</button></div>
+  <p class="small">Tippen = umdrehen · Tastatur: Leertaste, ← nochmal, → gewusst</p>
+</section>
+
+<!-- THEORY -->
+<section class="view" id="v-theory">
+  <button class="back" data-home>← Zurück</button>
+  <div class="tabs" id="tTabs"></div>
+  <div class="th" id="tBody"></div>
+</section>
+
+<!-- RESULT -->
+<section class="view" id="v-res">
+  <div class="res" id="resBox"></div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   VOKABELN — Cornelsen Kap. 5 + 6
+   Format: französisch | deutsch | Notiz (Genus bei l', Plural)
+   ========================================================= */
+const SECTIONS = {
+  '5.01G':['5.01','Lebensmittel','Grund'], '5.01A':['5.01','Lebensmittel','Aufbau'],
+  '5.02G':['5.02','Essen und Trinken','Grund'], '5.02A':['5.02','Essen und Trinken','Aufbau'],
+  '6.01G':['6.01','Geschäfte','Grund'], '6.01A':['6.01','Geschäfte','Aufbau'],
+  '6.02G':['6.02','Preise und Geldverkehr','Grund'], '6.02A':['6.02','Preise und Geldverkehr','Aufbau'],
+  '6.03G':['6.03','Kleidung und Accessoires','Grund'], '6.03A':['6.03','Kleidung und Accessoires','Aufbau']
+};
+const RAW = `
+#5.01G
+le beurre|Butter
+le bœuf|Rind
+la boîte|Büchse, Dose
+le café|Kaffee
+la cerise|Kirsche
+le chocolat|Schokolade
+la compote|Kompott
+le fromage|Käse
+le fruit|Frucht, Obst
+la glace|Eis (Glace)
+le lait|Milch
+le légume|Gemüse
+la noix|Nuss, Walnuss
+l'orange|Orange|f
+la pâte|Teig
+la poire|Birne
+le poivre|Pfeffer
+le porc|Schwein(efleisch)
+le poulet|Huhn, Poulet
+la saucisse|Würstchen
+le vin|Wein
+le yaourt|Joghurt
+#5.01A
+l'alcool|Alkohol|m
+alimentaire|Ernährungs-, Lebensmittel-
+l'alimentation|Ernährung|f
+la crème|Sahne, Rahm
+l'huile|Öl|f
+laitier, laitière|Milch-
+le miel|Honig
+la nourriture|Nahrung
+l'œuf|Ei|m
+le pain|Brot
+la pomme|Apfel
+le riz|Reis
+le sel|Salz
+le sirop|Sirup
+le sucre|Zucker
+le thé|Tee
+la viande|Fleisch
+#5.02G
+l'addition|Rechnung (im Restaurant)|f
+la baguette|Baguette
+la bière|Bier
+le bistrot|Bistro, Kneipe
+boire|trinken
+la boisson|Getränk
+bon, bonne|gut
+le bonbon|Bonbon
+la casserole|Topf
+la confiture|Marmelade, Konfitüre
+conserver|konservieren, aufbewahren
+couper|schneiden
+le couvert|Besteck
+la cuillère|Löffel
+cuire|kochen, braten
+la faim|Hunger
+la fourchette|Gabel
+le gâteau|Kuchen
+manger|essen
+le menu|Menü, Speisekarte
+la part|Teil, Stück
+la poêle|Pfanne
+le pourboire|Trinkgeld
+préparer|zubereiten
+le régime|Diät
+remplir|füllen
+salé, salée|salzig, gesalzen
+la serveuse|Kellnerin, Serviertochter
+la soupe|Suppe
+sucré, sucrée|süss, gesüsst
+la tarte|Kuchen, Torte, Wähe
+la tartine|Brot mit Aufstrich
+la tranche|Scheibe
+la vaisselle|Geschirr
+le verre|Glas
+verser|eingiessen, hineinschütten
+#5.02A
+alimenter|ernähren
+apprêter|vorbereiten
+l'assiette|Teller|f
+avaler|schlucken, verschlingen
+le bar|Bar, Kneipe
+la bouteille|Flasche
+la coupe|Schale
+le couteau|Messer
+le déjeuner|Mittagessen
+le dîner|Abendessen
+emplir|füllen
+figer|fest werden, erstarren
+fondre|schmelzen
+la fraîcheur|Frische
+frais, fraîche|frisch, kühl
+la garde|Lagerung
+goûter|kosten, probieren
+gras, grasse|fett, fettig
+liquide|flüssig
+nourrir|ernähren
+le plateau|Tablett
+la préparation|Zubereitung
+pressé, pressée|(aus)gepresst
+la recette|Rezept
+rempli, remplie|gefüllt
+le repas|Mahlzeit
+le restaurant|Restaurant
+la soif|Durst
+la tasse|Tasse
+#6.01G
+acheter|kaufen
+l'affaire|Geschäft, Angelegenheit|f
+le client, la cliente|Kunde, Kundin
+commander|bestellen
+le commerce|Handel
+commercial, commerciale|Handels-
+les courses|Einkäufe|f pl
+livrer|liefern
+le magasin|Laden, Geschäft
+la marchandise|Ware
+neuf, neuve|neu (brandneu)
+nouveau, nouvel, nouvelle|neu (anders, neu dazugekommen)
+ouvert, ouverte|offen, geöffnet
+le produit|Produkt
+la qualité|Qualität
+la reprise|Inzahlungnahme
+la réserve|Vorrat, Reserve
+l'usage|Gebrauch|m
+vendre|verkaufen
+la vente|Verkauf
+#6.01A
+l'achat|Kauf|m
+la boutique|Laden, Boutique
+la caisse|Kasse
+la clientèle|Kundschaft
+la commande|Bestellung
+le comptoir|Theke, Ladentisch
+le consommateur, la consommatrice|Verbraucher/in, Konsument/in
+le dépôt|Warenlager
+distribuer|verteilen
+écouler|absetzen, in Umlauf bringen
+l'étiquette|Preisschild, Etikette|f
+fermé, fermée|geschlossen
+la garantie|Garantie
+garantir|garantieren
+l'inventaire|Inventur, Inventar|m
+la livraison|Lieferung
+l'ouverture|Öffnung|f
+le paquet|Paket
+#6.02G
+l'action|Aktie|f
+l'argent|Geld|m
+augmenter|erhöhen, steigen
+la banque|Bank
+le bénéfice|Profit, Gewinn
+le budget|Budget
+céder|veräussern, übertragen
+le cent|Cent
+le centime|Centime, Rappen
+cher, chère|teuer
+le compte|Konto
+le coût|Kosten
+coûter|kosten (Preis)
+le crédit|Kredit
+la dépense|Ausgabe
+la dette|Schuld
+le dollar|Dollar
+dû, due|schuldig, geschuldet
+économiser|sparen
+élevé, élevée|hoch
+l'euro|Euro|m
+la facture|Rechnung (Faktura)
+la finance|Finanzen
+financier, financière|finanziell
+la fortune|Vermögen
+les frais|Kosten, Spesen|m pl
+le franc|Franken, Franc
+gratuit, gratuite|kostenlos, gratis
+le liquide|Bargeld
+le loyer|Miete
+le montant|Betrag
+le paiement|Bezahlung
+pauvre|arm
+payer|bezahlen
+la pièce|Münze
+le prix|Preis
+le profit|Profit
+le règlement|Begleichung, Regelung
+le revenu|Einkommen
+riche|reich
+la richesse|Reichtum
+la valeur|Wert
+valoir|wert sein
+#6.02A
+la carte bancaire|Kreditkarte, Bankkarte
+coûteux, coûteuse|kostspielig
+dépenser|ausgeben
+en espèces|bar (bezahlen)
+épargner|sparen
+le financement|Finanzierung
+fiscal, fiscale|Steuer-
+le gain|Gewinn
+généreux, généreuse|grosszügig
+inclure|beifügen, miteinbeziehen
+modeste|bescheiden
+monétaire|Geld-, Währungs-
+la monnaie|Kleingeld; Währung
+la promotion|Sonderangebot, Aktion
+réduit, réduite|reduziert
+le solde|Ausverkauf
+la subvention|Subvention
+le tarif|Preis, Tarif
+la taxe|Steuer, Abgabe
+#6.03G
+attacher|zusammenbinden, befestigen
+la bourse|Geldbörse, Portemonnaie
+la chaussette|Socke
+chic|schick
+essayer|versuchen, anprobieren
+la mode|Mode
+la montre|Uhr (Armbanduhr)
+le panier|Korb
+le parapluie|Regenschirm
+la perle|Perle
+la poche|Tasche (an Kleidung)
+précieux, précieuse|kostbar, wertvoll
+la robe|Kleid
+le style|Stil
+le tissu|Stoff
+la veste|Jacke
+le vêtement|Kleidung(sstück)
+#6.03A
+l'accessoire|Accessoire|m
+l'ampleur|Weite|f
+le bijou|Schmuckstück
+le bouton|Knopf
+la canne|Spazierstock
+la ceinture|Gürtel
+la chaîne|Kette
+le chapeau|Hut
+la chaussure|Schuh
+la chemise|Hemd
+le col|Kragen
+le corsage|Bluse
+le costume|Anzug
+la couverture|Decke
+déchirer|zerreissen
+la dentelle|Spitze (Stoff)
+dépassé, dépassée|nicht mehr Mode, veraltet
+échanger|umtauschen, austauschen
+l'esthétique|Ästhetik|f
+filer|spinnen
+le gant|Handschuh
+habiller|anziehen, kleiden
+la jupe|Rock
+la laine|Wolle
+les lunettes|Brille|f pl
+la manche|Ärmel
+le manteau|Mantel
+le masque|Maske
+le mécanisme|Mechanismus
+le nylon|Nylon
+ôter|ausziehen, abnehmen
+le pantalon|Hose
+le parfum|Parfüm
+revêtir|anziehen (feierlich)
+le rubis|Rubin
+le sac|Tasche (Handtasche)
+la soie|Seide
+la teinture|Färben, Färbung
+la tenue|Kleidung, Outfit
+textile|textil, Textil-
+le trou|Loch
+usé, usée|abgenutzt, gebraucht
+user|abnutzen, gebrauchen
+le velours|Samt
+vêtu, vêtue|bekleidet
+`;
+const WORDS = [];
+(function parse(){
+  let sec=null;
+  RAW.trim().split('\n').forEach(l=>{
+    l=l.trim(); if(!l) return;
+    if(l[0]==='#'){sec=l.slice(1);return}
+    const [fr,de,note]=l.split('|');
+    WORDS.push({id:sec+':'+fr,fr,de,note:note||'',sec});
+  });
+})();
+
+/* =========================================================
+   GRAMMATIK-DATEN
+   ========================================================= */
+// Imparfait oder Passé composé? [Satz mit ___, Infinitiv, Imparfait, PC, richtig(0=imp,1=pc), Begründung]
+const CHOICE = [
+ ["Autrefois, ma grand-mère ___ de la confiture tous les étés.","faire","faisait","a fait",0,"<b>autrefois</b> + <b>tous les étés</b> = Gewohnheit in der Vergangenheit → Imparfait."],
+ ["Hier soir, nous ___ dans un petit bistrot.","manger","mangions","avons mangé",1,"<b>hier soir</b> = einmalige, abgeschlossene Handlung → Passé composé."],
+ ["Il ___ beau, alors nous avons mangé sur la terrasse.","faire","faisait","a fait",0,"Wetter = Beschreibung / Hintergrund → Imparfait."],
+ ["Je préparais la soupe quand le téléphone ___.","sonner","sonnait","a sonné",1,"Eine neue Handlung <b>unterbricht</b> die laufende (préparais) → Passé composé."],
+ ["Pendant que le serveur ___ le vin, Pierre regardait le menu.","verser","versait","a versé",0,"<b>pendant que</b> = gleichzeitig laufende Handlung → Imparfait."],
+ ["Soudain, Aurélie ___ une assiette.","casser","cassait","a cassé",1,"<b>soudain</b> = plötzliches Ereignis → Passé composé."],
+ ["Quand j'étais petit, je ___ un chocolat chaud chaque matin.","boire","buvais","ai bu",0,"<b>chaque matin</b> = Gewohnheit → Imparfait."],
+ ["Ce matin, j'___ une baguette et deux croissants.","acheter","achetais","ai acheté",1,"<b>ce matin</b>, einmalige Handlung, abgeschlossen → Passé composé."],
+ ["Le magasin ___ fermé, alors nous sommes rentrés.","être","était","a été",0,"Zustand / Situation (der Laden war zu) → Imparfait."],
+ ["Elle ___ faim, donc elle a mangé un sandwich.","avoir","avait","a eu",0,"Gefühl / Zustand (Hunger haben) → Imparfait."],
+ ["Samedi dernier, Sophie ___ trois robes.","essayer","essayait","a essayé",1,"<b>samedi dernier</b> = bestimmter, abgeschlossener Zeitpunkt → Passé composé."],
+ ["D'habitude, nous ___ les courses le samedi.","faire","faisions","avons fait",0,"<b>d'habitude</b> + <b>le samedi</b> (= jeden Samstag) → Imparfait."],
+ ["Un jour, mon oncle ___ son magasin.","vendre","vendait","a vendu",1,"<b>un jour</b> = ein bestimmtes Ereignis → Passé composé."],
+ ["La boulangère ___ très gentille et elle souriait toujours.","être","était","a été",0,"Beschreibung einer Person → Imparfait."],
+ ["Tout à coup, la serveuse ___ tomber le plateau.","laisser","laissait","a laissé",1,"<b>tout à coup</b> = plötzlich → Passé composé."],
+ ["Il ___ quand je suis sorti du supermarché.","pleuvoir","pleuvait","a plu",0,"Hintergrund / Wetter, während etwas passiert → Imparfait."],
+ ["J'___ l'addition, puis nous sommes partis.","payer","payais","ai payé",1,"Handlungskette (zuerst …, <b>puis</b> …) → Passé composé."],
+ ["En 2010, une baguette ___ environ un euro.","coûter","coûtait","a coûté",0,"Allgemeiner Zustand damals (Preis) → Imparfait."],
+ ["Mes parents ___ pendant trois ans pour acheter une voiture.","économiser","économisaient","ont économisé",1,"Klar begrenzte Dauer (<b>pendant trois ans</b>), abgeschlossen → Passé composé. Fiese Falle!"],
+ ["Quand nous sommes arrivés, le restaurant ___ plein.","être","était","a été",0,"Beschreibung der Situation (der Rahmen) → Imparfait."],
+ ["Il ___ son manteau et il est sorti.","mettre","mettait","a mis",1,"Aufeinanderfolgende Handlungen → Passé composé."],
+ ["Hier, le vendeur nous ___ une bonne reprise pour notre voiture.","proposer","proposait","a proposé",1,"<b>hier</b>, einmalig → Passé composé."],
+ ["Quand j'avais quinze ans, je ne ___ que des jeans.","porter","portais","ai porté",0,"Gewohnheit in einer Lebensphase → Imparfait."],
+ ["Il était midi et tout le monde ___ soif.","avoir","avait","a eu",0,"Zustand (Durst haben) + Uhrzeit-Beschreibung → Imparfait."],
+ ["L'année dernière, ma mère ___ un gâteau au chocolat pour mon anniversaire.","faire","faisait","a fait",1,"<b>l'année dernière</b>, ein bestimmtes Ereignis → Passé composé."],
+ ["Chaque dimanche, mon père ___ le repas.","préparer","préparait","a préparé",0,"<b>chaque dimanche</b> = Gewohnheit → Imparfait."],
+ ["Nous ___ quand les invités sont arrivés.","dîner","dînions","avons dîné",0,"Laufende Handlung, die unterbrochen wird → Imparfait."],
+ ["Elle ___ sa montre au marché.","perdre","perdait","a perdu",1,"Einmaliges Ereignis → Passé composé."],
+ ["Avant, les femmes ___ la laine des moutons.","filer","filaient","ont filé",0,"<b>avant</b> (früher) = Gewohnheit / Zustand → Imparfait."],
+ ["J'ai ouvert le frigo : il n'y ___ plus de lait !","avoir","avait","a eu",0,"Beschreibung dessen, was man vorfindet → Imparfait."],
+ ["D'abord, il a coupé la viande, ensuite il ___ la sauce.","préparer","préparait","a préparé",1,"Handlungskette (<b>d'abord … ensuite</b>) → Passé composé."],
+ ["Lundi, j'___ un nouveau pantalon.","acheter","achetais","ai acheté",1,"<b>lundi</b> (ohne Artikel) = an <i>diesem</i> Montag → Passé composé. <b>le lundi</b> wäre «jeden Montag»."]
+];
+
+// Signalwörter [Wort, 0=Imparfait, 1=PC, Erklärung]
+const SIGNAL = [
+ ["autrefois",0,"früher (Gewohnheit / Zustand)"],["d'habitude",0,"gewöhnlich"],["tous les jours",0,"jeden Tag"],
+ ["chaque matin",0,"jeden Morgen"],["souvent",0,"oft"],["toujours",0,"immer (wiederholt)"],
+ ["pendant que",0,"während (gleichzeitig)"],["quand j'étais petit(e)",0,"als ich klein war"],["le samedi",0,"jeden Samstag"],
+ ["en général",0,"im Allgemeinen"],["avant",0,"früher"],["à cette époque",0,"zu jener Zeit"],
+ ["hier",1,"gestern"],["soudain",1,"plötzlich"],["tout à coup",1,"auf einmal"],["un jour",1,"eines Tages"],
+ ["ce matin",1,"heute Morgen"],["l'année dernière",1,"letztes Jahr"],["samedi dernier",1,"letzten Samstag"],
+ ["d'abord … puis … ensuite",1,"zuerst … dann … danach (Handlungskette)"],["une fois",1,"einmal"],
+ ["pendant deux heures",1,"zwei Stunden lang (begrenzte Dauer)"],["il y a trois jours",1,"vor drei Tagen"],["samedi",1,"(an diesem) Samstag"]
+];
+
+// Accord: [Satz mit ___ an der Endung, richtige Endung, Begründung]
+const ACCORD = [
+ ["Elle est allé___ au marché.","e","<b>être</b> → Angleichung an das Subjekt <i>elle</i> (f. sg.)."],
+ ["Ils sont parti___ sans payer.","s","<b>être</b> → Subjekt <i>ils</i> (m. pl.)."],
+ ["Marie et Sophie sont venu___ dîner.","es","<b>être</b> → Subjekt f. pl."],
+ ["Elle a mangé___ une pomme.","","<b>avoir</b> + COD steht <i>nach</i> dem Verb → keine Angleichung."],
+ ["La pomme ? Elle l'a mangé___.","e","<b>avoir</b>, aber COD <i>l'</i> (= la pomme) steht <i>vor</i> dem Verb → Angleichung."],
+ ["Les gâteaux ? Je les ai acheté___ ce matin.","s","COD <i>les</i> (= les gâteaux, m. pl.) steht vor dem Verb."],
+ ["Les tartes que tu as préparé___ étaient délicieuses.","es","<i>que</i> = les tartes (f. pl.) steht vor dem Verb."],
+ ["La robe qu'elle a acheté___ coûte 80 euros.","e","<i>qu'</i> = la robe (f. sg.) steht vor dem Verb."],
+ ["Nous avons bu___ du vin rouge.","","<b>avoir</b>, COD (du vin) steht danach → keine Angleichung."],
+ ["Quelles chaussures as-tu essayé___ ?","es","<i>quelles chaussures</i> = COD (f. pl.) vor dem Verb."],
+ ["Les assiettes ? La serveuse les a cassé___.","es","<i>les</i> = les assiettes (f. pl.) vor dem Verb."],
+ ["Elles se sont habillé___ pour la fête.","es","Reflexiv (mit être): <i>se</i> = sich selbst (COD) → Angleichung an <i>elles</i>."],
+ ["Aurélie s'est levé___ tôt.","e","Reflexives Verb → Angleichung an Aurélie (f. sg.)."],
+ ["Elle s'est lavé___ les mains.","","Profi-Falle: COD = <i>les mains</i> (danach). <i>se</i> ist hier indirekt → keine Angleichung."],
+ ["Des pommes ? J'en ai acheté___ trois kilos.","","Bei <b>en</b> gibt es keine Angleichung."],
+ ["Les clients ? Je leur ai parlé___.","","<i>leur</i> ist COI (parler <b>à</b> qn) → keine Angleichung."],
+ ["Ma grand-mère est né___ en 1950.","e","naître → <b>être</b> → Angleichung an ma grand-mère."],
+ ["Les bouteilles que nous avons vidé___ sont dans la cuisine.","es","<i>que</i> = les bouteilles (f. pl.) vor dem Verb."],
+ ["Pierre est resté___ au restaurant.","","<b>être</b> → Pierre ist m. sg. → keine Endung."],
+ ["Les fruits que j'ai acheté___ sont très sucrés.","s","<i>que</i> = les fruits (m. pl.) vor dem Verb."],
+ ["Mes parents sont rentré___ tard.","s","<b>être</b> → mes parents (m. pl.)."],
+ ["La soupe ? Il l'a trouvé___ trop salée.","e","<i>l'</i> = la soupe (f. sg.) vor dem Verb."],
+ ["Elles ont acheté___ des vêtements.","","<b>avoir</b> → nie Angleichung ans Subjekt! COD steht danach."],
+ ["Les lunettes ? Aurélie les a cassé___.","es","<i>les</i> = les lunettes (f. pl.) vor dem Verb."],
+ ["La facture, vous l'avez payé___ ?","e","<i>l'</i> = la facture (f. sg.) vor dem Verb."],
+ ["Elle est descendu___ à la cave chercher du vin.","e","<b>être</b> → elle."],
+ ["Ils se sont parlé___ au téléphone.","","Profi-Falle: parler <b>à</b> qn → <i>se</i> ist COI → keine Angleichung."],
+ ["Les chemises que j'ai mis___ dans la valise sont neuves.","es","<i>que</i> = les chemises (f. pl.) → mis<b>es</b>."],
+ ["La lettre qu'il a écrit___ est très longue.","e","<i>qu'</i> = la lettre (f. sg.) → écrit<b>e</b>."],
+ ["Mes sœurs ont pris___ le train.","","<b>avoir</b> → keine Angleichung an das Subjekt."]
+];
+
+// Verben: [Infinitiv, Imparfait-Stamm, Participe passé, Hilfsverb a/e, nous-Präsens]
+const VERBS = [
+ ["manger","mang","mangé","a","mangeons"],["boire","buv","bu","a","buvons"],["acheter","achet","acheté","a","achetons"],
+ ["vendre","vend","vendu","a","vendons"],["prendre","pren","pris","a","prenons"],["faire","fais","fait","a","faisons"],
+ ["être","ét","été","a","sommes"],["avoir","av","eu","a","avons"],["aller","all","allé","e","allons"],
+ ["venir","ven","venu","e","venons"],["payer","pay","payé","a","payons"],["choisir","choisiss","choisi","a","choisissons"],
+ ["mettre","mett","mis","a","mettons"],["voir","voy","vu","a","voyons"],["cuire","cuis","cuit","a","cuisons"],
+ ["préparer","prépar","préparé","a","préparons"],["commander","command","commandé","a","commandons"],
+ ["essayer","essay","essayé","a","essayons"],["partir","part","parti","e","partons"],["sortir","sort","sorti","e","sortons"],
+ ["arriver","arriv","arrivé","e","arrivons"],["rester","rest","resté","e","restons"],["devoir","dev","dû","a","devons"],
+ ["pouvoir","pouv","pu","a","pouvons"],["vouloir","voul","voulu","a","voulons"],["commencer","commenc","commencé","a","commençons"],
+ ["dire","dis","dit","a","disons"],["lire","lis","lu","a","lisons"],["finir","finiss","fini","a","finissons"],
+ ["ouvrir","ouvr","ouvert","a","ouvrons"],["tomber","tomb","tombé","e","tombons"],["descendre","descend","descendu","e","descendons"],
+ ["rentrer","rentr","rentré","e","rentrons"],["offrir","offr","offert","a","offrons"],["dépenser","dépens","dépensé","a","dépensons"],
+ ["naître","naiss","né","e","naissons"],["vivre","viv","vécu","a","vivons"],["recevoir","recev","reçu","a","recevons"]
+];
+const IMP_END=['ais','ais','ait','ions','iez','aient'];
+const AV=['ai','as','a','avons','avez','ont'], ET=['suis','es','est','sommes','êtes','sont'];
+const SUBJ=[
+ {t:'je (Tom)',p:0,g:['']},{t:'je (Léa)',p:0,g:['e']},{t:'tu',p:1,g:['','e']},
+ {t:'il',p:2,g:['']},{t:'elle',p:2,g:['e']},{t:'nous (Tom et Léa)',p:3,g:['s']},
+ {t:'vous',p:4,g:['','e','s','es']},{t:'ils',p:5,g:['s']},{t:'elles',p:5,g:['es']}
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const KEY='adna-fr-test2';
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let S={xp:0,streak:0,last:'',dayXP:0,day:'',box:{},best:null,testDate:'',sound:true,filter:'all'};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+if(S.day!==today()){S.day=today();S.dayXP=0}
+const GOAL=200;
+let combo=0;
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.random()*a.length|0];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const level=xp=>Math.floor(Math.sqrt(xp/60))+1;
+const lvlXP=l=>60*(l-1)*(l-1);
+
+function addXP(n,el){
+  if(n<=0)return;
+  const before=level(S.xp);
+  S.xp+=n;S.dayXP+=n;
+  const t=today();
+  if(S.last!==t){
+    const y=new Date();y.setDate(y.getDate()-1);
+    const ys=y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
+    S.streak=(S.last===ys)?S.streak+1:1;S.last=t;
+    if(S.streak>1)toast('📅 '+S.streak+' Tage in Folge! Weiter so!');
+  }
+  save();updTop();
+  if(el){const r=el.getBoundingClientRect();const f=document.createElement('div');f.className='xpfly';f.textContent='+'+n+' XP';f.style.left=(r.left+r.width/2-30)+'px';f.style.top=(r.top-10)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1000)}
+  const after=level(S.xp);
+  if(after>before){confetti();beep('lvl');toast('⭐ Level '+after+' erreicht! Magnifique !')}
+  if(S.dayXP>=GOAL&&S.dayXP-n<GOAL){confetti();toast('🎯 Tagesziel geschafft! Bravo !')}
+}
+function updTop(){
+  const l=level(S.xp);
+  $('#lvl').textContent='⭐ '+l;
+  $('#streak').textContent='📅 '+S.streak;
+  $('#lvlbar').style.width=Math.min(100,(S.xp-lvlXP(l))/(lvlXP(l+1)-lvlXP(l))*100)+'%';
+  $('#snd').textContent=S.sound?'🔊':'🔇';
+  const c=$('#combo');
+  if(combo>=3){c.classList.add('on');c.textContent='🔥 '+combo+(combo>=10?' · x3':combo>=5?' · x2':'')}else c.classList.remove('on');
+}
+const mult=()=>combo>=10?3:combo>=5?2:1;
+
+/* sound */
+let AC=null;
+function beep(type){
+  if(!S.sound)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const seq={ok:[[660,.07],[990,.11]],bad:[[220,.18]],lvl:[[523,.1],[659,.1],[784,.1],[1047,.2]],near:[[440,.12]]}[type]||[];
+    let t=AC.currentTime;
+    seq.forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type==='bad'?'sawtooth':'sine';o.frequency.value=f;g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d);t+=d*.9});
+  }catch(e){}
+}
+/* speech */
+let frVoice=null;
+function loadVoice(){const v=speechSynthesis.getVoices();frVoice=v.find(x=>/^fr(-|_)FR/i.test(x.lang))||v.find(x=>/^fr/i.test(x.lang))||null}
+if('speechSynthesis' in window){loadVoice();speechSynthesis.onvoiceschanged=loadVoice}
+function speak(txt){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt.replace(/,/g,' ;'));u.lang='fr-FR';if(frVoice)u.voice=frVoice;u.rate=.92;speechSynthesis.speak(u);
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400)}
+
+/* confetti */
+function confetti(){
+  const c=$('#cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+  const col=['#1d3fd6','#e0312b','#ffffff','#ffb43c','#14a05a'];
+  const P=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:Math.random()*6+3,c:pick(col),a:Math.random()*6,s:(Math.random()-.5)*.3}));
+  let f=0;(function loop(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.a+=p.s;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});if(++f<130)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})();
+}
+
+/* =========================================================
+   VOKABEL-HILFEN
+   ========================================================= */
+const norm=s=>s.toLowerCase().replace(/[’`´]/g,"'").replace(/\s*'\s*/g,"'").replace(/[.!?;:]+$/,'').replace(/\s+/g,' ').trim();
+const noAcc=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/œ/g,'oe').replace(/æ/g,'ae');
+const ART=/^(le |la |les |l')/;
+function frDisplay(w){
+  let s=w.fr;
+  if(w.note)s+=' <span style="color:var(--ink3);font-size:.6em;font-weight:700">('+w.note+')</span>';
+  return s;
+}
+function checkVocab(w,input){
+  const inp=norm(input); if(!inp)return {st:'bad',msg:'Keine Antwort'};
+  const parts=w.fr.split(/,\s*/);
+  const acc=[w.fr,...parts].map(norm);
+  if(acc.includes(inp))return {st:'ok'};
+  if(acc.map(noAcc).includes(noAcc(inp)))return {st:'ok',msg:'Akzente beachten! ✍️'};
+  const bare=parts.filter(p=>ART.test(p)).map(p=>noAcc(norm(p).replace(ART,'')));
+  const userBare=noAcc(inp.replace(ART,''));
+  if(bare.includes(userBare)){
+    if(ART.test(inp))return {st:'bad',msg:'Falscher Artikel – Genus lernen!'};
+    return {st:'near',msg:'Artikel fehlt! Im Test zählt der Artikel mit.'};
+  }
+  return {st:'bad'};
+}
+function filtered(){
+  const f=S.filter;
+  if(f==='all')return WORDS;
+  if(f==='5'||f==='6')return WORDS.filter(w=>w.sec[0]===f);
+  if(f==='weak')return WORDS.filter(w=>(S.box[w.id]||0)<2&&S.box[w.id]!==undefined);
+  return WORDS.filter(w=>w.sec===f);
+}
+function weighted(pool,n){
+  // schwache Wörter bevorzugen
+  const scored=pool.map(w=>({w,k:Math.random()*(1+(S.box[w.id]||0)*1.6)}));
+  scored.sort((a,b)=>a.k-b.k);
+  return scored.slice(0,n).map(x=>x.w);
+}
+function setBox(w,ok){
+  const b=S.box[w.id]||0;
+  S.box[w.id]=ok?Math.min(5,b+1):0;save();
+}
+
+/* =========================================================
+   HOME
+   ========================================================= */
+function renderHome(){
+  updTop();
+  const p=Math.min(100,Math.round(S.dayXP/GOAL*100));
+  $('#ring').style.setProperty('--p',p);$('#ringv').textContent=p+'%';
+  $('#goalTxt').textContent=S.dayXP+' / '+GOAL+' XP heute';
+  $('#xpTot').textContent=S.xp+' XP total'+(S.best?' · Bestnote '+S.best.toFixed(1):'');
+  $('#testDate').value=S.testDate||'';
+  if(S.testDate){
+    const d=Math.ceil((new Date(S.testDate+'T08:00')-new Date())/864e5);
+    $('#cdV').textContent=d>1?d+' Tagen':d===1?'1 Tag 😬':d===0?'HEUTE! 💪':'vorbei ✓';
+  }else $('#cdV').textContent='Datum?';
+
+  const F=[['all','Alle'],['5','Kap. 5'],['6','Kap. 6'],['weak','😓 Schwache']];
+  Object.keys(SECTIONS).forEach(k=>F.push([k,SECTIONS[k][0]+' '+(SECTIONS[k][2]==='Grund'?'G':'A')]));
+  $('#filters').innerHTML=F.map(([k,l])=>`<button class="chip ${S.filter===k?'on':''}" data-f="${k}">${l}</button>`).join('');
+  $('#secs').innerHTML=Object.keys(SECTIONS).map(k=>{
+    const ws=WORDS.filter(w=>w.sec===k),m=ws.filter(w=>(S.box[w.id]||0)>=3).length;
+    return `<button class="sec" data-f="${k}"><span class="n">${SECTIONS[k][0]} ${SECTIONS[k][1]}<small>${SECTIONS[k][2]}wortschatz</small></span><span class="c">${m}/${ws.length}</span><span class="bar"><i style="width:${m/ws.length*100}%"></i></span></button>`
+  }).join('');
+}
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-f]');
+  if(f){
+    S.filter=f.dataset.f;save();
+    if(S.filter==='weak'&&!filtered().length){toast('Noch keine schwachen Wörter – erst mal üben!');S.filter='all';save()}
+    renderHome();if(f.classList.contains('sec'))toast('Auswahl: '+SECTIONS[S.filter][0]+' '+SECTIONS[S.filter][1]);
+  }
+  const g=e.target.closest('[data-go]');if(g)go(g.dataset.go);
+  if(e.target.closest('[data-home]'))home();
+});
+$('#testDate').addEventListener('change',e=>{S.testDate=e.target.value;save();renderHome()});
+$('#snd').onclick=()=>{S.sound=!S.sound;save();updTop()};
+
+function show(id){$$('.view').forEach(v=>v.classList.remove('on'));$('#v-'+id).classList.add('on');scrollTo(0,0)}
+function home(){if('speechSynthesis' in window)speechSynthesis.cancel();sess=null;show('home');renderHome()}
+
+function go(m){
+  combo=0;updTop();
+  if(m==='cards')return startCards();
+  if(m==='theory')return startTheory();
+  if(m==='vquiz')return startSession('Vokabel-Sprint',vocabQs(15));
+  if(m==='signal')return startSession('Signalwörter',shuffle(SIGNAL).slice(0,14).map(signalQ));
+  if(m==='choice')return startSession('Imparfait oder PC?',shuffle(CHOICE).slice(0,10).map(choiceQ));
+  if(m==='conj')return startSession('Konjugieren',Array.from({length:12},conjQ));
+  if(m==='accord')return startSession('Accord-Jagd',shuffle(ACCORD).slice(0,12).map(accordQ));
+  if(m==='exam')return startExam();
+}
+
+/* =========================================================
+   QUESTION BUILDERS
+   ========================================================= */
+function vocabMC(w,dir){
+  const pool=WORDS.filter(x=>x.id!==w.id&&x.de!==w.de);
+  const same=shuffle(pool.filter(x=>x.sec.slice(0,4)===w.sec.slice(0,4)));
+  const dis=[...same,...shuffle(pool)].filter((x,i,a)=>a.findIndex(y=>y.fr===x.fr)===i).slice(0,3);
+  const opts=shuffle([w,...dis]);
+  return dir==='fr'
+   ?{kind:'mc',lab:'Was heisst das?',html:`<div class="prompt">${w.fr}</div>`,speak:w.fr,opts:opts.map(o=>o.de),correct:opts.indexOf(w),word:w,sol:w.de}
+   :{kind:'mc',lab:'Wie sagt man auf Französisch?',html:`<div class="prompt">${esc(w.de)}</div>`,opts:opts.map(o=>o.fr),correct:opts.indexOf(w),word:w,sol:w.fr,speakSol:w.fr};
+}
+function vocabType(w){
+  return {kind:'type',lab:'Eintippen · mit Artikel',html:`<div class="prompt">${esc(w.de)}</div>${w.note?`<div class="hint">Hinweis: ${w.note.replace('f pl','f, Plural').replace('m pl','m, Plural')}</div>`:''}`,
+    check:i=>checkVocab(w,i),sol:w.fr,word:w,speakSol:w.fr};
+}
+function vocabQs(n){
+  let pool=filtered();if(pool.length<4)pool=WORDS;
+  return weighted(pool,n).map((w,i)=>{const r=i%3;return r===0?vocabMC(w,'fr'):r===1?vocabType(w):vocabMC(w,'de')});
+}
+function signalQ([w,a,why]){
+  return {kind:'mc',two:true,lab:'Signalwort → welche Zeit?',html:`<div class="prompt">«&nbsp;${w}&nbsp;»</div><div class="hint">${why}</div>`,speak:w.replace('…',''),
+    opts:['Imparfait','Passé composé'],correct:a,sol:a?'Passé composé':'Imparfait',why:a?'Abgeschlossenes Ereignis / bestimmter Zeitpunkt → <b>Passé composé</b>.':'Gewohnheit, Beschreibung, Dauer ohne Ende → <b>Imparfait</b>.'};
+}
+function choiceQ([s,inf,imp,pc,a,why]){
+  const opts=[imp,pc];
+  return {kind:'mc',two:true,lab:'Imparfait oder Passé composé?',
+    html:`<div class="prompt sent">${s.replace('___',`<span class="gap">?</span>`)}</div><div class="hint">(${inf})</div>`,
+    opts,optLabels:['Imp.','PC'],correct:a,sol:s.replace('___',opts[a]),why,speakSol:s.replace('___',opts[a])};
+}
+function accordQ([s,end,why]){
+  const opts=['–','e','s','es'];const ci=['','e','s','es'].indexOf(end);
+  const full=s.replace('___',end);
+  return {kind:'mc',lab:'Welche Endung?',html:`<div class="prompt sent">${s.replace('___',`<span class="gap">__</span>`)}</div>`,
+    opts:opts.map(o=>o==='–'?'– (keine)':'-'+o),correct:ci,sol:full,why,speakSol:full};
+}
+function impForm(v,p){
+  let st=v[1];const e=IMP_END[p];
+  if(v[0].endsWith('ger')&&e[0]==='a')st+='e';
+  if(v[0].endsWith('cer')&&e[0]==='a')st=st.slice(0,-1)+'ç';
+  return st+e;
+}
+const elide=(pr,next)=>pr==='je'&&/^[aeéèêiîoôuh]/i.test(next)?"j'":pr+' ';
+function conjQ(){
+  const v=pick(VERBS),tense=Math.random()<.5?'imp':'pc';
+  let subs=SUBJ;
+  const sb=pick(subs);const pr=sb.t.split(' ')[0];
+  let answers,why;
+  if(tense==='imp'){
+    const f=impForm(v,sb.p);answers=[f];
+    why=v[0]==='être'?'Ausnahme: <b>être → ét-</b> + Endung.':`nous <b>${v[4]}</b> → Stamm <b>${v[0].endsWith('cer')||v[0].endsWith('ger')?v[1]+'(e/ç)':v[1]}-</b> + <b>${IMP_END[sb.p]}</b>`;
+  }else{
+    const aux=v[3]==='e'?ET[sb.p]:AV[sb.p];
+    const ends=v[3]==='e'?sb.g:[''];
+    answers=ends.map(g=>aux+' '+v[2]+g);
+    why=v[3]==='e'?`<b>${v[0]}</b> bildet das PC mit <b>être</b> → Participe gleicht sich dem Subjekt an.`:`<b>${v[0]}</b> → avoir + <b>${v[2]}</b>. Mit avoir keine Angleichung ans Subjekt.`;
+  }
+  const lbl=tense==='imp'?'Imparfait':'Passé composé';
+  return {kind:'type',lab:'Konjugieren · '+lbl,
+    html:`<div class="prompt"><span style="color:var(--ink3)">${sb.t}</span> · ${v[0]}</div><div class="hint">→ <b style="color:${tense==='imp'?'var(--blue)':'var(--red)'}">${lbl}</b> (nur Verbform eintippen)</div>`,
+    check:i=>{
+      let x=norm(i).replace(/^(je |j'|tu |il |elle |nous |vous |ils |elles )/,'');
+      if(answers.map(norm).includes(x))return {st:'ok'};
+      if(answers.map(a=>noAcc(norm(a))).includes(noAcc(x)))return {st:'ok',msg:'Akzente beachten! ✍️'};
+      if(tense==='pc'&&v[3]==='e'&&answers.some(a=>noAcc(norm(a)).replace(/e?s?$/,'')===noAcc(x).replace(/e?s?$/,'')))return {st:'near',msg:'Fast! Die Angleichung (Endung) stimmt nicht.'};
+      return {st:'bad'};
+    },
+    sol:(()=>{const a=answers[0];return elide(pr,a)+a+(answers.length>1?'  (auch: '+answers.slice(1).join(' / ')+')':'')})(),why,
+    speakSol:elide(pr,answers[0])+answers[0]};
+}
+
+/* =========================================================
+   SESSION ENGINE
+   ========================================================= */
+let sess=null;
+function startSession(title,qs,exam=false){
+  sess={title,qs,i:0,pts:0,res:[],xp:0,exam,t0:Date.now()};
+  show('play');$('#pTitle').textContent=title;renderQ();
+}
+function renderQ(){
+  const q=sess.qs[sess.i];
+  $('#pCnt').textContent=(sess.i+1)+' / '+sess.qs.length+(sess.exam?' · '+fmtTime():'');
+  $('#pBar').style.width=(sess.i/sess.qs.length*100)+'%';
+  const spk=q.speak?`<button class="sp" style="font-size:16px" onclick="speak(${esc(JSON.stringify(q.speak))})" title="Anhören">🔊</button>`:'';
+  let h=`<div class="q"><div class="lab"><span>${q.lab}</span>${spk}</div>${q.html}`;
+  if(q.kind==='mc'){
+    h+=`<div class="opts ${q.two?'two':''}">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="kb">${i+1}</span><span>${o}</span></button>`).join('')}</div>`;
+  }else{
+    h+=`<input class="inp" id="inp" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Antwort …" enterkeyhint="done">
+       <div class="acc">${'é è ê à â ç ô î ù û ë ï œ \''.split(' ').map(c=>`<button data-c="${c}">${c}</button>`).join('')}</div>
+       <div class="row"><button class="btn ghost" id="skip">Weiss nicht</button><button class="btn" id="chk">Prüfen</button></div>`;
+  }
+  h+=`<div class="fb" id="fb"></div></div>`;
+  $('#qbox').innerHTML=h;sess.done=false;
+  if(q.kind==='mc'){
+    $$('.opt').forEach(b=>b.onclick=()=>answerMC(+b.dataset.i));
+  }else{
+    const inp=$('#inp');setTimeout(()=>inp.focus(),50);
+    $$('.acc button').forEach(b=>b.onclick=()=>{const s=inp.selectionStart,e=inp.selectionEnd;inp.value=inp.value.slice(0,s)+b.dataset.c+inp.value.slice(e);inp.focus();inp.setSelectionRange(s+1,s+1)});
+    $('#chk').onclick=()=>answerType(inp.value);
+    $('#skip').onclick=()=>answerType('');
+  }
+}
+function fmtTime(){const s=Math.floor((Date.now()-sess.t0)/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function answerMC(i){
+  if(sess.done)return;const q=sess.qs[sess.i];
+  const ok=i===q.correct;
+  $$('.opt').forEach((b,j)=>{b.disabled=true;if(j===q.correct&&!sess.exam)b.classList.add('ok');if(j===i&&!ok&&!sess.exam)b.classList.add('bad');if(sess.exam&&j===i)b.style.borderColor='var(--blue)'});
+  finish(ok?'ok':'bad',{given:q.opts[i]},$$('.opt')[i]);
+}
+function answerType(v){
+  if(sess.done)return;const q=sess.qs[sess.i];
+  const r=q.check(v);const inp=$('#inp');inp.disabled=true;
+  if(!sess.exam)inp.classList.add(r.st);
+  $('#chk').disabled=true;$('#skip').disabled=true;
+  finish(r.st,{given:v||'—',msg:r.msg},inp);
+}
+function finish(st,info,el){
+  sess.done=true;const q=sess.qs[sess.i];
+  const pts=st==='ok'?1:st==='near'?.5:0;
+  sess.pts+=pts;
+  sess.res.push({q,st,given:info.given});
+  if(q.word)setBox(q.word,st==='ok');
+  if(st==='ok'){combo++;const g=10*mult();sess.xp+=g;addXP(g,sess.exam?null:el)}
+  else if(st==='near'){const g=4;sess.xp+=g;addXP(g,sess.exam?null:el)}
+  else combo=0;
+  updTop();
+  if(sess.exam){setTimeout(next,250);return}
+  beep(st);
+  const fb=$('#fb');
+  const head={ok:pick(['Super !','Parfait !','Exactement !','Bravo !','Génial !','Très bien !']),near:'Presque …',bad:pick(['Oups !','Pas tout à fait …','Dommage !'])}[st];
+  const sp=q.speakSol?` <button onclick="speak(${esc(JSON.stringify(q.speakSol))})" title="Anhören" style="font-size:15px">🔊</button>`:'';
+  fb.className='fb on '+st;
+  fb.innerHTML=`<div class="h">${head}${combo>=5&&st==='ok'?' 🔥 '+combo+'er-Combo!':''}</div>
+    ${st!=='ok'||info.msg?`<div class="sol">${st==='ok'?'':'✓ '}${st==='ok'?'':q.sol}${sp}</div>`:`<div class="sol" style="font-weight:650;font-size:15px">${q.sol}${sp}</div>`}
+    ${info.msg?`<div class="why">⚠️ ${info.msg}</div>`:''}
+    ${q.why?`<div class="why">${q.why}</div>`:''}
+    <div class="row"><button class="btn" id="nxt">Weiter →</button></div>`;
+  $('#nxt').onclick=next;setTimeout(()=>$('#nxt')&&$('#nxt').focus(),30);
+  if(q.word&&st==='ok'&&S.sound)speak(q.word.fr);
+}
+function next(){
+  if(!sess)return;
+  sess.i++;
+  if(sess.i>=sess.qs.length)return results();
+  renderQ();
+}
+document.addEventListener('keydown',e=>{
+  if($('#v-play').classList.contains('on')&&sess){
+    const q=sess.qs[sess.i];
+    if(sess.done&&e.key==='Enter'){e.preventDefault();next();return}
+    if(!sess.done&&q.kind==='mc'&&/^[1-4]$/.test(e.key)&&+e.key<=q.opts.length)answerMC(+e.key-1);
+    if(!sess.done&&q.kind==='type'&&e.key==='Enter'){e.preventDefault();answerType($('#inp').value)}
+  }
+  if($('#v-cards').classList.contains('on')){
+    if(e.key===' '){e.preventDefault();flipCard()}
+    if(e.key==='ArrowRight')cardAns(true);
+    if(e.key==='ArrowLeft')cardAns(false);
+  }
+});
+function swissNote(p,m){return Math.round((p/m*5+1)*10)/10}
+function results(){
+  const max=sess.qs.length,p=sess.pts,pct=Math.round(p/max*100);
+  const note=swissNote(p,max);
+  if(sess.exam&&(S.best==null||note>S.best)){S.best=note;save()}
+  const msg=pct>=90?'Incroyable ! Du bist bereit. 🏆':pct>=75?'Très bien ! Fast perfekt. 💪':pct>=55?'Pas mal ! Noch etwas üben. 📈':'Courage ! Nochmal – du schaffst das. 🚀';
+  const miss=sess.res.filter(r=>r.st!=='ok');
+  $('#resBox').innerHTML=`
+    <div class="big">${pct}%</div>
+    ${sess.exam?`<div class="note">Note ${note.toFixed(1)} · ${p} / ${max} Punkte · ${fmtTime()}</div>`:''}
+    <div class="msg">${msg}</div>
+    <div class="grid">
+      <div class="box"><div class="k">Richtig</div><div class="v">${sess.res.filter(r=>r.st==='ok').length}</div></div>
+      <div class="box"><div class="k">XP</div><div class="v">+${sess.xp}</div></div>
+      <div class="box"><div class="k">Fehler</div><div class="v">${miss.length}</div></div>
+    </div>
+    ${miss.length?`<h2 style="text-align:left">Das musst du nochmal anschauen</h2><div class="miss">${miss.map(r=>`<div>${r.q.html.replace(/<div class="hint">.*?<\/div>/,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').slice(0,90)}<br><span class="y">${esc(r.given)}</span><span class="c">${r.q.sol}</span>${sess.exam&&r.q.why?`<div style="color:var(--ink2);font-size:13px;margin-top:4px">${r.q.why}</div>`:''}</div>`).join('')}</div>`:''}
+    <div class="row" style="margin-top:20px"><button class="btn ghost" data-home>Home</button><button class="btn" id="again">Nochmal ↻</button></div>`;
+  const kind=sess.title;
+  show('res');
+  if(pct>=75)confetti();
+  $('#again').onclick=()=>{const map={'Vokabel-Sprint':'vquiz','Signalwörter':'signal','Imparfait oder PC?':'choice','Konjugieren':'conj','Accord-Jagd':'accord','Probetest':'exam'};go(map[kind])};
+}
+
+/* exam: 30 Punkte */
+function startExam(){
+  let pool=WORDS;
+  const ws=shuffle(pool);
+  const qs=[
+    ...ws.slice(0,10).map(vocabType),
+    ...ws.slice(10,15).map(w=>vocabMC(w,'fr')),
+    ...shuffle(CHOICE).slice(0,6).map(choiceQ),
+    ...shuffle(ACCORD).slice(0,5).map(accordQ),
+    ...Array.from({length:4},conjQ)
+  ];
+  qs.forEach(q=>{delete q.speak});
+  toast('📝 Probetest: kein Feedback bis zum Schluss. Bonne chance !');
+  startSession('Probetest',qs,true);
+  clearInterval(window._ti);window._ti=setInterval(()=>{if(sess&&sess.exam&&$('#v-play').classList.contains('on'))$('#pCnt').textContent=(sess.i+1)+' / '+sess.qs.length+' · '+fmtTime();else clearInterval(window._ti)},1000);
+}
+
+/* =========================================================
+   FLASHCARDS
+   ========================================================= */
+let deck=[],cur=null,dir='de',seen=0;
+function startCards(){
+  let pool=filtered();if(!pool.length)pool=WORDS;
+  deck=weighted(pool,Math.min(20,pool.length));seen=0;
+  show('cards');nextCard();
+}
+function boxDots(w){const b=S.box[w.id]||0;return `<div class="bx">${[1,2,3,4,5].map(i=>`<i class="${i<=b?'f':''}"></i>`).join('')}</div>`}
+function nextCard(){
+  const wasFlipped=$('#fc').classList.contains('flip');
+  $('#fc').classList.remove('flip');
+  if(!deck.length){
+    confetti();toast('🎉 Stapel durch! Neue Runde …');addXP(20);return setTimeout(startCards,900);
+  }
+  cur=deck.shift();
+  const sec=SECTIONS[cur.sec];
+  const frSide=`<div class="sec2">${sec[0]} · ${sec[1]}</div>${boxDots(cur)}<div class="w">${frDisplay(cur)}</div><button class="spk" onclick="event.stopPropagation();speak(cur.fr)">🔊</button>`;
+  const deSide=`<div class="sec2">${sec[0]} · ${sec[1]}</div>${boxDots(cur)}<div class="w">${esc(cur.de)}</div>`;
+  setTimeout(()=>{
+    $('#fFront').innerHTML=(dir==='de'?deSide:frSide)+'<div class="m">tippen zum Umdrehen</div>';
+    $('#fBack').innerHTML=dir==='de'?frSide:deSide;
+    if(dir==='fr'&&S.sound)speak(cur.fr);
+  },wasFlipped?220:0);
+  $('#cCnt').textContent=(deck.length+1)+' übrig';
+}
+function flipCard(){$('#fc').classList.toggle('flip');if($('#fc').classList.contains('flip')&&dir==='de'&&S.sound)speak(cur.fr)}
+function cardAns(ok){
+  if(!cur)return;
+  if(!$('#fc').classList.contains('flip')){flipCard();return}
+  setBox(cur,ok);
+  if(ok){combo++;addXP(5*mult());beep('ok')}else{combo=0;deck.splice(Math.min(3,deck.length),0,cur);beep('bad')}
+  updTop();nextCard();
+}
+$('#fc').onclick=flipCard;
+$('#cKnow').onclick=()=>cardAns(true);
+$('#cAgain').onclick=()=>cardAns(false);
+$$('[data-dir]').forEach(b=>b.onclick=()=>{dir=b.dataset.dir;$$('[data-dir]').forEach(x=>x.classList.toggle('on',x===b));if(cur){deck.unshift(cur);nextCard()}});
+
+/* =========================================================
+   THEORIE
+   ========================================================= */
+const THEORY={
+'Imparfait':`
+<h3>L'imparfait – Bildung</h3>
+<p><b>Stamm</b> = 1. Person Plural Präsens (<i>nous</i>-Form) ohne <b>-ons</b>. Dann die Endungen anhängen – die sind für <b>alle</b> Verben gleich!</p>
+<table><tr><th>Person</th><th>Endung</th><th>manger → <i>nous mange<u>ons</u></i></th><th>boire → <i>nous buv<u>ons</u></i></th></tr>
+<tr><td>je</td><td><b class="i">-ais</b></td><td>je mange<b class="i">ais</b></td><td>je buv<b class="i">ais</b></td></tr>
+<tr><td>tu</td><td><b class="i">-ais</b></td><td>tu mange<b class="i">ais</b></td><td>tu buv<b class="i">ais</b></td></tr>
+<tr><td>il/elle/on</td><td><b class="i">-ait</b></td><td>il mange<b class="i">ait</b></td><td>il buv<b class="i">ait</b></td></tr>
+<tr><td>nous</td><td><b class="i">-ions</b></td><td>nous mang<b class="i">ions</b></td><td>nous buv<b class="i">ions</b></td></tr>
+<tr><td>vous</td><td><b class="i">-iez</b></td><td>vous mang<b class="i">iez</b></td><td>vous buv<b class="i">iez</b></td></tr>
+<tr><td>ils/elles</td><td><b class="i">-aient</b></td><td>ils mange<b class="i">aient</b></td><td>ils buv<b class="i">aient</b></td></tr></table>
+<h4>Einzige Ausnahme</h4>
+<div class="ex r"><b>être</b> → Stamm <b>ét-</b>: j'étais, tu étais, il était, nous étions, vous étiez, ils étaient</div>
+<h4>Schreibfallen</h4>
+<ul><li><b>-ger</b>: vor <i>a</i> ein <b>e</b> einfügen → je mang<b>e</b>ais, aber nous mangions</li>
+<li><b>-cer</b>: vor <i>a</i> ein <b>ç</b> → je commen<b>ç</b>ais, aber nous commencions</li>
+<li>Stamm auf <b>-i</b>: nous étud<b>ii</b>ons (Doppel-i!)</li></ul>
+<h4>Wichtige Stämme</h4>
+<table><tr><td>faire → <b>fais-</b></td><td>avoir → <b>av-</b></td><td>prendre → <b>pren-</b></td></tr>
+<tr><td>boire → <b>buv-</b></td><td>voir → <b>voy-</b></td><td>finir → <b>finiss-</b></td></tr>
+<tr><td>vendre → <b>vend-</b></td><td>dire → <b>dis-</b></td><td>cuire → <b>cuis-</b></td></tr>
+<tr><td>pouvoir → <b>pouv-</b></td><td>vouloir → <b>voul-</b></td><td>devoir → <b>dev-</b></td></tr></table>`,
+'Passé composé':`
+<h3>Le passé composé – Bildung</h3>
+<p><b>avoir</b> oder <b>être</b> im Präsens + <b>participe passé</b>.</p>
+<div class="ex">J'<b>ai acheté</b> du pain. · Elle <b>est allée</b> au marché.</div>
+<h4>Participe passé – regelmässig</h4>
+<table><tr><td>-er → <b>-é</b></td><td>manger → mangé</td></tr><tr><td>-ir → <b>-i</b></td><td>choisir → choisi</td></tr><tr><td>-re → <b>-u</b></td><td>vendre → vendu</td></tr></table>
+<h4>Unregelmässig (auswendig!)</h4>
+<table>
+<tr><td>avoir → <b>eu</b></td><td>être → <b>été</b></td><td>faire → <b>fait</b></td></tr>
+<tr><td>prendre → <b>pris</b></td><td>mettre → <b>mis</b></td><td>boire → <b>bu</b></td></tr>
+<tr><td>voir → <b>vu</b></td><td>venir → <b>venu</b></td><td>lire → <b>lu</b></td></tr>
+<tr><td>dire → <b>dit</b></td><td>écrire → <b>écrit</b></td><td>cuire → <b>cuit</b></td></tr>
+<tr><td>ouvrir → <b>ouvert</b></td><td>offrir → <b>offert</b></td><td>pouvoir → <b>pu</b></td></tr>
+<tr><td>vouloir → <b>voulu</b></td><td>devoir → <b>dû</b></td><td>savoir → <b>su</b></td></tr>
+<tr><td>recevoir → <b>reçu</b></td><td>vivre → <b>vécu</b></td><td>naître → <b>né</b></td></tr>
+<tr><td>mourir → <b>mort</b></td><td>valoir → <b>valu</b></td><td>inclure → <b>inclus</b></td></tr></table>
+<h4>Mit être: Bewegung & Zustandsänderung</h4>
+<p>aller, venir, arriver, partir, entrer, sortir, monter, descendre, tomber, rester, naître, mourir, rentrer, retourner, devenir, revenir, passer (par) – <b>+ alle reflexiven Verben</b> (se lever, s'habiller …)</p>
+<div class="tip">💡 Eselsbrücke: Das <b>«Haus von être»</b> – man kommt an, geht rein, steigt hoch, fällt runter, bleibt, geht wieder raus … Geburt und Tod gehören auch dazu.</div>`,
+'Imp. vs. PC':`
+<h3>Wann was?</h3>
+<p>Stell dir einen Film vor: das <b class="i">Imparfait</b> ist die <b>Kulisse</b>, das <b class="p">Passé composé</b> ist die <b>Action</b>.</p>
+<div class="cols">
+<div class="col i"><strong>🎬 Imparfait</strong>
+<ul><li>Beschreibung (Personen, Orte, Wetter)</li><li>Zustände, Gefühle (avoir faim, être fatigué)</li><li>Gewohnheiten, Wiederholungen</li><li>Laufende Handlung (Hintergrund)</li><li>Gleichzeitig: <i>pendant que</i></li></ul>
+<b>Signalwörter:</b> autrefois, avant, d'habitude, souvent, toujours, tous les jours, chaque matin, le lundi, en général, à cette époque, quand j'étais petit</div>
+<div class="col p"><strong>💥 Passé composé</strong>
+<ul><li>Abgeschlossene, einmalige Handlung</li><li>Plötzliches Ereignis</li><li>Handlungskette (zuerst, dann …)</li><li>Neue Handlung, die eine laufende unterbricht</li><li>Begrenzte Dauer (pendant 2 heures)</li></ul>
+<b>Signalwörter:</b> hier, ce matin, soudain, tout à coup, un jour, une fois, lundi (dernier), l'année dernière, il y a 3 jours, d'abord – puis – ensuite – enfin</div>
+</div>
+<h4>Die Kombi</h4>
+<div class="ex">Je <b class="i">préparais</b> la soupe quand le téléphone <b class="p">a sonné</b>.<br><span style="color:var(--ink2)">Ich war gerade am Kochen (Hintergrund) – da klingelte das Telefon (Ereignis).</span></div>
+<div class="ex">Il <b class="i">faisait</b> beau. Nous <b class="i">avions</b> faim, alors nous <b class="p">sommes allés</b> au bistrot et nous <b class="p">avons commandé</b> deux pizzas.</div>
+<div class="tip">💡 Test-Frage: «<b>Und dann?</b>» Treibt die Handlung die Geschichte weiter? → PC. Beschreibt sie nur, wie es war? → Imparfait.</div>
+<h4>Fallen</h4>
+<ul><li><b>le lundi</b> = jeden Montag → Imp. · <b>lundi</b> = an diesem Montag → PC</li>
+<li><b>pendant que</b> (während) → Imp. · <b>pendant trois ans</b> (begrenzt) → PC</li>
+<li>Gleiche Verben, andere Bedeutung: <i>J'<b>avais</b> faim</i> (Zustand) ↔ <i>J'<b>ai eu</b> peur</i> (Moment, wo die Angst kam)</li></ul>`,
+'Accord du pp':`
+<h3>L'accord du participe passé</h3>
+<h4>Regel 1 · mit être → Subjekt</h4>
+<p>Das participe gleicht sich wie ein Adjektiv dem <b>Subjekt</b> an.</p>
+<table><tr><td>il est allé</td><td>ils sont allé<b class="a">s</b></td></tr><tr><td>elle est allé<b class="a">e</b></td><td>elles sont allé<b class="a">es</b></td></tr></table>
+<div class="ex g">Marie et Sophie sont venu<b class="a">es</b>. · Mes parents sont rentré<b class="a">s</b>.</div>
+<p>⚠️ Gemischte Gruppe (m + f) → maskulin Plural: <i>Tom et Léa sont parti<b class="a">s</b></i>.</p>
+<h4>Regel 2 · mit avoir → NIE das Subjekt</h4>
+<div class="ex r">Elle a mangé. · Elles ont acheté des robes. (keine Endung!)</div>
+<p><b>Aber:</b> Steht das direkte Objekt (<b>COD</b>) <b>vor</b> dem Verb, gleicht sich das participe dem COD an:</p>
+<table><tr><th>COD davor durch …</th><th>Beispiel</th></tr>
+<tr><td>Pronomen <b>la / l' / les / me / te / nous / vous</b></td><td>La robe ? Je l'ai acheté<b class="a">e</b>.<br>Les pommes ? Je les ai mangé<b class="a">es</b>.</td></tr>
+<tr><td>Relativpronomen <b>que</b></td><td>Les gâteaux <b>que</b> tu as fait<b class="a">s</b> sont bons.</td></tr>
+<tr><td>Frage mit <b>quel(le)(s)</b> / <b>combien de</b></td><td>Quelles chaussures as-tu essayé<b class="a">es</b> ?</td></tr></table>
+<div class="tip">💡 Trick: Frag «<b>Was</b>?» – <i>J'ai acheté <b>quoi</b>?</i> Steht die Antwort <b>vorne</b> → angleichen. Steht sie <b>hinten</b> → nichts.</div>
+<h4>Keine Angleichung bei …</h4>
+<ul><li><b>en</b>: Des pommes ? J'en ai acheté.</li><li>indirektem Objekt <b>lui / leur</b> (COI): Je leur ai parlé.</li><li>COD nach dem Verb: Elle a mangé une pomme.</li></ul>
+<h4>Regel 3 · reflexive Verben (Profi)</h4>
+<p>Mit être, aber Angleichung nur, wenn <b>se</b> = COD ist (= meistens):</p>
+<div class="ex g">Elle s'est levé<b class="a">e</b>. · Elles se sont habillé<b class="a">es</b>.</div>
+<div class="ex r">Elle s'est lavé les mains. (COD = les mains, kommt danach)<br>Ils se sont parlé. (parler <b>à</b> qn → se = COI)</div>`
+};
+let tab='Imparfait';
+function startTheory(){show('theory');renderTheory()}
+function renderTheory(){
+  $('#tTabs').innerHTML=Object.keys(THEORY).map(k=>`<button class="chip ${k===tab?'on':''}" data-tab="${k}">${k}</button>`).join('');
+  $('#tBody').innerHTML=THEORY[tab]+`<div class="row" style="margin-top:20px"><button class="btn" data-go="${{'Imparfait':'conj','Passé composé':'conj','Imp. vs. PC':'choice','Accord du pp':'accord'}[tab]}">Jetzt üben →</button></div>`;
+  $$('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;renderTheory()});
+}
+
+renderHome();
+</script>
+</body>
+</html>
