@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muharrem · Bern</title>
+<meta name="description" content="Bern, Herbst. Ein paar Bilder.">
+<meta name="theme-color" content="#FAFAF8">
+<meta property="og:title" content="Muharrem · Bern">
+<meta property="og:description" content="Bern, Herbst. Ein paar Bilder.">
+<meta property="og:image" content="/me/img/12.jpg">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#FAFAF8;--bg2:#F0EFEB;--border:#E0E0D8;--text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;--red:#B5271E;
+--font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code','Courier New',monospace}
+@media(prefers-color-scheme:dark){:root{--bg:#121211;--bg2:#1A1A18;--border:#2C2C29;--text:#ECEBE6;--text2:#A9A8A2;--text3:#6F6E69;--red:#D9472F}}
+html{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.5}
+body{max-width:1100px;margin:0 auto;padding:40px 20px 80px}
+header{margin-bottom:36px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.tag{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--red);text-transform:uppercase}
+h1{font-size:clamp(34px,8vw,64px);font-weight:900;letter-spacing:-.05em;line-height:.95;margin-top:10px}
+.sub{color:var(--text2);margin-top:12px;font-size:15px;max-width:40ch}
+.back{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:7px 13px;border-radius:7px}
+.back:hover{color:var(--red);border-color:var(--red)}
+.grid{columns:3;column-gap:12px}
+@media(max-width:820px){.grid{columns:2}}
+@media(max-width:520px){.grid{columns:1}}
+.ph{width:100%;margin:0 0 12px;border-radius:10px;border:1px solid var(--border);display:block;cursor:zoom-in;break-inside:avoid;background:var(--bg2)}
+footer{margin-top:40px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text3);text-align:center}
+footer a{color:var(--text2);text-decoration:none}
+/* Lightbox */
+#lb{position:fixed;inset:0;background:rgba(10,10,9,.94);display:none;align-items:center;justify-content:center;z-index:50;touch-action:pan-y}
+#lb.on{display:flex}
+#lb img{max-width:96vw;max-height:88vh;border-radius:8px}
+#lb .x{position:absolute;top:16px;right:18px;color:#fff;font-size:30px;cursor:pointer;line-height:1;opacity:.8}
+#lb .nav{position:absolute;top:0;bottom:0;width:38%;cursor:pointer}
+#lb .nav.l{left:0}#lb .nav.r{right:0}
+#lb .c{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:#fff;font-family:var(--mono);font-size:12px;opacity:.7}
+</style>
+</head>
+<body>
+<header>
+  <div class="tag">Bern · Herbst 2026</div>
+  <h1>Muharrem</h1>
+  <p class="sub">Ein paar Bilder aus der Stadt. Goldene Blätter, blauer Himmel, das Münster im Rücken.</p>
+  <a class="back" href="https://architect-dna.ch">← architect-dna.ch</a>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<footer>© Muharrem Akdemir · <a href="https://architect-dna.ch">architect-dna.ch</a></footer>
+
+<div id="lb">
+  <span class="x" onclick="close_()">✕</span>
+  <span class="nav l" onclick="step(-1)"></span>
+  <span class="nav r" onclick="step(1)"></span>
+  <img id="lbimg" alt="">
+  <div class="c" id="lbc"></div>
+</div>
+
+<script>
+const N = 12;
+const grid = document.getElementById('grid');
+for (let i = 1; i <= N; i++) {
+  const img = new Image();
+  img.src = 'img/' + i + '.jpg';
+  img.loading = 'lazy';
+  img.className = 'ph';
+  img.alt = 'Bern ' + i;
+  img.onclick = () => open_(i);
+  grid.appendChild(img);
+}
+
+// ---- analytics (aggregate only, no cookies) ----
+function send(body){ try{ navigator.sendBeacon ? navigator.sendBeacon('/api/track', new Blob([JSON.stringify(body)],{type:'application/json'})) : fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true}); }catch(e){} }
+send({t:'view'});
+const pageStart = Date.now();
+addEventListener('pagehide', ()=> send({t:'page', ms: Date.now()-pageStart}));
+
+let cur = 0, openedAt = 0;
+const lb = document.getElementById('lb'), lbimg = document.getElementById('lbimg'), lbc = document.getElementById('lbc');
+function open_(i){ logDwell(); cur = i; openedAt = Date.now(); lbimg.src = 'img/'+i+'.jpg'; lbc.textContent = i + ' / ' + N; lb.classList.add('on'); send({t:'img', i:i}); }
+function logDwell(){ if(openedAt && cur){ const ms = Date.now()-openedAt; if(ms>400) send({t:'dwell', i:cur, ms:ms}); } openedAt=0; }
+function close_(){ logDwell(); lb.classList.remove('on'); }
+function step(d){ logDwell(); let n = cur + d; if(n<1)n=N; if(n>N)n=1; open_(n); }
+document.addEventListener('keydown', e=>{ if(!lb.classList.contains('on'))return; if(e.key==='Escape')close_(); if(e.key==='ArrowRight')step(1); if(e.key==='ArrowLeft')step(-1); });
+// swipe
+let sx=0; lb.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+lb.addEventListener('touchend',e=>{ const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>50) step(dx<0?1:-1); });
+</script>
+</body>
+</html>
