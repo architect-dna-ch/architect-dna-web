@@ -40,10 +40,6 @@
   ],
   "rewrites": [
     {
-      "source": "/api/track",
-      "destination": "/api/track/index.js"
-    },
-    {
       "source": "/api/wg/set",
       "destination": "/api/wg/set.js"
     },
