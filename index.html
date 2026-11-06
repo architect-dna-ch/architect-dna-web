@@ -14,119 +14,249 @@
 <link rel="icon" href="/icon.png">
 <style>
 :root{
-  --bg:#F5F1E8; --ink:#1B1613; --ink2:#6A5F54; --ink3:#A99E8E;
+  --paper:#F5F1E8; --ink:#1B1613; --ink2:#6A5F54; --ink3:#A99E8E;
   --line:#E2D9C8; --card:#FBF8F1; --accent:#B24A2E;
+  --dark:#121010; --dark2:#1C1813; --dink:#EDE7DA; --dink2:#9A8F82; --dline:#2E2720; --dacc:#D8663F;
   --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
   --mono:'SF Mono','Fira Code','Courier New',monospace;
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#14110E; --ink:#EDE7DA; --ink2:#ADA293; --ink3:#6E6456;
-  --line:#2E2820; --card:#1E1A16; --accent:#C85E3E; color-scheme:dark;
-}}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{
-  background:var(--bg); color:var(--ink); font-family:var(--font);
-  -webkit-font-smoothing:antialiased;
-  display:flex; align-items:center; justify-content:center;
-  padding:max(20px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
-}
-.wrap{
-  width:100%; max-width:1080px;
-  display:grid; grid-template-columns:1.1fr .9fr; align-items:center;
-  gap:clamp(24px,5vw,72px);
-}
-/* ── left: the one offer ── */
-.eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase}
-h1{
-  font-size:clamp(34px,6.2vw,66px); font-weight:900; letter-spacing:-.045em;
-  line-height:.98; margin:16px 0 0; text-wrap:balance;
-}
-h1 .a{color:var(--accent)}
-.lead{margin-top:clamp(14px,2.2vh,22px);font-size:clamp(14px,1.7vw,17px);line-height:1.55;color:var(--ink2);max-width:40ch}
-.cta{margin-top:clamp(20px,3vh,30px);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.btn{
-  display:inline-flex;align-items:center;gap:9px;
-  background:var(--ink);color:var(--bg);text-decoration:none;
-  font-weight:800;font-size:14px;letter-spacing:.01em;
-  padding:13px 20px;border-radius:9px;transition:transform .12s ease,background .12s ease;
-}
-.btn:hover{transform:translateY(-1px);background:var(--accent)}
-.mail{font-family:var(--mono);font-size:12.5px;color:var(--ink2);text-decoration:none;letter-spacing:.02em}
-.mail:hover{color:var(--accent)}
-.meta{margin-top:clamp(18px,3vh,30px);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase}
-/* ── right: the thing itself, an Android home ── */
+html{height:100%}
+body{min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--font);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-y:hidden}
+body.open{overflow-y:auto}
+a{text-decoration:none}
+.sec{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:max(22px,env(safe-area-inset-top)) max(26px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(26px,env(safe-area-inset-left))}
+
+/* ── HERO ── */
+#hero .wrap{width:100%;max-width:1060px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:clamp(24px,5vw,70px)}
+.eye{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase}
+#hero h1{font-size:clamp(34px,6.1vw,64px);font-weight:900;letter-spacing:-.045em;line-height:.98;margin-top:16px;text-wrap:balance}
+#hero h1 .c{color:var(--accent)}
+.lead{margin-top:18px;font-size:clamp(14px,1.6vw,17px);line-height:1.55;color:var(--ink2);max-width:40ch}
+.cta{margin-top:26px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:14px;padding:13px 20px;border-radius:9px;
+  cursor:pointer;border:1px solid var(--ink);transition:transform .12s ease,background .12s ease,color .12s ease}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-1px)}
+.meta{margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase}
 .stage{display:flex;justify-content:center}
-.phone{
-  width:min(260px,62vw); aspect-ratio:9/19.5; max-height:82vh;
-  background:var(--card); border:1px solid var(--line);
-  border-radius:30px; padding:16px 14px;
-  display:flex; flex-direction:column; gap:12px;
-  box-shadow:0 1px 0 rgba(0,0,0,.02);
-}
-.pstat{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--ink3)}
-.pstat .dots{display:flex;gap:4px}
-.pstat .dots i{width:5px;height:5px;border-radius:50%;background:var(--ink3);display:block}
-.clock{font-size:46px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-top:6px}
+
+/* phone mock */
+.phone{width:min(250px,60vw);aspect-ratio:9/19.5;max-height:76vh;background:var(--card);border:1px solid var(--line);
+  border-radius:30px;padding:15px 13px;display:flex;flex-direction:column;gap:11px}
+.pstat{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.pstat .d{display:flex;gap:4px}.pstat .d i{width:5px;height:5px;border-radius:50%;background:var(--ink3)}
+.clock{font-size:44px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-top:4px;color:var(--ink)}
 .greet{font-size:12px;color:var(--ink2);margin-top:-2px}
-.search{margin-top:6px;height:34px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-size:11px;color:var(--ink3);font-family:var(--mono)}
-.grid{margin-top:4px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.search{height:32px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-size:11px;color:var(--ink3);font-family:var(--mono)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tile{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 .tile span{width:46%;height:46%;border-radius:6px;background:var(--ink);opacity:.82}
 .tile.ac span{background:var(--accent);opacity:1}
-.spacer{flex:1}
-.dock{display:flex;justify-content:space-between;padding:0 6px 2px}
-.dock i{width:38px;height:38px;border-radius:11px;background:var(--line);display:block}
-.dock i.ac{background:var(--accent)}
+.sp{flex:1}
+.dock{display:flex;justify-content:space-between;padding:0 6px}
+.dock i{width:36px;height:36px;border-radius:11px;background:var(--line)}.dock i.ac{background:var(--accent)}
+
+/* ── PRESENT (expands open) ── */
+#present{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1);background:var(--paper)}
+body.open #present{max-height:100vh}
+.deck{width:100%;height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:clamp(28px,5vw,70px);opacity:0;transform:translateX(40px) scale(.98);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide.prev{transform:translateX(-40px) scale(.98)}
+.slabel{position:absolute;top:clamp(18px,4vh,34px);left:clamp(22px,5vw,54px);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+
+/* slide 1 editorial */
+.s-ed{width:100%;max-width:980px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:clamp(22px,4vw,60px)}
+.s-ed h2{font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-.045em;line-height:.98;text-wrap:balance}
+.s-ed h2 .c{color:var(--accent)}
+.s-ed p{margin-top:14px;color:var(--ink2);font-size:clamp(13px,1.5vw,16px);max-width:36ch;line-height:1.5}
+
+/* slide 2 spotlight (dark) */
+#s2{background:radial-gradient(120% 90% at 50% 42%,#1d1812,var(--dark) 62%)}
+#s2 .slabel{color:var(--dacc)}
+.s-sp{display:flex;flex-direction:column;align-items:center;gap:clamp(16px,3vh,28px);text-align:center;color:var(--dink)}
+.s-sp .halo{position:relative}
+.s-sp .halo::before{content:"";position:absolute;inset:-16% -10%;border-radius:40px;background:radial-gradient(60% 55% at 50% 45%,rgba(216,102,63,.36),transparent 70%);filter:blur(10px)}
+.s-sp .phone{position:relative;background:var(--dark2);border-color:var(--dline);box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.s-sp .phone .clock,.s-sp .phone .greet{color:var(--dink)}
+.s-sp .phone .search,.s-sp .phone .tile{border-color:var(--dline)}
+.s-sp .phone .tile span{background:var(--dink)}.s-sp .phone .tile.ac span{background:var(--dacc)}
+.s-sp .phone .dock i{background:var(--dline)}.s-sp .phone .dock i.ac{background:var(--dacc)}
+.s-sp h2{font-size:clamp(20px,3.3vw,30px);font-weight:800;letter-spacing:-.03em}
+.s-sp .mail{font-family:var(--mono);font-size:12.5px;color:var(--dink2)}.s-sp .mail b{color:var(--dink)}
+
+/* slide 3 poster */
+.s-po{width:100%;max-width:960px}
+.s-po h2{font-size:clamp(44px,12vw,132px);font-weight:900;letter-spacing:-.06em;line-height:.86;text-transform:uppercase}
+.s-po h2 .c{color:var(--accent)}
+.s-po .row{margin-top:clamp(18px,3.5vh,34px);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.s-po p{color:var(--ink2);font-size:clamp(13px,1.5vw,16px);max-width:32ch;line-height:1.5}
+.s-po .mail{font-family:var(--mono);font-size:13px;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:2px}
+
+/* deck controls */
+.ctrl{position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);
+  display:flex;align-items:center;gap:14px;z-index:5}
+.ctrl .arw{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ctrl .arw:hover{border-color:var(--accent);color:var(--accent)}
+.dots{display:flex;gap:8px}
+.dots b{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer;transition:background .2s,width .2s;display:block}
+.dots b.on{background:var(--accent);width:22px;border-radius:5px}
+.collapse{position:absolute;top:clamp(16px,3.5vh,30px);right:clamp(20px,5vw,50px);z-index:5;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink2);cursor:pointer;
+  background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;text-transform:uppercase}
+.collapse:hover{color:var(--accent);border-color:var(--accent)}
+#s2 .collapse{background:var(--dark2);border-color:var(--dline);color:var(--dink2)}
+
 @media(max-width:720px){
-  html,body{overflow:hidden}
-  .wrap{grid-template-columns:1fr;gap:clamp(18px,3.5vh,30px);max-width:420px;text-align:center}
-  .lead{margin-left:auto;margin-right:auto}
+  #hero .wrap,.s-ed{grid-template-columns:1fr;gap:clamp(16px,3vh,24px);max-width:400px;text-align:center}
+  .lead,.s-ed p{margin-left:auto;margin-right:auto}
   .cta{justify-content:center}
-  .stage{order:-1}
-  .phone{width:min(168px,44vw);max-height:40vh;border-radius:24px;padding:12px 10px;gap:9px}
-  .clock{font-size:34px}
-  .grid{grid-template-columns:repeat(4,1fr);gap:7px}
+  #hero .stage,.s-ed .stage{order:-1}
+  .phone{width:min(150px,40vw);max-height:36vh;border-radius:22px;padding:11px 9px;gap:8px}
+  .clock{font-size:30px}
+  .s-po .row{flex-direction:column;align-items:flex-start}
+  .s-po h2{font-size:clamp(40px,15vw,90px)}
 }
-@media(max-height:560px) and (max-width:720px){
-  .stage{display:none}
-  .wrap{max-width:460px}
-}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main class="wrap">
-  <section class="intro">
-    <div class="eyebrow">Architect-DNA · Bern</div>
-    <h1>Home&nbsp;UI design<br>for <span class="a">Android</span>.</h1>
-    <p class="lead">Launchers, home screens and lock screens — designed as carefully as the apps they hold. One studio, one craft.</p>
-    <div class="cta">
-      <a class="btn" href="mailto:systems@architect-dna.ch?subject=Android%20home%20UI">Start a project →</a>
-      <a class="mail" href="mailto:systems@architect-dna.ch">systems@architect-dna.ch</a>
-    </div>
-    <div class="meta">Bern, Switzerland — remote worldwide</div>
-  </section>
 
-  <section class="stage" aria-hidden="true">
-    <div class="phone">
-      <div class="pstat"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
-      <div class="clock">9:41</div>
-      <div class="greet">Guten Morgen.</div>
-      <div class="search">Suchen …</div>
-      <div class="grid">
-        <div class="tile"><span></span></div>
-        <div class="tile ac"><span></span></div>
-        <div class="tile"><span></span></div>
-        <div class="tile"><span></span></div>
-        <div class="tile"><span></span></div>
-        <div class="tile"><span></span></div>
-        <div class="tile"><span></span></div>
-        <div class="tile"><span></span></div>
+<section class="sec" id="hero">
+  <div class="wrap">
+    <div class="intro">
+      <div class="eye">Architect-DNA · Bern</div>
+      <h1>Home&nbsp;UI design<br>for <span class="c">Android</span>.</h1>
+      <p class="lead">Launchers, home screens and lock screens — designed as carefully as the apps they hold.</p>
+      <div class="cta">
+        <a class="btn solid" href="mailto:systems@architect-dna.ch?subject=Android%20home%20UI">Contact →</a>
+        <button class="btn ghost" id="openDeck">See the concepts ▸</button>
       </div>
-      <div class="spacer"></div>
-      <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
+      <div class="meta">Bern, Switzerland — remote worldwide</div>
     </div>
-  </section>
-</main>
+    <div class="stage" aria-hidden="true">
+      <div class="phone">
+        <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+        <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
+        <div class="search">Suchen …</div>
+        <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
+        <div class="sp"></div>
+        <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="present">
+  <div class="deck">
+    <div class="collapse" id="closeDeck">↑ Schliessen</div>
+
+    <!-- 01 editorial -->
+    <div class="slide on" id="s1">
+      <div class="slabel">01 · Editorial</div>
+      <div class="s-ed">
+        <div>
+          <h2>Home UI design<br>for <span class="c">Android</span>.</h2>
+          <p>Headline and the real home side by side. Calm, Swiss, confident.</p>
+        </div>
+        <div class="stage">
+          <div class="phone">
+            <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+            <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
+            <div class="search">Suchen …</div>
+            <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
+            <div class="sp"></div>
+            <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 spotlight -->
+    <div class="slide" id="s2">
+      <div class="slabel">02 · Spotlight</div>
+      <div class="s-sp">
+        <div class="halo">
+          <div class="phone">
+            <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+            <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
+            <div class="search">Suchen …</div>
+            <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
+            <div class="sp"></div>
+            <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
+          </div>
+        </div>
+        <h2>Home UI design for Android.</h2>
+        <a class="mail" href="mailto:systems@architect-dna.ch">The home screen as the hero — <b>systems@architect-dna.ch</b></a>
+      </div>
+    </div>
+
+    <!-- 03 poster -->
+    <div class="slide" id="s3">
+      <div class="slabel">03 · Poster</div>
+      <div class="s-po">
+        <h2>Android<br>home,<br><span class="c">designed.</span></h2>
+        <div class="row">
+          <p>Pure type. The words are the design.</p>
+          <a class="mail" href="mailto:systems@architect-dna.ch">systems@architect-dna.ch</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl">
+      <div class="arw" id="prev" aria-label="Zurück">‹</div>
+      <div class="dots"><b class="on" data-i="0"></b><b data-i="1"></b><b data-i="2"></b></div>
+      <div class="arw" id="next" aria-label="Weiter">›</div>
+    </div>
+  </div>
+</section>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const dots=[...document.querySelectorAll('.dots b')];
+let i=0, timer=null;
+function go(n){
+  n=(n+slides.length)%slides.length;
+  slides.forEach((s,k)=>{s.classList.toggle('on',k===n);s.classList.toggle('prev',k<n);});
+  dots.forEach((d,k)=>d.classList.toggle('on',k===n));
+  i=n;
+}
+function play(){ stop(); timer=setInterval(()=>go(i+1),4800); }
+function stop(){ if(timer){clearInterval(timer);timer=null;} }
+document.getElementById('next').onclick=()=>{go(i+1);play();};
+document.getElementById('prev').onclick=()=>{go(i-1);play();};
+dots.forEach(d=>d.onclick=()=>{go(+d.dataset.i);play();});
+
+const body=document.body, present=document.getElementById('present');
+function open(){
+  body.classList.add('open');
+  setTimeout(()=>{present.scrollIntoView({behavior:'smooth',block:'start'});},80);
+  go(0);play();
+}
+function close(){
+  stop();
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>body.classList.remove('open'),520);
+}
+document.getElementById('openDeck').onclick=open;
+document.getElementById('closeDeck').onclick=close;
+addEventListener('keydown',e=>{
+  if(!body.classList.contains('open'))return;
+  if(e.key==='ArrowRight'){go(i+1);play();}
+  if(e.key==='ArrowLeft'){go(i-1);play();}
+  if(e.key==='Escape')close();
+});
+const deck=document.querySelector('.deck');
+deck.addEventListener('mouseenter',stop);
+deck.addEventListener('mouseleave',()=>{if(body.classList.contains('open'))play();});
+</script>
 </body>
 </html>
