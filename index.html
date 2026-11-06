@@ -45,12 +45,12 @@ a{text-decoration:none}
 .meta{margin-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase}
 .stage{display:flex;justify-content:center}
 
-/* phone mock */
-.phone{width:min(250px,60vw);aspect-ratio:9/19.5;max-height:76vh;background:var(--card);border:1px solid var(--line);
-  border-radius:30px;padding:15px 13px;display:flex;flex-direction:column;gap:11px}
+/* ── phone base ── */
+.phone{width:min(270px,64vw);aspect-ratio:9/19.5;max-height:78vh;background:var(--card);border:1px solid var(--line);
+  border-radius:32px;padding:16px 14px;display:flex;flex-direction:column;gap:11px;overflow:hidden}
 .pstat{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink3)}
 .pstat .d{display:flex;gap:4px}.pstat .d i{width:5px;height:5px;border-radius:50%;background:var(--ink3)}
-.clock{font-size:44px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-top:4px;color:var(--ink)}
+.clock{font-size:46px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-top:4px;color:var(--ink)}
 .greet{font-size:12px;color:var(--ink2);margin-top:-2px}
 .search{height:32px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-size:11px;color:var(--ink3);font-family:var(--mono)}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -61,44 +61,51 @@ a{text-decoration:none}
 .dock{display:flex;justify-content:space-between;padding:0 6px}
 .dock i{width:36px;height:36px;border-radius:11px;background:var(--line)}.dock i.ac{background:var(--accent)}
 
+/* concept B: list launcher */
+.phone.list .lhead{font-size:26px;font-weight:900;letter-spacing:-.04em;margin-top:2px}
+.phone.list .applist{display:flex;flex-direction:column;margin-top:4px}
+.phone.list .arow{display:flex;align-items:baseline;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line)}
+.phone.list .arow .n{font-family:var(--mono);font-size:10px;color:var(--ink3);width:16px}
+.phone.list .arow .nm{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.phone.list .arow.ac .nm{color:var(--accent)}
+.phone.list .allapps{margin-top:auto;font-family:var(--mono);font-size:11px;color:var(--ink2);padding-top:8px}
+
+/* concept C: dark dashboard */
+.phone.dash{background:var(--dark2);border-color:var(--dline)}
+.phone.dash .pstat{color:var(--dink2)}.phone.dash .pstat .d i{background:var(--dink2)}
+.phone.dash .toprow{display:flex;justify-content:space-between;align-items:flex-start}
+.phone.dash .clock{color:var(--dink);font-size:40px}
+.phone.dash .wx{text-align:right;color:var(--dink2);font-size:11px;line-height:1.5;font-family:var(--mono)}
+.phone.dash .date{color:var(--dink2);font-size:11px;margin-top:-4px}
+.phone.dash .evt{border:1px solid var(--dline);border-radius:12px;padding:10px 12px;margin-top:2px}
+.phone.dash .evt .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dacc);text-transform:uppercase}
+.phone.dash .evt .v{color:var(--dink);font-size:13px;font-weight:700;margin-top:3px}
+.phone.dash .grid{grid-template-columns:repeat(4,1fr);gap:7px}
+.phone.dash .tile{border-color:var(--dline)}
+.phone.dash .tile span{background:var(--dink);opacity:.8}.phone.dash .tile.ac span{background:var(--dacc);opacity:1}
+.phone.dash .now{display:flex;align-items:center;gap:9px;border:1px solid var(--dline);border-radius:11px;padding:8px 11px;margin-top:auto}
+.phone.dash .now .pl{width:22px;height:22px;border-radius:50%;background:var(--dacc);flex:none}
+.phone.dash .now .t{color:var(--dink);font-size:11px;font-weight:600}
+.phone.dash .now .s{color:var(--dink2);font-size:10px}
+
 /* ── PRESENT (expands open) ── */
 #present{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1);background:var(--paper)}
 body.open #present{max-height:100vh}
 .deck{width:100%;height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  padding:clamp(28px,5vw,70px);opacity:0;transform:translateX(40px) scale(.98);
+.intro-note{position:absolute;top:clamp(16px,3.5vh,30px);left:50%;transform:translateX(-50%);text-align:center;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase;white-space:nowrap}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:clamp(26px,5vw,70px);
+  padding:clamp(60px,9vh,96px) clamp(26px,5vw,70px) clamp(74px,11vh,104px);
+  opacity:0;transform:translateX(44px) scale(.97);
   transition:opacity .6s ease,transform .6s cubic-bezier(.4,0,.2,1);pointer-events:none}
 .slide.on{opacity:1;transform:none;pointer-events:auto}
-.slide.prev{transform:translateX(-40px) scale(.98)}
-.slabel{position:absolute;top:clamp(18px,4vh,34px);left:clamp(22px,5vw,54px);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
-
-/* slide 1 editorial */
-.s-ed{width:100%;max-width:980px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:clamp(22px,4vw,60px)}
-.s-ed h2{font-size:clamp(30px,5vw,56px);font-weight:900;letter-spacing:-.045em;line-height:.98;text-wrap:balance}
-.s-ed h2 .c{color:var(--accent)}
-.s-ed p{margin-top:14px;color:var(--ink2);font-size:clamp(13px,1.5vw,16px);max-width:36ch;line-height:1.5}
-
-/* slide 2 spotlight (dark) */
-#s2{background:radial-gradient(120% 90% at 50% 42%,#1d1812,var(--dark) 62%)}
-#s2 .slabel{color:var(--dacc)}
-.s-sp{display:flex;flex-direction:column;align-items:center;gap:clamp(16px,3vh,28px);text-align:center;color:var(--dink)}
-.s-sp .halo{position:relative}
-.s-sp .halo::before{content:"";position:absolute;inset:-16% -10%;border-radius:40px;background:radial-gradient(60% 55% at 50% 45%,rgba(216,102,63,.36),transparent 70%);filter:blur(10px)}
-.s-sp .phone{position:relative;background:var(--dark2);border-color:var(--dline);box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
-.s-sp .phone .clock,.s-sp .phone .greet{color:var(--dink)}
-.s-sp .phone .search,.s-sp .phone .tile{border-color:var(--dline)}
-.s-sp .phone .tile span{background:var(--dink)}.s-sp .phone .tile.ac span{background:var(--dacc)}
-.s-sp .phone .dock i{background:var(--dline)}.s-sp .phone .dock i.ac{background:var(--dacc)}
-.s-sp h2{font-size:clamp(20px,3.3vw,30px);font-weight:800;letter-spacing:-.03em}
-.s-sp .mail{font-family:var(--mono);font-size:12.5px;color:var(--dink2)}.s-sp .mail b{color:var(--dink)}
-
-/* slide 3 poster */
-.s-po{width:100%;max-width:960px}
-.s-po h2{font-size:clamp(44px,12vw,132px);font-weight:900;letter-spacing:-.06em;line-height:.86;text-transform:uppercase}
-.s-po h2 .c{color:var(--accent)}
-.s-po .row{margin-top:clamp(18px,3.5vh,34px);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
-.s-po p{color:var(--ink2);font-size:clamp(13px,1.5vw,16px);max-width:32ch;line-height:1.5}
-.s-po .mail{font-family:var(--mono);font-size:13px;color:var(--ink);border-bottom:2px solid var(--accent);padding-bottom:2px}
+.slide.prev{transform:translateX(-44px) scale(.97)}
+.slide .say{max-width:30ch}
+.slabel{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+.slide h2{font-size:clamp(26px,3.6vw,40px);font-weight:900;letter-spacing:-.04em;line-height:1;margin-top:12px;text-wrap:balance}
+.slide .say p{margin-top:14px;color:var(--ink2);font-size:clamp(13px,1.5vw,16px);line-height:1.55}
+#d2{background:radial-gradient(120% 90% at 50% 42%,#1d1812,var(--dark) 64%)}
+#d2 .slabel{color:var(--dacc)}#d2 h2{color:var(--dink)}#d2 .say p{color:var(--dink2)}
 
 /* deck controls */
 .ctrl{position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);
@@ -109,21 +116,22 @@ body.open #present{max-height:100vh}
 .dots{display:flex;gap:8px}
 .dots b{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer;transition:background .2s,width .2s;display:block}
 .dots b.on{background:var(--accent);width:22px;border-radius:5px}
-.collapse{position:absolute;top:clamp(16px,3.5vh,30px);right:clamp(20px,5vw,50px);z-index:5;
+.collapse{position:absolute;top:clamp(16px,3.5vh,30px);right:clamp(20px,5vw,50px);z-index:6;
   font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink2);cursor:pointer;
   background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;text-transform:uppercase}
 .collapse:hover{color:var(--accent);border-color:var(--accent)}
-#s2 .collapse{background:var(--dark2);border-color:var(--dline);color:var(--dink2)}
+#d2 .collapse{background:var(--dark2);border-color:var(--dline);color:var(--dink2)}
 
-@media(max-width:720px){
-  #hero .wrap,.s-ed{grid-template-columns:1fr;gap:clamp(16px,3vh,24px);max-width:400px;text-align:center}
-  .lead,.s-ed p{margin-left:auto;margin-right:auto}
-  .cta{justify-content:center}
-  #hero .stage,.s-ed .stage{order:-1}
-  .phone{width:min(150px,40vw);max-height:36vh;border-radius:22px;padding:11px 9px;gap:8px}
-  .clock{font-size:30px}
-  .s-po .row{flex-direction:column;align-items:flex-start}
-  .s-po h2{font-size:clamp(40px,15vw,90px)}
+@media(max-width:760px){
+  #hero .wrap{grid-template-columns:1fr;gap:clamp(16px,3vh,24px);max-width:400px;text-align:center}
+  .lead{margin:16px auto 0}.cta{justify-content:center}#hero .stage{order:-1}
+  .slide{flex-direction:column;gap:clamp(14px,2.5vh,22px);text-align:center}
+  .slide .say{order:2;max-width:38ch}
+  .slide h2{font-size:clamp(22px,6vw,30px)}
+  .phone{width:min(146px,40vw);max-height:40vh;border-radius:22px;padding:11px 9px;gap:8px}
+  .clock,.phone.dash .clock{font-size:30px}
+  .phone.list .lhead{font-size:20px}.phone.list .arow .nm{font-size:14px}
+  .intro-note{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -158,55 +166,65 @@ body.open #present{max-height:100vh}
 <section id="present">
   <div class="deck">
     <div class="collapse" id="closeDeck">↑ Schliessen</div>
+    <div class="intro-note">Drei Home-Konzepte · ein Studio</div>
 
-    <!-- 01 editorial -->
-    <div class="slide on" id="s1">
-      <div class="slabel">01 · Editorial</div>
-      <div class="s-ed">
-        <div>
-          <h2>Home UI design<br>for <span class="c">Android</span>.</h2>
-          <p>Headline and the real home side by side. Calm, Swiss, confident.</p>
-        </div>
-        <div class="stage">
-          <div class="phone">
-            <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
-            <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
-            <div class="search">Suchen …</div>
-            <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
-            <div class="sp"></div>
-            <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
-          </div>
+    <!-- 01 GRID -->
+    <div class="slide on" id="d1">
+      <div class="say">
+        <div class="slabel">01 · Raster</div>
+        <h2>Das ruhige Raster.</h2>
+        <p>Grosse Uhr, Suche, saubere Kacheln. Alles an seinem Platz — nichts blinkt. Der Alltags-Home.</p>
+      </div>
+      <div class="stage">
+        <div class="phone">
+          <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+          <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
+          <div class="search">Suchen …</div>
+          <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
+          <div class="sp"></div>
+          <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
         </div>
       </div>
     </div>
 
-    <!-- 02 spotlight -->
-    <div class="slide" id="s2">
-      <div class="slabel">02 · Spotlight</div>
-      <div class="s-sp">
-        <div class="halo">
-          <div class="phone">
-            <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
-            <div class="clock">9:41</div><div class="greet">Guten Morgen.</div>
-            <div class="search">Suchen …</div>
-            <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
-            <div class="sp"></div>
-            <div class="dock"><i></i><i class="ac"></i><i></i><i></i></div>
+    <!-- 02 LIST -->
+    <div class="slide" id="d3b">
+      <div class="say">
+        <div class="slabel">02 · Liste</div>
+        <h2>Die Lese-Liste.</h2>
+        <p>Keine Icons — Apps als Typografie. Durchnummeriert, schnell zu lesen, wie ein Inhaltsverzeichnis deines Tages.</p>
+      </div>
+      <div class="stage">
+        <div class="phone list">
+          <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+          <div class="lhead">Heute</div>
+          <div class="applist">
+            <div class="arow"><span class="n">01</span><span class="nm">Mediathek</span></div>
+            <div class="arow"><span class="n">02</span><span class="nm">Kompass</span></div>
+            <div class="arow"><span class="n">03</span><span class="nm">Flexplan</span></div>
+            <div class="arow"><span class="n">04</span><span class="nm">Sonne &amp; Welt</span></div>
+            <div class="arow ac"><span class="n">05</span><span class="nm">SOS</span></div>
           </div>
+          <div class="allapps">Alle Apps →</div>
         </div>
-        <h2>Home UI design for Android.</h2>
-        <a class="mail" href="mailto:systems@architect-dna.ch">The home screen as the hero — <b>systems@architect-dna.ch</b></a>
       </div>
     </div>
 
-    <!-- 03 poster -->
-    <div class="slide" id="s3">
-      <div class="slabel">03 · Poster</div>
-      <div class="s-po">
-        <h2>Android<br>home,<br><span class="c">designed.</span></h2>
-        <div class="row">
-          <p>Pure type. The words are the design.</p>
-          <a class="mail" href="mailto:systems@architect-dna.ch">systems@architect-dna.ch</a>
+    <!-- 03 DASHBOARD -->
+    <div class="slide" id="d2">
+      <div class="say">
+        <div class="slabel">03 · Dashboard</div>
+        <h2>Der dunkle Überblick.</h2>
+        <p>Uhr, Wetter, nächster Termin und Musik auf einen Blick. Dunkel, informativ — für volle Tage.</p>
+      </div>
+      <div class="stage">
+        <div class="phone dash">
+          <div class="pstat"><span>9:41</span><span class="d"><i></i><i></i><i></i></span></div>
+          <div class="toprow"><div class="clock">9:41</div><div class="wx">11° ☁<br>Bern</div></div>
+          <div class="date">Mo, 2. November</div>
+          <div class="evt"><div class="k">Nächster Termin · 13:10</div><div class="v">Vorbereitung erster Tag</div></div>
+          <div class="grid"><div class="tile"><span></span></div><div class="tile ac"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div><div class="tile"><span></span></div></div>
+          <div class="now"><div class="pl"></div><div><div class="t">Void Freq</div><div class="s">läuft · 2:14</div></div></div>
         </div>
       </div>
     </div>
