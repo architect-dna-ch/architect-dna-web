@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binom-Drill</title>
+<meta name="description" content="Harter Trainer: Binomische Formeln, Faktorisieren, Bruchterme kürzen, verknüpfen, Doppelbrüche, quadratische Ergänzung. Unendlich viele Aufgaben, symbolische Prüfung.">
+<link rel="icon" href="/icon.png">
+<style>
+:root{
+  --bg:#F6F4EE; --bg2:#ECE9E1; --card:#FFFFFF; --line:#DEDAD0;
+  --ink:#1A1A1A; --ink2:#55534E; --ink3:#9A978F;
+  --acc:#B5271E; --ok:#2F7A3E; --warn:#A86A00; --bad:#B5271E;
+  --mono:'SF Mono','Fira Code','JetBrains Mono',Menlo,Consolas,monospace;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --math:'STIX Two Math','Cambria Math','Latin Modern Math',Georgia,'Times New Roman',serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121211; --bg2:#1C1C1A; --card:#1A1A18; --line:#2E2D29;
+  --ink:#EDEBE5; --ink2:#B4B1A8; --ink3:#77746C; --acc:#E0574B; --ok:#62B874; --warn:#E0A43A; --bad:#E0574B;
+}}
+:root[data-theme="dark"]{
+  --bg:#121211; --bg2:#1C1C1A; --card:#1A1A18; --line:#2E2D29;
+  --ink:#EDEBE5; --ink2:#B4B1A8; --ink3:#77746C; --acc:#E0574B; --ok:#62B874; --warn:#E0A43A; --bad:#E0574B;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:900;letter-spacing:-.04em;font-size:19px;white-space:nowrap}
+.logo span{color:var(--acc)}
+.levels{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.lv{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:5px 9px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--ink2)}
+.lv.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.lv.ad{margin-left:6px}
+.lv.ad.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.stats{margin-left:auto;display:flex;gap:14px;font-family:var(--mono);font-size:12px;color:var(--ink2)}
+.stats b{color:var(--ink);font-size:14px}
+main{max-width:980px;margin:0 auto;padding:22px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px 22px 18px}
+.meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);gap:10px}
+.meta .tag{color:var(--acc);font-weight:700}
+.timer.hot{color:var(--bad);font-weight:700}
+h2{font-size:clamp(20px,3.2vw,27px);letter-spacing:-.035em;line-height:1.15;margin:10px 0 0;font-weight:800}
+.problem{margin:22px 0 22px;padding:22px 10px;min-height:110px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--bg2);overflow-x:auto}
+.mx{font-family:var(--math);font-size:clamp(22px,4.4vw,34px);white-space:nowrap;line-height:1.2}
+.m{font-family:var(--math);font-size:1.12em;white-space:nowrap}
+.mx i,.m i{font-style:italic}
+.op{margin:0 .22em}
+.dt{margin:0 .12em}
+.ng{margin-right:.04em}
+sup{font-size:.62em;vertical-align:.75em;line-height:0;margin-left:.03em}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .14em;text-align:center}
+.fr>.nu{padding:0 .22em .08em;border-bottom:.06em solid currentColor}
+.fr>.de{padding:.1em .22em 0}
+.fr .fr{font-size:.88em}
+.pr{display:inline-flex;align-items:center}
+.pr.tall>.pl{font-size:1.9em;font-weight:200;line-height:1;transform:translateY(-.04em)}
+.box{display:inline-block;width:1.25em;height:1.05em;border:.07em dashed var(--acc);border-radius:.15em;vertical-align:-.15em;margin:0 .08em}
+.inrow{display:flex;gap:8px}
+#inp{flex:1;min-width:0;font-family:var(--mono);font-size:17px;padding:13px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);outline:none}
+#inp:focus{border-color:var(--ink)}
+.btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:6px;padding:0 18px;font-weight:700;cursor:pointer;font-size:15px;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.keys{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.keys button{font-family:var(--mono);font-size:13px;border:1px solid var(--line);background:var(--bg);border-radius:5px;padding:6px 10px;cursor:pointer;color:var(--ink2)}
+.preview{min-height:44px;margin-top:10px;font-size:14px;color:var(--ink3);display:flex;align-items:center;gap:10px;overflow-x:auto}
+.preview .m{font-size:20px;color:var(--ink)}
+.preview .err{color:var(--warn);font-family:var(--mono);font-size:12px}
+.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.actions .btn{padding:10px 16px;font-size:14px}
+.fb{margin-top:14px;padding:12px 14px;border-radius:6px;font-size:15px;line-height:1.45;display:none}
+.fb.show{display:block}
+.fb.ok{background:color-mix(in srgb,var(--ok) 13%,transparent);color:var(--ok)}
+.fb.bad{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.fb.warn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+.fb .m{color:var(--ink)}
+.sol{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;display:none}
+.sol.show{display:block}
+.sol h3{font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin:0 0 8px;font-weight:600}
+.sol ol{margin:0;padding-left:22px;line-height:2.1;font-size:15px;color:var(--ink2)}
+.sol ol li{padding-left:4px}
+.sol .final{margin-top:10px;font-size:15px}
+.hint{margin-top:12px;font-size:15px;color:var(--ink2);line-height:2;display:none}
+.hint.show{display:block}
+.hint b{color:var(--acc)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+details{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 18px}
+summary{cursor:pointer;font-weight:800;letter-spacing:-.02em}
+details p,details li{font-size:14px;color:var(--ink2);line-height:1.9}
+details ul{padding-left:18px;margin:8px 0 0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--bg2);padding:1px 5px;border-radius:4px}
+.log{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:16px;display:flex;gap:3px;flex-wrap:wrap}
+.log i{width:10px;height:10px;border-radius:2px;background:var(--line);display:block}
+.log i.o{background:var(--ok)} .log i.x{background:var(--bad)} .log i.h{background:var(--warn)}
+.foot{margin-top:22px;font-size:12px;color:var(--ink3);font-family:var(--mono)}
+.foot a{color:inherit}
+@media (max-width:720px){
+  .stats{margin-left:0;width:100%;justify-content:space-between}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:16px 14px}
+  .inrow{flex-direction:column}
+  .btn{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="logo">Binom<span>·</span>Drill</div>
+    <div class="levels" id="levels"></div>
+    <div class="stats">
+      <span>Punkte <b id="sPts">0</b></span>
+      <span>Serie <b id="sStr">0</b></span>
+      <span>Quote <b id="sRate">–</b></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <div class="meta"><span><span class="tag" id="mType">–</span> · <span id="mLv">Stufe</span></span><span class="timer" id="timer">0:00</span></div>
+    <h2 id="instr">…</h2>
+    <div class="problem"><div class="mx" id="prob"></div></div>
+
+    <div class="inrow">
+      <input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Deine Antwort, z. B. (3x-4y)^2 oder (x-3)/(x+3)">
+      <button class="btn" id="bCheck">Prüfen ↵</button>
+    </div>
+    <div class="keys" id="keys"></div>
+    <div class="preview" id="prev"><span>Vorschau erscheint hier</span></div>
+
+    <div class="actions">
+      <button class="btn ghost" id="bHint">Tipp (−50 %)</button>
+      <button class="btn ghost" id="bShow">Lösung zeigen</button>
+      <button class="btn ghost" id="bSkip">Neue Aufgabe</button>
+    </div>
+    <div class="hint" id="hint"></div>
+    <div class="fb" id="fb"></div>
+    <div class="sol" id="sol"><h3>Lösungsweg</h3><ol id="steps"></ol><div class="final" id="final"></div></div>
+    <div class="log" id="log"></div>
+  </section>
+
+  <div class="grid2">
+    <details>
+      <summary>Spickzettel</summary>
+      <ul>
+        <li>1. Binom: <span class="m" data-m="(a+b)^2=a^2+2ab+b^2"></span></li>
+        <li>2. Binom: <span class="m" data-m="(a-b)^2=a^2-2ab+b^2"></span></li>
+        <li>3. Binom: <span class="m" data-m="(a+b)(a-b)=a^2-b^2"></span></li>
+        <li>Vorzeichen-Trick: <span class="m" data-m="b-a=-(a-b)"></span>, aber <span class="m" data-m="(b-a)^2=(a-b)^2"></span></li>
+        <li>Immer zuerst den gemeinsamen Faktor ausklammern.</li>
+        <li>Kürzen nur aus Produkten – nie aus Summen: <span class="m" data-m="((x+3))/((x+5))"></span> lässt sich <b>nicht</b> kürzen.</li>
+        <li>Definitionslücken bestimmt man am <b>ursprünglichen</b> Nenner, nicht am gekürzten.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Eingabe &amp; Bewertung</summary>
+      <ul>
+        <li>Hochzahl: <code>^</code> oder <code>²</code> · Bruch: <code>/</code> · Division auch <code>:</code></li>
+        <li>Mal darf fehlen: <code>3x(x-2)^2</code>. Implizites Mal bindet stärker: <code>1/2x</code> = <span class="m" data-m="1/(2x)"></span></li>
+        <li>Klammern setzen! <code>(x-3)/(x+3)</code>, nicht <code>x-3/x+3</code>.</li>
+        <li>Geprüft wird symbolisch: jede gleichwertige Form zählt – aber <b>Faktorisieren</b> heisst vollständig in Faktoren mit ganzzahligen, teilerfremden Koeffizienten, und <b>Vereinfachen</b> heisst vollständig gekürzt.</li>
+        <li>Adaptiv: 3 saubere Treffer in Folge → Stufe hoch. Lösung angeschaut oder 2× daneben → Stufe runter.</li>
+        <li>Stufe 5 hat eine Uhr. Läuft sie ab, ist die Aufgabe verloren.</li>
+      </ul>
+    </details>
+  </div>
+  <div class="foot">Architect-DNA · <a href="/">architect-dna.ch</a> · <a href="#" id="reset">Statistik zurücksetzen</a></div>
+</main>
+
+<script>
+/* ================= Utils ================= */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const chance=p=>Math.random()<p;
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function wpick(items){let s=0;for(const[,w]of items)s+=w;let r=Math.random()*s;for(const[v,w]of items){r-=w;if(r<0)return v}return items[items.length-1][0]}
+
+/* ================= Polynome (ganzzahlig, multivariat) ================= */
+const VORD='abcdefghijklmnopqrstuvwxyz';
+function keyParse(k){const o={};k.replace(/([a-z])(\d+)/g,(_,v,e)=>{o[v]=+e});return o}
+function keyMake(o){return Object.keys(o).filter(v=>o[v]>0).sort().map(v=>v+o[v]).join('')}
+function keyMul(a,b){const o=keyParse(a),p=keyParse(b);for(const v in p)o[v]=(o[v]||0)+p[v];return keyMake(o)}
+function keyDeg(k){let d=0;k.replace(/[a-z](\d+)/g,(_,e)=>{d+=+e});return d}
+const P={
+  c(n){const m=new Map();if(n)m.set('',n);return m},
+  mono(c,vars){const m=new Map();if(c)m.set(keyMake(vars||{}),c);return m},
+  v(x){return P.mono(1,{[x]:1})},
+  add(a,b){const m=new Map(a);for(const[k,c]of b){const s=(m.get(k)||0)+c;if(s)m.set(k,s);else m.delete(k)}return m},
+  neg(a){const m=new Map();for(const[k,c]of a)m.set(k,-c);return m},
+  sub(a,b){return P.add(a,P.neg(b))},
+  scale(a,s){const m=new Map();if(s)for(const[k,c]of a)m.set(k,c*s);return m},
+  divc(a,s){const m=new Map();for(const[k,c]of a)m.set(k,c/s);return m},
+  mul(a,b){const m=new Map();for(const[k1,c1]of a)for(const[k2,c2]of b){const k=keyMul(k1,k2);const s=(m.get(k)||0)+c1*c2;if(s)m.set(k,s);else m.delete(k)}return m},
+  pow(a,e){let r=P.c(1);for(let i=0;i<e;i++)r=P.mul(r,a);return r},
+  zero(a){return a.size===0},
+  eq(a,b){return P.zero(P.sub(a,b))},
+  deg(a){let d=0;for(const k of a.keys())d=Math.max(d,keyDeg(k));return d},
+  isConst(a){return a.size===0||(a.size===1&&a.has(''))},
+  cval(a){return a.get('')||0},
+  content(a){let g=0;for(const c of a.values())g=gcd(g,c);return g},
+  isMono(a){return a.size===1},
+  vars(a,set){for(const k of a.keys())for(const v in keyParse(k))set.add(v);return set},
+  ev(a,env){let s=0;for(const[k,c]of a){let t=c;const o=keyParse(k);for(const v in o)t*=Math.pow(env[v],o[v]);s+=t}return s},
+};
+function termCmp(k1,k2){const d=keyDeg(k2)-keyDeg(k1);if(d)return d;const a=keyParse(k1),b=keyParse(k2);for(const v of VORD){const x=(b[v]||0)-(a[v]||0);if(x)return x}return 0}
+function monoAscii(k,c,first){
+  const o=keyParse(k);const vs=Object.keys(o).sort().map(v=>v+(o[v]>1?'^'+o[v]:'')).join('');
+  const a=Math.abs(c);const body=(vs&&a===1)?vs:(a+vs);
+  return first?(c<0?'-':'')+body:(c<0?'-':'+')+body;
+}
+function polyAscii(p,mode){
+  let ts=[...p.keys()].sort(termCmp);
+  if(!ts.length)return '0';
+  if(mode==='shuffle'&&ts.length>2){const f=ts.slice();for(let i=0;i<6&&ts.join()===f.join();i++)shuffle(ts)}
+  else if(mode==='pos'||mode==='shuffle'){if(p.get(ts[0])<0){const i=ts.findIndex(k=>p.get(k)>0);if(i>0){const[k]=ts.splice(i,1);ts.unshift(k)}}}
+  return ts.map((k,i)=>monoAscii(k,p.get(k),i===0)).join('');
+}
+// c * mon * Π (poly)^e
+function factAscii(c,mon,items){
+  const mk=keyMake(mon||{});const monStr=mk?monoAscii(mk,1,true):'';
+  items=(items||[]).filter(it=>it.e>0);
+  if(!items.length){if(!mk)return String(c);return (c===-1?'-':c===1?'':String(c))+monStr}
+  if(c===1&&!mk&&items.length===1&&items[0].e===1)return polyAscii(items[0].p,'pos');
+  let s=c===-1?'-':c===1?'':String(c);
+  s+=monStr;
+  for(const it of items)s+='('+polyAscii(it.p,'pos')+')'+(it.e>1?'^'+it.e:'');
+  return s;
+}
+const sqAscii=m=>{const s=polyAscii(m);return /^[a-z]$/.test(s)?s+'^2':'('+s+')^2'};
+const wrap=s=>'('+s+')';
+
+/* ================= Parser ================= */
+function tokenize(s){
+  const sup={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
+  s=s.replace(/[−–—]/g,'-').replace(/[·×⋅∙]/g,'*').replace(/÷/g,':');
+  const t=[];let i=0;
+  while(i<s.length){const c=s[i];
+    if(/\s/.test(c)){i++;continue}
+    if(sup[c]){let d='';while(i<s.length&&sup[s[i]]){d+=sup[s[i]];i++}t.push({k:'^'},{k:'num',v:d});continue}
+    if(/[0-9.]/.test(c)){let d='';while(i<s.length&&/[0-9.]/.test(s[i])){d+=s[i];i++}
+      if(d==='.'||(d.match(/\./g)||[]).length>1)throw new Error('Ungültige Zahl „'+d+'“');t.push({k:'num',v:d});continue}
+    if(/[a-zA-Z]/.test(c)){t.push({k:'var',v:c.toLowerCase()});i++;continue}
+    if('☐□'.includes(c)){t.push({k:'box'});i++;continue}
+    if('+-*/:^()[]'.includes(c)){t.push({k:c==='['?'(':c===']'?')':c});i++;continue}
+    if(c===',')throw new Error('Dezimalpunkt statt Komma verwenden');
+    throw new Error('Unbekanntes Zeichen „'+c+'“');
+  }
+  return t;
+}
+function parse(s){
+  const t=tokenize(s);let i=0;
+  if(!t.length)throw new Error('Leer');
+  const peek=()=>t[i],next=()=>t[i++];
+  const isK=k=>peek()&&peek().k===k;
+  function expr(){let n=term();while(isK('+')||isK('-')){const o=next().k;const b=term();n={t:o==='+'?'add':'sub',a:n,b}}return n}
+  function term(){let n=impl();while(peek()&&'*/:'.includes(peek().k)){const o=next().k;const b=impl();n=o==='*'?{t:'mul',a:n,b,imp:false}:{t:'div',a:n,b,colon:o===':'}}return n}
+  function impl(){let n=unary();while(isK('var')||isK('(')||isK('box')){const b=power();n={t:'mul',a:n,b,imp:true}}return n}
+  function unary(){if(isK('-')){next();return{t:'neg',a:unary()}}if(isK('+')){next();return unary()}return power()}
+  function power(){let n=atom();
+    while(isK('^')){next();let e;
+      if(isK('(')){next();const x=next();if(!x||x.k!=='num')throw new Error('Hochzahl muss eine Zahl sein');if(!isK(')'))throw new Error('Klammer nicht geschlossen');next();e=x.v}
+      else{const x=next();if(!x||x.k!=='num')throw new Error('Hochzahl fehlt');e=x.v}
+      if(!/^\d+$/.test(e))throw new Error('Nur ganzzahlige Hochzahlen');e=+e;if(e>12)throw new Error('Hochzahl zu gross');
+      n={t:'pow',a:n,e}}
+    return n}
+  function atom(){const x=next();if(!x)throw new Error('Ausdruck unvollständig');
+    if(x.k==='num'){let p,q=1;if(x.v.includes('.')){const[a,b]=x.v.split('.');q=Math.pow(10,b.length);p=parseInt((a||'0')+b,10)}else p=parseInt(x.v,10);const g=gcd(p,q)||1;return{t:'num',v:x.v,p:p/g,q:q/g}}
+    if(x.k==='var')return{t:'var',n:x.v};
+    if(x.k==='box')return{t:'box'};
+    if(x.k==='('){const e=expr();if(!isK(')'))throw new Error('Klammer nicht geschlossen');next();return{t:'paren',a:e}}
+    throw new Error('Unerwartetes „'+x.k+'“');}
+  const r=expr();
+  if(i<t.length)throw new Error(t[i].k===')'?'Zu viele schliessende Klammern':'Unerwartetes „'+(t[i].v||t[i].k)+'“ – Operator vergessen?');
+  return r;
+}
+
+/* ================= Auswertung zu (Zähler, Nenner) – ohne Kürzen ================= */
+function evalN(n){
+  switch(n.t){
+    case 'num':return{n:P.c(n.p),d:P.c(n.q)};
+    case 'var':return{n:P.v(n.n),d:P.c(1)};
+    case 'box':throw new Error('Platzhalter ☐ in der Antwort');
+    case 'paren':return evalN(n.a);
+    case 'neg':{const r=evalN(n.a);return{n:P.neg(r.n),d:r.d}}
+    case 'add':case 'sub':{const a=evalN(n.a);let b=evalN(n.b);if(n.t==='sub')b={n:P.neg(b.n),d:b.d};
+      if(P.eq(a.d,b.d))return{n:P.add(a.n,b.n),d:a.d};
+      return{n:P.add(P.mul(a.n,b.d),P.mul(b.n,a.d)),d:P.mul(a.d,b.d)}}
+    case 'mul':{const a=evalN(n.a),b=evalN(n.b);return{n:P.mul(a.n,b.n),d:P.mul(a.d,b.d)}}
+    case 'div':{const a=evalN(n.a),b=evalN(n.b);if(P.zero(b.n))throw new Error('Division durch 0');return{n:P.mul(a.n,b.d),d:P.mul(a.d,b.n)}}
+    case 'pow':{const a=evalN(n.a);return{n:P.pow(a.n,n.e),d:P.pow(a.d,n.e)}}
+  }
+  throw new Error('?');
+}
+const rfEq=(a,b)=>P.eq(P.mul(a.n,b.d),P.mul(b.n,a.d));
+const rfDeg=r=>P.deg(r.n)+P.deg(r.d);
+function rfVars(r){const s=new Set();P.vars(r.n,s);P.vars(r.d,s);return s}
+
+/* ================= Darstellung (AST → HTML) ================= */
+function hasDiv(n){if(!n||typeof n!=='object')return false;if(n.t==='div'&&!n.colon)return true;return hasDiv(n.a)||hasDiv(n.b)}
+const strip=n=>n.t==='paren'?n.a:n;
+function startsNum(n){while(n){if(n.t==='num')return true;if(n.t==='mul'||n.t==='pow'||n.t==='add'||n.t==='sub')n=n.a;else return false}return false}
+function R(n){
+  switch(n.t){
+    case 'num':return n.v;
+    case 'var':return '<i>'+n.n+'</i>';
+    case 'box':return '<span class="box"></span>';
+    case 'paren':{if(n.a.t==='div'&&!n.a.colon)return R(n.a);const tall=hasDiv(n.a);return '<span class="pr'+(tall?' tall':'')+'"><span class="pl">(</span>'+R(n.a)+'<span class="pl">)</span></span>'}
+    case 'add':return R(n.a)+'<span class="op">+</span>'+R(n.b);
+    case 'sub':return R(n.a)+'<span class="op">−</span>'+R(n.b);
+    case 'neg':return '<span class="ng">−</span>'+R(n.a);
+    case 'mul':{const dot=!n.imp||startsNum(n.b);return R(n.a)+(dot?'<span class="dt">·</span>':'')+R(n.b)}
+    case 'div':{if(n.colon)return R(n.a)+'<span class="op">:</span>'+R(n.b);
+      let a=n.a,neg=false;if(a.t==='neg'){neg=true;a=a.a}
+      return (neg?'<span class="ng">−</span>':'')+'<span class="fr"><span class="nu">'+R(strip(a))+'</span><span class="de">'+R(strip(n.b))+'</span></span>'}
+    case 'pow':return R(n.a)+'<sup>'+n.e+'</sup>';
+  }
+  return '';
+}
+// Darstellung mit "=" erlaubt (nur Anzeige)
+function render(src){return src.split('=').map(s=>R(parse(s))).join('<span class="op">=</span>')}
+const M=src=>'<span class="m">'+render(src)+'</span>';
+
+/* ================= Bausteine ================= */
+const V1=['x','a','y','m','t','z','b'];
+const V2=[['x','y'],['a','b'],['m','n'],['r','s'],['u','v'],['p','q']];
+function pickPQ(lv,force){
+  const maxc=[3,4,6,8,11][lv-1];
+  let p,q,tries=0;
+  do{p=ri(1,Math.min(maxc,lv>=4?9:6));q=ri(1,maxc)}while(gcd(p,q)!==1&&++tries<60);
+  if(gcd(p,q)!==1){p=1}
+  const form=force||(lv>=4&&chance(.28)?'pow':chance(lv<=1?.35:.5)?'two':'one');
+  if(form==='one'){const x=pick(V1);return{A:P.mono(p,{[x]:1}),B:P.c(q),form,x}}
+  const[x,y]=pick(V2);
+  if(form==='two')return{A:P.mono(p,{[x]:1}),B:P.mono(q,{[y]:1}),form,x,y};
+  if(chance(.5))return{A:P.mono(p,{[x]:2}),B:P.mono(q,{[y]:1}),form,x,y};
+  if(chance(.5))return{A:P.mono(p,{[x]:1,[y]:1}),B:P.c(q),form,x,y};
+  return{A:P.mono(p,{[x]:2}),B:P.c(q),form,x,y};
+}
+function ordMode(lv){return lv<=2?'pos':lv===3?pick(['desc','pos','pos']):pick(['desc','pos','shuffle','shuffle'])}
+const LVNAME=['Aufwärmen','Solide','Hart','Brutal','Hölle'];
+
+// faktorisierte Bruchteile: {c, mon, eL, eLp}
+function fPoly(F,L,Lp){return P.mul(P.mul(P.mono(F.c,F.mon),P.pow(L,F.eL)),P.pow(Lp,F.eLp))}
+function fAscii(F,L,Lp){return factAscii(F.c,F.mon,[{p:L,e:F.eL},{p:Lp,e:F.eLp}])}
+function reduceF(N,D){
+  const g=gcd(N.c,D.c);let nc=N.c/g,dc=D.c/g;if(dc<0){nc=-nc;dc=-dc}
+  const nm={},dm={},cm={};const vs=new Set([...Object.keys(N.mon),...Object.keys(D.mon)]);
+  for(const v of vs){const a=N.mon[v]||0,b=D.mon[v]||0,m=Math.min(a,b);if(a-m)nm[v]=a-m;if(b-m)dm[v]=b-m;if(m)cm[v]=m}
+  const mL=Math.min(N.eL,D.eL),mP=Math.min(N.eLp,D.eLp);
+  return{N:{c:nc,mon:nm,eL:N.eL-mL,eLp:N.eLp-mP},D:{c:dc,mon:dm,eL:D.eL-mL,eLp:D.eLp-mP},common:{c:g,mon:cm,eL:mL,eLp:mP}};
+}
+function isOne(F){return F.c===1&&!Object.keys(F.mon).length&&!F.eL&&!F.eLp}
+function fracAscii(N,D,L,Lp){
+  if(isOne(D))return fAscii(N,L,Lp);
+  if(N.c<0)return '-'+wrap(fAscii({...N,c:-N.c},L,Lp))+'/'+wrap(fAscii(D,L,Lp));
+  return wrap(fAscii(N,L,Lp))+'/'+wrap(fAscii(D,L,Lp));
+}
+function signNote(polys){return polys.some(p=>p)?'Vorzeichen-Trick: Wo die Klammer „verkehrt herum“ steht, ein Minus ausklammern, z. B. '+M('3-x=-(x-3)')+'.':null}
+
+/* ================= Generatoren ================= */
+function genSq(lv){
+  const{A,B,x}=pickPQ(lv);const s=chance(.5)?1:-1;
+  const L=P.add(A,P.scale(B,s));
+  let k=1,mon={};
+  if(lv>=2&&chance(.55))k=pick(lv>=3?[2,3,4,5,-1,-2,-3]:[2,3,4,5]);
+  if(lv>=3&&chance(.35))mon={[x]:ri(1,lv>=4?2:1)};
+  const sq=P.pow(L,2);
+  const full=P.mul(P.mono(k,mon),sq);
+  const ans=factAscii(k,mon,[{p:L,e:2}]);
+  const steps=[];
+  if(k!==1||Object.keys(mon).length)steps.push('Gemeinsamen Faktor ausklammern: '+M(factAscii(k,mon,[{p:sq,e:1}])));
+  steps.push('Quadratglieder: '+M(polyAscii(P.pow(A,2))+'='+sqAscii(A))+' und '+M(polyAscii(P.pow(B,2))+'='+sqAscii(B)));
+  steps.push('Mittelglied prüfen: '+M('2·'+wrap(polyAscii(A))+'·'+wrap(polyAscii(B)).replace(/·/g,'*')+'='+polyAscii(P.scale(P.mul(A,B),2)))+' ✓ → '+(s>0?'1.':'2.')+' binomische Formel');
+  steps.push('Ergebnis: '+M(ans));
+  return{type:'Faktorisieren',instr:'Faktorisiere vollständig.',src:polyAscii(full,ordMode(lv)),ans,mode:'factor',steps};
+}
+function genDiff(lv){
+  let{A,B,x}=pickPQ(lv);
+  if(chance(lv>=3?.35:.15))[A,B]=[B,A]; // z. B. 9 − x²
+  let k=1,mon={};
+  if(lv>=2&&chance(.5))k=pick([2,3,4,5,6]);
+  if(lv>=3&&chance(.35))mon={[x]:ri(1,lv>=4?2:1)};
+  if(lv>=3&&chance(.25))k=-k; // −(A²−B²)
+  const d=P.sub(P.pow(A,2),P.pow(B,2));
+  const full=P.mul(P.mono(k,mon),d);
+  const L=P.add(A,B),Lp=P.sub(A,B);
+  const ans=factAscii(k,mon,[{p:L,e:1},{p:Lp,e:1}]);
+  const steps=[];
+  if(k!==1||Object.keys(mon).length)steps.push('Gemeinsamen Faktor ausklammern'+(k<0?' (inkl. Minus)':'')+': '+M(factAscii(k,mon,[{p:d,e:1}])));
+  steps.push('Form '+M('a^2-b^2')+' mit '+M('a='+polyAscii(A))+', '+M('b='+polyAscii(B)));
+  steps.push('3. binomische Formel: '+M('(a+b)(a-b)'));
+  steps.push('Ergebnis: '+M(ans));
+  return{type:'Faktorisieren',instr:'Faktorisiere vollständig.',src:polyAscii(full,ordMode(lv)),ans,mode:'factor',steps};
+}
+function genGap(lv){
+  const{A,B}=pickPQ(Math.min(lv,4),lv>=3?undefined:(chance(.5)?'one':'two'));
+  const s=chance(.5)?1:-1;
+  const A2=P.pow(A,2),B2=P.pow(B,2),M2=P.scale(P.mul(A,B),2*s);
+  const v=pick(['mid','mid','last','first']);
+  const L=P.add(A,P.scale(B,s));
+  let src,ans;
+  if(v==='mid'){src=polyAscii(A2)+(s>0?'+':'-')+'☐+'+polyAscii(B2);ans=polyAscii(P.scale(M2,s))}
+  else if(v==='last'){src=polyAscii(P.add(A2,M2))+'+☐';ans=polyAscii(B2)}
+  else{src='☐'+(s>0?'+':'-')+polyAscii(P.scale(M2,s))+'+'+polyAscii(B2);ans=polyAscii(A2)}
+  const steps=[
+    v==='mid'?'Wurzeln der Quadratglieder: '+M(polyAscii(A))+' und '+M(polyAscii(B)):
+    v==='last'?'Aus '+M(polyAscii(A2)+'='+sqAscii(A))+' und Mittelglied '+M(polyAscii(M2))+' folgt '+M('b='+polyAscii(P.scale(B,1))):
+    'Aus '+M(polyAscii(B2)+'='+sqAscii(B))+' und Mittelglied '+M(polyAscii(M2))+' folgt '+M('a='+polyAscii(A)),
+    v==='mid'?'Mittelglied '+M('2ab')+' = '+M('2·'+wrap(polyAscii(A))+'*'+wrap(polyAscii(B))+'='+ans):'Fehlendes Quadrat: '+M(ans),
+    'Vollständig: '+M(polyAscii(P.pow(L,2))+'='+'('+polyAscii(L)+')^2')];
+  return{type:'Ergänzen',instr:'Ergänze ☐ so, dass ein vollständiges Binom entsteht.',src,ans,mode:'equal',steps};
+}
+function genVertex(lv){
+  const x=pick(['x','x','t','a']);
+  const a=lv>=4&&chance(.55)?pick([2,3,-1,-2,4]):lv>=3&&chance(.3)?pick([-1,2]):1;
+  let d=0;while(!d)d=ri(lv>=3?-9:-6,lv>=3?9:6);
+  let e=0;while(!e)e=ri(-25,25);
+  const lin=P.add(P.v(x),P.c(d));
+  const full=P.add(P.scale(P.pow(lin,2),a),P.c(e));
+  const ans=(a===1?'':a===-1?'-':a)+'('+polyAscii(lin)+')^2'+(e>0?'+'+e:String(e));
+  const c=P.cval(full),b=a*2*d;
+  const steps=[];
+  if(a!==1)steps.push('Faktor '+M(String(a))+' bei den '+M(x)+'-Termen ausklammern: '+M((a===-1?'-':a)+'('+polyAscii(P.add(P.mono(1,{[x]:2}),P.mono(2*d,{[x]:1})))+')'+(c>=0?'+':'')+c));
+  steps.push('Halbe Zahl vor '+M(x)+' quadrieren: '+M('('+2*d+'/2)^2='+(d*d))+' – addieren und gleich wieder abziehen.');
+  steps.push(M((a===1?'':a===-1?'-':a)+'('+polyAscii(P.pow(lin,2))+')'+(-a*d*d>=0?'+':'')+(-a*d*d)+(c>=0?'+':'')+c));
+  steps.push('Binom zusammenfassen: '+M(ans));
+  void b;
+  return{type:'Quadratische Ergänzung',instr:'Schreibe in Scheitelpunktform a(x + d)² + e.',src:polyAscii(full,'desc'),ans,mode:'vertex',steps};
+}
+function randSide(lv,allowMon,x){
+  const t=pick([[1,0],[0,1],[2,0],[0,2],[1,1],[1,0],[0,1],[0,0]]);
+  let c=1;if(lv>=2&&chance(.5))c=pick([2,3,4,5,6]);
+  if(lv>=3&&chance(.35))c=-c;
+  const mon={};if(allowMon&&lv>=3&&chance(.3))mon[x]=ri(1,2);
+  if(!t[0]&&!t[1]&&c===1&&!Object.keys(mon).length)c=pick([2,3,4]);
+  return{c,mon,eL:t[0],eLp:t[1]};
+}
+function genSimp(lv){
+  const{A,B,x}=pickPQ(lv);
+  const L=P.add(A,B),Lp=P.sub(A,B);
+  const pats=[[1,1,2,0],[1,1,1,0],[1,0,1,1],[2,0,1,1],[2,0,1,0],[1,0,2,0],[1,1,0,2],[0,2,1,1],[1,0,1,1],[2,0,1,1]];
+  let pt=pick(pats);if(chance(.5))pt=[pt[1],pt[0],pt[3],pt[2]];
+  if(chance(.5))pt=[pt[2],pt[3],pt[0],pt[1]];
+  const N={c:1,mon:{},eL:pt[0],eLp:pt[1]},D={c:1,mon:{},eL:pt[2],eLp:pt[3]};
+  if(lv>=2){if(chance(.6))N.c=pick([1,2,3,4,5,6]);if(chance(.6))D.c=pick([2,3,4,5,6,8,9])}
+  if(lv>=3){if(chance(.3))N.c=-N.c;if(chance(.3))D.c=-D.c;
+    if(chance(.35))N.mon={[x]:ri(1,2)};if(chance(.35))D.mon={[x]:ri(1,2)}}
+  const np=fPoly(N,L,Lp),dp=fPoly(D,L,Lp);
+  const red=reduceF(N,D);
+  const ans=fracAscii(red.N,red.D,L,Lp);
+  const om=ordMode(lv);
+  const src=wrap(polyAscii(np,om))+'/'+wrap(polyAscii(dp,om));
+  const steps=['Zähler faktorisieren: '+M(polyAscii(np)+'='+fAscii(N,L,Lp)),'Nenner faktorisieren: '+M(polyAscii(dp)+'='+fAscii(D,L,Lp))];
+  const sn=signNote([N.c<0,D.c<0]);if(sn)steps.push(sn);
+  steps.push('Gemeinsame Faktoren kürzen: '+M(fAscii(red.common,L,Lp)));
+  steps.push('Ergebnis: '+M(ans));
+  return{type:'Bruch kürzen',instr:'Vereinfache so weit wie möglich.',src,ans,mode:'simplify',steps};
+}
+function genDom(lv){
+  const{A,B,x}=pickPQ(Math.min(lv,4),'one');
+  const L=P.add(A,B),Lp=P.sub(A,B);
+  const p=[...A.values()][0],q=P.cval(B);
+  const pats=[[1,1,0],[2,0,0],[1,0,1],[0,2,1],[1,1,1],[0,1,1]];
+  const pt=pick(lv>=3?pats:pats.slice(0,3));
+  const D={c:lv>=2&&chance(.5)?pick([2,3,4,-2]):1,mon:pt[2]?{[x]:pt[2]}:{},eL:pt[0],eLp:pt[1]};
+  const N={c:pick([1,2,3,-1]),mon:{},eL:chance(.6)&&pt[0]?1:0,eLp:chance(.5)&&pt[1]?1:0};
+  if(isOne(N))N.c=pick([2,3,5]);
+  const fr=(n,d)=>{const g=gcd(n,d);n/=g;d/=g;if(d<0){n=-n;d=-d}return d===1?String(n):n+'/'+d};
+  const set=new Set();if(D.eL)set.add(fr(-q,p));if(D.eLp)set.add(fr(q,p));if(pt[2])set.add('0');
+  const om=ordMode(lv);
+  const src=wrap(polyAscii(fPoly(N,L,Lp),om))+'/'+wrap(polyAscii(fPoly(D,L,Lp),om));
+  const vals=[...set];
+  const steps=['Nenner faktorisieren: '+M(polyAscii(fPoly(D,L,Lp))+'='+fAscii(D,L,Lp)),
+    'Jeden Faktor null setzen: '+vals.map(v=>M(x+'='+v)).join(', '),
+    'Achtung: Auch wenn sich ein Faktor wegkürzen liesse – die Lücke bleibt.'];
+  return{type:'Definitionslücken',instr:'Für welche Werte von '+x+' ist der Term nicht definiert? (Werte mit Komma trennen)',src,ans:vals.join(', '),set:vals,mode:'set',steps,v:x};
+}
+function genMulDiv(lv){
+  for(let tries=0;tries<200;tries++){
+    const{A,B,x}=pickPQ(lv);
+    const L=P.add(A,B),Lp=P.sub(A,B);
+    const n1=randSide(lv,true,x),d1=randSide(lv,true,x),n2=randSide(lv,true,x),d2=randSide(lv,true,x);
+    const bin=s=>s.eL+s.eLp;
+    if(!bin(n1)&&!bin(d1))continue;if(!bin(n2)&&!bin(d2))continue;
+    const op=chance(.5)?'*':':';
+    const[X,Y]=op==='*'?[n2,d2]:[d2,n2];
+    const N={c:n1.c*X.c,mon:{},eL:n1.eL+X.eL,eLp:n1.eLp+X.eLp},D={c:d1.c*Y.c,mon:{},eL:d1.eL+Y.eL,eLp:d1.eLp+Y.eLp};
+    for(const s of[n1,X])for(const v in s.mon)N.mon[v]=(N.mon[v]||0)+s.mon[v];
+    for(const s of[d1,Y])for(const v in s.mon)D.mon[v]=(D.mon[v]||0)+s.mon[v];
+    if(Math.min(N.eL,D.eL)+Math.min(N.eLp,D.eLp)<1)continue;
+    if(N.eL+N.eLp+D.eL+D.eLp<3)continue;
+    const red=reduceF(N,D);
+    const ans=fracAscii(red.N,red.D,L,Lp);
+    const om=ordMode(lv);
+    const pa=s=>polyAscii(fPoly(s,L,Lp),om);
+    const src='('+wrap(pa(n1))+'/'+wrap(pa(d1))+')'+op+'('+wrap(pa(n2))+'/'+wrap(pa(d2))+')';
+    const fa=s=>fAscii(s,L,Lp);
+    const steps=['Alle vier Terme faktorisieren: '+M('('+wrap(fa(n1))+'/'+wrap(fa(d1))+')'+op+'('+wrap(fa(n2))+'/'+wrap(fa(d2))+')')];
+    if(op===':')steps.push('Durch einen Bruch teilen = mit dem Kehrwert malnehmen: '+M('('+wrap(fa(n1))+'/'+wrap(fa(d1))+')*('+wrap(fa(d2))+'/'+wrap(fa(n2))+')'));
+    steps.push('Auf einen Bruchstrich: '+M(wrap(fa(N))+'/'+wrap(fa(D))));
+    steps.push('Kürzen durch '+M(fa(red.common))+' → '+M(ans));
+    return{type:op==='*'?'Brüche multiplizieren':'Brüche dividieren',instr:'Berechne und vereinfache vollständig.',src,ans,mode:'simplify',steps};
+  }
+  return genSimp(lv);
+}
+function term(sign,num,den,flip){ // ±(num)/(den) mit optionaler Vorzeichen-Umkehr
+  if(flip){den=P.neg(den);sign=-sign}
+  if(P.isMono(num)&&[...num.values()][0]<0){num=P.neg(num);sign=-sign}
+  return(sign<0?'-':'+')+wrap(polyAscii(num,'pos'))+'/'+wrap(polyAscii(den,'pos'));
+}
+function genAddSub(lv){
+  const tpl=wpick(lv<=3?[['a',3],['g',3],['b',3],['h',1]]:[['a',2],['b',2],['c',2],['c2',2],['d',3],['e',2],['h',2],['g',1]]);
+  let{A,B}=pickPQ(Math.min(lv,4),tpl==='c'||tpl==='c2'?(chance(.5)?'one':'two'):undefined);
+  const a=polyAscii(A),b=polyAscii(B);
+  const L=P.add(A,B),Lp=P.sub(A,B),D2=P.sub(P.pow(A,2),P.pow(B,2));
+  const l=polyAscii(L,'pos'),lp=polyAscii(Lp,'pos'),d2=polyAscii(D2,'pos');
+  const flip=lv>=4&&chance(.5);
+  let src,ans,steps,instr='Fasse zusammen und vereinfache vollständig.';
+  const fac='('+l+')('+lp+')';
+  switch(tpl){
+    case 'a':{const a1=pick(lv>=3?[1,2,3,5]:[1,2]);
+      src=wrap(String(a1))+'/'+wrap(lp)+term(-1,P.scale(B,2*a1),D2,flip);
+      ans=wrap(String(a1))+'/'+wrap(l);
+      steps=['Zweiten Nenner faktorisieren: '+M(d2+'='+fac)+(flip?' (dort steht er mit umgekehrtem Vorzeichen → Minus vor den Bruch ziehen)':''),
+        'Hauptnenner '+M(fac)+': ersten Bruch mit '+M(wrap(l))+' erweitern',
+        'Zähler: '+M(a1+'('+l+')-'+polyAscii(P.scale(B,2*a1)).replace(/^/,'(')+')='+factAscii(a1,{},[{p:Lp,e:1}])),
+        'Kürzen mit '+M(wrap(lp))+': '+M(ans)];break}
+    case 'g':{src='1/'+wrap(lp)+'-1/'+wrap(l);
+      ans=wrap(polyAscii(P.scale(B,2)))+'/'+wrap(fac);
+      steps=['Hauptnenner '+M(fac+'='+d2),'Zähler: '+M('('+l+')-('+lp+')='+polyAscii(P.scale(B,2))),'Ergebnis: '+M(ans)+' – mehr lässt sich nicht kürzen.'];break}
+    case 'b':{const k=lv<=2?1:pick([1,2,2]);
+      const pa=polyAscii(P.pow(A,k)),pb=polyAscii(P.pow(B,k));
+      src=wrap(pa)+'/'+wrap(lp)+'+'+wrap(pb)+'/'+wrap(polyAscii(P.neg(Lp),'pos'));
+      ans=k===1?'1':l;
+      steps=['Zweiter Nenner ist '+M('-('+lp+')')+' → Minus vor den Bruch: '+M(wrap(pa)+'/'+wrap(lp)+'-'+wrap(pb)+'/'+wrap(lp)),
+        'Gleicher Nenner: '+M(wrap(pa+'-'+(pb.startsWith('-')?'('+pb+')':pb))+'/'+wrap(lp)),
+        k===2?'Zähler mit 3. binomischer Formel: '+M(polyAscii(D2)+'='+fac)+' → kürzen':'Zähler = Nenner',
+        'Ergebnis: '+M(ans)];break}
+    case 'c':{
+      src='(1/'+wrap(a)+'-1/'+wrap(b)+')/(1/'+wrap(polyAscii(P.pow(A,2)))+'-1/'+wrap(polyAscii(P.pow(B,2)))+')';
+      const ab=polyAscii(P.mul(A,B));ans=wrap(ab)+'/'+wrap(l);
+      instr='Vereinfache den Doppelbruch vollständig.';
+      steps=['Oben: '+M('1/'+wrap(a)+'-1/'+wrap(b)+'=('+polyAscii(P.neg(Lp),'pos')+')/('+ab+')'),
+        'Unten: '+M('1/'+wrap(polyAscii(P.pow(A,2)))+'-1/'+wrap(polyAscii(P.pow(B,2)))+'=('+polyAscii(P.neg(D2),'pos')+')/('+polyAscii(P.pow(P.mul(A,B),2))+')'),
+        'Mit dem Kehrwert des Nenners malnehmen, '+M(polyAscii(P.neg(D2),'pos')+'=('+l+')('+polyAscii(P.neg(Lp),'pos')+')'),
+        'Kürzen: '+M(ans)];break}
+    case 'c2':{const sg=chance(.5)?1:-1;
+      src='('+wrap(a)+'/'+wrap(b)+'-'+wrap(b)+'/'+wrap(a)+')/('+wrap(a)+'/'+wrap(b)+'+'+wrap(b)+'/'+wrap(a)+(sg>0?'+2':'-2')+')';
+      const ab=polyAscii(P.mul(A,B));
+      ans=sg>0?wrap(lp)+'/'+wrap(l):wrap(l)+'/'+wrap(lp);
+      instr='Vereinfache den Doppelbruch vollständig.';
+      steps=['Oben auf Hauptnenner '+M(ab)+': '+M(wrap(d2)+'/'+wrap(ab)),
+        'Unten: '+M(wrap(polyAscii(P.pow(sg>0?L:Lp,2)))+'/'+wrap(ab)+'=(('+(sg>0?l:lp)+')^2)/('+ab+')')+' – ein Binom!',
+        'Kehrwert, '+M(ab)+' kürzt sich, dann '+M(fac)+' gegen das Quadrat kürzen',
+        'Ergebnis: '+M(ans)];break}
+    case 'd':{src=wrap(a)+'/'+wrap(lp)+'-'+wrap(b.startsWith('-')?b:b)+'/'+wrap(l)+term(-1,P.scale(P.mul(A,B),2),D2,flip);
+      ans=wrap(lp)+'/'+wrap(l);
+      steps=['Hauptnenner: '+M(fac+'='+d2),
+        'Zähler: '+M(a+'('+l+')-('+b+')('+lp+')-'+polyAscii(P.scale(P.mul(A,B),2)).replace(/^-/,'(-')+(polyAscii(P.scale(P.mul(A,B),2)).startsWith('-')?')':'')),
+        'Ausmultipliziert: '+M(polyAscii(P.pow(Lp,2))+'=('+lp+')^2')+' – 2. binomische Formel',
+        'Kürzen: '+M(ans)];break}
+    case 'e':{src=wrap(l)+'/'+wrap(lp)+'-'+wrap(lp)+'/'+wrap(l);
+      const n4=polyAscii(P.scale(P.mul(A,B),4));ans=wrap(n4)+'/'+wrap(fac);
+      steps=['Hauptnenner '+M(fac),'Zähler: '+M('('+l+')^2-('+lp+')^2'),
+        '1. minus 2. Binom: '+M(polyAscii(P.pow(L,2))+'-('+polyAscii(P.pow(Lp,2))+')='+n4),
+        'Ergebnis: '+M(ans)+' (Nenner darf auch als '+M(d2)+' stehen)'];break}
+    case 'h':{src=wrap(polyAscii(D2,ordMode(lv)))+'/'+wrap(polyAscii(P.pow(L,2),ordMode(lv)))+term(1,P.scale(B,2),L,flip&&!P.isConst(B)?false:false);
+      ans='1';
+      steps=['Ersten Bruch kürzen: '+M(fac+'/(('+l+')^2)='+wrap(lp)+'/'+wrap(l)),
+        'Gleicher Nenner: '+M('('+lp+'+'+polyAscii(P.scale(B,2))+')/('+l+')').replace('+-','-'),
+        'Zähler = '+M(l)+' = Nenner → '+M('1')];break}
+  }
+  return{type:'Bruchterme verknüpfen',instr,src,ans,mode:'simplify',steps};
+}
+function genHard(lv){
+  const v=pick(['h1','h2','h3','h4','h5','h5']);
+  if(v==='h1'||v==='h2'){
+    const{A,B}=pickPQ(3,chance(.5)?'one':'two');
+    const A2=P.pow(A,2),B2=P.pow(B,2),L=P.add(A,B),Lp=P.sub(A,B);
+    const k=lv>=5&&chance(.4)?pick([2,3]):1;
+    if(v==='h1'){const full=P.scale(P.sub(P.pow(A,4),P.pow(B,4)),k);
+      const ans=factAscii(k,{},[{p:P.add(A2,B2),e:1},{p:L,e:1},{p:Lp,e:1}]);
+      return{type:'Faktorisieren',instr:'Faktorisiere vollständig – wirklich vollständig.',src:polyAscii(full,'pos'),ans,mode:'factor',
+        steps:[(k>1?k+' ausklammern, dann ':'')+'als '+M('a^2-b^2')+' mit '+M('a='+polyAscii(A2))+', '+M('b='+polyAscii(B2)),
+          M('('+polyAscii(A2)+'+'+polyAscii(B2)+')('+polyAscii(P.sub(A2,B2))+')'),'Die zweite Klammer ist wieder ein 3. Binom: '+M(polyAscii(P.sub(A2,B2))+'=('+polyAscii(L)+')('+polyAscii(Lp)+')'),'Die Summe '+M(polyAscii(P.add(A2,B2)))+' lässt sich nicht zerlegen.','Ergebnis: '+M(ans)]};}
+    const full=P.pow(P.sub(A2,B2),2);
+    const ans=factAscii(1,{},[{p:L,e:2},{p:Lp,e:2}]);
+    return{type:'Faktorisieren',instr:'Faktorisiere vollständig.',src:polyAscii(full,ordMode(lv)),ans,mode:'factor',
+      steps:['2. binomische Formel mit '+M('a='+polyAscii(A2))+', '+M('b='+polyAscii(B2))+': '+M('('+polyAscii(P.sub(A2,B2))+')^2'),'Innen 3. Binom: '+M(polyAscii(P.sub(A2,B2))+'=('+polyAscii(L)+')('+polyAscii(Lp)+')'),'Quadrat auf beide Faktoren: '+M(ans)]};
+  }
+  if(v==='h3'||v==='h4'){
+    const{A,B,x}=pickPQ(3,'one');const s=chance(.5)?1:-1;
+    const y=x==='y'?'z':'y';const r=ri(1,lv>=5?7:5);const Rr=P.mono(r,{[y]:1});
+    const G=P.add(A,P.scale(B,s));
+    if(v==='h3'){const full=P.sub(P.pow(G,2),P.pow(Rr,2));
+      const ans=factAscii(1,{},[{p:P.sub(G,Rr),e:1},{p:P.add(G,Rr),e:1}]);
+      return{type:'Faktorisieren',instr:'Faktorisiere vollständig. (Gruppieren!)',src:polyAscii(full,'desc'),ans,mode:'factor',
+        steps:['Die '+M(x)+'-Terme bilden ein Binom: '+M(polyAscii(P.pow(G,2))+'=('+polyAscii(G)+')^2'),'Also '+M('('+polyAscii(G)+')^2-'+sqAscii(Rr))+' – Form '+M('a^2-b^2'),'3. Binom: '+M(ans)]};}
+    const full=P.sub(P.pow(Rr,2),P.pow(G,2));
+    const ans=factAscii(1,{},[{p:P.sub(Rr,G),e:1},{p:P.add(Rr,G),e:1}]);
+    return{type:'Faktorisieren',instr:'Faktorisiere vollständig. (Gruppieren!)',src:polyAscii(full,'desc'),ans,mode:'factor',
+      steps:['Die '+M(x)+'-Terme mit Minus ausklammern: '+M(sqAscii(Rr)+'-('+polyAscii(P.pow(G,2))+')'),'Klammer ist ein Binom: '+M(sqAscii(Rr)+'-('+polyAscii(G)+')^2'),'3. Binom (Klammern sauber auflösen!): '+M(ans)]};
+  }
+  // h5: (a1x+b1)² − (a2x+b2)²
+  for(let t=0;t<100;t++){
+    const x=pick(['x','a','t']);const a1=ri(1,5),a2=ri(1,4),b1=ri(-7,7),b2=ri(-7,7);
+    if(a1===a2||b1===b2||b1===-b2||!b1&&!b2)continue;
+    const U=P.add(P.mono(a1,{[x]:1}),P.c(b1)),W=P.add(P.mono(a2,{[x]:1}),P.c(b2));
+    if(gcd(a1,b1)!==1||gcd(a2,b2)!==1)continue;
+    const S=P.sub(U,W),T=P.add(U,W);
+    if(P.isConst(S)||P.isConst(T)||P.isMono(S)||P.isMono(T))continue;
+    const cs=P.content(S),ct=P.content(T);
+    const ans=factAscii(cs*ct,{},[{p:P.divc(S,cs),e:1},{p:P.divc(T,ct),e:1}]);
+    return{type:'Faktorisieren',instr:'Faktorisiere vollständig – ohne auszumultiplizieren.',src:'('+polyAscii(U)+')^2-('+polyAscii(W)+')^2',ans,mode:'factor',
+      steps:['Form '+M('a^2-b^2')+' mit '+M('a='+polyAscii(U))+', '+M('b='+polyAscii(W)),
+        M('(a-b)(a+b)=[('+polyAscii(U)+')-('+polyAscii(W)+')]·[('+polyAscii(U)+')+('+polyAscii(W)+')]'.replace(/\[/g,'(').replace(/\]/g,')')),
+        'Klammern zusammenfassen: '+M('('+polyAscii(S)+')('+polyAscii(T)+')'),
+        (cs*ct>1?'Gemeinsame Faktoren ausklammern: ':'Ergebnis: ')+M(ans)]};
+  }
+  return genDiff(lv);
+}
+const GENS={sq:genSq,diff:genDiff,gap:genGap,simp:genSimp,dom:genDom,vertex:genVertex,muldiv:genMulDiv,addsub:genAddSub,hard:genHard};
+const WEIGHTS={sq:[3,2,1,1,.7],diff:[3,2,1,1,.7],gap:[2,1,.6,.4,.3],simp:[2,3,3,2,1.5],dom:[0,1,1,.8,.8],vertex:[0,1,1,1,1],muldiv:[0,0,2,2,2.2],addsub:[0,0,2,3,3.5],hard:[0,0,0,2,3]};
+function generate(lv,avoid){
+  for(let t=0;t<40;t++){
+    const id=wpick(Object.keys(WEIGHTS).map(k=>[k,WEIGHTS[k][lv-1]]).filter(([k,w])=>w>0&&k!==avoid||(t>5&&w>0)));
+    const task=GENS[id](lv);task.id=id;task.lv=lv;
+    if(selfCheck(task))return task;
+    if(typeof console!=='undefined')console.warn('Generator-Selbsttest fehlgeschlagen',id,task.src,task.ans);
+  }
+  return genDiff(lv);
+}
+function selfCheck(task){
+  try{
+    parse(task.src);
+    if(task.mode==='set')return true;
+    const a=parse(task.ans);evalN(a);
+    if(task.mode==='equal')return true;
+    if(!rfEq(evalN(parse(task.src)),evalN(a)))return false;
+    return check(task,task.ans).ok;
+  }catch(e){return false}
+}
+
+/* ================= Prüfen ================= */
+function factorInfo(ast){
+  const items=[];let frac=false;
+  (function fl(n,e){
+    switch(n.t){
+      case 'mul':fl(n.a,e);fl(n.b,e);return;
+      case 'neg':fl(n.a,e);return;
+      case 'paren':if(n.a.t==='add'||n.a.t==='sub'){items.push({n:n.a,e});return}fl(n.a,e);return;
+      case 'pow':fl(n.a,e*n.e);return;
+      case 'num':return;
+      case 'div':{const r=evalN(n.b);if(P.isConst(r.n)&&P.isConst(r.d)){fl(n.a,e);return}frac=true;return}
+      default:items.push({n,e});
+    }})(ast,1);
+  let count=0,nonPrim=false,nonInt=false;
+  for(const it of items){const r=evalN(it.n);
+    if(!P.isConst(r.d)){frac=true;continue}
+    if(Math.abs(P.cval(r.d))!==1)nonInt=true;
+    if(P.isConst(r.n))continue;
+    if(P.isMono(r.n))count+=P.deg(r.n)*it.e;
+    else{count+=it.e;if(P.content(r.n)>1)nonPrim=true}
+  }
+  return{count,nonPrim,nonInt,frac};
+}
+function isSqTerm(n){
+  if(n.t==='neg'||n.t==='paren')return isSqTerm(n.a);
+  if(n.t==='mul'){const ca=P.isConst(evalN(n.a).n)&&P.isConst(evalN(n.a).d),cb=P.isConst(evalN(n.b).n)&&P.isConst(evalN(n.b).d);if(ca)return isSqTerm(n.b);if(cb)return isSqTerm(n.a);return false}
+  if(n.t==='pow'&&n.e===2){const r=evalN(n.a);return P.isConst(r.d)&&P.deg(r.n)===1}
+  return false;
+}
+function vertexOK(ast){
+  const terms=[];(function fs(n){if(n.t==='add'||n.t==='sub'){fs(n.a);fs(n.b)}else terms.push(n)})(ast);
+  let sq=0;for(const t of terms){const r=evalN(t);if(P.isConst(r.n)&&P.isConst(r.d))continue;if(isSqTerm(t))sq++;else return false}
+  return sq===1;
+}
+function parseNumList(s){
+  const out=new Set();const re=/(±|\+\/-|\+-|-|\+|−)?\s*(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?/g;let m;
+  const fr=(n,d)=>{const g=gcd(n,d)||1;n/=g;d/=g;if(d<0){n=-n;d=-d}return d===1?String(n):n+'/'+d};
+  const toF=str=>{if(str.includes('.')){const[a,b]=str.split('.');return[parseInt(a+b,10),Math.pow(10,b.length)]}return[parseInt(str,10),1]};
+  while((m=re.exec(s))){const[n1,d1]=toF(m[2]);let[n2,d2]=m[3]?toF(m[3]):[1,1];if(!n2)continue;
+    const n=n1*d2,d=d1*n2;const sg=m[1]||'';
+    if(sg==='±'||sg==='+/-'||sg==='+-'){out.add(fr(n,d));out.add(fr(-n,d))}
+    else out.add(fr(sg==='-'||sg==='−'?-n:n,d));}
+  return out;
+}
+function counterexample(u,e){
+  const vs=new Set([...rfVars(u),...rfVars(e)]);
+  for(let t=0;t<60;t++){
+    const env={};for(const v of vs)env[v]=ri(-5,6);
+    const ud=P.ev(u.d,env),ed=P.ev(e.d,env);if(!ud||!ed)continue;
+    const un=P.ev(u.n,env),en=P.ev(e.n,env);
+    if(un*ed===en*ud)continue;
+    const fr=(n,d)=>{const g=gcd(n,d)||1;n/=g;d/=g;if(d<0){n=-n;d=-d}return d===1?String(n):n+'/'+d};
+    return{env,uv:fr(un,ud),ev:fr(en,ed)};
+  }
+  return null;
+}
+function sumHasFrac(ast){
+  const terms=[];(function fs(n){if(n.t==='add'||n.t==='sub'){fs(n.a);fs(n.b)}else if(n.t==='paren'||n.t==='neg')(n.a.t==='add'||n.a.t==='sub'?fs(n.a):terms.push(n));else terms.push(n)})(ast);
+  if(terms.length<2)return false;
+  const vd=n=>n&&typeof n==='object'&&((n.t==='div'&&!P.isConst(evalN(n.b).n))||vd(n.a)||vd(n.b));
+  return terms.some(vd);
+}
+function check(task,input){
+  if(task.mode==='set'){
+    const got=parseNumList(input);if(!got.size)return{ok:false,kind:'err',msg:'Keine Zahl erkannt. Beispiel: -3, 3/2'};
+    const exp=new Set(task.set);
+    const missing=[...exp].filter(v=>!got.has(v)),extra=[...got].filter(v=>!exp.has(v));
+    if(!missing.length&&!extra.length)return{ok:true};
+    if(!extra.length)return{ok:false,kind:'bad',msg:'Unvollständig – es fehlt noch '+(missing.length===1?'eine Lücke':missing.length+' Lücken')+'. Hast du den Nenner vollständig faktorisiert?'};
+    return{ok:false,kind:'bad',msg:'Falsch: '+extra.map(v=>M(task.v+'='+v)).join(', ')+' macht den Nenner nicht null'+(missing.length?' – und es fehlen Lücken.':'.')};
+  }
+  let ast,u;
+  try{ast=parse(input);u=evalN(ast)}catch(e){return{ok:false,kind:'err',msg:e.message}}
+  const ea=parse(task.ans),e=evalN(ea);
+  if(!rfEq(u,e)){
+    const ce=counterexample(u,e);
+    let msg='Nicht gleichwertig.';
+    if(ce){const env=Object.entries(ce.env).map(([k,v])=>M(k+'='+(v<0?'('+v+')':v))).join(', ');msg+=' Gegenprobe bei '+env+': deins ergibt '+M(ce.uv)+', richtig wäre '+M(ce.ev)+'.'}
+    return{ok:false,kind:'bad',msg};
+  }
+  if(task.mode==='factor'){
+    const fu=factorInfo(ast),fe=factorInfo(ea);
+    if(fu.frac)return{ok:false,kind:'warn',msg:'Gleichwertig, aber eine faktorisierte Form enthält keinen Bruch mit Variablen.'};
+    if(fu.nonInt)return{ok:false,kind:'warn',msg:'Gleichwertig – aber bitte mit ganzzahligen Koeffizienten in den Klammern.'};
+    if(fu.nonPrim)return{ok:false,kind:'warn',msg:'Gleichwertig, aber in einer Klammer steckt noch ein gemeinsamer Zahlenfaktor. Ausklammern!'};
+    if(fu.count<fe.count)return{ok:false,kind:'warn',msg:fu.count<=1?'Gleichwertig – aber das ist noch kein Produkt. Faktorisieren!':'Gleichwertig, aber noch nicht vollständig faktorisiert. Mindestens ein Faktor lässt sich weiter zerlegen.'};
+    return{ok:true};
+  }
+  if(task.mode==='simplify'){
+    if(sumHasFrac(ast))return{ok:false,kind:'warn',msg:'Gleichwertig, aber noch nicht auf einen Bruchstrich gebracht.'};
+    if(rfDeg(u)>rfDeg(e))return{ok:false,kind:'warn',msg:'Gleichwertig, aber noch nicht vollständig vereinfacht. Da lässt sich noch etwas kürzen.'};
+    return{ok:true};
+  }
+  if(task.mode==='vertex'){
+    if(!vertexOK(ast))return{ok:false,kind:'warn',msg:'Gleichwertig, aber nicht in der Form '+M('a(x+d)^2+e')+'.'};
+    return{ok:true};
+  }
+  return{ok:true};
+}
+
+/* ================= UI ================= */
+if(typeof document!=='undefined'){
+const S={pts:0,streak:0,best:0,solved:0,tried:0,level:4,adaptive:true,up:0,log:[]};
+const store={get(){try{return JSON.parse(localStorage.getItem('binomdrill')||'null')}catch(e){return null}},set(v){try{localStorage.setItem('binomdrill',JSON.stringify(v))}catch(e){}}};
+Object.assign(S,store.get()||{});
+let task=null,state=null,tick=null;
+const $=s=>document.querySelector(s);
+const inp=$('#inp');
+const BASE=[10,15,25,40,60],LIMIT=[0,0,0,0,150];
+
+document.querySelectorAll('[data-m]').forEach(el=>{el.innerHTML=render(el.dataset.m)});
+function drawLevels(){
+  const w=$('#levels');w.innerHTML='';
+  for(let i=1;i<=5;i++){const b=document.createElement('button');b.className='lv'+(S.level===i?' on':'');b.textContent=i+' '+LVNAME[i-1];b.onclick=()=>{S.level=i;S.up=0;save();drawLevels();next()};w.appendChild(b)}
+  const a=document.createElement('button');a.className='lv ad'+(S.adaptive?' on':'');a.textContent='Adaptiv';a.title='Stufe passt sich automatisch an';a.onclick=()=>{S.adaptive=!S.adaptive;save();drawLevels()};w.appendChild(a);
+}
+function save(){store.set(S);drawStats()}
+function drawStats(){
+  $('#sPts').textContent=S.pts;$('#sStr').textContent=S.streak;
+  $('#sRate').textContent=S.tried?Math.round(100*S.solved/S.tried)+'%':'–';
+  $('#log').innerHTML=S.log.slice(-60).map(c=>'<i class="'+c+'"></i>').join('');
+}
+function next(){
+  task=generate(S.level,task&&task.id);
+  state={tries:0,hints:0,done:false,t0:Date.now(),revealed:false};
+  $('#mType').textContent=task.type;$('#mLv').textContent='Stufe '+task.lv+' · '+LVNAME[task.lv-1];
+  $('#instr').textContent=task.instr;
+  $('#prob').innerHTML=render(task.src);
+  inp.value='';inp.disabled=false;
+  inp.placeholder=task.mode==='set'?'z. B. -3, 3/2':task.mode==='equal'?'fehlender Term, z. B. 24xy':task.mode==='vertex'?'z. B. 2(x-3)^2-13':task.mode==='factor'?'z. B. 2x(3x-4y)^2':'z. B. (x-3)/(x+3)';
+  $('#prev').innerHTML='<span>Vorschau erscheint hier</span>';
+  for(const id of['#fb','#sol','#hint'])$(id).className=id.slice(1);
+  $('#hint').innerHTML='';
+  $('#bCheck').textContent='Prüfen ↵';$('#bHint').disabled=false;$('#bShow').disabled=false;
+  clearInterval(tick);tick=setInterval(drawTimer,250);drawTimer();
+  setTimeout(()=>inp.focus(),0);
+}
+function drawTimer(){
+  if(!state)return;const el=$('#timer');
+  const sec=Math.floor((Date.now()-state.t0)/1000);const lim=LIMIT[task.lv-1];
+  if(state.done){return}
+  if(lim){const left=Math.max(0,lim-sec);el.textContent='⏱ '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0');el.classList.toggle('hot',left<=20);
+    if(left===0){fail('Zeit abgelaufen.');}}
+  else{el.textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');el.classList.remove('hot')}
+}
+function fb(kind,html){const f=$('#fb');f.className='fb show '+kind;f.innerHTML=html}
+function reveal(){
+  $('#steps').innerHTML=task.steps.map(s=>'<li>'+s+'</li>').join('');
+  $('#final').innerHTML=task.mode==='set'?'Nicht definiert für: '+task.set.map(v=>M(task.v+'='+v)).join(', '):'Lösung: '+M(task.ans);
+  $('#sol').className='sol show';
+}
+function finish(){state.done=true;clearInterval(tick);inp.disabled=true;$('#bCheck').textContent='Weiter ↵';$('#bHint').disabled=true;$('#bShow').disabled=true;$('#bCheck').focus()}
+function fail(msg){
+  if(state.done)return;
+  S.tried++;S.streak=0;S.up=0;S.log.push('x');
+  if(S.adaptive&&S.level>1)S.level--;
+  fb('bad',msg+(S.adaptive?' Stufe runter.':''));reveal();finish();save();drawLevels();
+}
+function submit(){
+  if(!task)return;
+  if(state.done){next();return}
+  const v=inp.value.trim();if(!v)return;
+  const r=check(task,v);
+  if(r.ok){
+    const sec=(Date.now()-state.t0)/1000;
+    let pts=BASE[task.lv-1]*Math.pow(.5,state.hints)*Math.pow(.5,state.tries);
+    pts*=1+Math.min(S.streak,10)*.1;if(sec<45)pts*=1.25;pts=Math.round(pts);
+    S.pts+=pts;S.solved++;S.tried++;
+    const clean=!state.hints&&!state.tries;
+    S.streak=clean?S.streak+1:0;S.best=Math.max(S.best,S.streak);S.log.push(clean?'o':'h');
+    let lvMsg='';
+    if(S.adaptive){if(clean){S.up++;if(S.up>=3&&S.level<5){S.level++;S.up=0;lvMsg=' Stufe hoch → '+S.level+'.'}}else S.up=0}
+    fb('ok','Richtig. +'+pts+' Punkte'+(sec<45?' (schnell!)':'')+'.'+lvMsg+(state.hints?'':' Lösungsweg zum Vergleich unten.'));
+    reveal();finish();save();drawLevels();return;
+  }
+  if(r.kind==='err'){fb('warn',r.msg);return}
+  if(r.kind==='warn'){fb('warn',r.msg);return}   // gleichwertig, aber Form falsch: kein Strafpunkt
+  state.tries++;S.streak=0;
+  if(state.tries>=3){fail(r.msg+' Dreimal daneben.');return}
+  fb('bad',r.msg+' Noch '+(3-state.tries)+' Versuch'+(3-state.tries>1?'e':'')+'.');
+  if(state.tries===2&&S.adaptive){S.up=0}
+  save();
+}
+$('#bCheck').onclick=submit;
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&state&&state.done&&document.activeElement!==inp){e.preventDefault();next()}});
+inp.addEventListener('input',()=>{
+  const v=inp.value.trim();const p=$('#prev');
+  if(!v){p.innerHTML='<span>Vorschau erscheint hier</span>';return}
+  if(task&&task.mode==='set'){const s=parseNumList(v);p.innerHTML=s.size?'<span>erkannt:</span> '+[...s].map(x=>M(task.v+'='+x)).join(', '):'<span class="err">keine Zahl erkannt</span>';return}
+  try{const a=parse(v);evalN(a);p.innerHTML='<span>erkannt:</span> <span class="m">'+R(a)+'</span>'}catch(e){p.innerHTML='<span class="err">'+e.message+'</span>'}
+});
+$('#bHint').onclick=()=>{
+  if(state.done)return;
+  if(state.hints>=Math.min(2,task.steps.length-1)){fb('warn','Mehr Tipps gibt es nicht – jetzt bist du dran.');return}
+  state.hints++;
+  const h=$('#hint');h.className='hint show';h.innerHTML=task.steps.slice(0,state.hints).map((s,i)=>'<b>Tipp '+(i+1)+':</b> '+s).join('<br>');
+  inp.focus();
+};
+$('#bShow').onclick=()=>{if(!state.done)fail('Aufgegeben.')};
+$('#bSkip').onclick=()=>{if(!state.done&&(inp.value.trim()||state.tries)){S.tried++;S.streak=0;S.log.push('x');save()}next()};
+$('#reset').onclick=e=>{e.preventDefault();if(confirm('Statistik wirklich zurücksetzen?')){Object.assign(S,{pts:0,streak:0,best:0,solved:0,tried:0,up:0,log:[]});save()}};
+const keys=[['^2','²'],['^',null],['(',null],[')',null],['/',null],['-','−'],['☐',null]];
+const kw=$('#keys');
+for(const[ins,label]of[['^2','x²'],['^','^'],['(','('],[')',')'],['/','a/b'],['-','−'],['*','·']]){
+  const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>{const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+ins+inp.value.slice(e);inp.setSelectionRange(s+ins.length,s+ins.length);inp.focus();inp.dispatchEvent(new Event('input'))};kw.appendChild(b)}
+void keys;
+drawLevels();drawStats();next();
+}
+</script>
+</body>
+</html>
