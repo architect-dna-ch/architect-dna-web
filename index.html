@@ -113,16 +113,20 @@ a{text-decoration:none}
 .phone.dash .now .eq i{width:2.5px;background:var(--dacc);border-radius:1px}
 
 @media(max-width:760px){
-  #hero .wrap{grid-template-columns:1fr;gap:clamp(16px,3vh,24px);max-width:400px;text-align:center}
-  .lead{margin:16px auto 0}.cta{justify-content:center}#hero .stage{order:-1}
-  .slide{flex-direction:column;gap:clamp(14px,2.5vh,22px);text-align:center}
-  .slide .say{order:2;max-width:38ch}
-  .slide h2{font-size:clamp(22px,6vw,30px)}
-  .phone{width:min(168px,46vw);max-height:46vh;border-radius:24px;padding:10px 9px 11px;gap:6px}
-  .clock,.phone.dash .clock{font-size:28px}
+  #hero .wrap{grid-template-columns:1fr;gap:clamp(18px,3.4vh,26px);max-width:380px;text-align:center}
+  .lead{margin:14px auto 0}.cta{justify-content:center}#hero .stage{order:-1}
+  /* On small phones keep it clean: show the mock + a one-line title, drop the detailed spec (kept on tablet/desktop). */
+  .slide{flex-direction:column;gap:clamp(16px,3vh,24px);text-align:center;padding:clamp(56px,8vh,80px) 24px clamp(78px,10vh,92px)}
+  .slide .say{order:2;max-width:34ch}
+  .slide .say ul{display:none}
+  .slide h2{font-size:clamp(22px,6vw,28px);margin-top:10px}
+  .phone{width:min(156px,44vw);max-height:44vh;border-radius:24px;padding:10px 9px 11px;gap:6px}
+  .clock,.phone.dash .clock{font-size:27px}
   .ic{font-size:13px;border-radius:10px}.lbl{font-size:7px}
   .phone.list .lhead{font-size:19px}.phone.list .arow .nm{font-size:13px}
-  .intro-note{font-size:10px}
+  .phone .sub,.phone.dash .wx{font-size:9.5px}
+  .intro-note{font-size:9.5px;max-width:60vw;overflow:hidden;text-overflow:ellipsis}
+  #hero h1{font-size:clamp(30px,8vw,46px)}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
