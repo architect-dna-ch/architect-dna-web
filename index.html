@@ -371,8 +371,11 @@ function go(n){
   dots.forEach((d,k)=>d.classList.toggle('on',k===n));
   i=n;
 }
-function play(){ stop(); timer=setInterval(()=>go(i+1),5200); }
-function stop(){ if(timer){clearInterval(timer);timer=null;} }
+// Per-slide dwell: the three home looks read quickly; the Substanz slide (cards + stats) needs
+// much longer so you can actually read it before it moves on.
+const DWELL=[5200,5200,5600,11000];
+function play(){ stop(); timer=setTimeout(()=>{ go(i+1); play(); }, DWELL[i]||6000); }
+function stop(){ if(timer){clearTimeout(timer);timer=null;} }
 document.getElementById('next').onclick=()=>{go(i+1);play();};
 document.getElementById('prev').onclick=()=>{go(i-1);play();};
 dots.forEach(d=>d.onclick=()=>{go(+d.dataset.i);play();});
