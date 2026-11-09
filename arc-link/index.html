@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Link — your tablet is your laptop's keyboard</title>
+<meta name="description" content="Broke your laptop screen? Use any tablet as its keyboard and trackpad over USB. No root, nothing to buy.">
+<style>
+:root{
+  --bg:#FAFAF8; --bg2:#F0EFEB; --border:#E0E0D8; --border2:rgba(0,0,0,.12);
+  --text:#1A1A1A; --text2:#5A5A58; --text3:#9A9A98; --red:#B5271E;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:rgba(250,250,248,.82);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border);z-index:10}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+header a.home{font-weight:700;letter-spacing:-.02em;text-decoration:none;color:var(--text)}
+header .mono{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.hero{padding:70px 0 40px}
+.eyebrow{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+h1{font-size:clamp(34px,7vw,56px);line-height:1.02;letter-spacing:-.05em;font-weight:800;margin:14px 0 18px}
+.lead{font-size:19px;color:var(--text2);max-width:60ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;text-decoration:none;border-radius:8px;padding:12px 18px;border:1px solid var(--border2)}
+.btn.p{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.s{background:transparent;color:var(--text)}
+section{padding:34px 0;border-top:1px solid var(--border)}
+h2{font-size:24px;letter-spacing:-.03em;margin-bottom:14px}
+.diagram{font-family:var(--mono);font-size:13px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;white-space:pre;overflow-x:auto;line-height:1.5}
+ol,ul{margin:0 0 0 2px;list-style:none}
+li{position:relative;padding:8px 0 8px 30px}
+li::before{content:attr(data-n);position:absolute;left:0;top:8px;font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:var(--red);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+ul.plain li{padding-left:22px}
+ul.plain li::before{content:"—";background:none;color:var(--red);font-weight:700;width:auto;height:auto;position:absolute;left:0;top:8px}
+code{font-family:var(--mono);font-size:.9em;background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+pre{font-family:var(--mono);font-size:13px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;margin:10px 0}
+.files{display:grid;grid-template-columns:1fr;gap:8px}
+.file{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:11px 14px;background:var(--bg2)}
+.file:hover{border-color:var(--red)}
+.file .d{color:var(--text3)}
+.note{font-size:14px;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:6px;padding:12px 14px;margin-top:10px}
+footer{padding:40px 0 70px;color:var(--text3);font-size:13px;border-top:1px solid var(--border)}
+footer a{color:var(--text2)}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#141210;--bg2:#1C1A17;--border:#2A2722;--border2:rgba(255,255,255,.14);--text:#ECE7DE;--text2:#A89E90;--text3:#6E655A;--red:#D1472E}
+  header{background:rgba(20,18,16,.82)}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="home" href="/">ARC·DNA</a><span class="mono">arc-link</span></div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Open · free · no accessory to buy</div>
+    <h1>Your tablet is your laptop's keyboard.</h1>
+    <p class="lead">Cracked laptop screen? Don't throw it out, and don't buy a tablet keyboard case. Plug the tablet into the laptop with one USB cable — and type and point on the tablet using the laptop's own keyboard and trackpad. No root, nothing to install on the tablet.</p>
+    <div class="cta">
+      <a class="btn p" href="https://github.com/architect-dna-ch/architect-dna-web/tree/main/arc-link">Source on GitHub ↗</a>
+      <a class="btn s" href="arclink.py" download>Download arclink.py</a>
+      <a class="btn s" href="SETUP.md">Full setup guide</a>
+    </div>
+  </div>
+
+  <section>
+    <h2>How it works</h2>
+    <div class="diagram"> Laptop (keyboard + trackpad)  ──USB──►  Tablet (Android)
+          arclink.py                       adb `input`  →  keys, taps, swipes</div>
+    <p style="margin-top:14px;color:var(--text2)">A tiny Python script on the laptop reads its own keyboard and trackpad, and feeds the keystrokes and gestures straight to the tablet over the USB debug bridge. The tablet needs <em>no app</em> — it just receives the input. Built for a MacBook + a Xiaomi Pad; works with any Mac/Linux laptop and any Android tablet.</p>
+  </section>
+
+  <section>
+    <h2>Set it up in 5 minutes</h2>
+    <ol>
+      <li data-n="1"><b>On the tablet:</b> Settings → About → tap <em>Build number</em> 7× to unlock Developer options → turn on <b>USB debugging</b>. Plug into the laptop with a data cable and tap <b>Allow</b>.</li>
+      <li data-n="2"><b>On the laptop:</b> <pre>cd arc-link
+./setup.sh</pre> It installs <code>adb</code> + <code>pynput</code> if missing, then starts.</li>
+      <li data-n="3"><b>First run (macOS):</b> grant <b>Accessibility</b> and <b>Input Monitoring</b> in System Settings → Privacy &amp; Security, so it can read your keyboard and trackpad.</li>
+    </ol>
+    <div class="note"><b>While running:</b> <code>F10</code> toggles forwarding · <code>F1</code> back · <code>F2</code> home · <code>F3</code> recents. Everything else types/points onto the tablet. <code>Ctrl-C</code> to quit.</div>
+  </section>
+
+  <section>
+    <h2>What's in the box</h2>
+    <div class="files">
+      <a class="file" href="arclink.py"><span>arclink.py</span><span class="d">the bridge — keyboard + trackpad</span></a>
+      <a class="file" href="setup.sh"><span>setup.sh</span><span class="d">one-command install &amp; run</span></a>
+      <a class="file" href="arclink-tunnel.sh"><span>arclink-tunnel.sh</span><span class="d">keep the USB tunnel alive</span></a>
+      <a class="file" href="install-autostart.sh"><span>install-autostart.sh</span><span class="d">start on login (optional)</span></a>
+      <a class="file" href="SETUP.md"><span>SETUP.md</span><span class="d">the full guide, incl. screen-mirror mode</span></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Honest limits</h2>
+    <ul class="plain">
+      <li>The cursor is a <em>virtual</em> pointer (placed taps/drags, no true hover) — great for typing and navigating, approximate for fast dragging.</li>
+      <li>Keyboard chords (⌘C, ⌘-Tab…) are limited; plain typing + the mapped keys are solid.</li>
+      <li>A low-latency v2 (an on-device server) lives in <code>server/</code> for when you want silky input.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Made because a broken screen shouldn't cost you a laptop — or an extra accessory.
+    Part of <a href="/">ARC·DNA</a>. Use it, fork it, pass it to a friend.
+  </footer>
+</div>
+</body>
+</html>
