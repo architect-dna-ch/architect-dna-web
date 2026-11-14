@@ -160,20 +160,26 @@ class ArcLink:
     # The ARC-DNA launcher listens for this broadcast and floats a ⌨ xx% overlay.
     def _batt_poll(self):
         import re
+        last, sent_at, was = None, 0.0, False
         while True:
-            if self.connected:
-                try:
+            try:
+                if self.connected:
                     out = subprocess.run(["pmset", "-g", "batt"], capture_output=True, text=True, timeout=4).stdout
                     m = re.search(r"(\d+)%", out)
                     if m:
                         pct = int(m.group(1))
                         charging = ("AC Power" in out) or (" charging" in out and "discharging" not in out)
-                        subprocess.run([ADB, "shell", "am", "broadcast", "-a", "ch.architectdna.home.KBD_BATT",
-                                        "--ei", "level", str(pct), "--ez", "charging", "true" if charging else "false"],
-                                       capture_output=True, timeout=5)
-                except Exception:
-                    pass
-            time.sleep(60)
+                        now = (pct, charging)
+                        # push right after plugging in, on every change, and at least once a minute
+                        if not was or now != last or time.time() - sent_at > 60:
+                            subprocess.run([ADB, "shell", "am", "broadcast", "-a", "ch.architectdna.home.KBD_BATT",
+                                            "--ei", "level", str(pct), "--ez", "charging", "true" if charging else "false"],
+                                           capture_output=True, timeout=5)
+                            last, sent_at = now, time.time()
+                was = self.connected
+            except Exception:
+                pass
+            time.sleep(5)
 
     # The VNC tunnel is NOT managed here — arclink-tunnel.sh (its own LaunchAgent) owns it, so
     # updating or restarting the keyboard never drops 127.0.0.1:5900.
