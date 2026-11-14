@@ -85,18 +85,18 @@ textarea:focus,input:focus{outline:none;border-color:var(--rust)}
 <div class="wrap">
   <header>
     <a href="/werkschau" class="lab">— ARC·DNA</a>
-    <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button>
+    <span><button class="tt" id="lg" aria-label="Sprache / Language">EN</button> <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button></span>
   </header>
   <div class="lab r" style="margin-top:30px">— Wellness</div>
-  <h1>Erlaubnis<br>zur <em>Ruhe.</em></h1>
-  <p class="lead">Neun Rituale aus Büchern und Kulturen, auf die man selbst nie käme. Jedes ist geführt, dauert 1 bis 60 Minuten und braucht nichts ausser dir.</p>
+  <h1 data-en="Permission<br>to <em>rest.</em>">Erlaubnis<br>zur <em>Ruhe.</em></h1>
+  <p class="lead" data-en="Nine rituals from books and cultures you would never come up with yourself. Each one is guided, takes 1 to 60 minutes and needs nothing but you.">Neun Rituale aus Büchern und Kulturen, auf die man selbst nie käme. Jedes ist geführt, dauert 1 bis 60 Minuten und braucht nichts ausser dir.</p>
   <div class="grid" id="grid"></div>
-  <p class="foot">Alles bleibt auf deinem Gerät. Kein Konto, kein Tracking.<br>Bei anhaltender Erschöpfung, Schlaflosigkeit oder dunklen Gedanken: Hausarzt, oder <a href="tel:143">143</a> (Die Dargebotene Hand).<br><br><a href="/health/">ARC Health: Hausmittel mit Herkunft →</a></p>
+  <p class="foot" data-en="Everything stays on your device. No account, no tracking.<br>If exhaustion, sleeplessness or dark thoughts persist: see your doctor, or call <a href=&quot;tel:143&quot;>143</a> (Die Dargebotene Hand, Switzerland).<br><br><a href=&quot;/health/&quot;>ARC Health: home remedies with an origin →</a>">Alles bleibt auf deinem Gerät. Kein Konto, kein Tracking.<br>Bei anhaltender Erschöpfung, Schlaflosigkeit oder dunklen Gedanken: Hausarzt, oder <a href="tel:143">143</a> (Die Dargebotene Hand).<br><br><a href="/health/">ARC Health: Hausmittel mit Herkunft →</a></p>
 </div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true">
   <div class="sh">
-    <button class="x" id="close">← Zurück</button>
+    <button class="x" id="close" data-en="← Back">← Zurück</button>
     <div class="lab r" id="pOrigin" style="margin-top:14px"></div>
     <h2 id="pName"></h2>
     <p class="why" id="pWhy"></p>
@@ -181,6 +181,53 @@ const R = [
     steps:[["Wähle: Mensch, Natur oder Stille.",120],["Keine Liste. Kein Ziel. Kein Handy-Check.",1500],["Immer noch nichts erreicht? Perfekt.",1500],["Letzte Minuten. Nimm mit, wie sich das anfühlt.",480]] },
 ];
 
+
+// ---------- language: browser decides, English by default, DE/EN switch remembered ----------
+const LANG = (() => { const s = store.get("lang", null); if (s) return s; return (navigator.language || "en").toLowerCase().startsWith("de") ? "de" : "en"; })();
+const T = (en, de) => LANG === "de" ? de : en;
+document.documentElement.lang = LANG;
+$("#lg").textContent = LANG === "de" ? "EN" : "DE";
+$("#lg").onclick = () => { store.set("lang", LANG === "de" ? "en" : "de"); location.reload(); };
+if (LANG === "en") {
+  document.querySelectorAll("[data-en]").forEach(el => el.innerHTML = el.dataset.en);
+  document.title = "ARC Wellness";
+}
+const EN_R = {
+  bath:{ name:"Permission bath", origin:"Against the guilty conscience", short:"Ritual", sub:"For everyone who never allows themselves a warm bath.",
+    why:"Many people never take a bath because it looks like waste. Do the maths once: one bath a week costs less than a coffee. Warmth lowers tension, and the drop in body temperature afterwards makes you sleepy.",
+    steps:["Water at 37 to 39 °C. Dim the lights.","Phone out of the bathroom. Really out.","One single song. Then silence.","Just lie there. Solve nothing, plan nothing.","Feel your hands and feet. Where is it warmest?","Get up slowly. Drink a glass of water.","Done. You allowed yourself this."] },
+  niksen:{ name:"Niksen", origin:"Netherlands", sub:"The art of doing nothing on purpose.",
+    why:"Niksen is not meditation. No goal, no breathing technique, no right or wrong. You may think, you don't have to. That is exactly what rests a mind that is otherwise asked for something every minute.",
+    steps:["Sit down somewhere. No goal.","Look out of the window. Or at the wall.","Thoughts may come and go.","If you want to do something: don't.","A little more nothing."] },
+  forest:{ name:"Forest bathing", origin:"Japan · Shinrin-yoku", sub:"Slowly through the woods, with every sense.",
+    why:"Shinrin-yoku means \"bathing in the forest atmosphere\". Not hiking, not counting steps: walking slowly and taking it in with your senses. A park with trees works too.",
+    steps:["Phone on silent, in your pocket. Walk half as fast as usual.","Touch three different barks.","Find the quietest sound.","Smell earth, moss or leaves.","Stop. Look up into the treetops for 2 minutes.","Pick a tree. Lean against it.","Walk back slowly. What has changed?"] },
+  sigh:{ name:"Physiological sigh", origin:"Breathing physiology", sub:"The fastest way down. One minute.",
+    why:"Breathe in twice through the nose, topping up the second time, then breathe out long through the mouth. Your body does this on its own when it calms down. One to five rounds are enough.",
+    steps:["Follow the circle."], breath:["Breathe in · nose","Top up","Long breath out · mouth"] },
+  worry:{ name:"Worry window", origin:"Cognitive behavioural therapy", short:"CBT", sub:"Park worries instead of carrying them all day.",
+    why:"During the day, jot down each worry and park it here. In the evening you open the window for 15 minutes: what can be solved, what can't? Outside the window you're allowed to say: \"Not now, at 7 pm.\"",
+    steps:["Read each parked worry.","For each: can I do something tomorrow? Then a first step.","What you can't change: tick it off and let go.","Window closed. Until tomorrow."] },
+  tea:{ name:"Two-minute tea", origin:"Japan · Chadō", sub:"Make tea as if it were the only thing in the world.",
+    why:"The tea ceremony turns a small thing into a ritual. All you need is tea, water and two minutes of full attention. Ideal as a break between two tasks.",
+    steps:["Listen to the water boil.","Hold the empty cup. Feel its weight.","Pour slowly. Watch the steam.","Smell before you drink.","First sip. Only taste.","Hands around the cup. Warmth."] },
+  hum:{ name:"Humming", origin:"Yoga · Bhramari", sub:"Hum like a bee. Long and deep.",
+    why:"Long humming makes the out-breath long and even, which calms you. Bhramari means \"bee\". Lips closed, jaw loose, hum as low and as long as is comfortable.",
+    steps:["Follow the circle. Hum as you breathe out."], breath:["Breathe in · nose","Mmmmmm …"] },
+  kintsugi:{ name:"Kintsugi journal", origin:"Japan · golden repair", sub:"A crack in your week, and the gold in it.",
+    why:"In kintsugi, broken pottery is mended with gold. The break isn't hidden, it becomes the most beautiful part. Write down a crack from this week, and what it taught you.",
+    steps:["Think of a moment this week that hurt.","Write it down below. Honest, short.","What did it show you? That is the gold."] },
+  hour:{ name:"Unproductive hour", origin:"ARC·DNA rule", sub:"One hour in which nothing counts.",
+    why:"Not every hour has to produce something. Time with people, a walk, a conversation without a purpose: that is not a loss. This hour is not measured. You get praised for achieving nothing.",
+    steps:["Choose: people, nature or silence.","No list. No goal. No phone check.","Still achieved nothing? Perfect.","Last minutes. Take with you how this feels."] },
+};
+if (LANG === "en") R.forEach(r => {
+  const e = EN_R[r.id]; if (!e) return;
+  ["name","origin","short","sub","why"].forEach(k => { if (e[k]) r[k] = e[k]; });
+  e.steps.forEach((t, i) => { if (r.steps[i]) r.steps[i][0] = t; });
+  if (e.breath && r.breath) e.breath.forEach((t, i) => { if (r.breath[i]) r.breath[i][0] = t; });
+});
+
 const doneCount = store.get("done", {});
 function renderGrid(){
   $("#grid").innerHTML = R.map(r => `
@@ -188,7 +235,7 @@ function renderGrid(){
       <span class="em">${r.em}</span>
       <b>${r.name}</b>
       <p>${r.sub}</p>
-      <span class="meta"><span class="lab">${r.min} Min</span><span class="lab">${doneCount[r.id] ? doneCount[r.id] + "×" : (r.short || r.origin.split(" · ")[0])}</span></span>
+      <span class="meta"><span class="lab">${r.min} min</span><span class="lab">${doneCount[r.id] ? doneCount[r.id] + "×" : (r.short || r.origin.split(" · ")[0])}</span></span>
     </button>`).join("");
   document.querySelectorAll(".card").forEach(c => c.onclick = () => open(R.find(r => r.id === c.dataset.id)));
 }
@@ -220,7 +267,7 @@ function open(r){
   $("#pWhy").textContent = r.why;
   $("#pEm").textContent = r.em;
   $("#pDone").textContent = "";
-  $("#go").textContent = "Start";
+  $("#go").textContent = T("Start", "Start");
   $("#go").disabled = false;
   $("#pExtraTop").innerHTML = r.extraTop === "bath" ? bathCalc() : "";
   $("#pExtra").innerHTML = "";
@@ -228,7 +275,7 @@ function open(r){
   if (r.extra === "kintsugi") kintsugiBox();
   if (r.extraTop === "bath") wireBath();
   $("#fill").style.transform = "scale(1)";
-  $("#pStep").textContent = r.breath ? "Bereit, wenn du es bist." : r.steps[0][0];
+  $("#pStep").textContent = r.breath ? T("Ready when you are.", "Bereit, wenn du es bist.") : r.steps[0][0];
   paint();
   $("#sheet").classList.add("on"); $("#sheet").scrollTop = 0;
   document.body.style.overflow = "hidden";
@@ -241,7 +288,7 @@ $("#close").onclick = close;
 addEventListener("keydown", e => { if (e.key === "Escape") close(); });
 
 function paint(){
-  $("#pClock").textContent = `${fmt(left)} · SCHRITT ${idx + 1}/${cur.steps.length} · NOCH ${fmt(total - elapsed)}`;
+  $("#pClock").textContent = `${fmt(left)} · ${T("STEP","SCHRITT")} ${idx + 1}/${cur.steps.length} · ${T("LEFT","NOCH")} ${fmt(total - elapsed)}`;
   $("#arc").setAttribute("stroke-dasharray", `${(elapsed / total) * 100} 100`);
 }
 function breathStart(){ bPhase = 0; bLeft = cur.breath[0][1]; showBreath(); }
@@ -269,27 +316,27 @@ function next(){
 function finish(){
   clearInterval(timer); running = false; elapsed = total; left = 0; paint();
   $("#fill").style.transform = "scale(1)";
-  const praise = cur.id === "hour" ? "Eine ganze Stunde nichts erreicht. Stark. 🕯️" : "Geschafft. Gut gemacht.";
+  const praise = cur.id === "hour" ? T("A whole hour, nothing achieved. Strong. 🕯️", "Eine ganze Stunde nichts erreicht. Stark. 🕯️") : T("Done. Well done.", "Geschafft. Gut gemacht.");
   $("#pDone").textContent = praise;
   $("#pStep").textContent = cur.em;
-  $("#go").textContent = "Nochmal"; $("#go").disabled = false;
+  $("#go").textContent = T("Again", "Nochmal"); $("#go").disabled = false;
   doneCount[cur.id] = (doneCount[cur.id] || 0) + 1; store.set("done", doneCount); renderGrid();
   chime();
 }
 $("#go").onclick = () => {
-  if ($("#go").textContent === "Nochmal") { open(cur); return; }
-  if (running){ clearInterval(timer); running = false; $("#go").textContent = "Weiter"; return; }
+  if ($("#go").textContent === T("Again", "Nochmal")) { open(cur); return; }
+  if (running){ clearInterval(timer); running = false; $("#go").textContent = T("Resume", "Weiter"); return; }
   if (elapsed === 0){ chime(); if (cur.breath) breathStart(); else $("#pStep").textContent = cur.steps[0][0]; }
-  running = true; $("#go").textContent = "Pause";
+  running = true; $("#go").textContent = T("Pause", "Pause");
   timer = setInterval(tick, 1000);
 };
 $("#skip").onclick = () => { if (!cur) return; elapsed += left; next(); };
 
 // ---------- extras ----------
 function bathCalc(){
-  return `<div class="box"><div class="lab">— Was kostet ein Bad wirklich?</div>
+  return `<div class="box"><div class="lab">— ${T("What does a bath really cost?","Was kostet ein Bad wirklich?")}</div>
     <input type="range" id="lit" min="80" max="200" step="10" value="140" aria-label="Liter">
-    <div class="calc"><div><b id="cL">140</b><span>LITER</span></div><div><b id="cK">4.9</b><span>KWH WÄRME</span></div><div><b id="cC">1.90</b><span>CHF CA.</span></div></div>
+    <div class="calc"><div><b id="cL">140</b><span>${T("LITRES","LITER")}</span></div><div><b id="cK">4.9</b><span>${T("KWH HEAT","KWH WÄRME")}</span></div><div><b id="cC">1.90</b><span>${T("CHF APPROX.","CHF CA.")}</span></div></div>
     <p class="note" id="cN"></p></div>`;
 }
 function wireBath(){
@@ -298,7 +345,7 @@ function wireBath(){
     const kwh = L * 30 * 1.163 / 1000;         // 10 °C → 40 °C
     const chf = kwh * 0.30 + L * 0.004;         // ~0.30 CHF/kWh heat + ~4 CHF/m³ water and sewage
     $("#cL").textContent = L; $("#cK").textContent = kwh.toFixed(1); $("#cC").textContent = chf.toFixed(2);
-    $("#cN").textContent = `Einmal pro Woche sind das etwa CHF ${(chf * 52).toFixed(0)} im Jahr, also ${(chf * 52 / 12).toFixed(0)} Franken im Monat. Eine 10-Minuten-Dusche braucht rund 90 Liter. Richtwerte, je nach Heizung und Gemeinde.`;
+    $("#cN").textContent = T(`Once a week that is about CHF ${(chf * 52).toFixed(0)} a year, or ${(chf * 52 / 12).toFixed(0)} francs a month. A 10-minute shower uses around 90 litres. Rough values, depending on heating and town.`, `Einmal pro Woche sind das etwa CHF ${(chf * 52).toFixed(0)} im Jahr, also ${(chf * 52 / 12).toFixed(0)} Franken im Monat. Eine 10-Minuten-Dusche braucht rund 90 Liter. Richtwerte, je nach Heizung und Gemeinde.`);
   };
   $("#lit").oninput = upd; upd();
 }
@@ -307,10 +354,10 @@ function worryBox(){
   const host = $("#pExtra");
   const draw = () => {
     const w = store.get("worries", []);
-    host.innerHTML = `<div class="box"><div class="lab">— Sorge parken</div>
-      <div class="row"><input type="text" id="wIn" placeholder="Was geht dir durch den Kopf?" maxlength="200"><button class="b" id="wAdd">Parken</button></div>
-      <ul class="list">${w.map((x, i) => `<li><span>${esc(x.t)}<small>${new Date(x.at).toLocaleString("de-CH",{weekday:"short",hour:"2-digit",minute:"2-digit"})}</small></span><button data-i="${i}" title="Loslassen">✓ los</button></li>`).join("") || `<li style="color:var(--ink3)">Nichts geparkt. Gut so.</li>`}</ul>
-      <p class="note">Tipp: Leg dir eine feste Zeit fest, z.B. 19:00. Was tagsüber auftaucht, kommt hierher.</p></div>`;
+    host.innerHTML = `<div class="box"><div class="lab">— ${T("Park a worry","Sorge parken")}</div>
+      <div class="row"><input type="text" id="wIn" placeholder="${T("What's on your mind?","Was geht dir durch den Kopf?")}" maxlength="200"><button class="b" id="wAdd">${T("Park","Parken")}</button></div>
+      <ul class="list">${w.map((x, i) => `<li><span>${esc(x.t)}<small>${new Date(x.at).toLocaleString(T("en-GB","de-CH"),{weekday:"short",hour:"2-digit",minute:"2-digit"})}</small></span><button data-i="${i}" title="${T("Let go","Loslassen")}">✓ ${T("let go","los")}</button></li>`).join("") || `<li style="color:var(--ink3)">${T("Nothing parked. Good.","Nichts geparkt. Gut so.")}</li>`}</ul>
+      <p class="note">${T("Tip: pick a fixed time, e.g. 7 pm. Whatever comes up during the day goes in here.","Tipp: Leg dir eine feste Zeit fest, z.B. 19:00. Was tagsüber auftaucht, kommt hierher.")}</p></div>`;
     const add = () => { const v = $("#wIn").value.trim(); if (!v) return; w.unshift({ t:v, at:Date.now() }); store.set("worries", w); draw(); };
     $("#wAdd").onclick = add; $("#wIn").onkeydown = e => { if (e.key === "Enter") add(); };
     host.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { w.splice(+b.dataset.i, 1); store.set("worries", w); draw(); });
@@ -322,12 +369,12 @@ function kintsugiBox(){
   const host = $("#pExtra");
   const draw = () => {
     const k = store.get("kintsugi", []);
-    host.innerHTML = `<div class="box"><div class="lab">— Der Riss</div>
-      <textarea id="kR" rows="2" maxlength="400" placeholder="Was ist diese Woche zerbrochen?"></textarea>
-      <div class="lab" style="margin-top:14px">— Das Gold</div>
-      <textarea id="kG" rows="2" maxlength="400" placeholder="Was hat es dir gezeigt?"></textarea>
-      <div class="row"><button class="b" id="kS">Mit Gold flicken</button></div>
-      <ul class="list">${k.map((x, i) => `<li><span>${esc(x.r)}<br><span class="gold">✦ ${esc(x.g)}</span><small>${new Date(x.at).toLocaleDateString("de-CH")}</small></span><button data-i="${i}" title="Löschen">✕</button></li>`).join("")}</ul></div>`;
+    host.innerHTML = `<div class="box"><div class="lab">— ${T("The crack","Der Riss")}</div>
+      <textarea id="kR" rows="2" maxlength="400" placeholder="${T("What broke this week?","Was ist diese Woche zerbrochen?")}"></textarea>
+      <div class="lab" style="margin-top:14px">— ${T("The gold","Das Gold")}</div>
+      <textarea id="kG" rows="2" maxlength="400" placeholder="${T("What did it show you?","Was hat es dir gezeigt?")}"></textarea>
+      <div class="row"><button class="b" id="kS">${T("Mend with gold","Mit Gold flicken")}</button></div>
+      <ul class="list">${k.map((x, i) => `<li><span>${esc(x.r)}<br><span class="gold">✦ ${esc(x.g)}</span><small>${new Date(x.at).toLocaleDateString(T("en-GB","de-CH"))}</small></span><button data-i="${i}" title="${T("Delete","Löschen")}">✕</button></li>`).join("")}</ul></div>`;
     $("#kS").onclick = () => { const r = $("#kR").value.trim(), g = $("#kG").value.trim(); if (!r || !g) return; k.unshift({ r, g, at:Date.now() }); store.set("kintsugi", k); draw(); };
     host.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { k.splice(+b.dataset.i, 1); store.set("kintsugi", k); draw(); });
   };

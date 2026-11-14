@@ -82,39 +82,39 @@ input:focus,textarea:focus{outline:none;border-color:var(--rust)}
 <div class="wrap">
   <header>
     <a href="/werkschau" class="lab">— ARC·DNA</a>
-    <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button>
+    <span><button class="tt" id="lg" aria-label="Sprache / Language">EN</button> <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button></span>
   </header>
   <div class="lab r" style="margin-top:30px">— Health</div>
-  <h1>Hausmittel<br>mit <em>Herkunft.</em></h1>
-  <p class="lead">Wissen, das Menschen einander weitergeben: in der Küche, bei der Grossmutter, mal mitten in einem Vorstellungsgespräch. Jedes Mittel mit Anleitung, seiner Geschichte und einer klaren Grenze, wann es Zeit für den Arzt ist.</p>
+  <h1 data-en="Home remedies<br>with an <em>origin.</em>">Hausmittel<br>mit <em>Herkunft.</em></h1>
+  <p class="lead" data-en="Knowledge people pass on to each other: in the kitchen, at grandma's, once even in the middle of a job interview. Each remedy with instructions, its story and a clear line for when it is time to see a doctor.">Wissen, das Menschen einander weitergeben: in der Küche, bei der Grossmutter, mal mitten in einem Vorstellungsgespräch. Jedes Mittel mit Anleitung, seiner Geschichte und einer klaren Grenze, wann es Zeit für den Arzt ist.</p>
   <div class="quote">
-    <p>«Sie hörte meinen Husten und sagte: Zwiebeln in ein Glas, Honig drüber, Deckel zu. Morgen hast du Sirup.»</p>
-    <span class="lab">— Von einer Witwe, bei einem Vorstellungsgespräch</span>
+    <p data-en="&ldquo;She heard my cough and said: onions in a jar, honey on top, lid on. Tomorrow you have syrup.&rdquo;">«Sie hörte meinen Husten und sagte: Zwiebeln in ein Glas, Honig drüber, Deckel zu. Morgen hast du Sirup.»</p>
+    <span class="lab" data-en="— From a widow, during a job interview">— Von einer Witwe, bei einem Vorstellungsgespräch</span>
   </div>
 
   <div class="chips" id="chips"></div>
   <div class="list" id="list"></div>
 
   <div class="box">
-    <div class="lab r">— Dein Hausmittel</div>
-    <h3>Wer hat es dir beigebracht?</h3>
-    <p>Schreib ein Mittel auf, das dir jemand weitergegeben hat, und von wem. Es bleibt nur auf diesem Gerät.</p>
+    <div class="lab r" data-en="— Your remedy">— Dein Hausmittel</div>
+    <h3 data-en="Who taught it to you?">Wer hat es dir beigebracht?</h3>
+    <p data-en="Write down a remedy someone passed on to you, and who it was. It stays on this device only.">Schreib ein Mittel auf, das dir jemand weitergegeben hat, und von wem. Es bleibt nur auf diesem Gerät.</p>
     <div class="two">
-      <label><span>Symbol</span><input id="fEm" maxlength="4" value="🌿"></label>
-      <label><span>Name</span><input id="fName" maxlength="60" placeholder="z.B. Holunderblütentee"></label>
+      <label><span data-en="Symbol">Symbol</span><input id="fEm" maxlength="4" value="🌿"></label>
+      <label><span>Name</span><input id="fName" maxlength="60" placeholder="z.B. Holunderblütentee" data-ph="e.g. elderflower tea"></label>
     </div>
-    <label><span>Wofür</span><input id="fFor" maxlength="80" placeholder="z.B. Erkältung, Fieber"></label>
-    <label><span>So geht's</span><textarea id="fHow" rows="3" maxlength="800" placeholder="Ein Schritt pro Zeile"></textarea></label>
-    <label><span>Gelernt von</span><input id="fFrom" maxlength="160" placeholder="z.B. Von meiner Nonna, jeden Winter"></label>
-    <button class="b" id="fSave">Speichern</button>
+    <label><span data-en="For">Wofür</span><input id="fFor" maxlength="80" placeholder="z.B. Erkältung, Fieber" data-ph="e.g. cold, fever"></label>
+    <label><span data-en="How it works">So geht's</span><textarea id="fHow" rows="3" maxlength="800" placeholder="Ein Schritt pro Zeile" data-ph="One step per line"></textarea></label>
+    <label><span data-en="Learned from">Gelernt von</span><input id="fFrom" maxlength="160" placeholder="z.B. Von meiner Nonna, jeden Winter" data-ph="e.g. From my nonna, every winter"></label>
+    <button class="b" id="fSave" data-en="Save">Speichern</button>
   </div>
 
   <div class="sos">
-    <a href="tel:144"><b>144</b><span>NOTRUF</span></a>
+    <a href="tel:144"><b>144</b><span data-en="EMERGENCY">NOTRUF</span></a>
     <a href="tel:145"><b>145</b><span>TOX INFO</span></a>
-    <a href="tel:143"><b>143</b><span>DARGEB. HAND</span></a>
+    <a href="tel:143"><b>143</b><span data-en="HELPLINE">DARGEB. HAND</span></a>
   </div>
-  <p class="foot">Hausmittel ersetzen keine ärztliche Abklärung. Sie lindern, sie heilen keine Infektion. Bei Schwangerschaft, Säuglingen, chronischen Krankheiten oder Medikamenten: vorher Apotheke oder Hausarzt fragen.<br><br><a href="/wellness/">ARC Wellness: Erlaubnis zur Ruhe →</a></p>
+  <p class="foot" data-en="Home remedies do not replace a medical check. They ease symptoms, they do not cure an infection. In pregnancy, for infants, with chronic illness or medication: ask a pharmacy or your doctor first. Emergency numbers are for Switzerland.<br><br><a href=&quot;/wellness/&quot;>ARC Wellness: permission to rest →</a>">Hausmittel ersetzen keine ärztliche Abklärung. Sie lindern, sie heilen keine Infektion. Bei Schwangerschaft, Säuglingen, chronischen Krankheiten oder Medikamenten: vorher Apotheke oder Hausarzt fragen.<br><br><a href="/wellness/">ARC Wellness: Erlaubnis zur Ruhe →</a></p>
 </div>
 
 <script>
@@ -133,7 +133,17 @@ const store = {
   };
 })();
 
-const ALWAYS = "Atemnot, Brustschmerzen, Verwirrtheit oder steifer Nacken: sofort 144.";
+
+const LANG = (() => { const s = store.get("lang", null); if (s) return s; return (navigator.language || "en").toLowerCase().startsWith("de") ? "de" : "en"; })();
+const T = (en, de) => LANG === "de" ? de : en;
+document.documentElement.lang = LANG;
+$("#lg").textContent = LANG === "de" ? "EN" : "DE";
+$("#lg").onclick = () => { store.set("lang", LANG === "de" ? "en" : "de"); location.reload(); };
+if (LANG === "en") {
+  document.querySelectorAll("[data-en]").forEach(el => el.innerHTML = el.dataset.en);
+  document.querySelectorAll("[data-ph]").forEach(el => el.placeholder = el.dataset.ph);
+}
+const ALWAYS = T("Shortness of breath, chest pain, confusion or a stiff neck: call 144 at once.", "Atemnot, Brustschmerzen, Verwirrtheit oder steifer Nacken: sofort 144.");
 const R = [
   { id:"onion-honey", em:"🧅🍯", name:"Zwiebel-Honig-Sirup", for:"Husten, Reizhusten", tags:["Husten"],
     from:"Von einer Witwe bei einem Vorstellungsgespräch, die meinen Husten hörte. Sie machte ihn jeden Winter für ihren Mann.",
@@ -172,15 +182,48 @@ const R = [
     warn:["Ingwer kann bei Blutverdünnern stören: Apotheke fragen.","Erkältung länger als 10 Tage oder plötzlich wieder schlechter.","Kein Honig für Babys unter 12 Monaten."] },
 ];
 
+const EN_R = {
+  "onion-honey":{ name:"Onion honey syrup", for:"Cough, dry cough", from:"From a widow during a job interview, who heard my cough. She made it every winter for her husband.",
+    need:["1 onion","3 to 4 tbsp honey (or sugar)","A clean jar with a lid"],
+    how:["Peel the onion and cut it into small cubes or rings.","Put it in the jar, honey on top, lid on.","Leave it overnight. The onion releases its juice and it turns into a runny syrup.","Adults: 1 tsp several times a day. Keep it cool, make a fresh batch after 2 to 3 days."],
+    warn:["No honey for babies under 12 months (botulism). Use sugar there and ask the paediatrician first.","Cough for more than 3 weeks, bloody mucus or fever over 39 °C.","Wheezing or shortness of breath."] },
+  "calf":{ name:"Calf wraps", for:"Bringing a fever down", from:"Passed down: the classic in Swiss families, long before there was fever syrup in the cupboard.",
+    need:["2 cotton cloths","Lukewarm water (not ice cold)","2 dry towels"],
+    how:["Only if legs and feet are warm and there are no chills.","Dip the cloths in water about 10 degrees cooler than body temperature. Wring them out.","Wrap them around both calves, a dry towel on top. Cover, but not heavily.","Remove after 10 to 15 minutes. Repeat two to three times at most."],
+    warn:["Not with cold feet, chills or circulation problems.","Babies under 3 months with a fever: straight to the doctor.","Fever over 39.5 °C, longer than 3 days, or with a rash."] },
+  "onion-bag":{ name:"Onion pouch", for:"Earache", from:"Passed down: an old Swiss home remedy. Many remember the smell in the children's room.",
+    need:["1 onion","A thin cloth or a sock","A hat or headband"],
+    how:["Chop the onion finely.","Warm it briefly in a pan without fat, only hand-warm.","Put it in the cloth and tie it shut.","Place it behind and on the ear, hold it with the hat. 20 to 30 minutes."],
+    warn:["Always test on your wrist first: pleasantly warm, never hot.","Discharge from the ear, hearing loss or severe pain.","Children under 2, or with a fever: see a doctor."] },
+  "potato":{ name:"Potato wrap", for:"Sore throat, stubborn cough", from:"Passed down: grandmother knowledge. Potatoes hold heat for a long time and release it slowly.",
+    need:["3 to 4 potatoes","A cotton cloth","A scarf"],
+    how:["Boil the potatoes in their skins until soft.","Put them in the cloth, mash lightly and fold into a flat parcel.","Check the temperature. Only when it is pleasantly warm, place it on throat or chest.","Scarf on top. Leave it until it cools, about 20 to 30 minutes."],
+    warn:["Risk of burns: potatoes are hotter inside than outside. Always test.","Not for children who can't say when it is too hot.","Sore throat with high fever, trouble swallowing or swollen glands for more than 3 days."] },
+  "thyme":{ name:"Thyme tea & sage gargle", for:"Cough, sore throat", from:"Passed down: thyme and sage grow in almost every farm garden, so they were in every medicine cabinet.",
+    need:["Thyme, fresh or dried","Sage","Boiling water"],
+    how:["Tea: 1 to 2 tsp thyme per cup, pour hot water over it, steep covered for 10 minutes.","2 to 3 cups a day, honey if you like.","Gargle: make sage tea the same way, let it cool.","Gargle several times a day, don't swallow."],
+    warn:["No large amounts of sage during pregnancy.","Sore throat with fever and white patches: see a doctor (could be strep throat).","No improvement after a week."] },
+  "steam":{ name:"Chamomile steam", for:"Blocked nose", from:"Passed down: head under the towel over the bowl. Almost everyone knows it from childhood.",
+    need:["A bowl","Chamomile flowers or a tea bag","A large towel"],
+    how:["Chamomile in the bowl, pour hot (no longer boiling) water over it.","Put the bowl firmly on the table.","Face over it at a distance, towel over head and bowl.","Breathe calmly through the nose for 5 to 10 minutes. Eyes closed."],
+    warn:["Not for children: risk of scalding if the bowl tips.","Not with asthma or a chamomile allergy.","Pain in forehead or cheeks with fever for more than 10 days."] },
+  "ginger":{ name:"Ginger, lemon, honey", for:"The start of a cold", from:"Passed down: the starter kit as soon as your throat scratches. Warm, hot, sour, sweet.",
+    need:["A thumb-sized piece of ginger","Half a lemon","1 tsp honey"],
+    how:["Cut the ginger into thin slices.","Pour hot water over it, steep for 10 minutes.","Let it cool a little, then add lemon juice and honey (not into boiling water).","2 to 3 cups a day. Plus: sleep and drink plenty."],
+    warn:["Ginger can interfere with blood thinners: ask a pharmacy.","A cold lasting more than 10 days or suddenly getting worse again.","No honey for babies under 12 months."] },
+};
+if (LANG === "en") R.forEach(r => Object.assign(r, EN_R[r.id] || {}));
+
 let own = store.get("own", []);
 const all = () => [...own.map(o => ({ ...o, own:true })), ...R];
 const TAGS = ["Alle","Husten","Hals","Fieber","Ohr","Nase","Erkältung"];
+const TAG_EN = { Alle:"All", Husten:"Cough", Hals:"Throat", Fieber:"Fever", Ohr:"Ear", Nase:"Nose", "Erkältung":"Cold" };
 let tag = "Alle";
 
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
 
 function renderChips(){
-  $("#chips").innerHTML = TAGS.map(t => `<button class="chip ${t === tag ? "on" : ""}" data-t="${t}">${t}</button>`).join("");
+  $("#chips").innerHTML = TAGS.map(t => `<button class="chip ${t === tag ? "on" : ""}" data-t="${t}">${T(TAG_EN[t], t)}</button>`).join("");
   document.querySelectorAll(".chip").forEach(c => c.onclick = () => { tag = c.dataset.t; renderChips(); render(); });
 }
 function render(openId){
@@ -189,15 +232,15 @@ function render(openId){
     <div class="rm ${r.id === openId ? "open" : ""}" id="r-${esc(r.id)}">
       <button aria-expanded="${r.id === openId}">
         <span class="em">${esc(r.em)}</span>
-        <span><b>${esc(r.name)}${r.own ? '<span class="own">DEINS</span>' : ""}</b><span class="for">${esc(r.for)}</span></span>
+        <span><b>${esc(r.name)}${r.own ? `<span class="own">${T("YOURS","DEINS")}</span>` : ""}</b><span class="for">${esc(r.for)}</span></span>
         <span class="arr">›</span>
       </button>
       <div class="body">
-        <div class="origin"><span class="lab">— Gelernt von</span>${esc(r.from || "Unbekannt")}</div>
-        ${r.need ? `<div class="sec"><span class="lab">— Du brauchst</span><ul>${r.need.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
-        <div class="sec"><span class="lab">— So geht's</span><ol>${r.how.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>
-        <div class="warn"><span class="lab">⚠ Zum Arzt, wenn …</span><ul>${(r.warn || ["Es nach 3 Tagen nicht besser wird.","Hohes Fieber oder starke Schmerzen dazukommen."]).map(x => `<li>${esc(x)}</li>`).join("")}<li>${ALWAYS}</li></ul></div>
-        ${r.own ? `<button class="del" data-del="${esc(r.id)}">✕ Löschen</button>` : ""}
+        <div class="origin"><span class="lab">— ${T("Learned from","Gelernt von")}</span>${esc(r.from || T("Unknown","Unbekannt"))}</div>
+        ${r.need ? `<div class="sec"><span class="lab">— ${T("You need","Du brauchst")}</span><ul>${r.need.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+        <div class="sec"><span class="lab">— ${T("How","So geht's")}</span><ol>${r.how.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>
+        <div class="warn"><span class="lab">⚠ ${T("See a doctor if …","Zum Arzt, wenn …")}</span><ul>${(r.warn || [T("It isn't better after 3 days.","Es nach 3 Tagen nicht besser wird."),T("High fever or severe pain develop.","Hohes Fieber oder starke Schmerzen dazukommen.")]).map(x => `<li>${esc(x)}</li>`).join("")}<li>${ALWAYS}</li></ul></div>
+        ${r.own ? `<button class="del" data-del="${esc(r.id)}">✕ ${T("Delete","Löschen")}</button>` : ""}
       </div>
     </div>`).join("");
   document.querySelectorAll(".rm>button").forEach(b => b.onclick = () => {
@@ -214,7 +257,7 @@ $("#fSave").onclick = () => {
   const name = $("#fName").value.trim(), how = $("#fHow").value.split("\n").map(s => s.trim()).filter(Boolean);
   if (!name || !how.length){ $("#fName").focus(); return; }
   const id = "own-" + Date.now();
-  own.unshift({ id, em:$("#fEm").value.trim() || "🌿", name, for:$("#fFor").value.trim() || "Eigenes Mittel", how, from:$("#fFrom").value.trim() || "Unbekannt" });
+  own.unshift({ id, em:$("#fEm").value.trim() || "🌿", name, for:$("#fFor").value.trim() || T("Own remedy","Eigenes Mittel"), how, from:$("#fFrom").value.trim() || T("Unknown","Unbekannt") });
   store.set("own", own);
   ["#fName","#fFor","#fHow","#fFrom"].forEach(s => $(s).value = "");
   tag = "Alle"; renderChips(); render(id);
