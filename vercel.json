@@ -18,6 +18,28 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.architect-dna.ch"
+        }
+      ],
+      "destination": "/werkschau",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "architect-dna.ch"
+        }
+      ],
+      "destination": "/werkschau",
+      "permanent": false
+    },
+    {
       "source": "/game-studio",
       "destination": "/",
       "permanent": true
@@ -39,6 +61,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/studio",
+      "destination": "/index.html"
+    },
     {
       "source": "/api/wg/set",
       "destination": "/api/wg/set.js"
