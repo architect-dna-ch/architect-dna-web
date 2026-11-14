@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Build ArcLink.app (wraps arclink.py), set it to launch at login, and keep it alive.
+# Use EITHER this OR the launchd plist (ch.architectdna.arclink.plist) — never both, or two copies
+# grab the keyboard at once.
 # A .app has a stable identity macOS can remember the Input-Monitoring/Accessibility grant for —
 # which a bare launchd python does not. arclink itself auto-reconnects when the Pad is plugged in.
 set -e
@@ -23,8 +25,9 @@ PLIST
 cat > "$APP/Contents/MacOS/ArcLink" <<RUN
 #!/bin/bash
 cd "\$HOME/arc-link"
+# Restart after a crash; stop for good after a clean exit (F9 = quit).
 while true; do
-  "$PY" arclink.py >> /tmp/arclink.out.log 2>&1
+  PYTHONUNBUFFERED=1 "$PY" arclink.py >> /tmp/arclink.out.log 2>&1 && break
   sleep 3
 done
 RUN

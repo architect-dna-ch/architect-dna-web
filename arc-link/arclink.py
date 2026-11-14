@@ -38,6 +38,13 @@ import sys
 import threading
 import time
 
+# Log lines appear immediately even when launchd/the app wrapper sends stdout to a file.
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
+except Exception:
+    pass
+
 try:
     from pynput import keyboard, mouse
 except ImportError:
@@ -127,7 +134,7 @@ class ArcLink:
     def __init__(self):
         self.dev = Device()
         self.paused = False          # F10 hard pause
-        self.connected = True        # updated by the USB poller
+        self.connected = adb_state() == "device"   # start safe: only block the keyboard once adb sees the Pad
         self.buf, self.buf_lock = [], threading.Lock()
         self.down = set()            # keys currently held (de-dupe auto-repeat)
         self.mods = set()            # alt/cmd currently held → word ops

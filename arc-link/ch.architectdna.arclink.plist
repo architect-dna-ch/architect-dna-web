@@ -13,13 +13,16 @@
     <string>/Users/USERNAME/arc-link/arclink.py</string>
   </array>
 
-  <!-- Optional: force the tablet size if a tap lands off.
   <key>EnvironmentVariables</key>
-  <dict><key>ARCLINK_SIZE</key><string>2560x1600</string></dict>
-  -->
+  <dict>
+    <key>PYTHONUNBUFFERED</key><string>1</string>
+    <!-- Optional: force the tablet size if a tap lands off.
+    <key>ARCLINK_SIZE</key><string>2560x1600</string> -->
+  </dict>
 
   <key>RunAtLoad</key><true/>
-  <key>KeepAlive</key><true/>
+  <!-- Restart after a crash, but not after F9 (a clean exit) — so F9 really quits. -->
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
   <key>StandardOutPath</key><string>/tmp/arclink.out.log</string>
   <key>StandardErrorPath</key><string>/tmp/arclink.err.log</string>
 </dict>
