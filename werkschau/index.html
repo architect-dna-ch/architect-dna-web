@@ -150,6 +150,15 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
 .btn.solid:hover{background:var(--dacc);border-color:var(--dacc);transform:translateY(-1px)}
 .btn.ghost{color:var(--dink)}
 .btn.ghost:hover{background:var(--dink);color:var(--dark)}
+/* ── NEW: wellness & health ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.duo a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--card);transition:transform .15s,border-color .15s}
+.duo a:hover{transform:translateY(-3px);border-color:var(--accent)}
+.duo .ems{font-size:34px;letter-spacing:4px}
+.duo b{display:block;font-size:26px;font-weight:900;letter-spacing:-.04em;margin-top:14px}
+.duo p{color:var(--ink2);font-size:15px;line-height:1.55;margin-top:8px}
+.duo .go{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
 .foot{margin-top:56px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dink2);text-transform:uppercase}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -299,6 +308,19 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
   </div>
 </section>
 
+<!-- NEW: WELLNESS & HEALTH -->
+<section class="band" id="care">
+  <div class="inner">
+    <div class="eye">New · 06 &amp; 07</div>
+    <h2>Rest and remedies,<br>with a human origin.</h2>
+    <p class="lead">Two small apps, one tap from every ARC home screen. Rituals people would never try on their own, and home remedies that carry the story of who taught them.</p>
+    <div class="duo">
+      <a href="/wellness/"><span class="ems">🛁 🫥 🌲 😮‍💨</span><b>ARC Wellness</b><p>Nine guided rituals: the permission bath, Dutch niksen, forest bathing, the physiological sigh, a worry window, kintsugi journaling and one unproductive hour.</p><span class="go">Open Wellness →</span></a>
+      <a href="/health/"><span class="ems">🧅🍯 🧦 🌿 ♨️</span><b>ARC Health</b><p>Onion honey syrup, calf wraps, the onion pouch. Each with steps, where it came from, and a clear box: when it is time for a doctor.</p><span class="go">Open Health →</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- PRINCIPLES -->
 <section class="band">
   <div class="inner">
@@ -321,6 +343,8 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
       <a class="btn solid" href="/studio">See the studio →</a>
       <a class="btn ghost" href="/arc-link/">Try ARC Link free</a>
       <a class="btn ghost" href="/statistik-home/">Play with the model</a>
+      <a class="btn ghost" href="/wellness/">ARC Wellness</a>
+      <a class="btn ghost" href="/health/">ARC Health</a>
     </div>
     <div class="foot">architect-dna.ch · Home UI for Android · 2026</div>
   </div>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Health</title>
+<meta name="description" content="Hausmittel mit Herkunft: Zwiebel-Honig-Sirup, Wadenwickel, Zwiebelsäckli und mehr. Jedes mit Anleitung, der Geschichte, wer es weitergab, und wann du zum Arzt solltest.">
+<meta property="og:title" content="ARC Health · Hausmittel mit Herkunft">
+<meta property="og:description" content="Altes Wissen, das Menschen einander weitergeben. Mit klarer Grenze: wann es Zeit für den Arzt ist.">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0E0D" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/icon.png">
+<style>
+/* ARC Health: traditional home remedies, each with its origin and a "see a doctor when" box. */
+:root{
+  --bg:#FAFAF8;--card:#FFFFFF;--line:#E0E0D8;--ink:#1A1A1A;--ink2:#5A5A58;--ink3:#9A9A98;--rust:#B5271E;--soft:#F0EFEB;--warn:#FBF1EF;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E0E0D;--card:#1A1A18;--line:#2C2C2A;--ink:#F4F2EC;--ink2:#A5A5A0;--ink3:#6F6E69;--rust:#D9472F;--soft:#151514;--warn:#2A1815;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E0E0D;--card:#1A1A18;--line:#2C2C2A;--ink:#F4F2EC;--ink2:#A5A5A0;--ink3:#6F6E69;--rust:#D9472F;--soft:#151514;--warn:#2A1815;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:880px;margin:0 auto}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3)}
+.lab.r{color:var(--rust)}
+header{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0}
+header a{text-decoration:none}
+.tt{background:none;border:1px solid var(--line);color:var(--ink2);font:inherit;font-size:13px;border-radius:20px;padding:5px 11px;cursor:pointer}
+h1{font-size:clamp(40px,9vw,76px);font-weight:900;letter-spacing:-.05em;line-height:.95;margin-top:34px}
+h1 em{font-style:normal;color:var(--rust)}
+.lead{color:var(--ink2);font-size:16px;line-height:1.55;max-width:50ch;margin-top:14px}
+.quote{margin-top:26px;border-left:2px solid var(--rust);padding:4px 0 4px 16px;max-width:56ch}
+.quote p{font-size:17px;line-height:1.5;letter-spacing:-.01em}
+.quote .lab{margin-top:8px;display:block}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+.chip{font:inherit;font-size:14px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--ink2);cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:grid;gap:10px;margin-top:16px}
+.rm{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.rm>button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:16px;cursor:pointer}
+.rm>button:focus-visible{outline:2px solid var(--rust);outline-offset:-2px}
+.rm .em{font-size:34px;line-height:1;text-align:center}
+.rm b{font-size:18px;letter-spacing:-.02em;display:block}
+.rm .for{color:var(--ink2);font-size:14px;margin-top:3px;display:block}
+.rm .arr{color:var(--ink3);font-size:18px;transition:transform .2s}
+.rm.open .arr{transform:rotate(90deg)}
+.rm .body{display:none;padding:0 16px 18px}
+.rm.open .body{display:block}
+.origin{background:var(--soft);border-radius:6px;padding:12px 14px;font-size:14.5px;line-height:1.5;font-style:italic;color:var(--ink2)}
+.origin .lab{font-style:normal;display:block;margin-bottom:5px}
+.sec{margin-top:16px}
+.sec .lab{display:block;margin-bottom:8px}
+.sec ul,.sec ol{padding-left:20px;display:grid;gap:6px}
+.sec li{font-size:15px;line-height:1.5}
+.warn{margin-top:16px;background:var(--warn);border:1px solid var(--rust);border-radius:6px;padding:12px 14px}
+.warn .lab{color:var(--rust);display:block;margin-bottom:6px}
+.warn li{font-size:14.5px;line-height:1.5}
+.warn ul{padding-left:18px;display:grid;gap:4px}
+.own{color:var(--ink3);font-family:var(--mono);font-size:10px;letter-spacing:.14em;border:1px solid var(--line);border-radius:10px;padding:1px 7px;margin-left:6px;vertical-align:3px}
+.del{margin-top:14px;background:none;border:none;color:var(--ink3);font:inherit;font-size:13px;cursor:pointer}
+.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;margin-top:30px}
+.box h3{font-size:22px;letter-spacing:-.03em;margin-top:6px}
+.box p{color:var(--ink2);font-size:14.5px;line-height:1.5;margin-top:6px}
+label{display:block;margin-top:12px}
+label span{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+input,textarea{display:block;width:100%;margin-top:5px;font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--rust)}
+.two{display:grid;grid-template-columns:72px 1fr;gap:10px}
+.b{margin-top:14px;font:inherit;font-weight:800;font-size:15px;padding:12px 20px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.sos{margin-top:30px;border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.sos a{text-decoration:none;color:inherit}
+.sos b{display:block;font-size:26px;letter-spacing:-.03em;color:var(--rust)}
+.sos span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3)}
+.foot{margin-top:30px;color:var(--ink3);font-size:13px;line-height:1.6}
+.foot a{color:var(--rust)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/werkschau" class="lab">— ARC·DNA</a>
+    <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button>
+  </header>
+  <div class="lab r" style="margin-top:30px">— Health</div>
+  <h1>Hausmittel<br>mit <em>Herkunft.</em></h1>
+  <p class="lead">Wissen, das Menschen einander weitergeben: in der Küche, bei der Grossmutter, mal mitten in einem Vorstellungsgespräch. Jedes Mittel mit Anleitung, seiner Geschichte und einer klaren Grenze, wann es Zeit für den Arzt ist.</p>
+  <div class="quote">
+    <p>«Sie hörte meinen Husten und sagte: Zwiebeln in ein Glas, Honig drüber, Deckel zu. Morgen hast du Sirup.»</p>
+    <span class="lab">— Von einer Witwe, bei einem Vorstellungsgespräch</span>
+  </div>
+
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+
+  <div class="box">
+    <div class="lab r">— Dein Hausmittel</div>
+    <h3>Wer hat es dir beigebracht?</h3>
+    <p>Schreib ein Mittel auf, das dir jemand weitergegeben hat, und von wem. Es bleibt nur auf diesem Gerät.</p>
+    <div class="two">
+      <label><span>Symbol</span><input id="fEm" maxlength="4" value="🌿"></label>
+      <label><span>Name</span><input id="fName" maxlength="60" placeholder="z.B. Holunderblütentee"></label>
+    </div>
+    <label><span>Wofür</span><input id="fFor" maxlength="80" placeholder="z.B. Erkältung, Fieber"></label>
+    <label><span>So geht's</span><textarea id="fHow" rows="3" maxlength="800" placeholder="Ein Schritt pro Zeile"></textarea></label>
+    <label><span>Gelernt von</span><input id="fFrom" maxlength="160" placeholder="z.B. Von meiner Nonna, jeden Winter"></label>
+    <button class="b" id="fSave">Speichern</button>
+  </div>
+
+  <div class="sos">
+    <a href="tel:144"><b>144</b><span>NOTRUF</span></a>
+    <a href="tel:145"><b>145</b><span>TOX INFO</span></a>
+    <a href="tel:143"><b>143</b><span>DARGEB. HAND</span></a>
+  </div>
+  <p class="foot">Hausmittel ersetzen keine ärztliche Abklärung. Sie lindern, sie heilen keine Infektion. Bei Schwangerschaft, Säuglingen, chronischen Krankheiten oder Medikamenten: vorher Apotheke oder Hausarzt fragen.<br><br><a href="/wellness/">ARC Wellness: Erlaubnis zur Ruhe →</a></p>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("arch." + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem("arch." + k, JSON.stringify(v)); } catch {} }
+};
+(() => {
+  const t = store.get("theme", null);
+  if (t) document.documentElement.dataset.theme = t;
+  $("#tt").onclick = () => {
+    const dark = getComputedStyle(document.documentElement).colorScheme.includes("dark");
+    const next = dark ? "light" : "dark";
+    document.documentElement.dataset.theme = next; store.set("theme", next);
+  };
+})();
+
+const ALWAYS = "Atemnot, Brustschmerzen, Verwirrtheit oder steifer Nacken: sofort 144.";
+const R = [
+  { id:"onion-honey", em:"🧅🍯", name:"Zwiebel-Honig-Sirup", for:"Husten, Reizhusten", tags:["Husten"],
+    from:"Von einer Witwe bei einem Vorstellungsgespräch, die meinen Husten hörte. Sie machte ihn jeden Winter für ihren Mann.",
+    need:["1 Zwiebel","3 bis 4 EL Honig (oder Zucker)","Ein sauberes Glas mit Deckel"],
+    how:["Zwiebel schälen und in feine Würfel oder Ringe schneiden.","Ins Glas geben, Honig darüber, Deckel zu.","Über Nacht stehen lassen. Die Zwiebel gibt Saft ab, es wird ein flüssiger Sirup.","Erwachsene: mehrmals täglich 1 TL. Kühl lagern, nach 2 bis 3 Tagen neu machen."],
+    warn:["Kein Honig für Babys unter 12 Monaten (Botulismus). Dort Zucker nehmen und trotzdem zuerst den Kinderarzt fragen.","Husten länger als 3 Wochen, blutiger Auswurf oder Fieber über 39 °C.","Pfeifendes Atmen oder Atemnot."] },
+  { id:"calf", em:"🧦", name:"Wadenwickel", for:"Fieber senken", tags:["Fieber"],
+    from:"Überliefert: der Klassiker aus Schweizer Familien, lange bevor es Fiebersaft im Schrank gab.",
+    need:["2 Baumwolltücher","Lauwarmes Wasser (nicht eiskalt)","2 trockene Tücher"],
+    how:["Nur wenn Beine und Füsse warm sind und keine Frostschauer da sind.","Tücher in Wasser tauchen, das etwa 10 Grad kühler ist als die Körpertemperatur. Auswringen.","Um beide Waden wickeln, trockenes Tuch darüber. Zudecken, aber nicht dick.","Nach 10 bis 15 Minuten abnehmen. Höchstens zwei bis drei Mal wiederholen."],
+    warn:["Nicht bei kalten Füssen, Schüttelfrost oder Kreislaufproblemen.","Babys unter 3 Monaten mit Fieber: direkt zum Arzt.","Fieber über 39,5 °C, länger als 3 Tage, oder Ausschlag dazu."] },
+  { id:"onion-bag", em:"🧅", name:"Zwiebelsäckli", for:"Ohrenschmerzen", tags:["Ohr"],
+    from:"Überliefert: ein altes Schweizer Hausmittel. Viele erinnern sich an den Geruch im Kinderzimmer.",
+    need:["1 Zwiebel","Ein dünnes Tuch oder eine Socke","Eine Mütze oder ein Stirnband"],
+    how:["Zwiebel klein hacken.","Kurz in einer Pfanne ohne Fett anwärmen, nur handwarm.","In das Tuch geben, zubinden.","Hinters Ohr und aufs Ohr legen, mit Mütze fixieren. 20 bis 30 Minuten."],
+    warn:["Immer erst am Handgelenk prüfen: nur angenehm warm, nie heiss.","Ausfluss aus dem Ohr, Hörverlust oder starke Schmerzen.","Kinder unter 2 Jahren oder Fieber dazu: zum Arzt."] },
+  { id:"potato", em:"🥔", name:"Kartoffelwickel", for:"Halsweh, festsitzender Husten", tags:["Hals","Husten"],
+    from:"Überliefert: Grossmütter-Wissen. Kartoffeln halten die Wärme lange und geben sie langsam ab.",
+    need:["3 bis 4 Kartoffeln","Ein Baumwolltuch","Ein Schal"],
+    how:["Kartoffeln mit Schale weich kochen.","In das Tuch geben und leicht zerdrücken, zu einem flachen Päckchen falten.","Temperatur prüfen. Erst wenn es angenehm warm ist, auf Hals oder Brust legen.","Schal darüber. Liegen lassen, bis es abkühlt, etwa 20 bis 30 Minuten."],
+    warn:["Verbrennungsgefahr: Kartoffeln innen sind heisser als aussen. Immer testen.","Nicht bei Kindern, die nicht sagen können, wenn es zu heiss ist.","Halsweh mit hohem Fieber, Schluckbeschwerden oder geschwollenen Lymphknoten länger als 3 Tage."] },
+  { id:"thyme", em:"🌿", name:"Thymiantee & Salbei-Gurgeln", for:"Husten, Halsweh", tags:["Husten","Hals"],
+    from:"Überliefert: Thymian und Salbei wachsen in fast jedem Bauerngarten. Darum standen sie in jeder Hausapotheke.",
+    need:["Thymian, frisch oder getrocknet","Salbei","Kochendes Wasser"],
+    how:["Tee: 1 bis 2 TL Thymian pro Tasse, mit heissem Wasser übergiessen, 10 Minuten zugedeckt ziehen lassen.","2 bis 3 Tassen am Tag, gern mit Honig.","Gurgeln: Salbeitee genauso zubereiten, abkühlen lassen.","Mehrmals täglich gurgeln, nicht schlucken."],
+    warn:["Salbei nicht in der Schwangerschaft in grossen Mengen.","Halsweh mit Fieber und weissen Belägen: Arzt (könnte eine Streptokokken-Angina sein).","Keine Besserung nach einer Woche."] },
+  { id:"steam", em:"♨️", name:"Kamillen-Dampfbad", for:"Verstopfte Nase", tags:["Nase"],
+    from:"Überliefert: Kopf unters Tuch über die Schüssel. Fast jeder kennt es aus der Kindheit.",
+    need:["Eine Schüssel","Kamillenblüten oder ein Teebeutel","Ein grosses Handtuch"],
+    how:["Kamille in die Schüssel, mit heissem (nicht mehr kochendem) Wasser übergiessen.","Schüssel stabil auf den Tisch stellen.","Gesicht mit Abstand darüber, Tuch über Kopf und Schüssel.","5 bis 10 Minuten ruhig durch die Nase einatmen. Augen zu."],
+    warn:["Nicht für Kinder: Verbrühungsgefahr, wenn die Schüssel kippt.","Nicht bei Asthma oder Kamillenallergie.","Schmerzen in Stirn oder Wangen mit Fieber länger als 10 Tage."] },
+  { id:"ginger", em:"🫚🍋", name:"Ingwer-Zitrone-Honig", for:"Erkältung am Anfang", tags:["Erkältung","Hals"],
+    from:"Überliefert: das Starterpaket, sobald es im Hals kratzt. Warm, scharf, sauer, süss.",
+    need:["Ein Stück Ingwer, daumengross","Eine halbe Zitrone","1 TL Honig"],
+    how:["Ingwer in dünne Scheiben schneiden.","Mit heissem Wasser übergiessen, 10 Minuten ziehen lassen.","Etwas abkühlen lassen, dann Zitronensaft und Honig dazu (Honig nicht in kochendes Wasser).","2 bis 3 Tassen am Tag. Dazu: schlafen und viel trinken."],
+    warn:["Ingwer kann bei Blutverdünnern stören: Apotheke fragen.","Erkältung länger als 10 Tage oder plötzlich wieder schlechter.","Kein Honig für Babys unter 12 Monaten."] },
+];
+
+let own = store.get("own", []);
+const all = () => [...own.map(o => ({ ...o, own:true })), ...R];
+const TAGS = ["Alle","Husten","Hals","Fieber","Ohr","Nase","Erkältung"];
+let tag = "Alle";
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+function renderChips(){
+  $("#chips").innerHTML = TAGS.map(t => `<button class="chip ${t === tag ? "on" : ""}" data-t="${t}">${t}</button>`).join("");
+  document.querySelectorAll(".chip").forEach(c => c.onclick = () => { tag = c.dataset.t; renderChips(); render(); });
+}
+function render(openId){
+  const rows = all().filter(r => tag === "Alle" || r.own || (r.tags || []).includes(tag));
+  $("#list").innerHTML = rows.map(r => `
+    <div class="rm ${r.id === openId ? "open" : ""}" id="r-${esc(r.id)}">
+      <button aria-expanded="${r.id === openId}">
+        <span class="em">${esc(r.em)}</span>
+        <span><b>${esc(r.name)}${r.own ? '<span class="own">DEINS</span>' : ""}</b><span class="for">${esc(r.for)}</span></span>
+        <span class="arr">›</span>
+      </button>
+      <div class="body">
+        <div class="origin"><span class="lab">— Gelernt von</span>${esc(r.from || "Unbekannt")}</div>
+        ${r.need ? `<div class="sec"><span class="lab">— Du brauchst</span><ul>${r.need.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+        <div class="sec"><span class="lab">— So geht's</span><ol>${r.how.map(x => `<li>${esc(x)}</li>`).join("")}</ol></div>
+        <div class="warn"><span class="lab">⚠ Zum Arzt, wenn …</span><ul>${(r.warn || ["Es nach 3 Tagen nicht besser wird.","Hohes Fieber oder starke Schmerzen dazukommen."]).map(x => `<li>${esc(x)}</li>`).join("")}<li>${ALWAYS}</li></ul></div>
+        ${r.own ? `<button class="del" data-del="${esc(r.id)}">✕ Löschen</button>` : ""}
+      </div>
+    </div>`).join("");
+  document.querySelectorAll(".rm>button").forEach(b => b.onclick = () => {
+    const el = b.parentElement; el.classList.toggle("open"); b.setAttribute("aria-expanded", el.classList.contains("open"));
+  });
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    own = own.filter(o => o.id !== b.dataset.del); store.set("own", own); render();
+  });
+}
+renderChips(); render(location.hash.slice(1) || null);
+if (location.hash){ const el = document.getElementById("r-" + location.hash.slice(1)); if (el) el.scrollIntoView({ block:"center" }); }
+
+$("#fSave").onclick = () => {
+  const name = $("#fName").value.trim(), how = $("#fHow").value.split("\n").map(s => s.trim()).filter(Boolean);
+  if (!name || !how.length){ $("#fName").focus(); return; }
+  const id = "own-" + Date.now();
+  own.unshift({ id, em:$("#fEm").value.trim() || "🌿", name, for:$("#fFor").value.trim() || "Eigenes Mittel", how, from:$("#fFrom").value.trim() || "Unbekannt" });
+  store.set("own", own);
+  ["#fName","#fFor","#fHow","#fFrom"].forEach(s => $(s).value = "");
+  tag = "Alle"; renderChips(); render(id);
+  document.getElementById("r-" + id).scrollIntoView({ block:"center", behavior:"smooth" });
+};
+</script>
+</body>
+</html>

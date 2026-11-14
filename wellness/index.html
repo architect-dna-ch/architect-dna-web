@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Wellness</title>
+<meta name="description" content="Rituale, auf die man selbst nicht kommt: Erlaubnis-Bad, Niksen, Waldbaden, der doppelte Seufzer, das Sorgenfenster. Geführt, offline, ohne Konto.">
+<meta property="og:title" content="ARC Wellness · Erlaubnis zur Ruhe">
+<meta property="og:description" content="Neun Rituale aus Büchern und Kulturen, die man selbst nie ausprobieren würde. Geführt, offline, ohne Konto.">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0E0D" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/icon.png">
+<style>
+/* ARC Wellness: guided rest rituals in the ARC Player palette (paper, ink, one rust accent). */
+:root{
+  --bg:#FAFAF8;--card:#FFFFFF;--line:#E0E0D8;--ink:#1A1A1A;--ink2:#5A5A58;--ink3:#9A9A98;--rust:#B5271E;--soft:#F0EFEB;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E0E0D;--card:#1A1A18;--line:#2C2C2A;--ink:#F4F2EC;--ink2:#A5A5A0;--ink3:#6F6E69;--rust:#D9472F;--soft:#151514;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E0E0D;--card:#1A1A18;--line:#2C2C2A;--ink:#F4F2EC;--ink2:#A5A5A0;--ink3:#6F6E69;--rust:#D9472F;--soft:#151514;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:880px;margin:0 auto}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3)}
+.lab.r{color:var(--rust)}
+header{display:flex;justify-content:space-between;align-items:center;padding:6px 0 0}
+header a{text-decoration:none}
+.tt{background:none;border:1px solid var(--line);color:var(--ink2);font:inherit;font-size:13px;border-radius:20px;padding:5px 11px;cursor:pointer}
+h1{font-size:clamp(40px,9vw,76px);font-weight:900;letter-spacing:-.05em;line-height:.95;margin-top:34px}
+h1 em{font-style:normal;color:var(--rust)}
+.lead{color:var(--ink2);font-size:16px;line-height:1.55;max-width:48ch;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:34px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--rust);transform:translateY(-2px)}
+.card .em{font-size:34px;line-height:1}
+.card b{font-size:19px;letter-spacing:-.02em;margin-top:8px}
+.card p{color:var(--ink2);font-size:14px;line-height:1.45}
+.card .meta{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px}
+.foot{margin-top:40px;color:var(--ink3);font-size:13px;line-height:1.6}
+.foot a{color:var(--rust)}
+
+/* player sheet */
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:10;overflow-y:auto;display:none;padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+.sheet.on{display:block;animation:up .25s ease}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+.sh{max-width:560px;margin:0 auto}
+.x{background:none;border:none;color:var(--ink2);font-size:15px;cursor:pointer;font:inherit;padding:6px 0}
+.sh h2{font-size:clamp(32px,7vw,48px);font-weight:900;letter-spacing:-.045em;line-height:1;margin-top:18px}
+.why{color:var(--ink2);font-size:15px;line-height:1.55;margin-top:10px}
+.orb{width:min(260px,70vw);aspect-ratio:1;margin:30px auto 8px;position:relative;display:flex;align-items:center;justify-content:center}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--line)}
+.orb .fill{position:absolute;inset:18%;border-radius:50%;background:var(--soft);border:1.5px solid var(--rust);transition:transform 1s ease-in-out}
+.orb .e{position:relative;font-size:54px}
+.orb svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.orb svg circle{fill:none;stroke:var(--rust);stroke-width:2.5;stroke-linecap:round}
+.step{text-align:center;font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.35;min-height:2.8em;margin-top:10px}
+.clock{text-align:center;font-family:var(--mono);color:var(--ink3);font-size:13px;letter-spacing:.14em;margin-top:6px}
+.ctl{display:flex;gap:10px;justify-content:center;margin-top:22px}
+.b{font:inherit;font-weight:800;font-size:15px;padding:13px 22px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+.b.g{background:none;color:var(--ink)}
+.b:disabled{opacity:.35;cursor:default}
+.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:22px}
+.box .lab{margin-bottom:10px}
+.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;text-align:center}
+.calc b{display:block;font-size:24px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.calc span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink3)}
+input[type=range]{width:100%;accent-color:var(--rust)}
+textarea,input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px;resize:vertical}
+textarea:focus,input:focus{outline:none;border-color:var(--rust)}
+.row{display:flex;gap:8px;margin-top:8px}
+.row .b{padding:10px 14px;font-size:14px;white-space:nowrap}
+.list{list-style:none;margin-top:12px;display:grid;gap:8px}
+.list li{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:14.5px;line-height:1.45;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.list li small{display:block;color:var(--ink3);font-family:var(--mono);font-size:10.5px;margin-top:4px}
+.list li .gold{color:#B8892B}
+.list button{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:13px;flex:none}
+.note{color:var(--ink3);font-size:13px;line-height:1.5;margin-top:10px}
+.done{text-align:center;margin-top:20px;color:var(--rust);font-weight:800;font-size:17px;min-height:1.4em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/werkschau" class="lab">— ARC·DNA</a>
+    <button class="tt" id="tt" aria-label="Hell oder dunkel">◐</button>
+  </header>
+  <div class="lab r" style="margin-top:30px">— Wellness</div>
+  <h1>Erlaubnis<br>zur <em>Ruhe.</em></h1>
+  <p class="lead">Neun Rituale aus Büchern und Kulturen, auf die man selbst nie käme. Jedes ist geführt, dauert 1 bis 60 Minuten und braucht nichts ausser dir.</p>
+  <div class="grid" id="grid"></div>
+  <p class="foot">Alles bleibt auf deinem Gerät. Kein Konto, kein Tracking.<br>Bei anhaltender Erschöpfung, Schlaflosigkeit oder dunklen Gedanken: Hausarzt, oder <a href="tel:143">143</a> (Die Dargebotene Hand).<br><br><a href="/health/">ARC Health: Hausmittel mit Herkunft →</a></p>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sh">
+    <button class="x" id="close">← Zurück</button>
+    <div class="lab r" id="pOrigin" style="margin-top:14px"></div>
+    <h2 id="pName"></h2>
+    <p class="why" id="pWhy"></p>
+    <div id="pExtraTop"></div>
+    <div class="orb" id="orb">
+      <div class="ring"></div>
+      <div class="fill" id="fill"></div>
+      <svg viewBox="0 0 100 100"><circle id="arc" cx="50" cy="50" r="48.5" pathLength="100" stroke-dasharray="0 100"/></svg>
+      <div class="e" id="pEm"></div>
+    </div>
+    <div class="step" id="pStep"></div>
+    <div class="clock" id="pClock"></div>
+    <div class="ctl">
+      <button class="b" id="go">Start</button>
+      <button class="b g" id="skip">Weiter</button>
+    </div>
+    <div class="done" id="pDone"></div>
+    <div id="pExtra"></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("arcw." + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem("arcw." + k, JSON.stringify(v)); } catch {} }
+};
+
+// theme toggle (system by default)
+(() => {
+  const t = store.get("theme", null);
+  if (t) document.documentElement.dataset.theme = t;
+  $("#tt").onclick = () => {
+    const dark = getComputedStyle(document.documentElement).colorScheme.includes("dark");
+    const next = dark ? "light" : "dark";
+    document.documentElement.dataset.theme = next; store.set("theme", next);
+  };
+})();
+
+// s = seconds. breath = [[label, secs, scale], ...] loops for the whole step.
+const R = [
+  { id:"bath", em:"🛁", name:"Erlaubnis-Bad", origin:"Gegen das schlechte Gewissen", short:"Ritual", min:20,
+    sub:"Für alle, die sich nie ein warmes Bad gönnen.",
+    why:"Viele baden nie, weil es nach Verschwendung aussieht. Rechne es einmal aus: Ein Bad pro Woche kostet weniger als ein Kaffee. Wärme senkt die Anspannung, und der Abfall der Körpertemperatur danach macht schläfrig.",
+    steps:[["Wasser auf 37 bis 39 °C. Licht dimmen.",120],["Handy raus aus dem Bad. Wirklich raus.",30],["Ein einziges Lied. Danach Stille.",240],["Nur liegen. Nichts lösen, nichts planen.",420],["Hände und Füsse spüren. Wo ist es am wärmsten?",180],["Langsam aufstehen. Ein Glas Wasser trinken.",120],["Fertig. Du hast dir das erlaubt.",60]],
+    extraTop:"bath" },
+  { id:"niksen", em:"🫥", name:"Niksen", origin:"Niederlande", min:5,
+    sub:"Die Kunst, absichtlich nichts zu tun.",
+    why:"Niksen ist keine Meditation. Es gibt kein Ziel, keine Atemtechnik, kein richtig oder falsch. Du darfst denken, du musst nicht. Genau das erholt den Kopf, den sonst jede Minute etwas will.",
+    steps:[["Setz dich irgendwo hin. Kein Ziel.",30],["Schau aus dem Fenster. Oder an die Wand.",90],["Gedanken dürfen kommen und gehen.",90],["Wenn du etwas tun willst: lass es.",60],["Noch ein bisschen nichts.",30]] },
+  { id:"forest", em:"🌲", name:"Waldbaden", origin:"Japan · Shinrin-yoku", min:20,
+    sub:"Langsam durch den Wald, mit allen Sinnen.",
+    why:"Shinrin-yoku heisst «Baden in der Waldatmosphäre». Nicht wandern, nicht Schritte zählen: langsam gehen und mit den Sinnen wahrnehmen. Ein Park mit Bäumen reicht auch.",
+    steps:[["Handy auf lautlos, in die Tasche. Geh halb so schnell wie sonst.",180],["Berühre drei verschiedene Rinden.",180],["Finde das leiseste Geräusch.",180],["Riech an Erde, Moos oder Blättern.",180],["Bleib stehen. Schau 2 Minuten nach oben in die Kronen.",120],["Such dir einen Baum aus. Lehn dich an.",180],["Geh langsam zurück. Was hat sich verändert?",180]] },
+  { id:"sigh", em:"😮‍💨", name:"Doppelter Seufzer", origin:"Atemphysiologie", min:1,
+    sub:"Der schnellste Weg runter. Eine Minute.",
+    why:"Zweimal durch die Nase einatmen, das zweite Mal kurz nachfassen, dann lang durch den Mund ausatmen. So atmet dein Körper von selbst, wenn er sich beruhigt. Ein bis fünf Runden reichen.",
+    steps:[["Folge dem Kreis.",60]],
+    breath:[["Einatmen · Nase",2,1.25],["Nochmal nachfassen",1,1.4],["Lang ausatmen · Mund",6,0.75]] },
+  { id:"worry", em:"🗂️", name:"Sorgenfenster", origin:"Kognitive Verhaltenstherapie", short:"KVT", min:15,
+    sub:"Sorgen parken, statt sie den ganzen Tag zu tragen.",
+    why:"Tagsüber schreibst du jede Sorge kurz auf und legst sie hier ab. Am Abend öffnest du das Fenster für 15 Minuten: Was lässt sich lösen, was nicht? Ausserhalb des Fensters darfst du sagen: «Nicht jetzt, um 19 Uhr.»",
+    steps:[["Lies jede geparkte Sorge.",180],["Bei jeder: Kann ich morgen etwas tun? Dann ein erster Schritt.",420],["Was du nicht ändern kannst: abhaken und loslassen.",240],["Fenster zu. Bis morgen.",60]],
+    extra:"worry" },
+  { id:"tea", em:"🍵", name:"Zwei-Minuten-Tee", origin:"Japan · Chadō", min:2,
+    sub:"Tee machen, als wäre es das Einzige auf der Welt.",
+    why:"Die Teezeremonie macht aus einer Kleinigkeit ein Ritual. Du brauchst nur Tee, Wasser und zwei Minuten volle Aufmerksamkeit. Ideal als Pause zwischen zwei Aufgaben.",
+    steps:[["Hör dem Wasser beim Kochen zu.",25],["Halte die leere Tasse. Spür ihr Gewicht.",15],["Giess langsam auf. Schau dem Dampf zu.",20],["Rieche, bevor du trinkst.",15],["Erster Schluck. Nur schmecken.",25],["Hände um die Tasse. Wärme.",20]] },
+  { id:"hum", em:"🐝", name:"Summen", origin:"Yoga · Bhramari", min:5,
+    sub:"Summen wie eine Biene. Lang und tief.",
+    why:"Beim langen Summen wird die Ausatmung lang und gleichmässig, das beruhigt. Bhramari heisst «Biene». Lippen zu, Kiefer locker, so tief und lange summen wie bequem.",
+    steps:[["Folge dem Kreis. Summe beim Ausatmen.",300]],
+    breath:[["Einatmen · Nase",4,1.3],["Mmmmmm …",8,0.75]] },
+  { id:"kintsugi", em:"🏺", name:"Kintsugi-Journal", origin:"Japan · Goldreparatur", min:5,
+    sub:"Ein Riss deiner Woche, und das Gold darin.",
+    why:"Bei Kintsugi wird zerbrochene Keramik mit Gold geflickt. Der Bruch wird nicht versteckt, er wird zum schönsten Teil. Schreib einen Riss dieser Woche auf, und was er dich gelehrt hat.",
+    steps:[["Denk an einen Moment dieser Woche, der weh tat.",60],["Schreib ihn unten auf. Ehrlich, kurz.",120],["Was hat er dir gezeigt? Das ist das Gold.",120]],
+    extra:"kintsugi" },
+  { id:"hour", em:"🕯️", name:"Unproduktive Stunde", origin:"ARC·DNA Regel", min:60,
+    sub:"Eine Stunde, in der nichts zählt.",
+    why:"Nicht jede Stunde muss etwas bringen. Zeit mit Menschen, ein Spaziergang, ein Gespräch ohne Zweck: das ist kein Verlust. Diese Stunde wird nicht gemessen. Du wirst gelobt, wenn du nichts erreichst.",
+    steps:[["Wähle: Mensch, Natur oder Stille.",120],["Keine Liste. Kein Ziel. Kein Handy-Check.",1500],["Immer noch nichts erreicht? Perfekt.",1500],["Letzte Minuten. Nimm mit, wie sich das anfühlt.",480]] },
+];
+
+const doneCount = store.get("done", {});
+function renderGrid(){
+  $("#grid").innerHTML = R.map(r => `
+    <button class="card" data-id="${r.id}">
+      <span class="em">${r.em}</span>
+      <b>${r.name}</b>
+      <p>${r.sub}</p>
+      <span class="meta"><span class="lab">${r.min} Min</span><span class="lab">${doneCount[r.id] ? doneCount[r.id] + "×" : (r.short || r.origin.split(" · ")[0])}</span></span>
+    </button>`).join("");
+  document.querySelectorAll(".card").forEach(c => c.onclick = () => open(R.find(r => r.id === c.dataset.id)));
+}
+renderGrid();
+
+// ---------- player ----------
+let cur, idx, left, timer, running, bPhase, bLeft, total, elapsed;
+const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+let actx;
+function chime(){
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine"; o.frequency.value = 528;
+    g.gain.setValueAtTime(0.0001, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.12, actx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 1.6);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + 1.7);
+  } catch {}
+  try { navigator.vibrate && navigator.vibrate(60); } catch {}
+}
+
+function open(r){
+  cur = r; idx = 0; running = false; clearInterval(timer);
+  total = r.steps.reduce((a, s) => a + s[1], 0); elapsed = 0;
+  left = r.steps[0][1];
+  $("#pOrigin").textContent = "— " + r.origin;
+  $("#pName").textContent = r.name;
+  $("#pWhy").textContent = r.why;
+  $("#pEm").textContent = r.em;
+  $("#pDone").textContent = "";
+  $("#go").textContent = "Start";
+  $("#go").disabled = false;
+  $("#pExtraTop").innerHTML = r.extraTop === "bath" ? bathCalc() : "";
+  $("#pExtra").innerHTML = "";
+  if (r.extra === "worry") worryBox();
+  if (r.extra === "kintsugi") kintsugiBox();
+  if (r.extraTop === "bath") wireBath();
+  $("#fill").style.transform = "scale(1)";
+  $("#pStep").textContent = r.breath ? "Bereit, wenn du es bist." : r.steps[0][0];
+  paint();
+  $("#sheet").classList.add("on"); $("#sheet").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+}
+function close(){
+  clearInterval(timer); running = false;
+  $("#sheet").classList.remove("on"); document.body.style.overflow = "";
+}
+$("#close").onclick = close;
+addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+
+function paint(){
+  $("#pClock").textContent = `${fmt(left)} · SCHRITT ${idx + 1}/${cur.steps.length} · NOCH ${fmt(total - elapsed)}`;
+  $("#arc").setAttribute("stroke-dasharray", `${(elapsed / total) * 100} 100`);
+}
+function breathStart(){ bPhase = 0; bLeft = cur.breath[0][1]; showBreath(); }
+function showBreath(){
+  const [t, s, sc] = cur.breath[bPhase];
+  $("#pStep").textContent = t;
+  const f = $("#fill"); f.style.transitionDuration = s + "s"; f.style.transform = `scale(${sc})`;
+}
+function tick(){
+  left--; elapsed++;
+  if (cur.breath){
+    bLeft--;
+    if (bLeft <= 0){ bPhase = (bPhase + 1) % cur.breath.length; bLeft = cur.breath[bPhase][1]; showBreath(); }
+  }
+  if (left <= 0) return next();
+  paint();
+}
+function next(){
+  idx++;
+  if (idx >= cur.steps.length) return finish();
+  left = cur.steps[idx][1];
+  if (!cur.breath) $("#pStep").textContent = cur.steps[idx][0];
+  chime(); paint();
+}
+function finish(){
+  clearInterval(timer); running = false; elapsed = total; left = 0; paint();
+  $("#fill").style.transform = "scale(1)";
+  const praise = cur.id === "hour" ? "Eine ganze Stunde nichts erreicht. Stark. 🕯️" : "Geschafft. Gut gemacht.";
+  $("#pDone").textContent = praise;
+  $("#pStep").textContent = cur.em;
+  $("#go").textContent = "Nochmal"; $("#go").disabled = false;
+  doneCount[cur.id] = (doneCount[cur.id] || 0) + 1; store.set("done", doneCount); renderGrid();
+  chime();
+}
+$("#go").onclick = () => {
+  if ($("#go").textContent === "Nochmal") { open(cur); return; }
+  if (running){ clearInterval(timer); running = false; $("#go").textContent = "Weiter"; return; }
+  if (elapsed === 0){ chime(); if (cur.breath) breathStart(); else $("#pStep").textContent = cur.steps[0][0]; }
+  running = true; $("#go").textContent = "Pause";
+  timer = setInterval(tick, 1000);
+};
+$("#skip").onclick = () => { if (!cur) return; elapsed += left; next(); };
+
+// ---------- extras ----------
+function bathCalc(){
+  return `<div class="box"><div class="lab">— Was kostet ein Bad wirklich?</div>
+    <input type="range" id="lit" min="80" max="200" step="10" value="140" aria-label="Liter">
+    <div class="calc"><div><b id="cL">140</b><span>LITER</span></div><div><b id="cK">4.9</b><span>KWH WÄRME</span></div><div><b id="cC">1.90</b><span>CHF CA.</span></div></div>
+    <p class="note" id="cN"></p></div>`;
+}
+function wireBath(){
+  const upd = () => {
+    const L = +$("#lit").value;
+    const kwh = L * 30 * 1.163 / 1000;         // 10 °C → 40 °C
+    const chf = kwh * 0.30 + L * 0.004;         // ~0.30 CHF/kWh heat + ~4 CHF/m³ water and sewage
+    $("#cL").textContent = L; $("#cK").textContent = kwh.toFixed(1); $("#cC").textContent = chf.toFixed(2);
+    $("#cN").textContent = `Einmal pro Woche sind das etwa CHF ${(chf * 52).toFixed(0)} im Jahr, also ${(chf * 52 / 12).toFixed(0)} Franken im Monat. Eine 10-Minuten-Dusche braucht rund 90 Liter. Richtwerte, je nach Heizung und Gemeinde.`;
+  };
+  $("#lit").oninput = upd; upd();
+}
+
+function worryBox(){
+  const host = $("#pExtra");
+  const draw = () => {
+    const w = store.get("worries", []);
+    host.innerHTML = `<div class="box"><div class="lab">— Sorge parken</div>
+      <div class="row"><input type="text" id="wIn" placeholder="Was geht dir durch den Kopf?" maxlength="200"><button class="b" id="wAdd">Parken</button></div>
+      <ul class="list">${w.map((x, i) => `<li><span>${esc(x.t)}<small>${new Date(x.at).toLocaleString("de-CH",{weekday:"short",hour:"2-digit",minute:"2-digit"})}</small></span><button data-i="${i}" title="Loslassen">✓ los</button></li>`).join("") || `<li style="color:var(--ink3)">Nichts geparkt. Gut so.</li>`}</ul>
+      <p class="note">Tipp: Leg dir eine feste Zeit fest, z.B. 19:00. Was tagsüber auftaucht, kommt hierher.</p></div>`;
+    const add = () => { const v = $("#wIn").value.trim(); if (!v) return; w.unshift({ t:v, at:Date.now() }); store.set("worries", w); draw(); };
+    $("#wAdd").onclick = add; $("#wIn").onkeydown = e => { if (e.key === "Enter") add(); };
+    host.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { w.splice(+b.dataset.i, 1); store.set("worries", w); draw(); });
+  };
+  draw();
+}
+
+function kintsugiBox(){
+  const host = $("#pExtra");
+  const draw = () => {
+    const k = store.get("kintsugi", []);
+    host.innerHTML = `<div class="box"><div class="lab">— Der Riss</div>
+      <textarea id="kR" rows="2" maxlength="400" placeholder="Was ist diese Woche zerbrochen?"></textarea>
+      <div class="lab" style="margin-top:14px">— Das Gold</div>
+      <textarea id="kG" rows="2" maxlength="400" placeholder="Was hat es dir gezeigt?"></textarea>
+      <div class="row"><button class="b" id="kS">Mit Gold flicken</button></div>
+      <ul class="list">${k.map((x, i) => `<li><span>${esc(x.r)}<br><span class="gold">✦ ${esc(x.g)}</span><small>${new Date(x.at).toLocaleDateString("de-CH")}</small></span><button data-i="${i}" title="Löschen">✕</button></li>`).join("")}</ul></div>`;
+    $("#kS").onclick = () => { const r = $("#kR").value.trim(), g = $("#kG").value.trim(); if (!r || !g) return; k.unshift({ r, g, at:Date.now() }); store.set("kintsugi", k); draw(); };
+    host.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { k.splice(+b.dataset.i, 1); store.set("kintsugi", k); draw(); });
+  };
+  draw();
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+
+// deep link: /wellness/#sigh
+if (location.hash){ const r = R.find(x => x.id === location.hash.slice(1)); if (r) open(r); }
+</script>
+</body>
+</html>
