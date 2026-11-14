@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC·DNA Werkschau</title>
+<meta name="description" content="One Android system, designed and shipped from Bern in 22 days: a home screen you steer with your thumb, a launcher that predicts you, a keyboard bridge, a body-aware planner and a sleep anchor.">
+<meta property="og:title" content="ARC·DNA — 22 days. 447 builds. One system.">
+<meta property="og:description" content="A home screen you steer with your thumb, a launcher that predicts you, a keyboard bridge, a planner and a sleep anchor. Designed and shipped from Bern.">
+<meta property="og:image" content="https://architect-dna.ch/werkschau/og.png">
+<meta property="og:url" content="https://architect-dna.ch/werkschau/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#121010">
+<link rel="icon" href="/icon.png">
+<style>
+/* Werkschau: the ARC·DNA showcase. Editorial dark/paper bands in the studio palette (ink, paper,
+   one rust accent). Each work gets a small live demo instead of a screenshot. */
+:root{
+  --paper:#F5F1E8; --ink:#1B1613; --ink2:#6A5F54; --ink3:#A99E8E; --line:#E2D9C8; --card:#FBF8F1;
+  --accent:#B24A2E;
+  --dark:#121010; --dark2:#1C1813; --dink:#EDE7DA; --dink2:#9A8F82; --dline:#2E2720; --dacc:#D8663F;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code','Courier New',monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.band{padding-block:clamp(64px,10vw,120px);padding-left:max(22px,env(safe-area-inset-left));padding-right:max(22px,env(safe-area-inset-right))}
+.inner{max-width:1080px;margin:0 auto}
+.dark{background:var(--dark);color:var(--dink)}
+.eye{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.dark .eye{color:var(--dacc)}
+h2{font-size:clamp(30px,5.2vw,58px);font-weight:900;letter-spacing:-.045em;line-height:1;margin-top:14px;text-wrap:balance}
+.lead{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--ink2);max-width:52ch;margin-top:16px}
+.dark .lead{color:var(--dink2)}
+.num{font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.14em}
+.dark .num{color:var(--dink2)}
+
+/* ── HERO ── */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding-top:max(40px,env(safe-area-inset-top))}
+#helix{position:absolute;inset:0;width:100%;height:100%}
+#hero .inner{position:relative;width:100%}
+#hero h1{font-size:clamp(46px,10.5vw,124px);font-weight:900;letter-spacing:-.055em;line-height:.9;margin-top:18px}
+#hero h1 em{font-style:normal;color:var(--dacc)}
+#hero .lead{max-width:44ch}
+.cue{margin-top:38px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--dink2);text-transform:uppercase}
+.cue span{display:inline-block;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+
+/* ── NUMBERS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--dline);border-bottom:1px solid var(--dline)}
+.stat{padding:28px 18px;border-right:1px solid var(--dline)}
+.stat:last-child{border-right:none}
+.stat b{display:block;font-size:clamp(34px,5.6vw,64px);font-weight:900;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dink2)}
+@media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:none}.stat:nth-child(-n+2){border-bottom:1px solid var(--dline)}}
+
+/* ── SYSTEM MAP ── */
+#map svg{width:100%;height:auto;max-width:760px;display:block;margin:36px auto 0;overflow:visible}
+.node text{font-family:var(--mono);font-size:11px;letter-spacing:.08em;fill:var(--ink)}
+.node circle{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.node.core circle{fill:var(--ink);stroke:var(--ink)}
+.node.core text{fill:var(--paper);font-weight:700;font-size:13px}
+.link{stroke:var(--line);stroke-width:1.4;fill:none}
+.pulse{stroke:var(--accent);stroke-width:2;fill:none;stroke-dasharray:6 200;animation:flow 3.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-206}}
+
+/* ── WORKS ── */
+.work{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px);align-items:center}
+.work.flip .copy{order:2}
+@media(max-width:820px){.work{grid-template-columns:1fr}.work.flip .copy{order:0}}
+.copy ul{list-style:none;margin-top:20px;display:grid;gap:9px}
+.copy li{font-size:14.5px;line-height:1.5;color:var(--ink2);padding-left:20px;position:relative}
+.copy li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:2px;background:var(--accent)}
+.dark .copy li{color:var(--dink2)}
+.dark .copy li::before{background:var(--dacc)}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden;min-width:0}
+.dark .demo{background:var(--dark2);border-color:var(--dline)}
+.demo .tag{position:absolute;top:14px;left:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);z-index:2}
+.dark .demo .tag{color:var(--dink2)}
+
+/* 01 thumb fans */
+#fan{display:block;width:100%;height:420px;touch-action:none;cursor:grab}
+#fanOut{position:absolute;left:16px;bottom:14px;font-family:var(--mono);font-size:12px;color:var(--accent);min-height:16px}
+
+/* 02 statistik */
+.stdemo{padding:48px 18px 20px}
+.hourrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.hourrow b{font-family:var(--mono);font-size:30px;color:var(--dacc);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
+.rank{position:relative;height:260px;margin-top:14px}
+.ra{position:absolute;left:0;right:0;height:56px;display:flex;align-items:center;gap:12px;padding:0 14px;border:1px solid var(--dline);border-radius:14px;background:var(--dark);transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.ra .ic{font-size:22px;width:28px;text-align:center}
+.ra .nm{font-weight:700;font-size:15px;flex:1}
+.ra .why{font-family:var(--mono);font-size:10.5px;color:var(--dink2)}
+.ra .bar{position:absolute;left:14px;right:14px;bottom:7px;height:2px;background:var(--dline);border-radius:2px;overflow:hidden}
+.ra .bar i{display:block;height:100%;background:var(--dacc);transition:width .5s}
+.ra:first-child{border-color:var(--dacc)}
+
+/* 03 arc link */
+.link-demo{padding:46px 18px 22px}
+.devices{display:flex;align-items:flex-end;justify-content:center;gap:18px;flex-wrap:wrap}
+.tablet{width:220px;height:150px;border:2px solid var(--ink);border-radius:14px;background:var(--paper);position:relative;padding:12px;font-family:var(--mono);font-size:12px;color:var(--ink)}
+.tablet .typed::after{content:"▍";animation:blink 1s steps(1) infinite;color:var(--accent)}
+@keyframes blink{50%{opacity:0}}
+.chip{position:absolute;top:8px;right:8px;background:#141210;color:#fff;font-size:10.5px;padding:3px 8px;border-radius:10px}
+.laptop{width:240px}
+.laptop .scr{height:98px;border:2px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0;background:var(--card);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:var(--ink3)}
+.laptop .kb{border:2px solid var(--ink);border-radius:0 0 10px 10px;padding:7px;display:grid;grid-template-columns:repeat(10,1fr);gap:3px;background:var(--paper)}
+.laptop .kb i{display:block;height:11px;border-radius:2px;background:var(--line);transition:background .12s}
+.laptop .kb i.on{background:var(--accent)}
+.wire{width:100%;height:30px}
+.wire path{stroke:var(--ink3);stroke-width:1.5;fill:none;stroke-dasharray:4 5;animation:flow2 1s linear infinite}
+@keyframes flow2{to{stroke-dashoffset:-9}}
+
+/* 04 takt */
+.takt{padding:48px 16px 18px}
+.tl{position:relative;margin-top:6px}
+.blk{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);transition:background .4s}
+.blk .t{font-family:var(--mono);font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums;transition:color .4s}
+.blk .ti{font-weight:700;font-size:14.5px}
+.blk .k{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--ink3);border:1px solid var(--line);border-radius:20px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.blk.anc .ti{color:#3F5C9A}
+.blk.moved .t{color:var(--accent)}
+.blk.done{opacity:.45}.blk.done .ti{text-decoration:line-through}
+.tbtn{margin-top:14px;font:inherit;font-weight:800;font-size:13.5px;padding:11px 16px;border-radius:30px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+.tbtn:hover{background:var(--accent);border-color:var(--accent)}
+
+/* 05 bär */
+.baer{padding:44px 18px 24px;display:flex;flex-direction:column;align-items:center}
+.baer svg{width:min(260px,100%);height:auto}
+.baer .big{font-size:28px;font-weight:900;letter-spacing:-.03em;margin-top:6px}
+.baer .s{font-family:var(--mono);font-size:11.5px;color:var(--dink2);margin-top:4px}
+
+/* ── PRINCIPLES ── */
+.princ{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+@media(max-width:820px){.princ{grid-template-columns:1fr}}
+.pc{border:1px solid var(--line);border-radius:18px;padding:22px;background:var(--card)}
+.pc b{display:block;font-size:20px;letter-spacing:-.02em}
+.pc p{font-size:14px;line-height:1.55;color:var(--ink2);margin-top:8px}
+.pc .num{display:block;margin-bottom:12px}
+
+/* ── END ── */
+#end h2{font-size:clamp(38px,8vw,96px)}
+#end .cta{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:14px;padding:13px 20px;border-radius:9px;border:1px solid var(--dink);text-decoration:none;transition:transform .12s,background .12s,color .12s}
+.btn.solid{background:var(--dink);color:var(--dark)}
+.btn.solid:hover{background:var(--dacc);border-color:var(--dacc);transform:translateY(-1px)}
+.btn.ghost{color:var(--dink)}
+.btn.ghost:hover{background:var(--dink);color:var(--dark)}
+.foot{margin-top:56px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dink2);text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section id="hero" class="band dark">
+  <canvas id="helix" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eye">ARC·DNA · Werkschau 2026</div>
+    <h1>22 days.<br>447 builds.<br><em>One system.</em></h1>
+    <p class="lead">An Android home screen you steer with your thumb, a launcher that predicts what you want next, a keyboard bridge, a body-aware planner and a sleep anchor. Designed and shipped from Bern.</p>
+    <div class="cue"><span>↓</span> Scroll — every piece below is live</div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="band dark" style="padding-top:0">
+  <div class="inner">
+    <div class="stats">
+      <div class="stat"><b data-to="447">447</b><span>Builds shipped</span></div>
+      <div class="stat"><b data-to="51">51k</b><span>Lines of code</span></div>
+      <div class="stat"><b data-to="33">33</b><span>Screens</span></div>
+      <div class="stat"><b data-to="0">0</b><span>Trackers</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM MAP -->
+<section id="map" class="band">
+  <div class="inner">
+    <div class="eye">The system</div>
+    <h2>Not an app. An ecosystem around one phone.</h2>
+    <p class="lead">Everything orbits the home screen: the tools you open most, the ones that look after you, and the bridge to the laptop.</p>
+    <svg viewBox="0 0 760 460" id="mapsvg" role="img" aria-label="ARC·DNA Home in the centre, connected to twelve modules"></svg>
+  </div>
+</section>
+
+<!-- 01 THUMB FANS -->
+<section class="band">
+  <div class="inner work">
+    <div class="copy">
+      <div class="num">01 — ARC·DNA HOME</div>
+      <h2>A home screen you steer blind.</h2>
+      <p class="lead">Hold a bottom corner and a fan of categories blooms along your thumb's arc. Slide out and the apps of that category open up. Let go to launch.</p>
+      <ul>
+        <li>Built for one-handed use on a big phone</li>
+        <li>A lock keeps the category steady while you reach for the app</li>
+        <li>Ambient weather, battery and storage, drawn faint behind the clock</li>
+      </ul>
+    </div>
+    <div class="demo">
+      <span class="tag">Live · hold the corner ◳ and slide</span>
+      <canvas id="fan"></canvas>
+      <div id="fanOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 STATISTIK -->
+<section class="band dark">
+  <div class="inner work flip">
+    <div class="copy">
+      <div class="num">02 — STATISTIK-HOME</div>
+      <h2>A launcher that knows the hour.</h2>
+      <p class="lead">No icon wall. It ranks your apps from how often you use them, how recently, and whether this hour matches their pattern. Your real usage never leaves the phone.</p>
+      <ul>
+        <li>Three tunable weights: frequency, recency, time of day</li>
+        <li>No internet permission at all</li>
+        <li>Swipe up for all apps, down to search, left for the statistics</li>
+      </ul>
+    </div>
+    <div class="demo stdemo">
+      <span class="tag">Live · drag the hour</span>
+      <div class="hourrow"><span class="num">NOW</span><b id="hh">08:00</b></div>
+      <input type="range" id="hour" min="0" max="23" value="8" aria-label="Hour of the day">
+      <div class="rank" id="rank"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ARC LINK -->
+<section class="band">
+  <div class="inner work">
+    <div class="copy">
+      <div class="num">03 — ARC LINK</div>
+      <h2>The laptop becomes the tablet's keyboard.</h2>
+      <p class="lead">Plug the tablet in and every key on the MacBook goes to Android. Unplug, and the Mac has it back within two seconds. The tablet even shows the laptop's battery.</p>
+      <ul>
+        <li>Word delete, shortcuts, F-keys mapped to Back, Home, Recents</li>
+        <li>F9 quits, Ctrl always reaches the Mac</li>
+        <li>Free and open on this site</li>
+      </ul>
+    </div>
+    <div class="demo link-demo">
+      <span class="tag">Live · typing over USB</span>
+      <div class="devices">
+        <div class="tablet"><span class="chip" id="chip">⌨ 72% ⚡</span><div class="typed" id="typed" style="margin-top:22px"></div></div>
+        <div class="laptop"><div class="scr">MacBook</div><div class="kb" id="kb"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 TAKT -->
+<section class="band" style="background:var(--card)">
+  <div class="inner work flip">
+    <div class="copy">
+      <div class="num">04 — TAKT</div>
+      <h2>A day planned around your body.</h2>
+      <p class="lead">Fixed anchors stay put: waking, school, sleep. Everything else flows into the gaps, in the order your energy allows. Fall behind, and it re-plans instead of showing you a list of failures.</p>
+      <ul>
+        <li>Heavy work in the freshest window, light tasks when energy dips</li>
+        <li>A warm room moves the hard things earlier</li>
+        <li>Runs offline, inside the launcher</li>
+      </ul>
+    </div>
+    <div class="demo takt">
+      <span class="tag">Live · fall behind on purpose</span>
+      <div class="tl" id="tl"></div>
+      <button class="tbtn" id="behind">I'm behind — re-plan from now</button>
+    </div>
+  </div>
+</section>
+
+<!-- 05 BÄR -->
+<section class="band dark">
+  <div class="inner work">
+    <div class="copy">
+      <div class="num">05 — BÄR</div>
+      <h2>Two pillars, not a hundred alarms.</h2>
+      <p class="lead">Lights-out and wake-up are fixed. The hour of reading before sleep is built in. The bear holds the line when you want to renegotiate at midnight.</p>
+      <ul>
+        <li>Backward-planned evening: read, lights out, wake</li>
+        <li>Warm dark palette with almost no blue light</li>
+        <li>Streak of nights on time</li>
+      </ul>
+    </div>
+    <div class="demo baer">
+      <span class="tag">Live · your clock right now</span>
+      <svg viewBox="0 0 260 260" id="ring" role="img" aria-label="Sleep ring"></svg>
+      <div class="big" id="bcount"></div>
+      <div class="s" id="bstate"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="band">
+  <div class="inner">
+    <div class="eye">How it's built</div>
+    <h2>Three rules behind every screen.</h2>
+    <div class="princ">
+      <div class="pc"><span class="num">I</span><b>The whole screen is the control.</b><p>No tiny targets. Swipes start anywhere, thumbs land in corners, and the most-used apps never move.</p></div>
+      <div class="pc"><span class="num">II</span><b>No server. Your phone.</b><p>Usage, plans and sleep stay on the device. No accounts, no ads, no trackers.</p></div>
+      <div class="pc"><span class="num">III</span><b>Steal from what works.</b><p>Learned from iOS, Pixel, One UI, HyperOS and ChromeOS. Then made quieter.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- END -->
+<section id="end" class="band dark">
+  <div class="inner">
+    <div class="eye">Architect-DNA Systems · Bern</div>
+    <h2>Built in 22 days.<br>Still building.</h2>
+    <div class="cta">
+      <a class="btn solid" href="/">See the studio →</a>
+      <a class="btn ghost" href="/arc-link/">Try ARC Link free</a>
+      <a class="btn ghost" href="/statistik-home/">Play with the model</a>
+    </div>
+    <div class="foot">architect-dna.ch · Home UI for Android · 2026</div>
+  </div>
+</section>
+
+<script>
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = s => document.querySelector(s);
+
+/* ── HERO: a slowly turning double helix of points ── */
+(() => {
+  const cv = $("#helix"), c = cv.getContext("2d");
+  let w, h, dpr;
+  function size(){ dpr = Math.min(2, devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = w*dpr; cv.height = h*dpr; c.setTransform(dpr,0,0,dpr,0,0); }
+  size(); addEventListener("resize", size);
+  function draw(t){
+    c.clearRect(0,0,w,h);
+    const wide = w > 760, cx = wide ? w*0.76 : w*0.9, amp = wide ? Math.min(150, w*0.22) : w*0.12, n = 46, top = -20, span = h+40, k = wide ? 1 : 0.45;
+    for (let i = 0; i < n; i++){
+      const y = top + span*i/(n-1), ph = i*0.32 + t*0.00045;
+      const xa = cx + Math.sin(ph)*amp, xb = cx + Math.sin(ph+Math.PI)*amp;
+      const za = (Math.cos(ph)+1)/2, zb = 1-za;
+      if (i % 2 === 0){ c.strokeStyle = "rgba(237,231,218,0.07)"; c.lineWidth = 1; c.beginPath(); c.moveTo(xa,y); c.lineTo(xb,y); c.stroke(); }
+      c.fillStyle = `rgba(216,102,63,${(0.25+za*0.6)*k})`; c.beginPath(); c.arc(xa,y,2+za*3.5,0,7); c.fill();
+      c.fillStyle = `rgba(237,231,218,${(0.12+zb*0.45)*k})`; c.beginPath(); c.arc(xb,y,2+zb*3.5,0,7); c.fill();
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ── SYSTEM MAP ── */
+(() => {
+  const svg = $("#mapsvg"), narrow = innerWidth < 600, cx = 380, cy = narrow ? 330 : 230, fs = narrow ? 20 : 11;
+  if (narrow) svg.setAttribute("viewBox", "0 0 760 660");
+  const nodes = ["ARC Link","Statistik","Takt","Bär","Fokus","Mediathek","Lernbegleiter","Puls","VOID FREQ","Globus","Bücher","Kamera"];
+  let out = "";
+  nodes.forEach((n,i) => {
+    const a = i/nodes.length*Math.PI*2 - Math.PI/2, rx = narrow ? 250 : 300, ry = narrow ? 285 : 180;
+    const x = cx + Math.cos(a)*rx, y = cy + Math.sin(a)*ry;
+    out += `<path class="link" d="M${cx},${cy} L${x},${y}"/><path class="pulse" style="animation-delay:${-i*0.27}s" d="M${cx},${cy} L${x},${y}"/>`;
+    const tw = n.length*fs*0.66 + 24, th = fs*2.6;
+    out += `<g class="node"><circle cx="${x}" cy="${y}" r="5"/><rect x="${x-tw/2}" y="${y-th/2}" width="${tw}" height="${th}" rx="${th/2}" fill="var(--card)" stroke="var(--line)"/><text x="${x}" y="${y+fs*0.36}" text-anchor="middle" style="font-size:${fs}px">${n}</text></g>`;
+  });
+  out += `<g class="node core"><circle cx="${cx}" cy="${cy}" r="${narrow ? 80 : 58}"/><text x="${cx}" y="${cy-2}" text-anchor="middle" style="font-size:${narrow ? 22 : 13}px">ARC·DNA</text><text x="${cx}" y="${cy+(narrow ? 24 : 16)}" text-anchor="middle" style="font-weight:400;font-size:${narrow ? 15 : 10}px;opacity:.7">HOME</text></g>`;
+  svg.innerHTML = out;
+})();
+
+/* ── 01 THUMB FAN: hold the corner, slide, release ── */
+(() => {
+  const cv = $("#fan"), c = cv.getContext("2d"), outEl = $("#fanOut");
+  const cats = [
+    {l:"Ruhe", apps:["Musik","Globus","VOID FREQ"]},
+    {l:"Spiel", apps:["Fuchsjagd","Nexus","Board"]},
+    {l:"Schule", apps:["Lernen","Bücher","Wecker"]},
+    {l:"Arbeit", apps:["Board","Aufnahme","Werkzeuge"]}];
+  let w, h, dpr, nx, ny, active = false, mode = 0, cat = -1, app = -1, demoT = 0;
+  const A0 = 10, A1 = 86;
+  function size(){ dpr = Math.min(2, devicePixelRatio||1); w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = w*dpr; cv.height = h*dpr; c.setTransform(dpr,0,0,dpr,0,0); nx = w-44; ny = h-44; draw(); }
+  const R1 = () => Math.min(w,h)*0.36, R2 = () => Math.min(w,h)*0.68;
+  const ang = (i,n) => n<=1 ? (A0+A1)/2 : A0 + (A1-A0)*i/(n-1);
+  const pos = (r,a) => [nx - r*Math.cos(a*Math.PI/180), ny - r*Math.sin(a*Math.PI/180)];
+  function petal(x,y,label,hot,dim){
+    c.globalAlpha = dim ? .45 : 1;
+    c.fillStyle = hot ? "#B24A2E" : "#FBF8F1"; c.strokeStyle = hot ? "#B24A2E" : "#E2D9C8"; c.lineWidth = 1.5;
+    c.beginPath(); c.arc(x,y,27,0,7); c.fill(); c.stroke();
+    c.fillStyle = hot ? "#fff" : "#1B1613"; c.font = "700 11px -apple-system,Segoe UI,sans-serif"; c.textAlign = "center";
+    c.fillText(label.length>9 ? label.slice(0,8)+"…" : label, x, y+4); c.globalAlpha = 1;
+  }
+  function draw(){
+    c.clearRect(0,0,w,h);
+    c.fillStyle = "#1B1613"; c.font = "900 54px -apple-system,Segoe UI,sans-serif"; c.textAlign = "left";
+    c.globalAlpha = active ? .12 : .9; c.fillText("08:52", 20, 96);
+    c.font = "13px 'SF Mono',monospace"; c.fillStyle = "#6A5F54"; c.fillText("Guten Morgen.", 22, 120); c.globalAlpha = 1;
+    // nub
+    c.fillStyle = "#FBF8F1"; c.strokeStyle = "#D8663F"; c.lineWidth = 2;
+    c.beginPath(); c.arc(nx,ny,24,0,7); c.fill(); c.stroke();
+    c.strokeStyle = "#D8663F"; c.lineWidth = 1.6; c.strokeRect(nx-8,ny-4,11,11); c.strokeRect(nx-4,ny-8,11,11);
+    if (!active) return;
+    cats.forEach((k,i) => { const [x,y] = pos(R1(), ang(i,cats.length)); petal(x,y,k.l,i===cat, mode===1 && i!==cat); });
+    if (cat >= 0) cats[cat].apps.forEach((a,j) => { const [x,y] = pos(R2(), ang(j,3)); petal(x,y,a, mode===1 && j===app, mode===0); });
+  }
+  function track(px,py){
+    const dx = nx-px, dy = ny-py, d = Math.hypot(dx,dy), a = Math.atan2(dy,dx)*180/Math.PI;
+    if (mode === 1 && d < R1()*0.9){ mode = 0; app = -1; }
+    if (mode === 1){ let best=-1,bd=99; for(let j=0;j<3;j++){const dd=Math.abs(a-ang(j,3)); if(dd<bd){bd=dd;best=j;}} app = bd<30?best:-1; }
+    else { let best=-1,bd=99; cats.forEach((k,i)=>{const dd=Math.abs(a-ang(i,cats.length)); if(dd<bd){bd=dd;best=i;}}); cat = bd<26?best:cat;
+      if (d > R1()+(R2()-R1())*0.4 && cat>=0) mode = 1; }
+    draw();
+  }
+  function xy(e){ const r = cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; }
+  cv.addEventListener("pointerdown", e => { const [x,y] = xy(e); if (Math.hypot(x-nx,y-ny) > 60) return;
+    demoT = -1; active = true; mode = 0; cat = -1; app = -1; cv.setPointerCapture(e.pointerId); outEl.textContent = ""; track(x,y); });
+  cv.addEventListener("pointermove", e => { if (active){ const [x,y] = xy(e); track(x,y); } });
+  cv.addEventListener("pointerup", () => { if (!active) return;
+    outEl.textContent = mode===1 && app>=0 ? "→ opens " + cats[cat].apps[app] : cat>=0 ? "→ opens " + cats[cat].l : "";
+    active = false; draw(); });
+  // an idle demo until the visitor tries it
+  function idle(t){ if (demoT < 0 || reduce) return; const p = (t/1000) % 5;
+    if (p < 0.4){ active = false; draw(); }
+    else { active = true; const s = Math.min(1,(p-0.4)/1.6), a = (A0+20+40*s)*Math.PI/180, r = p<2.6 ? R1()*(0.6+0.4*s) : R1()+(R2()-R1())*Math.min(1,(p-2.6)/1.2);
+      track(nx - r*Math.cos(a), ny - r*Math.sin(a)); }
+    requestAnimationFrame(idle); }
+  size(); addEventListener("resize", size); requestAnimationFrame(idle);
+})();
+
+/* ── 02 STATISTIK: the real scoring model, scrub the hour ── */
+(() => {
+  const H = (...a) => a;
+  const APPS = [
+    {nm:"Messages",ic:"💬",min:84,last:8, hd:H(0,0,0,0,0,1,3,6,8,7,6,7,8,7,6,6,7,8,9,8,7,5,3,1)},
+    {nm:"Claude",  ic:"✳️",min:72,last:7, hd:H(0,0,0,0,0,2,5,9,9,7,6,5,4,5,6,7,6,5,4,4,5,4,2,1)},
+    {nm:"Training",ic:"🥊",min:9, last:7, hd:H(0,0,0,0,0,3,7,9,5,1,0,0,0,0,0,0,1,2,3,2,1,0,0,0)},
+    {nm:"E-Books", ic:"📖",min:38,last:21,hd:H(0,0,0,0,0,1,2,3,2,2,2,2,2,2,3,4,5,6,7,8,7,6,3,1)},
+    {nm:"Video",   ic:"▶️",min:63,last:22,hd:H(1,0,0,0,0,0,1,2,2,2,2,3,4,4,4,5,6,7,8,9,9,8,6,3)},
+    {nm:"Maps",    ic:"🗺️",min:14,last:8, hd:H(0,0,0,0,0,1,3,7,6,3,2,2,3,3,3,4,5,6,5,3,2,1,1,0)}];
+  const max = Math.max(...APPS.map(a=>a.min)), box = $("#rank"), rows = {};
+  APPS.forEach(a => { const d = document.createElement("div"); d.className = "ra";
+    d.innerHTML = `<span class="ic">${a.ic}</span><span class="nm">${a.nm}</span><span class="why"></span><div class="bar"><i></i></div>`;
+    box.appendChild(d); rows[a.nm] = d; });
+  function rank(h){
+    $("#hh").textContent = String(h).padStart(2,"0") + ":00";
+    const s = APPS.map(a => { const f = a.min/max, rc = 1-Math.min(1,((h-a.last+24)%24)/14), hm = a.hd[h]/Math.max(...a.hd);
+      const p = {"always with you":.45*f, "just used":.25*rc, "your pattern at this hour":.3*hm};
+      let top = Object.keys(p).reduce((x,y)=>p[x]>p[y]?x:y); return {a, sc:p["always with you"]+p["just used"]+p["your pattern at this hour"], top}; })
+      .sort((x,y)=>y.sc-x.sc);
+    const best = s[0].sc;
+    s.forEach((r,i) => { const el = rows[r.a.nm]; el.style.transform = `translateY(${i*64}px)`; el.style.opacity = i < 4 ? 1 : 0;
+      el.querySelector(".why").textContent = r.top; el.querySelector(".bar i").style.width = Math.round(r.sc/best*100)+"%";
+      el.style.borderColor = i===0 ? "var(--dacc)" : ""; box.appendChild(el); });
+  }
+  const slider = $("#hour"); let touched = false;
+  slider.addEventListener("input", e => { touched = true; rank(+e.target.value); });
+  rank(8);
+  if (!reduce) setInterval(() => { if (touched) return; slider.value = (+slider.value + 1) % 24; rank(+slider.value); }, 1400);
+})();
+
+/* ── 03 ARC LINK: keys light up, text lands on the tablet ── */
+(() => {
+  const kb = $("#kb"), keys = [];
+  for (let i = 0; i < 40; i++){ const k = document.createElement("i"); kb.appendChild(k); keys.push(k); }
+  const lines = ["Mathe lernen 45min", "Hey, bin gleich da", "ARC Link ✓"];
+  let li = 0, ci = 0; const t = $("#typed");
+  function step(){
+    const line = lines[li];
+    if (ci <= line.length){ t.textContent = line.slice(0,ci); const k = keys[(line.charCodeAt(ci-1)||0) % 40]; if (k){ k.classList.add("on"); setTimeout(()=>k.classList.remove("on"),140); } ci++; setTimeout(step, 90+Math.random()*70); }
+    else { setTimeout(() => { li = (li+1) % lines.length; ci = 0; step(); }, 1500); }
+  }
+  if (reduce) t.textContent = lines[0]; else step();
+  let pct = 72; if (!reduce) setInterval(() => { pct = pct >= 100 ? 72 : pct+1; $("#chip").textContent = "⌨ " + pct + "% ⚡"; }, 2600);
+})();
+
+/* ── 04 TAKT: a day that re-plans itself ── */
+(() => {
+  const plan = [
+    {s:"07:00",t:"Aufstehen ☀️",anc:1},
+    {s:"08:00–12:00",t:"Schule",anc:1},
+    {s:"12:30–13:00",t:"In Ruhe essen",k:"pause",done:1},
+    {s:"13:00–13:50",t:"Mathe lernen",k:"fokus"},
+    {s:"14:00–14:30",t:"Mails & Termine",k:"leicht"},
+    {s:"17:00–18:00",t:"Boxen",k:"körper"},
+    {s:"23:00",t:"In die Höhle 🌙",anc:1}];
+  const replan = [null,null,null,{s:"15:10–15:35"},{s:"15:40–16:10"},{s:"17:00–18:00"},null];
+  const tl = $("#tl"); let moved = false;
+  function render(){
+    tl.innerHTML = plan.map((b,i) => { const r = moved && replan[i] && replan[i].s !== b.s ? replan[i] : null;
+      return `<div class="blk ${b.anc?'anc':''} ${b.done?'done':''} ${r?'moved':''}"><span class="t">${r?r.s:b.s}</span><span class="ti">${b.t}${b.k?`<span class="k">${b.k.toUpperCase()}</span>`:''}</span></div>`; }).join("");
+  }
+  $("#behind").addEventListener("click", () => { moved = !moved; $("#behind").textContent = moved ? "Undo — back to the morning plan" : "I'm behind — re-plan from now"; render(); });
+  render();
+})();
+
+/* ── 05 BÄR: the sleep ring at the visitor's real time ── */
+(() => {
+  const S = 22*60+15, W = 6*60, R = 104, cx = 130, cy = 130, C = 2*Math.PI*R;
+  const pol = m => { const a = (m/1440*360-90)*Math.PI/180; return [cx+R*Math.cos(a), cy+R*Math.sin(a)]; };
+  const hm = m => (Math.floor(m/60) ? Math.floor(m/60)+"h " : "") + (m%60) + "min";
+  function render(){
+    const d = new Date(), now = d.getHours()*60 + d.getMinutes();
+    const len = (W - S + 1440) % 1440, asleep = (now >= S || now < W), toS = (S - now + 1440) % 1440, toW = (W - now + 1440) % 1440;
+    const [nx,ny] = pol(now), [sx,sy] = pol(S), [wx,wy] = pol(W), [rx,ry] = pol(S-60);
+    $("#ring").innerHTML = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#2E2720" stroke-width="10"/>
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#6C7EA6" stroke-width="10" stroke-linecap="round" stroke-dasharray="${len/1440*C} ${C}" transform="rotate(${S/1440*360-90} ${cx} ${cy})"/>
+      <circle cx="${rx}" cy="${ry}" r="5" fill="#E9C36B" opacity=".7"/><circle cx="${sx}" cy="${sy}" r="6" fill="#6C7EA6"/>
+      <circle cx="${wx}" cy="${wy}" r="6" fill="#E9C36B"/><circle cx="${nx}" cy="${ny}" r="7" fill="#D8663F"/>
+      <text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="40">${asleep?"😴":toS<=60?"🥱":"🐻"}</text>`;
+    $("#bcount").textContent = asleep ? "Light in " + hm(toW) : "Cave in " + hm(toS);
+    $("#bstate").textContent = "Read 21:15 · Lights out 22:15 · Up 06:00";
+  }
+  render(); setInterval(render, 30000);
+})();
+</script>
+</body>
+</html>
