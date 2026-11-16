@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.2 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.3 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.3:
+  • ⌥/⌘+Backspace delete-word now works any time (asks the field to delete a word, not counting keys).
+  • Native autocomplete: run alongside `scrcpy --keyboard=uhid --otg` for Gboard suggestions.
 
 What's new in v2.2:
   • ⌘+1 … ⌘+9 switch to that browser tab in ARC Browser.
@@ -74,7 +78,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.2"
+VERSION = "2.3"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -385,9 +389,8 @@ class ArcLink:
         if code is not None:
             if key == keyboard.Key.backspace:
                 if self.mods & MODS:                # ⌥/⌘ + backspace → delete the whole word
-                    n = max(1, len(self.word)); self.flush()
-                    for _ in range(n): self.dev.keyevent(67)
-                    self.word = ""
+                    self.flush(); self.word = ""
+                    self.dev.combo(113, 67)         # Ctrl+Del = delete word in the field itself (reliable, no counting)
                     return
                 self.word = self.word[:-1]
             else:
