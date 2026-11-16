@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.1 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.3 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,11 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.3:
+  • Umlauts & co.: ü, ä, ö, é, € and emoji now type on the tablet (via ARC-DNA, which needs
+    "ARC-DNA Scroll" on under Accessibility; without it they land on the clipboard).
+  • The keyboard-battery chip works without any ARC-DNA screen open.
 
 Controls:
   F9   — QUIT (always works, even while forwarding)
@@ -125,7 +130,23 @@ class Device:
     def tap(self, x, y):            self.send(f"input tap {int(x)} {int(y)}")
     def swipe(self, x1, y1, x2, y2, ms=90): self.send(f"input swipe {int(x1)} {int(y1)} {int(x2)} {int(y2)} {ms}")
     def keyevent(self, c):         self.send(f"input keyevent {c}")
-    def text(self, s):             self.send("input text " + shlex.quote(s))
+    def text(self, s):
+        # adb's `input text` only knows ASCII. Umlauts, accents and emoji go to ARC-DNA on the tablet,
+        # which types them into the focused field (v1.3); plain ASCII keeps the fast path.
+        run, ascii_run = "", None
+        for ch in s:
+            a = ord(ch) < 128
+            if ascii_run is not None and a != ascii_run:
+                self._text_part(run, ascii_run); run = ""
+            run += ch; ascii_run = a
+        if run: self._text_part(run, ascii_run)
+
+    def _text_part(self, s, is_ascii):
+        if is_ascii:
+            self.send("input text " + shlex.quote(s))
+        else:
+            self.send("am broadcast -n ch.architectdna.home/.LinkReceiver -a ch.architectdna.home.TYPE --es t "
+                      + shlex.quote(s) + " >/dev/null")
     def clamp(self, x, y):         return max(0, min(self.w - 1, x)), max(0, min(self.h - 1, y))
     def center(self):             self.cx, self.cy = self.w / 2, self.h / 2
 
@@ -179,7 +200,7 @@ class ArcLink:
                         now = (pct, charging)
                         # push right after plugging in, on every change, and at least once a minute
                         if not was or now != last or time.time() - sent_at > 60:
-                            subprocess.run([ADB, "shell", "am", "broadcast", "-a", "ch.architectdna.home.KBD_BATT",
+                            subprocess.run([ADB, "shell", "am", "broadcast", "-n", "ch.architectdna.home/.LinkReceiver", "-a", "ch.architectdna.home.KBD_BATT",
                                             "--ei", "level", str(pct), "--ez", "charging", "true" if charging else "false"],
                                            capture_output=True, timeout=5)
                             last, sent_at = now, time.time()
