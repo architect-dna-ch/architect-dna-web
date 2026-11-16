@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.6 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.7 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.7:
+  • Smoother scrolling (short flings, less momentum) and fewer ghost clicks (strict tap test).
+  • For a 1:1 mouse with zero ghosting, use arc-type.sh (real USB mouse via scrcpy).
 
 What's new in v2.6:
   • Fix: ARC Link no longer quits itself at launch from a phantom F9 (ignored for the first 1.5 s).
@@ -88,7 +92,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.6"
+VERSION = "2.7"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -141,8 +145,9 @@ if not ADB:
 
 MOUSE       = os.environ.get("ARCLINK_MOUSE", "1") != "0"   # trackpad ON by default; ARCLINK_MOUSE=0 to disable
 MOUSE_SENS  = float(os.environ.get("ARCLINK_SENS", "1.6"))
-DRAG_THRESH = 14
-SCROLL_STEP = 90
+DRAG_THRESH = 18          # a touch higher: small drifts count as a click, not a swipe (fewer ghost drags)
+SCROLL_STEP = 60
+TAP_MAX_MS  = 350         # a press longer than this is a hold/drag, never a tap
 FLUSH_MS    = 45
 SETTLE_S    = float(os.environ.get("ARCLINK_SETTLE", "0.6"))   # after a tap: let the field + keyboard come up
 
@@ -445,18 +450,25 @@ class ArcLink:
             self.down_pos = (self.dev.cx, self.dev.cy, time.time())
         elif self.down_pos:
             sx, sy, t0 = self.down_pos; ex, ey = self.dev.cx, self.dev.cy; self.down_pos = None
-            if abs(ex - sx) + abs(ey - sy) > DRAG_THRESH:
-                self.dev.swipe(sx, sy, ex, ey, max(60, int((time.time() - t0) * 1000)))
-            else:
+            moved = abs(ex - sx) + abs(ey - sy)
+            held = (time.time() - t0) * 1000
+            if moved > DRAG_THRESH:
+                self.dev.swipe(sx, sy, ex, ey, max(60, int(held)))
+            elif held <= TAP_MAX_MS:
                 self.dev.tap(ex, ey)
+            # else: a long still press that isn't a drag → ignore (was a ghost tap)
 
     def on_scroll(self, x, y, dx, dy):
         if not self.active(): return
         ex, ey = self.dev.cx, self.dev.cy
+        # Short, fast flings that follow the fingers, with little momentum tail.
+        dur = 45
         if abs(dx) > abs(dy):
-            self.dev.swipe(ex, ey, self.dev.clamp(ex + dx * SCROLL_STEP, ey)[0], ey, 80)
+            tx = self.dev.clamp(ex + dx * SCROLL_STEP, ey)[0]
+            self.dev.swipe(ex, ey, tx, ey, dur)
         else:
-            self.dev.swipe(ex, ey, ex, self.dev.clamp(ex, ey + dy * SCROLL_STEP)[1], 80)
+            ty = self.dev.clamp(ex, ey + dy * SCROLL_STEP)[1]
+            self.dev.swipe(ex, ey, ex, ty, dur)
 
     def run(self):
         if MOUSE:
