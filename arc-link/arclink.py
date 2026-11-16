@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.3 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.4 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.4:
+  • Updates itself: on every start it checks architect-dna.ch and replaces itself if there's a
+    newer version (backup kept as arclink.py.previous). ARCLINK_NO_UPDATE=1 turns it off.
 
 What's new in v1.3:
   • Umlauts & co.: ü, ä, ö, é, € and emoji now type on the tablet (via ARC-DNA, which needs
@@ -42,6 +46,34 @@ import subprocess
 import sys
 import threading
 import time
+
+VERSION = "1.4"
+SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
+
+
+def self_update():
+    """On start: if architect-dna.ch has a newer ARC Link, replace this file and restart. No-op offline."""
+    if os.environ.get("ARCLINK_NO_UPDATE"):
+        return
+    try:
+        import re, urllib.request
+        with urllib.request.urlopen(SOURCE, timeout=4) as r:
+            new = r.read().decode("utf-8")
+        m = re.search(r'^VERSION = "([0-9.]+)"', new, re.M)
+        if not m or "class ArcLink" not in new:
+            return
+        def key(v): return tuple(int(x) for x in v.split("."))
+        if key(m.group(1)) <= key(VERSION):
+            return
+        here = os.path.realpath(__file__)
+        shutil.copy2(here, here + ".previous")               # one step back, just in case
+        with open(here + ".new", "w", encoding="utf-8") as fh:
+            fh.write(new)
+        os.replace(here + ".new", here)
+        print(f"ARC Link updated {VERSION} → {m.group(1)}, restarting …", flush=True)
+        os.execv(sys.executable, [sys.executable, here] + sys.argv[1:])
+    except Exception:
+        pass                                                   # offline or site down: run what we have
 
 # Log lines appear immediately even when launchd/the app wrapper sends stdout to a file.
 try:
@@ -343,4 +375,5 @@ class ArcLink:
 
 
 if __name__ == "__main__":
+    self_update()
     ArcLink().run()
