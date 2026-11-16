@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.4 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.5 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.5:
+  • ⌥+Tab jumps straight to the previous app (Alt+Tab style), not just the recents carousel.
+    (The carousel is still F3.)
 
 What's new in v2.4:
   • Brightness (⌥+↑/↓) fixed: absolute values, no shell math that HyperOS rejected.
@@ -81,7 +85,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.4"
+VERSION = "2.5"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -359,7 +363,8 @@ class ArcLink:
             return
         if key == keyboard.Key.tab and (self.mods & ALT):
             self.flush(); self.word = ""
-            self.dev.keyevent(187)                     # APP_SWITCH (recents)
+            # Quick-switch to the PREVIOUS app (double recents), like Alt+Tab — not just the carousel.
+            self.dev.send("input keyevent 187; sleep 0.22; input keyevent 187")
             return
         # ⌘+H / ⌘+D → home (desktop), like hiding everything on the Mac
         if ch and (self.mods & CMD) and ch.lower() in ("h", "d") and not (self.mods & ALT):
