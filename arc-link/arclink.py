@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.6 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.7 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.7:
+  • ⌘+Space opens ARC Spotlight on the tablet: type an app name, Enter opens it, Esc closes.
 
 What's new in v1.6:
   • No more lost first letters: after a tap or swipe, typing waits ~0.6 s until the field and the
@@ -55,7 +58,7 @@ import sys
 import threading
 import time
 
-VERSION = "1.6"
+VERSION = "1.7"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -299,6 +302,12 @@ class ArcLink:
         # auto-repeat IS allowed now (hold backspace = many deletes, spam ! = many !) —
         # the darwin_intercept suppression already stops the old double-typing.
         ch = getattr(key, "char", None)
+        # ⌘ + Space → ARC Spotlight on the tablet: type an app name, Enter opens it (Esc closes)
+        if (self.mods & CMD) and (key == keyboard.Key.space or ch == " "):
+            self.flush(); self.word = ""
+            self.dev.touched_at = time.time()          # the search field needs a moment, like a tap
+            self.dev.send("am start -n ch.architectdna.home/.SpotlightActivity >/dev/null")
+            return
         # ⌘ + letter → Ctrl + letter on the tablet, like a keyboard on Android:
         # ⌘T new tab · ⌘W close tab · ⌘L address bar · ⌘R reload · ⌘F find · ⌘C/V/X/A/Z …
         if ch and (self.mods & CMD) and len(ch) == 1 and ch.lower() in "abcdefghijklmnopqrstuvwxyz":
