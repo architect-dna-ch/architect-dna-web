@@ -1,18 +1,17 @@
 #!/bin/bash
-# ARC Type — makes the Mac a real keyboard + mouse for the tablet over USB.
-# Gives Windows-style Alt+Tab (hold ⌥, tab through apps, release to switch), native autocomplete,
-# reliable word-delete and umlauts. No video window (your screen stays off). One cable, USB debugging on.
+# ARC Type — Mac keyboard + trackpad as a REAL keyboard/mouse for the tablet (OTG/HID over USB).
+# Windows-style Alt+Tab (hold ⌥, tab, release), native autocomplete, word-delete, umlauts.
 #
-#   curl -O https://architect-dna.ch/arc-link/arc-type.sh && bash arc-type.sh
+#   bash arc-type.sh
 #
-# Keys on the tablet: ⌥Tab = app switcher (Windows style) · ⌘Space can't be used here, use the
-# on-screen search. Quit: close this terminal or Ctrl-C.
+# A small ARC Type window opens. CLICK IT ONCE to capture the keyboard, then type — it all goes
+# to the tablet. Move the mouse back to the Mac by clicking another app (or press the left ⌥ twice).
+# Needs: Pad plugged in, USB debugging on. Quit: close the window or Ctrl-C.
 
 command -v scrcpy >/dev/null || { echo "Installing scrcpy (one time)…"; brew install scrcpy; }
 
-echo "ARC Type — Mac keyboard+mouse for the tablet. Hold ⌥ and press Tab to switch apps, like Windows."
-echo "Keep the Pad plugged in. Ctrl-C to stop."
+echo "ARC Type — click the small window once, then hold ⌥ and press Tab to switch apps (Windows style)."
+echo "Pad must be plugged in. Ctrl-C to stop."
 
-# --keyboard=uhid: the tablet sees a real USB keyboard → Android's own Alt+Tab switcher.
-# --mouse=uhid: trackpad as a real mouse.  --no-video/--no-audio: nothing on the Mac screen.
-exec scrcpy --keyboard=uhid --mouse=uhid --no-video --no-audio --stay-awake
+# --otg: no screen mirroring, the Mac acts purely as a USB keyboard+mouse for the tablet.
+exec scrcpy --otg --window-title="ARC Type — click me, then type"
