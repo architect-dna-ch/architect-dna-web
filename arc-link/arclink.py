@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.4 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.5 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.5:
+  • ⌘ works like Ctrl on the tablet: ⌘T new tab, ⌘W close, ⌘L address bar, ⌘R reload, ⌘F find,
+    ⌘C / ⌘V / ⌘X / ⌘A / ⌘Z; ⌘← / ⌘→ jump to line start / end.
 
 What's new in v1.4:
   • Updates itself: on every start it checks architect-dna.ch and replaces itself if there's a
@@ -47,7 +51,7 @@ import sys
 import threading
 import time
 
-VERSION = "1.4"
+VERSION = "1.5"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -162,6 +166,7 @@ class Device:
     def tap(self, x, y):            self.send(f"input tap {int(x)} {int(y)}")
     def swipe(self, x1, y1, x2, y2, ms=90): self.send(f"input swipe {int(x1)} {int(y1)} {int(x2)} {int(y2)} {ms}")
     def keyevent(self, c):         self.send(f"input keyevent {c}")
+    def combo(self, *codes):       self.send("input keycombination " + " ".join(str(c) for c in codes))   # Android 13+
     def text(self, s):
         # adb's `input text` only knows ASCII. Umlauts, accents and emoji go to ARC-DNA on the tablet,
         # which types them into the focused field (v1.3); plain ASCII keeps the fast path.
@@ -280,6 +285,16 @@ class ArcLink:
         # auto-repeat IS allowed now (hold backspace = many deletes, spam ! = many !) —
         # the darwin_intercept suppression already stops the old double-typing.
         ch = getattr(key, "char", None)
+        # ⌘ + letter → Ctrl + letter on the tablet, like a keyboard on Android:
+        # ⌘T new tab · ⌘W close tab · ⌘L address bar · ⌘R reload · ⌘F find · ⌘C/V/X/A/Z …
+        if ch and (self.mods & CMD) and len(ch) == 1 and ch.lower() in "abcdefghijklmnopqrstuvwxyz":
+            self.flush(); self.word = ""
+            self.dev.combo(113, 29 + ord(ch.lower()) - ord("a"))       # KEYCODE_CTRL_LEFT + KEYCODE_A…Z
+            return
+        if (self.mods & CMD) and key in (keyboard.Key.left, keyboard.Key.right):
+            self.flush(); self.word = ""
+            self.dev.keyevent(122 if key == keyboard.Key.left else 123)  # ⌘← / ⌘→ = line start / end
+            return
         if ch and ch not in ("\t", "\n", "\r"):
             if ch == " ": self.flush(); self.dev.keyevent(62); self.word = ""
             else: self.buf_append(ch); self.word += ch
