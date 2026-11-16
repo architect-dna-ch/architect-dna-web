@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.1 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.2 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.2:
+  • ⌘+1 … ⌘+9 switch to that browser tab in ARC Browser.
 
 What's new in v2.1:
   • Volume keys control the tablet (the Mac's volume up/down/mute media keys).
@@ -71,7 +74,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.1"
+VERSION = "2.2"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -358,6 +361,11 @@ class ArcLink:
         if ch and (self.mods & CMD) and ch.lower() in ("h", "d") and not (self.mods & ALT):
             self.flush(); self.word = ""
             self.dev.keyevent(3)                       # HOME
+            return
+        # ⌘ + 1..9 → Ctrl + digit (ARC Browser: switch to that tab)
+        if ch and (self.mods & CMD) and ch in "123456789" and not (self.mods & ALT):
+            self.flush(); self.word = ""
+            self.dev.combo(113, 8 + int(ch) - 1)       # KEYCODE_CTRL_LEFT + KEYCODE_1..9
             return
         # ⌘ + letter → Ctrl + letter on the tablet, like a keyboard on Android:
         # ⌘T new tab · ⌘W close tab · ⌘L address bar · ⌘R reload · ⌘F find · ⌘C/V/X/A/Z …
