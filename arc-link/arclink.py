@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.7 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.8 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.8:
+  • ⌘+⌥+Q closes ALL apps on the tablet (Recents → Clear all), ⌘+Q closes the one in front.
 
 What's new in v1.7:
   • ⌘+Space opens ARC Spotlight on the tablet: type an app name, Enter opens it, Esc closes.
@@ -58,7 +61,7 @@ import sys
 import threading
 import time
 
-VERSION = "1.7"
+VERSION = "1.8"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -307,6 +310,15 @@ class ArcLink:
             self.flush(); self.word = ""
             self.dev.touched_at = time.time()          # the search field needs a moment, like a tap
             self.dev.send("am start -n ch.architectdna.home/.SpotlightActivity >/dev/null")
+            return
+        # ⌘+⌥+Q → close ALL apps on the tablet · ⌘+Q → close this one (back to home)
+        if ch and (self.mods & CMD) and ch.lower() in ("q", "œ"):
+            self.flush(); self.word = ""
+            if self.mods & ALT:
+                self.dev.send("am broadcast -n ch.architectdna.home/.LinkReceiver -a ch.architectdna.home.CLOSE_ALL >/dev/null")
+                print("⌘⌥Q → all apps closed")
+            else:
+                self.dev.keyevent(3)                   # HOME
             return
         # ⌘ + letter → Ctrl + letter on the tablet, like a keyboard on Android:
         # ⌘T new tab · ⌘W close tab · ⌘L address bar · ⌘R reload · ⌘F find · ⌘C/V/X/A/Z …
