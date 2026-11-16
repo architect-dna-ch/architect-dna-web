@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.3 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.4 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.4:
+  • Brightness (⌥+↑/↓) fixed: absolute values, no shell math that HyperOS rejected.
 
 What's new in v2.3:
   • ⌥/⌘+Backspace delete-word now works any time (asks the field to delete a word, not counting keys).
@@ -78,7 +81,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.3"
+VERSION = "2.4"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -228,6 +231,7 @@ class ArcLink:
         self.buf, self.buf_lock = [], threading.Lock()
         self.down = set()            # keys currently held (de-dupe auto-repeat)
         self.mods = set()            # alt/cmd currently held → word ops
+        self.bri = None              # tablet brightness 0..255, read once then stepped
         self.word = ""               # the word being typed, for ⌥/⌘-backspace
         self.down_pos = None
         self.last_move = None
@@ -341,11 +345,7 @@ class ArcLink:
         # ⌥ + ↑/↓ = tablet brightness (the physical bright keys don't reach a script on macOS)
         if (self.mods & ALT) and not (self.mods & CMD) and key in (keyboard.Key.up, keyboard.Key.down):
             self.flush(); self.word = ""
-            step = 30 if key == keyboard.Key.up else -30
-            self.dev.send("settings put system screen_brightness_mode 0; "
-                          "c=$(settings get system screen_brightness 2>/dev/null); case $c in ''|*[!0-9]*) c=120;; esac; "
-                          f"n=$((c+({step}))); [ $n -gt 255 ] && n=255; [ $n -lt 8 ] && n=8; "
-                          "settings put system screen_brightness $n")
+            self.brightness(28 if key == keyboard.Key.up else -28)
             return
         # ⌘+⌥+L = lock the tablet (like the Touch ID / lock button)
         if ch and (self.mods & CMD) and (self.mods & ALT) and ch.lower() == "l":
@@ -396,6 +396,20 @@ class ArcLink:
             else:
                 self.word = ""                      # enter / tab / arrows end the word
             self.flush(); self.dev.keyevent(code)
+
+    def brightness(self, delta):
+        if self.bri is None:
+            try:
+                out = subprocess.check_output([ADB, "shell", "settings", "get", "system", "screen_brightness"],
+                                              text=True, timeout=3).strip()
+                self.bri = int(out)
+            except Exception:
+                self.bri = 140
+        self.bri = max(6, min(255, self.bri + delta))
+        # Absolute value, no shell math — turn auto-brightness off so it sticks.
+        self.dev.send("settings put system screen_brightness_mode 0")
+        self.dev.send(f"settings put system screen_brightness {self.bri}")
+        print(f"brightness → {self.bri}")
 
     def on_release(self, key):
         self.down.discard(key)
