@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.8 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.9 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.9:
+  • Brightness (⌥+↑ / ⌥+↓) made bulletproof: direct adb calls, auto-brightness off, live nudge.
 
 What's new in v2.8:
   • Real Alt+Tab: hold ⌥, press Tab to step through recent apps (overlay on the tablet shows which),
@@ -96,7 +99,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.8"
+VERSION = "2.9"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -428,11 +431,18 @@ class ArcLink:
                 self.bri = int(out)
             except Exception:
                 self.bri = 140
-        self.bri = max(6, min(255, self.bri + delta))
-        # Absolute value, no shell math — turn auto-brightness off so it sticks.
-        self.dev.send("settings put system screen_brightness_mode 0")
-        self.dev.send(f"settings put system screen_brightness {self.bri}")
-        print(f"brightness → {self.bri}")
+        self.bri = max(4, min(255, self.bri + delta))
+        # Direct adb calls (not the typing shell) — definitely run as the shell user, which may set brightness.
+        try:
+            subprocess.run([ADB, "shell", "settings", "put", "system", "screen_brightness_mode", "0"], timeout=3)
+            subprocess.run([ADB, "shell", "settings", "put", "system", "screen_brightness", str(self.bri)], timeout=3)
+            # MIUI/HyperOS sometimes ignores the DB value until nudged — also push it live:
+            subprocess.run([ADB, "shell", "service", "call", "SurfaceFlinger", "1008", "i32", str(int(self.bri / 255 * 100))],
+                           timeout=3, capture_output=True)
+        except Exception as e:
+            print("brightness error:", e)
+        print(f"brightness → {self.bri}/255   (if the screen didn't change, run once: "
+              f"adb shell settings put system screen_brightness 240)")
 
     def on_release(self, key):
         self.down.discard(key)
