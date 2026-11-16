@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.7 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.8 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.8:
+  • Real Alt+Tab: hold ⌥, press Tab to step through recent apps (overlay on the tablet shows which),
+    ⇧⌥Tab steps back, release ⌥ to switch. Needs ARC-DNA on the tablet (Scroll service on).
 
 What's new in v2.7:
   • Smoother scrolling (short flings, less momentum) and fewer ghost clicks (strict tap test).
@@ -92,7 +96,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.7"
+VERSION = "2.8"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -165,8 +169,9 @@ KEYEVENT = {
 ALT  = {keyboard.Key.alt, keyboard.Key.alt_l, keyboard.Key.alt_r}
 CMD  = {keyboard.Key.cmd, keyboard.Key.cmd_l, keyboard.Key.cmd_r}
 CTRL = {keyboard.Key.ctrl, keyboard.Key.ctrl_l, keyboard.Key.ctrl_r}
+SHIFT = {keyboard.Key.shift, keyboard.Key.shift_l, keyboard.Key.shift_r}
 MODS  = ALT | CMD            # word-delete trigger (⌥/⌘ + Backspace)
-TRACK = ALT | CMD | CTRL     # modifiers we keep track of
+TRACK = ALT | CMD | CTRL | SHIFT   # modifiers we keep track of
 
 
 def adb_state():
@@ -245,6 +250,7 @@ class ArcLink:
         self.mods = set()            # alt/cmd currently held → word ops
         self.bri = None              # tablet brightness 0..255, read once then stepped
         self.started = time.time()   # ignore a phantom F9/F10 fired at launch
+        self.switching = False       # inside an ⌥Tab app-switch (overlay up on the tablet)
         self.word = ""               # the word being typed, for ⌥/⌘-backspace
         self.down_pos = None
         self.last_move = None
@@ -374,8 +380,9 @@ class ArcLink:
             return
         if key == keyboard.Key.tab and (self.mods & ALT):
             self.flush(); self.word = ""
-            # Quick-switch to the PREVIOUS app (double recents), like Alt+Tab — not just the carousel.
-            self.dev.send("input keyevent 187; sleep 0.22; input keyevent 187")
+            self.switching = True
+            d = "prev" if (self.mods & SHIFT) else "next"
+            self.dev.send(f"am broadcast -n ch.architectdna.home/.LinkReceiver -a ch.architectdna.home.SWITCH --es d {d} >/dev/null")
             return
         # ⌘+H / ⌘+D → home (desktop), like hiding everything on the Mac
         if ch and (self.mods & CMD) and ch.lower() in ("h", "d") and not (self.mods & ALT):
@@ -430,6 +437,10 @@ class ArcLink:
     def on_release(self, key):
         self.down.discard(key)
         self.mods.discard(key)
+        # Let go of ⌥ after an ⌥Tab cycle → switch to the highlighted app.
+        if key in ALT and self.switching:
+            self.switching = False
+            self.dev.send("am broadcast -n ch.architectdna.home/.LinkReceiver -a ch.architectdna.home.SWITCH --es d pick >/dev/null")
 
     def buf_append(self, ch):
         with self.buf_lock: self.buf.append(ch)
