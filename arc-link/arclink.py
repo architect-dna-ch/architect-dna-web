@@ -217,7 +217,7 @@ class ArcLink:
         threading.Thread(target=self._usb_poll, daemon=True).start()
         threading.Thread(target=self._batt_poll, daemon=True).start()
         mode = "keyboard + trackpad" if MOUSE else "keyboard only"
-        print(f"ARC Link · tablet {self.dev.w}x{self.dev.h} · {mode} · engages when the Pad is plugged in")
+        print(f"ARC Link {VERSION} · tablet {self.dev.w}x{self.dev.h} · {mode} · engages when the Pad is plugged in")
         print("F10 pause · F9 QUIT · F1 back · F2 home · F3 recents · 3-finger swipe = recents · ⌥/⌘-⌫ delete word · Ctrl-C quits"
               + ("" if MOUSE else "  (ARCLINK_MOUSE=0 disables the trackpad)"))
         print("keyboard battery → tablet chip · every 60 s while plugged in")
