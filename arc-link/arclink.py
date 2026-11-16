@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v3.0 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v3.1 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v3.1:
+  • F4–F8, F11, F12 pass through to the tablet as real function keys (F11 = fullscreen in most apps).
 
 What's new in v3.0:
   • Media keys (play/pause, next, prev) control the tablet's music.
@@ -104,7 +107,7 @@ import sys
 import threading
 import time
 
-VERSION = "3.0"
+VERSION = "3.1"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -169,7 +172,9 @@ KEYEVENT = {
     keyboard.Key.up: 19, keyboard.Key.down: 20, keyboard.Key.left: 21, keyboard.Key.right: 22,
     keyboard.Key.home: 122, keyboard.Key.end: 123, keyboard.Key.page_up: 92, keyboard.Key.page_down: 93,
     keyboard.Key.space: 62,
-    keyboard.Key.f1: 4, keyboard.Key.f2: 3, keyboard.Key.f3: 187,   # BACK / HOME / RECENTS
+    keyboard.Key.f1: 4, keyboard.Key.f2: 3, keyboard.Key.f3: 187,   # BACK / HOME / RECENTS (F9 quit, F10 pause)
+    keyboard.Key.f4: 134, keyboard.Key.f5: 135, keyboard.Key.f6: 136, keyboard.Key.f7: 137, keyboard.Key.f8: 138,
+    keyboard.Key.f11: 141, keyboard.Key.f12: 142,   # real function keys → the app decides (F11 = fullscreen in most)
     keyboard.Key.media_volume_up: 24, keyboard.Key.media_volume_down: 25, keyboard.Key.media_volume_mute: 164,
     keyboard.Key.media_play_pause: 85, keyboard.Key.media_next: 87, keyboard.Key.media_previous: 88,
 }
