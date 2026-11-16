@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.5 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v1.6 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v1.6:
+  • No more lost first letters: after a tap or swipe, typing waits ~0.6 s until the field and the
+    tablet's keyboard are ready (ARCLINK_SETTLE=0.8 to wait longer), then sends everything in order.
 
 What's new in v1.5:
   • ⌘ works like Ctrl on the tablet: ⌘T new tab, ⌘W close, ⌘L address bar, ⌘R reload, ⌘F find,
@@ -51,7 +55,7 @@ import sys
 import threading
 import time
 
-VERSION = "1.5"
+VERSION = "1.6"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -107,6 +111,7 @@ MOUSE_SENS  = float(os.environ.get("ARCLINK_SENS", "1.6"))
 DRAG_THRESH = 14
 SCROLL_STEP = 90
 FLUSH_MS    = 45
+SETTLE_S    = float(os.environ.get("ARCLINK_SETTLE", "0.6"))   # after a tap: let the field + keyboard come up
 
 KEYEVENT = {
     keyboard.Key.enter: 66, keyboard.Key.backspace: 67, keyboard.Key.tab: 61,
@@ -163,8 +168,11 @@ class Device:
             except (BrokenPipeError, ValueError):
                 pass
 
-    def tap(self, x, y):            self.send(f"input tap {int(x)} {int(y)}")
-    def swipe(self, x1, y1, x2, y2, ms=90): self.send(f"input swipe {int(x1)} {int(y1)} {int(x2)} {int(y2)} {ms}")
+    touched_at = 0.0
+    def tap(self, x, y):
+        self.touched_at = time.time(); self.send(f"input tap {int(x)} {int(y)}")
+    def swipe(self, x1, y1, x2, y2, ms=90):
+        self.touched_at = time.time(); self.send(f"input swipe {int(x1)} {int(y1)} {int(x2)} {int(y2)} {ms}")
     def keyevent(self, c):         self.send(f"input keyevent {c}")
     def combo(self, *codes):       self.send("input keycombination " + " ".join(str(c) for c in codes))   # Android 13+
     def text(self, s):
@@ -263,6 +271,12 @@ class ArcLink:
             time.sleep(FLUSH_MS / 1000); self.flush()
 
     def flush(self):
+        with self.buf_lock:
+            if not self.buf: return
+        # Just tapped / swiped into a field? The tablet needs a moment until the field has focus and
+        # the keyboard is up; text sent in that window is silently dropped. Wait it out, keep order.
+        wait = SETTLE_S - (time.time() - self.dev.touched_at)
+        if wait > 0: time.sleep(wait)
         with self.buf_lock:
             if not self.buf: return
             s = "".join(self.buf); self.buf.clear()
