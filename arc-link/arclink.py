@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v1.9 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.0 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.0:
+  • No fn needed: ⌘+B (or ⌘+[) = back, ⌥+Tab = recent apps, ⌘+H = home.
 
 What's new in v1.9:
   • ⌘+H or ⌘+D → home screen on the tablet.
@@ -64,7 +67,7 @@ import sys
 import threading
 import time
 
-VERSION = "1.9"
+VERSION = "2.0"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -322,6 +325,15 @@ class ArcLink:
                 print("⌘⌥Q → all apps closed")
             else:
                 self.dev.keyevent(3)                   # HOME
+            return
+        # No fn needed: ⌘+B or ⌘+[ = back · ⌥+Tab = recent apps (F1/F2/F3 keep working too)
+        if ch and (self.mods & CMD) and ch.lower() in ("b", "[") and not (self.mods & ALT):
+            self.flush(); self.word = ""
+            self.dev.keyevent(4)                       # BACK
+            return
+        if key == keyboard.Key.tab and (self.mods & ALT):
+            self.flush(); self.word = ""
+            self.dev.keyevent(187)                     # APP_SWITCH (recents)
             return
         # ⌘+H / ⌘+D → home (desktop), like hiding everything on the Mac
         if ch and (self.mods & CMD) and ch.lower() in ("h", "d") and not (self.mods & ALT):
