@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.9 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v3.0 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,11 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v3.0:
+  • Media keys (play/pause, next, prev) control the tablet's music.
+  • ⌘⌥S screenshot · ⌘⌥N notifications · ⌘⌥K quick settings · ⌘⌥P play/pause
+    ⌘⌥M ARC Player · ⌘⌥A Spotlight · (⌘⌥L lock, ⌘⌥Q close all stay).
 
 What's new in v2.9:
   • Brightness (⌥+↑ / ⌥+↓) made bulletproof: direct adb calls, auto-brightness off, live nudge.
@@ -99,7 +104,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.9"
+VERSION = "3.0"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -166,6 +171,7 @@ KEYEVENT = {
     keyboard.Key.space: 62,
     keyboard.Key.f1: 4, keyboard.Key.f2: 3, keyboard.Key.f3: 187,   # BACK / HOME / RECENTS
     keyboard.Key.media_volume_up: 24, keyboard.Key.media_volume_down: 25, keyboard.Key.media_volume_mute: 164,
+    keyboard.Key.media_play_pause: 85, keyboard.Key.media_next: 87, keyboard.Key.media_previous: 88,
 }
 
 # Modifier groups. ⌥/⌘+Backspace = delete word; Ctrl shortcuts (incl. Ctrl-C to quit) pass to the Mac.
@@ -371,6 +377,23 @@ class ArcLink:
             self.flush(); self.word = ""
             self.brightness(28 if key == keyboard.Key.up else -28)
             return
+        # ⌘+⌥ system shortcuts (⌥ keeps them clear of the ⌘-letter browser keys)
+        if ch and (self.mods & CMD) and (self.mods & ALT):
+            low = ch.lower()
+            if low == "s":                             # ⌘⌥S = screenshot
+                self.flush(); self.word = ""; self.dev.keyevent(120); print("screenshot"); return
+            if low == "n":                             # ⌘⌥N = notification panel
+                self.flush(); self.word = ""; self.dev.send("cmd statusbar expand-notifications"); return
+            if low == "k":                             # ⌘⌥K = quick settings
+                self.flush(); self.word = ""; self.dev.send("cmd statusbar expand-settings"); return
+            if low == "p":                             # ⌘⌥P = play / pause music
+                self.flush(); self.word = ""; self.dev.keyevent(85); return
+            if low == "m":                             # ⌘⌥M = ARC music bar / player (ARC Remote)
+                self.flush(); self.word = ""
+                self.dev.send("am start -n ch.architectdna.home/.PlayerActivity >/dev/null"); return
+            if low == "a":                             # ⌘⌥A = all apps (ARC Spotlight)
+                self.flush(); self.word = ""
+                self.dev.send("am start -n ch.architectdna.home/.SpotlightActivity >/dev/null"); return
         # ⌘+⌥+L = lock the tablet (like the Touch ID / lock button)
         if ch and (self.mods & CMD) and (self.mods & ALT) and ch.lower() == "l":
             self.flush(); self.word = ""
