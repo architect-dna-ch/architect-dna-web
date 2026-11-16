@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v3.2 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v3.3 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,12 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v3.3:
+  • Self-update fixed: it now pulls from the public GitHub repo (raw), so a push reaches you on the
+    next check — no `vercel --prod` needed. It also re-checks every 6 h, not only at launch.
+  • ⌘Space Spotlight opens fullscreen (no tiny floating box). ⌘↑ fullscreens the focused app, ⌘↓
+    floats it in a window (HyperOS Workstation).
 
 What's new in v3.2:
   • Fix: ⌘⌥ shortcuts now read the physical key, so Option changing the letter (⌥s=ß, ⌥p=π) no
@@ -94,6 +100,7 @@ Controls:
   F9   — QUIT (always works, even while forwarding)
   F10  — hard pause / resume (overrides auto-engage; when paused the Mac is fully yours)
   F1 BACK · F2 HOME · F3 RECENTS · ⌥/⌘-Backspace delete word
+  ⌘↑ fullscreen the focused app · ⌘↓ float it in a window (HyperOS Workstation)
   Ctrl-C also quits (Ctrl shortcuts now pass through to the Mac).
 
 Env overrides:  ARCLINK_SIZE=2560x1600   ARCLINK_SENS=1.6
@@ -111,12 +118,23 @@ import sys
 import threading
 import time
 
-VERSION = "3.2"
-SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
+VERSION = "3.3"
+# Release channel: the raw file straight from the public GitHub repo, so a push reaches every Mac
+# on the next check — no `vercel --prod` first (that was why updates never arrived). ARCLINK_SOURCE
+# overrides it.
+SOURCE = os.environ.get("ARCLINK_SOURCE",
+    "https://raw.githubusercontent.com/architect-dna-ch/architect-dna-web/arclink/arc-link/arclink.py")
+
+
+def _update_watch(hours=6):
+    """Re-check for a newer ARC Link every few hours, so it updates with no manual restart."""
+    while True:
+        time.sleep(hours * 3600)
+        self_update()
 
 
 def self_update():
-    """On start: if architect-dna.ch has a newer ARC Link, replace this file and restart. No-op offline."""
+    """On start: if the release channel has a newer ARC Link, replace this file and restart. No-op offline."""
     if os.environ.get("ARCLINK_NO_UPDATE"):
         return
     try:
@@ -374,12 +392,18 @@ class ArcLink:
         if (self.mods & CMD) and (key == keyboard.Key.space or ch == " "):
             self.flush(); self.word = ""
             self.dev.touched_at = time.time()          # the search field needs a moment, like a tap
-            self.dev.send("am start -n ch.architectdna.home/.SpotlightActivity >/dev/null")
+            self.dev.send("am start --windowingMode 1 -n ch.architectdna.home/.SpotlightActivity >/dev/null")
             return
         # ⌘+⌥+Q → close ALL apps on the tablet · ⌘+Q → close this one (back to home)
         if (self.mods & CMD) and kl == "q" and not (self.mods & ALT):
             self.flush(); self.word = ""
             self.dev.keyevent(3)                       # ⌘Q → HOME
+            return
+        # ⌘ + ↑ / ↓ → focused app to fullscreen / to a floating window (HyperOS Workstation)
+        if (self.mods & CMD) and not (self.mods & ALT) and key in (keyboard.Key.up, keyboard.Key.down):
+            self.flush(); self.word = ""
+            mode = 1 if key == keyboard.Key.up else 5   # 1 = fullscreen, 5 = freeform (floating)
+            self.dev.send("c=$(dumpsys activity activities | grep -m1 ResumedActivity | grep -oE '[A-Za-z0-9._]+/[A-Za-z0-9._]+'); [ -n \"$c\" ] && am start --windowingMode %d -n \"$c\" >/dev/null 2>&1" % mode)
             return
         # ⌥ + ↑/↓ = tablet brightness (the physical bright keys don't reach a script on macOS)
         if (self.mods & ALT) and not (self.mods & CMD) and key in (keyboard.Key.up, keyboard.Key.down):
@@ -394,7 +418,7 @@ class ArcLink:
             if kl == "k": self.dev.send("cmd statusbar expand-settings"); return        # quick settings
             if kl == "p": self.dev.keyevent(85); return                                 # play / pause
             if kl == "m": self.dev.send("am start -n ch.architectdna.home/.PlayerActivity >/dev/null"); return
-            if kl == "a": self.dev.send("am start -n ch.architectdna.home/.SpotlightActivity >/dev/null"); return
+            if kl == "a": self.dev.send("am start --windowingMode 1 -n ch.architectdna.home/.SpotlightActivity >/dev/null"); return
             if kl == "l": self.dev.keyevent(223); return                                # lock (sleep)
             if kl == "q":                                                               # close all apps
                 self.dev.send("am broadcast -n ch.architectdna.home/.LinkReceiver -a ch.architectdna.home.CLOSE_ALL >/dev/null")
@@ -558,4 +582,5 @@ class ArcLink:
 
 if __name__ == "__main__":
     self_update()
+    threading.Thread(target=_update_watch, daemon=True).start()
     ArcLink().run()
