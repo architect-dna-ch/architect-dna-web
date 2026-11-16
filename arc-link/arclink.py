@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.0 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.1 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,10 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.1:
+  • Volume keys control the tablet (the Mac's volume up/down/mute media keys).
+  • ⌥+↑ / ⌥+↓ = tablet brightness · ⌘+⌥+L = lock the tablet.
 
 What's new in v2.0:
   • No fn needed: ⌘+B (or ⌘+[) = back, ⌥+Tab = recent apps, ⌘+H = home.
@@ -67,7 +71,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.0"
+VERSION = "2.1"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -132,6 +136,7 @@ KEYEVENT = {
     keyboard.Key.home: 122, keyboard.Key.end: 123, keyboard.Key.page_up: 92, keyboard.Key.page_down: 93,
     keyboard.Key.space: 62,
     keyboard.Key.f1: 4, keyboard.Key.f2: 3, keyboard.Key.f3: 187,   # BACK / HOME / RECENTS
+    keyboard.Key.media_volume_up: 24, keyboard.Key.media_volume_down: 25, keyboard.Key.media_volume_mute: 164,
 }
 
 # Modifier groups. ⌥/⌘+Backspace = delete word; Ctrl shortcuts (incl. Ctrl-C to quit) pass to the Mac.
@@ -325,6 +330,20 @@ class ArcLink:
                 print("⌘⌥Q → all apps closed")
             else:
                 self.dev.keyevent(3)                   # HOME
+            return
+        # ⌥ + ↑/↓ = tablet brightness (the physical bright keys don't reach a script on macOS)
+        if (self.mods & ALT) and not (self.mods & CMD) and key in (keyboard.Key.up, keyboard.Key.down):
+            self.flush(); self.word = ""
+            step = 30 if key == keyboard.Key.up else -30
+            self.dev.send("settings put system screen_brightness_mode 0; "
+                          "c=$(settings get system screen_brightness 2>/dev/null); case $c in ''|*[!0-9]*) c=120;; esac; "
+                          f"n=$((c+({step}))); [ $n -gt 255 ] && n=255; [ $n -lt 8 ] && n=8; "
+                          "settings put system screen_brightness $n")
+            return
+        # ⌘+⌥+L = lock the tablet (like the Touch ID / lock button)
+        if ch and (self.mods & CMD) and (self.mods & ALT) and ch.lower() == "l":
+            self.flush(); self.word = ""
+            self.dev.keyevent(223)                     # KEYCODE_SLEEP: screen off = locked (26 would toggle back on)
             return
         # No fn needed: ⌘+B or ⌘+[ = back · ⌥+Tab = recent apps (F1/F2/F3 keep working too)
         if ch and (self.mods & CMD) and ch.lower() in ("b", "[") and not (self.mods & ALT):
