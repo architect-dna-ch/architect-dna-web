@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ARC Link v2.5 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
+ARC Link v2.6 — drive an Android tablet from this Mac's keyboard & trackpad, over the USB cable.
 
 No root, no app on the tablet. One persistent `adb shell` fed Android's `input`.
 
@@ -16,6 +16,9 @@ What's new in v1.2:
   • ⌥/⌘ + Backspace deletes the whole word (like macOS), not one letter at a time.
   • Keyboard battery: this Mac's charge is pushed to the tablet, where the ARC-DNA launcher
     floats a small "⌨ xx%" chip — so you can see how much "keyboard" is left over USB.
+
+What's new in v2.6:
+  • Fix: ARC Link no longer quits itself at launch from a phantom F9 (ignored for the first 1.5 s).
 
 What's new in v2.5:
   • ⌥+Tab jumps straight to the previous app (Alt+Tab style), not just the recents carousel.
@@ -85,7 +88,7 @@ import sys
 import threading
 import time
 
-VERSION = "2.5"
+VERSION = "2.6"
 SOURCE = "https://architect-dna.ch/arc-link/arclink.py"
 
 
@@ -236,6 +239,7 @@ class ArcLink:
         self.down = set()            # keys currently held (de-dupe auto-repeat)
         self.mods = set()            # alt/cmd currently held → word ops
         self.bri = None              # tablet brightness 0..255, read once then stepped
+        self.started = time.time()   # ignore a phantom F9/F10 fired at launch
         self.word = ""               # the word being typed, for ⌥/⌘-backspace
         self.down_pos = None
         self.last_move = None
@@ -316,6 +320,8 @@ class ArcLink:
 
     # ── keyboard ──
     def on_press(self, key):
+        if key in (keyboard.Key.f9, keyboard.Key.f10) and time.time() - self.started < 1.5:
+            return                                     # some Macs emit a phantom fn-row key at launch; ignore it
         if key == keyboard.Key.f9:                 # hard quit — always works, even while forwarding
             print("\nARC Link beendet. (F9)")
             os._exit(0)
@@ -459,6 +465,7 @@ class ArcLink:
         kl = keyboard.Listener(on_press=self.on_press, on_release=self.on_release,
                                darwin_intercept=self.intercept)
         kl.start()
+        self.started = time.time()
         try:
             self._gestures(kl)
         except KeyboardInterrupt:
