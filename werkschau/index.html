@@ -103,7 +103,10 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
 .link-demo{padding:46px 18px 22px}
 .devices{display:flex;align-items:flex-end;justify-content:center;gap:18px;flex-wrap:wrap}
 .tablet{width:220px;height:150px;border:2px solid var(--ink);border-radius:14px;background:var(--paper);position:relative;padding:12px;font-family:var(--mono);font-size:12px;color:var(--ink)}
-.tablet .typed::after{content:"▍";animation:blink 1s steps(1) infinite;color:var(--accent)}
+.tablet .typed::after,.phone .typed::after{content:"▍";animation:blink 1s steps(1) infinite;color:var(--accent)}
+.phone{width:96px;height:180px;border:2px solid var(--ink);border-radius:20px;background:var(--paper);position:relative;padding:12px 10px;font-family:var(--mono);font-size:11px;color:var(--ink)}
+.phone::before{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:34px;height:4px;border-radius:3px;background:var(--line)}
+.phone .chip{top:15px;font-size:9px;padding:2px 6px}
 @keyframes blink{50%{opacity:0}}
 .chip{position:absolute;top:8px;right:8px;background:#141210;color:#fff;font-size:10.5px;padding:3px 8px;border-radius:10px}
 .laptop{width:240px}
@@ -247,8 +250,8 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
   <div class="inner work">
     <div class="copy">
       <div class="num">03 — ARC LINK</div>
-      <h2>The laptop becomes the tablet's keyboard.</h2>
-      <p class="lead">Plug the tablet in and every key on the MacBook goes to Android. Unplug, and the Mac has it back within two seconds. The tablet even shows the laptop's battery.</p>
+      <h2>The laptop becomes your Android's keyboard.</h2>
+      <p class="lead">Plug in the tablet <em>or the phone</em> and every key on the MacBook goes to Android. Unplug, and the Mac has it back within two seconds. The screen even shows the laptop's battery.</p>
       <ul>
         <li>Word delete, shortcuts, F-keys mapped to Back, Home, Recents</li>
         <li>F9 quits, Ctrl always reaches the Mac</li>
@@ -259,6 +262,7 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
       <span class="tag">Live · typing over USB</span>
       <div class="devices">
         <div class="tablet"><span class="chip" id="chip">⌨ 72% ⚡</span><div class="typed" id="typed" style="margin-top:22px"></div></div>
+        <div class="phone"><span class="chip" id="chipP">⌨ 72%</span><div class="typed" id="typedP" style="margin-top:34px"></div></div>
         <div class="laptop"><div class="scr">MacBook</div><div class="kb" id="kb"></div></div>
       </div>
     </div>
@@ -489,14 +493,14 @@ const $ = s => document.querySelector(s);
   const kb = $("#kb"), keys = [];
   for (let i = 0; i < 40; i++){ const k = document.createElement("i"); kb.appendChild(k); keys.push(k); }
   const lines = ["Mathe lernen 45min", "Hey, bin gleich da", "ARC Link ✓"];
-  let li = 0, ci = 0; const t = $("#typed");
+  let li = 0, ci = 0; const t = $("#typed"), t2 = $("#typedP");
   function step(){
     const line = lines[li];
-    if (ci <= line.length){ t.textContent = line.slice(0,ci); const k = keys[(line.charCodeAt(ci-1)||0) % 40]; if (k){ k.classList.add("on"); setTimeout(()=>k.classList.remove("on"),140); } ci++; setTimeout(step, 90+Math.random()*70); }
+    if (ci <= line.length){ t.textContent = line.slice(0,ci); if (t2) t2.textContent = t.textContent; const k = keys[(line.charCodeAt(ci-1)||0) % 40]; if (k){ k.classList.add("on"); setTimeout(()=>k.classList.remove("on"),140); } ci++; setTimeout(step, 90+Math.random()*70); }
     else { setTimeout(() => { li = (li+1) % lines.length; ci = 0; step(); }, 1500); }
   }
-  if (reduce) t.textContent = lines[0]; else step();
-  let pct = 72; if (!reduce) setInterval(() => { pct = pct >= 100 ? 72 : pct+1; $("#chip").textContent = "⌨ " + pct + "% ⚡"; }, 2600);
+  if (reduce) { t.textContent = lines[0]; if (t2) t2.textContent = lines[0]; } else step();
+  let pct = 72; if (!reduce) setInterval(() => { pct = pct >= 100 ? 72 : pct+1; $("#chip").textContent = "⌨ " + pct + "% ⚡"; const cp=$("#chipP"); if(cp) cp.textContent = "⌨ " + pct + "%"; }, 2600);
 })();
 
 /* ── 04 TAKT: a day that re-plans itself ── */
