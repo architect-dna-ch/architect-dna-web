@@ -1,235 +1,430 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Konnekt — One Tap, Your Contact Shared · Architect-DNA</title>
-<meta name="description" content="Share your contact instantly with NFC or QR. No app on the other end. Your profile lives in the browser.">
-<meta property="og:title" content="Konnekt — One Tap Contact Sharing">
-<meta property="og:url" content="https://architect-dna.ch/konnekt">
-<meta name="theme-color" content="#0c0e18">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Konnekt</title>
+<meta name="description" content="Konnekt — host a bubble, meet people near you, and turn strangers into one friend group. An anti-loneliness social platform.">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0c0e18;--bg2:#10121e;
-  --text:#f0f0f8;--text2:rgba(240,240,248,.55);--text3:rgba(240,240,248,.28);
-  --accent:#f59e0b;--accent2:#fbbf24;
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
-  --mono:'SF Mono','Fira Code','Courier New',monospace;
-  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
-  --r:16px;
+  --bg:#0F172A; --card:#1E293B; --card2:#334155; --line:#334155; --line2:#475569;
+  --text:#F1F5F9; --muted:#94A3B8; --dim:#64748B;
+  --accent:#10B981; --accent2:#34D399; --purple:#8B5CF6; --amber:#F59E0B; --pink:#EC4899; --blue:#38BDF8;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code',ui-monospace,monospace;
+  color-scheme:dark;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
-
-header{position:sticky;top:0;z-index:100;background:rgba(12,14,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px}
-.header-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;height:56px;gap:16px}
-.logo{font-size:15px;font-weight:900;letter-spacing:-.03em;color:var(--text);text-decoration:none}
-.logo span{color:var(--accent)}
-.header-right{margin-left:auto;display:flex;gap:12px;align-items:center}
-.nav-link{font-size:12px;color:var(--text3);text-decoration:none;transition:color .15s}
-.nav-link:hover{color:var(--text2)}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;background:var(--accent);color:#000;text-decoration:none;transition:filter .15s}
-.cta-btn:hover{filter:brightness(1.1)}
-
-.hero{padding:100px 24px 80px;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(245,158,11,.06) 0%,transparent 55%)}
-.hero-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-@media(max-width:720px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}}
-.hero-kicker{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,158,11,.6);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.hero-kicker::before{content:'';width:18px;height:1px;background:rgba(245,158,11,.5)}
-.hero-title{font-size:clamp(52px,9vw,96px);font-weight:900;letter-spacing:-.05em;line-height:.9;margin-bottom:24px}
-.hero-title .k{color:var(--accent)}
-.hero-desc{font-size:17px;color:var(--text2);line-height:1.75;max-width:420px;margin-bottom:36px}
-.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
-.btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;border-radius:var(--r);font-size:14px;font-weight:800;letter-spacing:.04em;background:var(--accent);color:#000;text-decoration:none;box-shadow:0 0 40px rgba(245,158,11,.35);transition:filter .15s,transform .12s}
-.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
-.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:15px 24px;border-radius:var(--r);border:1px solid var(--border2);font-size:14px;font-weight:700;color:var(--text2);text-decoration:none;transition:border-color .15s,color .15s}
-.btn-ghost:hover{border-color:rgba(255,255,255,.25);color:var(--text)}
-.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
-.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:4px 10px}
-
-/* phone mockup */
-.hero-visual{display:flex;align-items:center;justify-content:center}
-.phone-wrap{position:relative;width:240px}
-.phone{background:#14162a;border:2px solid rgba(245,158,11,.25);border-radius:40px;padding:20px 16px 32px;box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 1px rgba(245,158,11,.1),0 0 60px rgba(245,158,11,.06);position:relative}
-.phone-notch{width:80px;height:8px;background:rgba(255,255,255,.06);border-radius:4px;margin:0 auto 20px}
-.phone-screen{background:#0c0e18;border-radius:24px;padding:24px 20px;min-height:320px;display:flex;flex-direction:column;align-items:center;gap:16px}
-.phone-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#f97316);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 32px rgba(245,158,11,.4)}
-.phone-name{font-size:17px;font-weight:900;letter-spacing:-.02em}
-.phone-title{font-size:11px;color:var(--text3);letter-spacing:.06em}
-.phone-divider{width:100%;height:1px;background:var(--border)}
-.phone-links{display:flex;flex-direction:column;gap:8px;width:100%}
-.phone-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.04);font-size:12px;color:var(--text2)}
-.phone-link .icon{font-size:16px;flex-shrink:0}
-.phone-qr{width:80px;height:80px;background:var(--border2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);letter-spacing:.06em;margin-top:4px}
-.nfc-badge{position:absolute;top:-18px;right:-18px;background:var(--accent);color:#000;font-size:11px;font-weight:800;padding:6px 12px;border-radius:20px;letter-spacing:.06em;box-shadow:0 0 24px rgba(245,158,11,.5)}
-
-section{padding:80px 24px}
-.section-inner{max-width:1040px;margin:0 auto}
-.section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(245,158,11,.5);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.section-label::before{content:'';width:14px;height:1px;background:rgba(245,158,11,.4)}
-.section-title{font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.04em;margin-bottom:14px}
-.section-sub{font-size:16px;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:48px}
-
-.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:720px){.features-grid{grid-template-columns:1fr}}
-.feature-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:border-color .2s,transform .2s}
-.feature-card:hover{border-color:rgba(245,158,11,.3);transform:translateY(-3px)}
-.feature-icon{font-size:32px;margin-bottom:16px}
-.feature-title{font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em}
-.feature-desc{font-size:13px;color:var(--text2);line-height:1.6}
-
-.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
-@media(max-width:640px){.how-steps{grid-template-columns:1fr}}
-.step{text-align:center;padding:32px 20px}
-.step-num{font-family:var(--mono);font-size:40px;font-weight:900;color:rgba(245,158,11,.2);margin-bottom:16px;letter-spacing:-.04em}
-.step-title{font-size:16px;font-weight:800;margin-bottom:8px}
-.step-desc{font-size:13px;color:var(--text2);line-height:1.6}
-
-.cta-band{background:rgba(245,158,11,.05);border-top:1px solid rgba(245,158,11,.1);border-bottom:1px solid rgba(245,158,11,.1);padding:80px 24px;text-align:center}
-.cta-band h2{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin-bottom:12px}
-.cta-band p{font-size:16px;color:var(--text2);margin-bottom:36px}
-.cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-
-footer{padding:32px 24px;text-align:center;border-top:1px solid var(--border)}
-footer p{font-size:12px;color:var(--text3)}
-footer a{color:var(--text3);text-decoration:none}
-footer a:hover{color:var(--text2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text)}
+body{font-family:var(--font);-webkit-font-smoothing:antialiased;padding-bottom:88px;max-width:720px;margin:0 auto;min-height:100vh}
+a{color:var(--accent2)}
+.pad{padding:0 16px}
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 16px calc(14px + env(safe-area-inset-top));padding-top:max(14px,env(safe-area-inset-top))}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));position:relative;flex:none;box-shadow:0 2px 10px rgba(16,185,129,.4)}
+.logo::before,.logo::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#06281d;top:50%;left:50%;transform:translate(-50%,-50%)}
+.logo::before{margin-left:-6px}.logo::after{margin-left:6px;background:#0b3b2b}
+.brand b{font-size:20px;letter-spacing:-.02em}
+.brand .me{margin-left:auto;font-size:12px;color:var(--muted);text-align:right;line-height:1.3}
+.me b{color:var(--accent2);font-weight:700}
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;max-width:720px;margin:0 auto;background:rgba(15,23,42,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;background:none;border:none;color:var(--dim);font-family:inherit;font-size:10.5px;font-weight:600;padding:9px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;letter-spacing:.02em}
+.tabs button .i{font-size:19px;line-height:1}
+.tabs button.on{color:var(--accent2)}
+.view{display:none;padding:18px 0 10px;animation:fade .25s}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+h1{font-size:26px;letter-spacing:-.03em;font-weight:800}
+h2{font-size:18px;letter-spacing:-.02em;margin-bottom:2px}
+.sub{color:var(--muted);font-size:13.5px;line-height:1.5;margin-top:4px}
+.eye{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.bub{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:11px;cursor:pointer;transition:border-color .15s,transform .1s;color:inherit;font:inherit}
+.bub:hover{border-color:var(--line2)}
+.bub:active{transform:scale(.995)}
+.bub .top{display:flex;align-items:center;gap:11px}
+.bub .vibe{width:44px;height:44px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:23px;flex:none}
+.bub .ttl{font-weight:700;font-size:15.5px;letter-spacing:-.01em}
+.bub .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.bub .when{margin-left:auto;text-align:right;font-size:12px;color:var(--accent2);font-weight:700;white-space:nowrap}
+.bub .foot{display:flex;align-items:center;gap:8px;margin-top:12px}
+.avatars{display:flex}
+.av{width:26px;height:26px;border-radius:50%;background:var(--card2);border:2px solid var(--card);margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text)}
+.av:first-child{margin-left:0}
+.spots{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted)}
+.spots.open{color:var(--accent2)}
+.spots.full{color:var(--amber)}
+/* pills / chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{border:1px solid var(--line2);background:var(--card);color:var(--text);border-radius:22px;padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.12s}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#04281d}
+.chip.sm{padding:5px 10px;font-size:12px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:inherit;font-weight:800;font-size:15px;padding:14px;border-radius:13px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04281d;transition:transform .1s,opacity .12s}
+.btn:hover{opacity:.94}.btn:active{transform:scale(.99)}
+.btn.ghost{background:transparent;border:1px solid var(--line2);color:var(--text)}
+.btn.danger{background:transparent;border:1px solid #7f1d1d;color:#fca5a5}
+.btn:disabled{opacity:.5;cursor:default}
+/* form */
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 6px;letter-spacing:.01em}
+input,textarea,select{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:11px;padding:12px;color:var(--text);font:inherit;font-size:15px}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:62px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* modal */
+.scrim{position:fixed;inset:0;z-index:50;background:rgba(2,6,23,.72);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
+.scrim.on{display:flex}
+.sheet{background:var(--card);border:1px solid var(--line2);border-radius:20px 20px 0 0;width:100%;max-width:720px;max-height:92vh;overflow:auto;padding:20px 16px calc(28px + env(safe-area-inset-bottom));animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(100%)}}
+.grab{width:40px;height:4px;border-radius:3px;background:var(--line2);margin:0 auto 14px}
+.who{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.who .av{width:34px;height:34px;margin:0;font-size:13px}
+.who b{font-size:14px}.who span{font-size:12px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(16,185,129,.14);color:var(--accent2);margin-left:auto}
+/* empty / hint */
+.empty{text-align:center;color:var(--dim);padding:36px 20px;font-size:14px;line-height:1.6}
+.empty .big{font-size:40px;margin-bottom:10px}
+.banner{background:linear-gradient(135deg,rgba(139,92,246,.16),rgba(16,185,129,.12));border:1px solid var(--line2);border-radius:16px;padding:16px;margin-top:4px}
+.banner h2{font-size:17px}
+.stat{display:flex;gap:0;margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stat>div{flex:1;padding:13px 10px;text-align:center;border-right:1px solid var(--line)}
+.stat>div:last-child{border:none}
+.stat b{display:block;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--accent2)}
+.stat span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+/* concept */
+.study h2{margin-top:22px;font-size:19px}
+.study h3{margin-top:16px;font-size:14px;color:var(--accent2);letter-spacing:.02em}
+.study p{color:#cbd5e1;font-size:14px;line-height:1.62;margin-top:7px}
+.study ul{margin:8px 0 0 2px;list-style:none;display:grid;gap:7px}
+.study li{color:#cbd5e1;font-size:13.5px;line-height:1.5;padding-left:18px;position:relative}
+.study li::before{content:"";position:absolute;left:0;top:.56em;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--line)}
+.tbl th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.tbl td b{color:var(--accent2)}
+.src{font-size:11px;color:var(--dim);margin-top:6px;line-height:1.5}
+.toast{position:fixed;bottom:98px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#04281d;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:30px;z-index:60;opacity:0;transition:.3s;pointer-events:none;max-width:90%;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.fab{position:fixed;right:16px;bottom:96px;z-index:25;width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04281d;font-size:28px;font-weight:300;box-shadow:0 8px 24px rgba(16,185,129,.4);cursor:pointer;display:flex;align-items:center;justify-content:center}
+@media(min-width:720px){.fab{right:calc(50% - 344px)}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="header-inner">
-    <a class="logo" href="/"><span>Architect</span>-DNA</a>
-    <div class="header-right">
-      <a class="nav-link" href="/">Home</a>
-      <a class="cta-btn" href="https://konnekt.architect-dna.ch" target="_blank">Open App ↗</a>
-    </div>
+  <div class="brand">
+    <div class="logo"></div>
+    <b>Konnekt</b>
+    <div class="me" id="me">signing in…</div>
   </div>
 </header>
 
-<section class="hero">
-  <div class="hero-inner">
-    <div>
-      <div class="hero-kicker">Digital Business Card · NFC · QR</div>
-      <h1 class="hero-title">
-        <span class="k">Konn</span>ekt
-      </h1>
-      <p class="hero-desc">One tap. Your full contact, profile, and links — shared instantly. No app required on the other end. No printing. No expiry.</p>
-      <div class="hero-cta">
-        <a class="btn-primary" href="https://konnekt.architect-dna.ch" target="_blank">
-          Open Konnekt ↗
-        </a>
-        <a class="btn-ghost" href="/">← All Projects</a>
-      </div>
-      <div class="hero-tags">
-        <span class="tag">NFC</span>
-        <span class="tag">QR Code</span>
-        <span class="tag">No Install</span>
-        <span class="tag">Free</span>
-        <span class="tag">Browser-Based</span>
+<main class="pad">
+  <!-- DISCOVER -->
+  <section class="view on" id="v-discover">
+    <div class="banner" id="lonelyBanner">
+      <div class="eye">Tonight</div>
+      <h2>Nobody should be alone tonight.</h2>
+      <p class="sub">A <b>bubble</b> is a small, low-pressure plan near you — a walk, a coffee, a board-game table. Join one, or start one in 20 seconds. Keep seeing the same people, and it becomes your group.</p>
+      <div class="chips">
+        <button class="chip on" onclick="openHost()">✨ Start a bubble</button>
+        <button class="chip" onclick="scrollSoonest()">⚡ Join the soonest</button>
       </div>
     </div>
-    <div class="hero-visual">
-      <div class="phone-wrap">
-        <div class="nfc-badge">📡 NFC</div>
-        <div class="phone">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <div class="phone-avatar">👤</div>
-            <div class="phone-name">Your Name</div>
-            <div class="phone-title">ARCHITECT · DNA</div>
-            <div class="phone-divider"></div>
-            <div class="phone-links">
-              <div class="phone-link"><span class="icon">🌐</span> architect-dna.ch</div>
-              <div class="phone-link"><span class="icon">✉️</span> systems@architect-dna.ch</div>
-              <div class="phone-link"><span class="icon">📱</span> +41 ··· ··· ···</div>
-            </div>
-            <div class="phone-qr">QR</div>
-          </div>
-        </div>
-      </div>
+    <div class="stat" id="stats">
+      <div><b id="sBub">0</b><span>Open bubbles</span></div>
+      <div><b id="sPeople">0</b><span>People in</span></div>
+      <div><b id="sMine">0</b><span>Your group</span></div>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="section-inner">
-    <div class="section-label">Features</div>
-    <h2 class="section-title">Everything you need, nothing you don't</h2>
-    <p class="section-sub">Built for the moment you meet someone and want to be remembered.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📡</div>
-        <div class="feature-title">NFC Tap</div>
-        <div class="feature-desc">Hold your phone to any NFC-enabled device. Your profile opens instantly in their browser — no app needed.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔳</div>
-        <div class="feature-title">QR Code</div>
-        <div class="feature-desc">Every Konnekt profile has a QR code. Show it, print it, put it on your desk. Scan = contact shared.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌐</div>
-        <div class="feature-title">Browser-Native</div>
-        <div class="feature-desc">Your profile lives at a URL. Nothing to download, nothing to install. Works on every phone, everywhere.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">✏️</div>
-        <div class="feature-title">Always Up to Date</div>
-        <div class="feature-desc">Change your number, title, or links anytime. Your card updates everywhere instantly — no reprinting.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔗</div>
-        <div class="feature-title">Link Everything</div>
-        <div class="feature-desc">LinkedIn, Instagram, portfolio, email, phone. Stack all your links in one clean profile.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <div class="feature-title">Private & Simple</div>
-        <div class="feature-desc">No account. No tracking. No subscription. Open source approach — your data stays yours.</div>
-      </div>
+    <div style="display:flex;align-items:center;gap:8px;margin:20px 0 2px">
+      <h2 style="font-size:16px">Bubbles near you</h2>
+      <span class="tag" style="margin-left:auto" id="liveTag">● live</span>
     </div>
-  </div>
-</section>
+    <div id="bubbleList"><div class="empty"><div class="big">🫧</div>Loading bubbles…</div></div>
+  </section>
 
-<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <div class="section-inner">
-    <div class="section-label">How It Works</div>
-    <h2 class="section-title">Three steps, done</h2>
-    <div class="how-steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-title">Open & Customise</div>
-        <div class="step-desc">Set your name, title, photo, links, and contact details. Takes two minutes.</div>
+  <!-- MY GROUP -->
+  <section class="view" id="v-group">
+    <h1>Your group</h1>
+    <p class="sub">The people you keep meeting across bubbles. Loneliness ends when strangers become regulars.</p>
+    <div id="groupBody"></div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section class="view study" id="v-concept">
+    <div class="eye">Concept &amp; market study</div>
+    <h1 style="margin-top:6px">Konnekt</h1>
+    <p class="sub">An anti-loneliness platform where small real-world <b>bubbles</b> turn strangers into a lasting friend group — funded by cities and NGOs, not by selling attention.</p>
+
+    <h2>The problem</h2>
+    <p>Loneliness is now a measured public-health crisis, and it is worst among the young — the group that looks most "connected."</p>
+    <ul>
+      <li><b>Switzerland:</b> ~42% felt lonely sometimes or often (2022); roughly 1 in 5 feel lonely regularly, and the rate is higher under 36.</li>
+      <li><b>Young Europe:</b> ~57% of 18–35-year-olds report moderate-to-strong loneliness (Bertelsmann); over half of young people in the EU feel lonely.</li>
+      <li>Existing social apps optimise for <b>engagement</b> (infinite scroll, ad impressions) — the opposite of the real-world contact that actually cures loneliness.</li>
+    </ul>
+
+    <h2>The insight</h2>
+    <p>People already pay to meet strangers in person. <b>Timeleft</b> (dinner with strangers) connects ~150,000 diners a month across 200+ cities and is reportedly near $10M ARR on a ~$20/month subscription. Friendship apps drew ~$16M in US consumer spend and 4.3M downloads in 2025. The demand is proven — but one-off dinners don't fix loneliness. <b>Repetition does.</b></p>
+
+    <h2>Konnekt's wedge</h2>
+    <ul>
+      <li><b>Bubbles, not feeds.</b> A bubble is a tiny local plan (2–8 people). Hosting takes 20 seconds; joining is one tap.</li>
+      <li><b>The group loop.</b> Meet the same people across a few bubbles and Konnekt quietly forms a <b>friend group</b> — the retention engine competitors lack.</li>
+      <li><b>Loneliness-aware, not addiction-aware.</b> A nightly nudge offers a plan, then gets out of the way. Success = you log off and go outside.</li>
+      <li><b>Non-extractive revenue.</b> No ads, no data sale. Cities and NGOs pay for loneliness prevention; local venues pay for the foot traffic.</li>
+    </ul>
+
+    <h2>Competitive map</h2>
+    <table class="tbl">
+      <tr><th>Player</th><th>Mechanic</th><th>Gap Konnekt fills</th></tr>
+      <tr><td><b>Timeleft</b></td><td>Paid dinner with strangers</td><td>One-off; no lasting group</td></tr>
+      <tr><td><b>Meetup</b></td><td>Large hobby groups</td><td>Big, intimidating, low intimacy</td></tr>
+      <tr><td><b>Bumble&nbsp;BFF</b></td><td>1:1 friend swiping</td><td>Online-only, dating-adjacent</td></tr>
+      <tr><td><b>Nextdoor</b></td><td>Neighbour noticeboard</td><td>No events, no warmth</td></tr>
+      <tr><td><b>Konnekt</b></td><td><b>Small bubbles → a group</b></td><td><b>Repeat IRL contact + civic funding</b></td></tr>
+    </table>
+
+    <h2>Revenue (no ads, no data sale)</h2>
+    <table class="tbl">
+      <tr><th>Source</th><th>Mechanism</th><th>Scale</th></tr>
+      <tr><td>Municipalities</td><td>Loneliness-prevention licence per city</td><td>€2k–20k/yr each</td></tr>
+      <tr><td>NGOs (Pro)</td><td>Organising tools for their community</td><td>€49/mo each</td></tr>
+      <tr><td>Local venues</td><td>Host a bubble → footfall</td><td>Per-redemption</td></tr>
+      <tr><td>Grants</td><td>EU / foundation social-innovation</td><td>€10k–100k one-off</td></tr>
+    </table>
+
+    <h2>Inside ARC·DNA</h2>
+    <p>Konnekt isn't a separate app you forget to open — it lives on the ARC·DNA home screen. The launcher already knows your free evenings (Takt), your mood (Mood), and when you've been alone too long. On a quiet night it can surface <b>"a bubble starts in 30 min, 400 m away"</b> right where you already look. ARC·Tap can even add someone you just met to your group with a phone-to-phone touch.</p>
+
+    <h2>MVP → platform</h2>
+    <ul>
+      <li><b>Now (this prototype):</b> host, discover and join live bubbles; auto-forming friend group — all real and shared across everyone who opens it.</li>
+      <li><b>Next:</b> map + proximity, bubble chat, city verification for a safe senior programme, venue coupons.</li>
+      <li><b>Platform:</b> PWA → Capacitor native app, PostgreSQL, FCM push, and the ARC·DNA home integration.</li>
+    </ul>
+    <p class="src">Sources: swissinfo / CSS loneliness survey; Bertelsmann Stiftung youth-loneliness study; Timeleft press & Substack; Appfigures / Sensor Tower friendship-app data (2024–2026). Figures are directional for a concept study, not audited.</p>
+  </section>
+</main>
+
+<button class="fab" id="fab" onclick="openHost()" aria-label="Start a bubble">+</button>
+
+<nav class="tabs">
+  <button class="on" data-v="discover"><span class="i">🫧</span>Bubbles</button>
+  <button data-v="group"><span class="i">👥</span>Your group</button>
+  <button data-v="concept"><span class="i">📋</span>Concept</button>
+</nav>
+
+<div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const VIBES=["☕","🚶","🎲","🍜","🎸","📚","🏀","🎨","🍻","🌳","🎬","🧩"];
+const esc=s=>(s||"").replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),2200);}
+function initials(n){return (n||"?").trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();}
+function avColor(id){const h=[...(id||"x")].reduce((a,c)=>a+c.charCodeAt(0),0)%6;return ["#10B981","#8B5CF6","#F59E0B","#EC4899","#38BDF8","#34D399"][h];}
+
+/* ---- tabs ---- */
+$$(".tabs button").forEach(b=>b.onclick=()=>{
+  $$(".tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  $$(".view").forEach(v=>v.classList.remove("on"));
+  $("#v-"+b.dataset.v).classList.add("on");
+  $("#fab").style.display=b.dataset.v==="discover"?"flex":"none";
+  if(b.dataset.v==="group") renderGroup();
+  scrollTo(0,0);
+});
+
+/* ---- identity + db ---- */
+let me={id:"guest-"+Math.random().toString(36).slice(2,8),name:"You"}, db=null, user=null;
+let BUBBLES=[], RSVPS=[];
+(async()=>{
+  await Promise.resolve();           // defer boot until the whole script has defined its helpers
+  try{ user=await claude.use("user"); if(user){ const m=await user.me(); if(m){ me.id=m.id||me.id; me.name=m.name||"You"; } } }catch(e){}
+  $("#me").innerHTML="Hi, <b>"+esc(me.name)+"</b>";
+  try{ db=await claude.use("db"); }catch(e){ db=null; }
+  if(db){ wireLive(); } else { seedDemo(); }
+})();
+
+function wireLive(){
+  try{
+    db.collection("bubbles").orderBy("when").onSnapshot(docs=>{
+      BUBBLES=docs.map(d=>({id:d.id,...d.data()})).filter(b=>b&&b.title);
+      renderAll();
+    });
+    db.collection("rsvps").onSnapshot(docs=>{
+      RSVPS=docs.map(d=>({id:d.id,...d.data()}));
+      renderAll();
+    });
+  }catch(e){ seedDemo(); }
+}
+
+/* When there is no shared db (standalone web / WebView), persist on this device with localStorage. */
+function saveLocal(){ try{ localStorage.setItem("konnekt",JSON.stringify({BUBBLES,RSVPS,me})); }catch(e){} }
+function seedDemo(){
+  $("#liveTag").textContent="● on device";
+  try{ const s=JSON.parse(localStorage.getItem("konnekt")||"null");
+    if(s&&s.BUBBLES){ BUBBLES=s.BUBBLES; RSVPS=s.RSVPS||[]; if(s.me&&s.me.id&&me.id.startsWith("guest-"))me=s.me; renderAll(); return; } }catch(e){}
+  const now=Date.now();
+  BUBBLES=[
+    {id:"d1",host:{id:"h1",name:"Lina"},title:"Sunset walk by the Aare",vibe:"🚶",place:"Marzili bridge, Bern",when:now+90*60000,size:6},
+    {id:"d2",host:{id:"h2",name:"Deniz"},title:"Board games & tea",vibe:"🎲",place:"Café Kairo",when:now+3*3600000,size:5},
+    {id:"d3",host:{id:"h3",name:"Mara"},title:"Beginner run, slow pace",vibe:"🏀",place:"Länggasse track",when:now+26*3600000,size:8}
+  ];
+  RSVPS=[{id:"d1_a",bubbleId:"d1",userId:"h1",name:"Lina"},{id:"d1_b",bubbleId:"d1",userId:"x2",name:"Jo"},
+         {id:"d2_a",bubbleId:"d2",userId:"h2",name:"Deniz"}];
+  renderAll();
+}
+
+/* ---- derive ---- */
+const guestsOf=id=>RSVPS.filter(r=>r.bubbleId===id);
+const iJoined=id=>RSVPS.some(r=>r.bubbleId===id&&r.userId===me.id);
+function renderAll(){ renderBubbles(); renderStats(); if($("#v-group").classList.contains("on")) renderGroup(); }
+
+function renderStats(){
+  const open=BUBBLES.filter(b=>b.when>Date.now()-2*3600000);
+  $("#sBub").textContent=open.length;
+  $("#sPeople").textContent=new Set(RSVPS.map(r=>r.userId)).size;
+  $("#sMine").textContent=myGroup().length;
+}
+
+function fmtWhen(ts){
+  const d=new Date(ts),now=new Date(),diff=(ts-now)/60000;
+  const t=d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  if(diff<0) return "now";
+  if(diff<60) return "in "+Math.round(diff)+" min";
+  if(d.toDateString()===now.toDateString()) return "today "+t;
+  const tm=new Date(now); tm.setDate(now.getDate()+1);
+  if(d.toDateString()===tm.toDateString()) return "tmrw "+t;
+  return d.toLocaleDateString([],{weekday:"short"})+" "+t;
+}
+
+function renderBubbles(){
+  const open=BUBBLES.filter(b=>b.when>Date.now()-2*3600000).sort((a,b)=>a.when-b.when);
+  const L=$("#bubbleList");
+  if(!open.length){ L.innerHTML='<div class="empty"><div class="big">🫧</div>No bubbles yet tonight.<br>Be the one who starts it — tap <b>+</b>.</div>'; return; }
+  L.innerHTML=open.map(b=>{
+    const g=guestsOf(b.id), spots=Math.max(0,(b.size||6)-g.length), joined=iJoined(b.id);
+    const avs=g.slice(0,4).map(x=>`<div class="av" style="background:${avColor(x.userId)}">${initials(x.name)}</div>`).join("")
+      || `<div class="av">·</div>`;
+    const sc=spots===0?"full":"open";
+    return `<button class="bub" onclick="openBubble('${b.id}')">
+      <div class="top">
+        <div class="vibe">${b.vibe||"🫧"}</div>
+        <div style="min-width:0"><div class="ttl">${esc(b.title)}</div>
+          <div class="meta">📍 ${esc(b.place||"somewhere near")}</div></div>
+        <div class="when">${fmtWhen(b.when)}</div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-title">Share Your URL</div>
-        <div class="step-desc">Tap via NFC, show your QR, or just send the link. The other person needs no app.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-title">They Save You</div>
-        <div class="step-desc">One tap to save to contacts. Your card is in their phone. No paper wasted.</div>
-      </div>
+      <div class="foot">
+        <div class="avatars">${avs}</div>
+        <div class="spots ${sc}">${joined?"✓ you're in":spots===0?"full":spots+" spot"+(spots>1?"s":"")+" left"}</div>
+      </div></button>`;
+  }).join("");
+}
+
+/* ---- friend group ---- */
+function myGroup(){
+  const mine=new Set(RSVPS.filter(r=>r.userId===me.id).map(r=>r.bubbleId));
+  const people={};
+  RSVPS.forEach(r=>{ if(r.userId!==me.id && mine.has(r.bubbleId)){ (people[r.userId]=people[r.userId]||{id:r.userId,name:r.name,count:0}).count++; } });
+  return Object.values(people).sort((a,b)=>b.count-a.count);
+}
+function renderGroup(){
+  const g=myGroup(), mineBubbles=new Set(RSVPS.filter(r=>r.userId===me.id).map(r=>r.bubbleId));
+  let h="";
+  if(!g.length){
+    h=`<div class="empty"><div class="big">👋</div>Your group is empty — for now.<br>Join a couple of bubbles and the people you keep meeting show up here.</div>`;
+  }else{
+    h=`<div class="stat"><div><b>${g.length}</b><span>People met</span></div><div><b>${mineBubbles.size}</b><span>Bubbles joined</span></div><div><b>${g.filter(p=>p.count>1).length}</b><span>Regulars</span></div></div>`;
+    h+=`<div class="card" style="margin-top:14px">`+g.map(p=>`<div class="who">
+      <div class="av" style="background:${avColor(p.id)}">${initials(p.name)}</div>
+      <div><b>${esc(p.name)}</b><br><span>met in ${p.count} bubble${p.count>1?"s":""}</span></div>
+      ${p.count>1?'<span class="tag">regular</span>':''}</div>`).join("")+`</div>`;
+  }
+  $("#groupBody").innerHTML=h;
+}
+
+/* ---- host a bubble ---- */
+function openHost(){
+  const soon=new Date(Date.now()+90*60000);
+  const def=soon.toISOString().slice(0,16);
+  $("#sheet").innerHTML=`<div class="grab"></div>
+    <h2>Start a bubble</h2><p class="sub">Small and specific beats big and vague. 20 seconds.</p>
+    <label>Pick a vibe</label><div class="chips" id="vibePick">${VIBES.map((v,i)=>`<button class="chip ${i===0?'on':''}" data-v="${v}">${v}</button>`).join("")}</div>
+    <label>What are you doing?</label><input id="fTitle" maxlength="60" placeholder="e.g. Slow coffee & a chat">
+    <label>Where?</label><input id="fPlace" maxlength="60" placeholder="Café Kairo / Aare bridge…">
+    <div class="row2"><div><label>When?</label><input id="fWhen" type="datetime-local" value="${def}"></div>
+    <div><label>Group size</label><select id="fSize">${[2,3,4,5,6,8,10].map(n=>`<option ${n===6?'selected':''}>${n}</option>`).join("")}</select></div></div>
+    <div style="height:16px"></div>
+    <button class="btn" onclick="createBubble()">🫧 Open the bubble</button>
+    <button class="btn ghost" style="margin-top:9px" onclick="closeSheet()">Cancel</button>`;
+  $("#vibePick").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;$$("#vibePick .chip").forEach(x=>x.classList.toggle("on",x===b));};
+  openSheet();
+}
+async function createBubble(){
+  const vibe=($("#vibePick .chip.on")||{}).dataset?.v||"🫧";
+  const title=$("#fTitle").value.trim(); const place=$("#fPlace").value.trim();
+  const when=new Date($("#fWhen").value).getTime()||Date.now()+3600000;
+  const size=+$("#fSize").value;
+  if(!title){ toast("Give it a name 🙂"); return; }
+  const id="b"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const bub={host:me,title,vibe,place,when,size,createdAt:Date.now()};
+  if(db){
+    try{ await db.collection("bubbles").doc(id).set(bub);
+      await db.collection("rsvps").doc(id+"_"+me.id).set({bubbleId:id,userId:me.id,name:me.name,at:Date.now()});
+    }catch(e){ toast("Couldn't save — are you signed in?"); return; }
+  }else{ BUBBLES.push({id,...bub}); RSVPS.push({id:id+"_"+me.id,bubbleId:id,userId:me.id,name:me.name}); renderAll(); saveLocal(); }
+  closeSheet(); toast("Bubble is live — people can join now ✨");
+}
+
+/* ---- bubble detail ---- */
+function openBubble(id){
+  const b=BUBBLES.find(x=>x.id===id); if(!b)return;
+  const g=guestsOf(id), spots=Math.max(0,(b.size||6)-g.length), joined=iJoined(id), host=b.host&&b.host.id===me.id;
+  $("#sheet").innerHTML=`<div class="grab"></div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="vibe" style="width:52px;height:52px;border-radius:14px;font-size:27px;background:var(--card2);display:flex;align-items:center;justify-content:center">${b.vibe||"🫧"}</div>
+      <div><h2>${esc(b.title)}</h2><div class="sub" style="margin-top:2px">${fmtWhen(b.when)} · 📍 ${esc(b.place||"near you")}</div></div>
     </div>
-  </div>
-</section>
+    <div class="stat" style="margin-top:14px"><div><b>${g.length}</b><span>coming</span></div><div><b>${spots}</b><span>spots left</span></div><div><b>${esc((b.host||{}).name||"?")}</b><span>host</span></div></div>
+    <label>Who's coming</label>
+    <div class="card" style="margin-top:0;padding:4px 14px">${g.length?g.map(x=>`<div class="who"><div class="av" style="background:${avColor(x.userId)}">${initials(x.name)}</div><b>${esc(x.name)}</b>${(b.host&&b.host.id===x.userId)?'<span class="tag">host</span>':''}</div>`).join(""):'<div class="who" style="border:none;color:var(--muted)">Be the first to join.</div>'}</div>
+    <div style="height:16px"></div>
+    ${joined
+      ? `<button class="btn danger" onclick="leaveBubble('${id}')">Leave this bubble</button>`
+      : spots===0 ? `<button class="btn" disabled>Bubble is full</button>`
+      : `<button class="btn" onclick="joinBubble('${id}')">✋ I'm in</button>`}
+    ${host?`<button class="btn danger" style="margin-top:9px" onclick="deleteBubble('${id}')">Cancel bubble (you host)</button>`:''}
+    <button class="btn ghost" style="margin-top:9px" onclick="closeSheet()">Close</button>`;
+  openSheet();
+}
+async function joinBubble(id){
+  const r={bubbleId:id,userId:me.id,name:me.name,at:Date.now()};
+  if(db){ try{ await db.collection("rsvps").doc(id+"_"+me.id).set(r); }catch(e){ toast("Sign in to join"); return; } }
+  else { RSVPS.push({id:id+"_"+me.id,...r}); renderAll(); saveLocal(); }
+  closeSheet(); toast("You're in — see you there 🫧");
+}
+async function leaveBubble(id){
+  if(db){ try{ await db.collection("rsvps").doc(id+"_"+me.id).delete(); }catch(e){} }
+  else { RSVPS=RSVPS.filter(r=>!(r.bubbleId===id&&r.userId===me.id)); renderAll(); saveLocal(); }
+  closeSheet(); toast("Left the bubble");
+}
+async function deleteBubble(id){
+  if(db){ try{ await db.collection("bubbles").doc(id).delete(); for(const r of guestsOf(id)){ await db.collection("rsvps").doc(r.id).delete(); } }catch(e){} }
+  else { BUBBLES=BUBBLES.filter(b=>b.id!==id); RSVPS=RSVPS.filter(r=>r.bubbleId!==id); renderAll(); saveLocal(); }
+  closeSheet(); toast("Bubble cancelled");
+}
 
-<div class="cta-band">
-  <h2>Your contact, always ready</h2>
-  <p>Free. Instant. No install required on either end.</p>
-  <div class="cta-buttons">
-    <a class="btn-primary" href="https://konnekt.architect-dna.ch" target="_blank">Open Konnekt ↗</a>
-    <a class="btn-ghost" href="/">← Back to Architect-DNA</a>
-  </div>
-</div>
+function scrollSoonest(){ const first=$(".bub"); if(first){ first.scrollIntoView({behavior:"smooth",block:"center"}); first.style.borderColor="var(--accent)"; setTimeout(()=>first.style.borderColor="",1400);} }
 
-<footer>
-  <p>Konnekt by <a href="/">Architect-DNA</a> · Bern, Switzerland · <a href="/privacy">Privacy</a></p>
-</footer>
-
+/* ---- sheet ---- */
+function openSheet(){ $("#scrim").classList.add("on"); }
+function closeSheet(){ $("#scrim").classList.remove("on"); }
+$("#scrim").onclick=e=>{ if(e.target===$("#scrim")) closeSheet(); };
+</script>
 </body>
 </html>
