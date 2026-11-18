@@ -240,15 +240,26 @@ $$(".tabs button").forEach(b=>b.onclick=()=>{
 });
 
 /* ---- identity + db ---- */
-let me={id:"guest-"+Math.random().toString(36).slice(2,8),name:"You"}, db=null, user=null;
+let me={id:"guest-"+Math.random().toString(36).slice(2,8),name:"You"}, db=null, user=null, CLOUD=false;
 let BUBBLES=[], RSVPS=[];
+const API="/api/konnekt";
 (async()=>{
   await Promise.resolve();           // defer boot until the whole script has defined its helpers
   try{ user=await claude.use("user"); if(user){ const m=await user.me(); if(m){ me.id=m.id||me.id; me.name=m.name||"You"; } } }catch(e){}
+  // on the public web, remember a name + id per device so your bubbles stay yours
+  try{ const sv=JSON.parse(localStorage.getItem("konnekt-me")||"null"); if(sv&&sv.id&&me.id.startsWith("guest-"))me=sv; }catch(e){}
   $("#me").innerHTML="Hi, <b>"+esc(me.name)+"</b>";
   try{ db=await claude.use("db"); }catch(e){ db=null; }
-  if(db){ wireLive(); } else { seedDemo(); }
+  if(db){ wireLive(); }
+  else if(await cloudPing()){ CLOUD=true; cloudStart(); }
+  else { seedDemo(); }
 })();
+
+/* ---- shared cloud backend (Vercel serverless + blob) for the public site ---- */
+async function cloudPing(){ try{ const r=await fetch(API,{cache:"no-store"}); if(!r.ok)return false; const d=await r.json(); BUBBLES=d.bubbles||[]; RSVPS=d.rsvps||[]; return true; }catch(e){ return false; } }
+async function cloudRefresh(){ try{ const r=await fetch(API,{cache:"no-store"}); if(!r.ok)return; const d=await r.json(); BUBBLES=d.bubbles||[]; RSVPS=d.rsvps||[]; renderAll(); }catch(e){} }
+function cloudStart(){ $("#liveTag").textContent="● live"; try{localStorage.setItem("konnekt-me",JSON.stringify(me));}catch(e){} renderAll(); setInterval(cloudRefresh,4500); addEventListener("visibilitychange",()=>{ if(!document.hidden) cloudRefresh(); }); }
+async function cloudPost(p){ try{ const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)}); return r.ok; }catch(e){ toast("Offline — try again"); return false; } }
 
 function wireLive(){
   try{
@@ -377,7 +388,8 @@ async function createBubble(){
     try{ await db.collection("bubbles").doc(id).set(bub);
       await db.collection("rsvps").doc(id+"_"+me.id).set({bubbleId:id,userId:me.id,name:me.name,at:Date.now()});
     }catch(e){ toast("Couldn't save — are you signed in?"); return; }
-  }else{ BUBBLES.push({id,...bub}); RSVPS.push({id:id+"_"+me.id,bubbleId:id,userId:me.id,name:me.name}); renderAll(); saveLocal(); }
+  }else if(CLOUD){ if(await cloudPost({action:"bubble",bubble:{id,...bub}})) await cloudRefresh(); }
+  else{ BUBBLES.push({id,...bub}); RSVPS.push({id:id+"_"+me.id,bubbleId:id,userId:me.id,name:me.name}); renderAll(); saveLocal(); }
   closeSheet(); toast("Bubble is live — people can join now ✨");
 }
 
@@ -405,16 +417,19 @@ function openBubble(id){
 async function joinBubble(id){
   const r={bubbleId:id,userId:me.id,name:me.name,at:Date.now()};
   if(db){ try{ await db.collection("rsvps").doc(id+"_"+me.id).set(r); }catch(e){ toast("Sign in to join"); return; } }
+  else if(CLOUD){ if(await cloudPost({action:"join",rsvp:r})) await cloudRefresh(); }
   else { RSVPS.push({id:id+"_"+me.id,...r}); renderAll(); saveLocal(); }
   closeSheet(); toast("You're in — see you there 🫧");
 }
 async function leaveBubble(id){
   if(db){ try{ await db.collection("rsvps").doc(id+"_"+me.id).delete(); }catch(e){} }
+  else if(CLOUD){ if(await cloudPost({action:"leave",bubbleId:id,userId:me.id})) await cloudRefresh(); }
   else { RSVPS=RSVPS.filter(r=>!(r.bubbleId===id&&r.userId===me.id)); renderAll(); saveLocal(); }
   closeSheet(); toast("Left the bubble");
 }
 async function deleteBubble(id){
   if(db){ try{ await db.collection("bubbles").doc(id).delete(); for(const r of guestsOf(id)){ await db.collection("rsvps").doc(r.id).delete(); } }catch(e){} }
+  else if(CLOUD){ if(await cloudPost({action:"delete",bubbleId:id})) await cloudRefresh(); }
   else { BUBBLES=BUBBLES.filter(b=>b.id!==id); RSVPS=RSVPS.filter(r=>r.bubbleId!==id); renderAll(); saveLocal(); }
   closeSheet(); toast("Bubble cancelled");
 }
