@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Mirror</title>
+<meta name="description" content="An always-on magic-mirror dashboard: big clock and your Google Calendar agenda, full screen.">
+<style>
+:root{
+  --bg:#060809; --ink:#F2F4F3; --ink2:#8A9490; --ink3:#525B57; --line:#171C1D;
+  --accent:#36C9A6; --now:#36C9A6; --soon:#E3B341; --rust:#C65A3C;
+  --font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);overflow:hidden;
+  -webkit-font-smoothing:antialiased;cursor:none}
+#drift{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,0.82fr) minmax(0,1.18fr);
+  gap:4vw;padding:5vh 5vw;transition:transform 4s ease}
+@media(max-width:860px){#drift{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:2vh;padding:4vh 6vw}}
+
+/* ---- left: clock ---- */
+.left{display:flex;flex-direction:column;justify-content:center;min-width:0;overflow:hidden}
+#time{font-size:clamp(54px,8.6vw,148px);font-weight:200;letter-spacing:-.04em;line-height:.9;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+#time .sec{color:var(--ink3);font-size:.42em;font-weight:300}
+#date{font-size:clamp(18px,2.4vw,34px);color:var(--ink2);font-weight:400;margin-top:1.4vh;letter-spacing:.01em}
+#hello{font-size:clamp(14px,1.5vw,20px);color:var(--ink3);margin-top:2.2vh;font-family:var(--mono);
+  letter-spacing:.14em;text-transform:uppercase}
+
+/* ---- right: agenda ---- */
+.right{display:flex;flex-direction:column;justify-content:center;min-height:0;min-width:0;overflow:hidden}
+.ahead{font-family:var(--mono);font-size:clamp(11px,1.1vw,14px);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink3);display:flex;align-items:center;gap:10px}
+.ahead .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+#agenda{margin-top:2.4vh;overflow:hidden}
+.day{font-family:var(--mono);font-size:clamp(11px,1.1vw,14px);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink3);margin:2.6vh 0 1vh;border-bottom:1px solid var(--line);padding-bottom:.6vh}
+.day:first-child{margin-top:0}
+.ev{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,1.6vw,26px);align-items:baseline;padding:1.1vh 0}
+.ev .t{font-size:clamp(17px,2vw,27px);font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ev .b{min-width:0}
+.ev .ti{font-size:clamp(18px,2.1vw,29px);font-weight:500;letter-spacing:-.01em;line-height:1.15}
+.ev .lo{font-size:clamp(12px,1.2vw,16px);color:var(--ink3);margin-top:.3vh}
+.ev.now .t,.ev.now .ti{color:var(--now)}
+.ev.now{position:relative;padding-left:clamp(12px,1.3vw,18px)}
+.ev.now::before{content:"";position:absolute;left:0;top:1.4vh;bottom:1.4vh;width:3px;border-radius:3px;
+  background:var(--now);box-shadow:0 0 12px var(--now)}
+.ev.next .t,.ev.next .ti{color:var(--ink)}
+.ev.allday .t{color:var(--ink3);font-size:clamp(12px,1.2vw,16px);font-family:var(--mono);letter-spacing:.1em}
+.badge{display:inline-block;margin-left:10px;font-family:var(--mono);font-size:.6em;letter-spacing:.12em;
+  color:var(--now);vertical-align:middle}
+.empty,.setup{color:var(--ink2);font-size:clamp(16px,1.8vw,22px);line-height:1.6}
+.setup code{font-family:var(--mono);color:var(--accent);font-size:.85em}
+.setup h3{color:var(--ink);font-size:clamp(18px,2vw,26px);margin-bottom:1.4vh}
+.setup ol{margin:1.4vh 0 0 1.2em;display:grid;gap:1vh}
+#err{position:fixed;bottom:2vh;right:2.4vw;font-family:var(--mono);font-size:11px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div id="drift">
+  <div class="left">
+    <div id="time">––:––</div>
+    <div id="date"></div>
+    <div id="hello"></div>
+  </div>
+  <div class="right">
+    <div class="ahead"><span class="dot"></span> <span id="aheadLabel">Agenda</span></div>
+    <div id="agenda"><div class="empty">Lade Kalender …</div></div>
+  </div>
+</div>
+<div id="err"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const DAYS=["So","Mo","Di","Mi","Do","Fr","Sa"], MON=["Jan","Feb","März","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+const FULLDAY=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+
+/* ---- clock ---- */
+function tickClock(){
+  const d=new Date();
+  const hh=String(d.getHours()).padStart(2,"0"), mm=String(d.getMinutes()).padStart(2,"0"), ss=String(d.getSeconds()).padStart(2,"0");
+  $("#time").innerHTML=hh+":"+mm+'<span class="sec">:'+ss+'</span>';
+  $("#date").textContent=FULLDAY_(d)+", "+d.getDate()+". "+MON[d.getMonth()]+" "+d.getFullYear();
+  const h=d.getHours();
+  $("#hello").textContent=h<5?"Gute Nacht":h<11?"Guten Morgen":h<14?"Mittag":h<18?"Guten Tag":h<22?"Guten Abend":"Gute Nacht";
+}
+function FULLDAY_(d){return FULLDAY[d.getDay()];}
+
+/* ---- agenda ---- */
+let EVENTS=[];
+function dayKey(d){return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate();}
+function dayLabel(d){
+  const now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-t0)/86400000);
+  if(diff===0) return "Heute";
+  if(diff===1) return "Morgen";
+  return DAYS[d.getDay()]+" "+d.getDate()+". "+MON[d.getMonth()];
+}
+function hhmm(d){return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
+
+function render(){
+  const now=new Date(), box=$("#agenda");
+  const evs=EVENTS.map(e=>({...e,s:new Date(e.start),e2:new Date(e.end)}))
+    .filter(e=>e.e2>=new Date(now.getTime()-30*60000))
+    .sort((a,b)=>a.s-b.s);
+  if(!evs.length){ box.innerHTML='<div class="empty">Keine Termine in den nächsten zwei Wochen. ✨</div>'; $("#aheadLabel").textContent="Frei"; return; }
+
+  // find current + next
+  let nextIdx=evs.findIndex(e=>e.s>now);
+  $("#aheadLabel").textContent="Nächste zwei Wochen";
+  let html="", lastDay="";
+  evs.forEach((e,i)=>{
+    const k=dayKey(e.s);
+    if(k!==lastDay){ html+=`<div class="day">${dayLabel(e.s)}</div>`; lastDay=k; }
+    const ongoing=e.s<=now&&e.e2>now;
+    const isNext=i===nextIdx;
+    const cls=["ev"]; if(e.allDay)cls.push("allday"); if(ongoing)cls.push("now"); else if(isNext)cls.push("next");
+    const time=e.allDay?"ganztägig":hhmm(e.s);
+    const badge=ongoing?'<span class="badge">JETZT</span>':isNext?'<span class="badge">GLEICH</span>':"";
+    html+=`<div class="${cls.join(" ")}"><div class="t">${time}</div><div class="b">
+      <div class="ti">${esc(e.title)}${badge}</div>${e.location?`<div class="lo">${esc(e.location)}</div>`:""}</div></div>`;
+  });
+  box.innerHTML=html;
+}
+function esc(s){return (s||"").replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+async function load(){
+  try{
+    const r=await fetch("/api/cal",{cache:"no-store"});
+    const d=await r.json();
+    if(d.error==="no_calendar"){ showSetup(); return; }
+    EVENTS=d.events||[]; render();
+    $("#err").textContent=d.error?("⚠ "+d.error):"";
+  }catch(e){ $("#err").textContent="⚠ offline"; }
+}
+function showSetup(){
+  $("#aheadLabel").textContent="Einrichten";
+  $("#agenda").innerHTML=`<div class="setup">
+    <h3>Kalender verbinden</h3>
+    <ol>
+      <li>Google Kalender → Einstellungen → deinen Kalender → <b>Kalender integrieren</b>.</li>
+      <li>Kopiere die <b>Geheime Adresse im iCal-Format</b> (endet auf <code>/basic.ics</code>).</li>
+      <li>In Vercel → dieses Projekt → Settings → Environment Variables: <code>GOOGLE_ICS_URL</code> = diese Adresse.</li>
+      <li>Neu deployen. Fertig — mehrere Kalender mit Komma trennen.</li>
+    </ol></div>`;
+}
+
+/* ---- anti burn-in: drift the whole frame a few px every minute ---- */
+function drift(){
+  const x=(Math.random()*2-1)*10, y=(Math.random()*2-1)*10;
+  $("#drift").style.transform=`translate(${x}px,${y}px)`;
+}
+
+tickClock(); setInterval(tickClock,1000);
+load(); setInterval(load,180000);          // refresh calendar every 3 min
+setInterval(()=>render(),60000);           // re-evaluate now/next every minute
+drift(); setInterval(drift,60000);
+document.addEventListener("dblclick",()=>{ if(!document.fullscreenElement) document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen(); else document.exitFullscreen&&document.exitFullscreen(); });
+</script>
+</body>
+</html>
