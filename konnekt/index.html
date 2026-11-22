@@ -277,14 +277,14 @@ function wireLive(){
 /* When there is no shared db (standalone web / WebView), persist on this device with localStorage. */
 function saveLocal(){ try{ localStorage.setItem("konnekt",JSON.stringify({BUBBLES,RSVPS,me})); }catch(e){} }
 function seedDemo(){
-  $("#liveTag").textContent="● on device";
+  $("#liveTag").textContent="● offline · demo";
   try{ const s=JSON.parse(localStorage.getItem("konnekt")||"null");
     if(s&&s.BUBBLES){ BUBBLES=s.BUBBLES; RSVPS=s.RSVPS||[]; if(s.me&&s.me.id&&me.id.startsWith("guest-"))me=s.me; renderAll(); return; } }catch(e){}
   const now=Date.now();
   BUBBLES=[
-    {id:"d1",host:{id:"h1",name:"Lina"},title:"Sunset walk by the Aare",vibe:"🚶",place:"Marzili bridge, Bern",when:now+90*60000,size:6},
-    {id:"d2",host:{id:"h2",name:"Deniz"},title:"Board games & tea",vibe:"🎲",place:"Café Kairo",when:now+3*3600000,size:5},
-    {id:"d3",host:{id:"h3",name:"Mara"},title:"Beginner run, slow pace",vibe:"🏀",place:"Länggasse track",when:now+26*3600000,size:8}
+    {id:"d1",demo:true,host:{id:"h1",name:"Lina"},title:"Sunset walk by the Aare",vibe:"🚶",place:"Marzili bridge, Bern",when:now+90*60000,size:6},
+    {id:"d2",demo:true,host:{id:"h2",name:"Deniz"},title:"Board games & tea",vibe:"🎲",place:"Café Kairo",when:now+3*3600000,size:5},
+    {id:"d3",demo:true,host:{id:"h3",name:"Mara"},title:"Beginner run, slow pace",vibe:"🏀",place:"Länggasse track",when:now+26*3600000,size:8}
   ];
   RSVPS=[{id:"d1_a",bubbleId:"d1",userId:"h1",name:"Lina"},{id:"d1_b",bubbleId:"d1",userId:"x2",name:"Jo"},
          {id:"d2_a",bubbleId:"d2",userId:"h2",name:"Deniz"}];
@@ -318,7 +318,9 @@ function renderBubbles(){
   const open=BUBBLES.filter(b=>b.when>Date.now()-2*3600000).sort((a,b)=>a.when-b.when);
   const L=$("#bubbleList");
   if(!open.length){ L.innerHTML='<div class="empty"><div class="big">🫧</div>No bubbles yet tonight.<br>Be the one who starts it — tap <b>+</b>.</div>'; return; }
-  L.innerHTML=open.map(b=>{
+  const isDemo=b=>b.demo||/^d[123]$/.test(b.id);   // seeded examples (also ones saved before this flag existed)
+  const demoNote=open.some(isDemo)?'<div class="empty" style="padding:10px 4px;font-size:13px;opacity:.8">Beispiele, keine echten Leute — der gemeinsame Server ist gerade nicht erreichbar. Eigene Bubbles bleiben auf diesem Gerät.</div>':'';
+  L.innerHTML=demoNote+open.map(b=>{
     const g=guestsOf(b.id), spots=Math.max(0,(b.size||6)-g.length), joined=iJoined(b.id);
     const avs=g.slice(0,4).map(x=>`<div class="av" style="background:${avColor(x.userId)}">${initials(x.name)}</div>`).join("")
       || `<div class="av">·</div>`;
@@ -326,7 +328,7 @@ function renderBubbles(){
     return `<button class="bub" onclick="openBubble('${b.id}')">
       <div class="top">
         <div class="vibe">${b.vibe||"🫧"}</div>
-        <div style="min-width:0"><div class="ttl">${esc(b.title)}</div>
+        <div style="min-width:0"><div class="ttl">${isDemo(b)?'<span style="font:700 10px monospace;letter-spacing:.1em;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.12);margin-right:6px;vertical-align:2px">DEMO</span>':''}${esc(b.title)}</div>
           <div class="meta">📍 ${esc(b.place||"somewhere near")}</div></div>
         <div class="when">${fmtWhen(b.when)}</div>
       </div>

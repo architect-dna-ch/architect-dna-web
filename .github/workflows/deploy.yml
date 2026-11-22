@@ -10,6 +10,16 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      - name: Check Vercel secrets
+        env:
+          T: ${{ secrets.VERCEL_TOKEN }}
+          O: ${{ secrets.VERCEL_ORG_ID }}
+          P: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$T" ] || [ -z "$O" ] || [ -z "$P" ]; then
+            echo "::error title=Vercel secrets missing::Add VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID under GitHub repo Settings > Secrets and variables > Actions. Token: vercel.com/account/tokens. IDs: .vercel/project.json after 'vercel link'. Until then deploy with 'vercel --prod' from the repo root."
+            exit 1
+          fi
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
