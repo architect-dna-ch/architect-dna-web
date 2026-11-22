@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Tag</title>
+<meta name="description" content="ARC Tag — wenn gefunden, antippen. Finder melden den Fundort, der Besitzer wird benachrichtigt.">
+<meta name="theme-color" content="#0B0E12">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/icon.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0B0E12;--card:#121821;--line:#1F2A36;--ink:#EEF2F6;--ink2:#9AA8B6;--ink3:#617181;--gold:#F2B544;--ok:#4FD1A0;--warn:#FF6B5B;
+--font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code',monospace}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+main{max-width:560px;margin:0 auto;padding:28px 16px 60px}
+.eye{font:700 11px/1 var(--mono);letter-spacing:.22em;color:var(--gold)}
+h1{font-size:34px;line-height:1.05;letter-spacing:-.04em;margin:10px 0 8px}
+p.lead{color:var(--ink2);font-size:15px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+label{display:block;font:700 10.5px/1 var(--mono);letter-spacing:.14em;color:var(--ink3);margin:12px 0 6px}
+input,textarea{width:100%;background:#0E141B;border:1px solid var(--line);border-radius:10px;color:var(--ink);font:15px var(--font);padding:12px}
+textarea{min-height:72px;resize:vertical}
+button{font:700 15px var(--font);border:0;border-radius:12px;padding:14px 16px;cursor:pointer;width:100%;margin-top:12px}
+.go{background:var(--gold);color:#1A1204}.ghost{background:transparent;color:var(--ink2);border:1px solid var(--line)}
+.small{width:auto;padding:9px 12px;font-size:13px;margin:8px 8px 0 0}
+.danger{color:var(--warn)}
+.tag-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.tag-name{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.code{font:600 12px var(--mono);color:var(--ink3)}
+.url{font:12px var(--mono);color:var(--ink2);word-break:break-all;margin-top:8px}
+.qr{background:#fff;border-radius:10px;padding:10px;display:inline-block;margin-top:12px}
+.scan{border-top:1px solid var(--line);padding:10px 0;font-size:14px;line-height:1.45}
+.scan.finder{color:var(--ink)}.scan.owner{color:var(--ink3)}
+.badge{font:700 10px var(--mono);letter-spacing:.1em;padding:3px 7px;border-radius:6px;margin-right:6px}
+.badge.f{background:rgba(242,181,68,.15);color:var(--gold)}.badge.o{background:rgba(79,209,160,.12);color:var(--ok)}
+a{color:var(--gold)}
+.big{font-size:56px;margin-top:6px}
+.note{color:var(--ink2);font-size:13px;line-height:1.5;margin-top:14px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(() => {
+  const API = '/api/tag';
+  const app = document.getElementById('app');
+  const bridge = window.ArcTag || null;                 // present inside the ARC app (WebView)
+  const LS = 'arcTags', QUEUE = 'arcTagQueue';
+
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } },
+                  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+
+  // Owner tags live in localStorage; inside ARC they're mirrored to the app so it can notify you.
+  function myTags() {
+    let t = store.get(LS, []);
+    if (bridge && bridge.load) {
+      try { const n = JSON.parse(bridge.load() || '[]'); for (const x of n) if (!t.find(y => y.code === x.code)) t.push(x); } catch (e) {}
+    }
+    return t;
+  }
+  function saveTags(t) { store.set(LS, t); if (bridge && bridge.save) try { bridge.save(JSON.stringify(t)); } catch (e) {} }
+
+  const post = body => fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
+  const when = ms => new Date(ms).toLocaleString('de-CH', { dateStyle: 'short', timeStyle: 'short' });
+  const mapUrl = s => `https://www.google.com/maps?q=${s.lat},${s.lng}`;
+
+  function locate(timeout) {
+    return new Promise(res => {
+      if (!navigator.geolocation) return res(null);
+      navigator.geolocation.getCurrentPosition(
+        p => res({ lat: p.coords.latitude, lng: p.coords.longitude, acc: Math.round(p.coords.accuracy) }),
+        () => res(null), { enableHighAccuracy: true, timeout: timeout || 8000, maximumAge: 60000 });
+    });
+  }
+
+  // A finder's report survives being offline: queue it and send when the network is back.
+  async function sendScan(body) {
+    try { const r = await post(body); if (r && r.ok) return r; throw new Error('no ok'); }
+    catch (e) { const q = store.get(QUEUE, []); q.push(body); store.set(QUEUE, q.slice(-20)); return null; }
+  }
+  async function flushQueue() {
+    const q = store.get(QUEUE, []); if (!q.length) return;
+    const rest = [];
+    for (const b of q) { try { const r = await post(b); if (!r || !r.ok) rest.push(b); } catch (e) { rest.push(b); } }
+    store.set(QUEUE, rest);
+  }
+  window.addEventListener('online', flushQueue);
+  flushQueue();
+
+  const path = location.pathname.replace(/\/+$/, '');
+  const m = path.match(/^\/tag\/([A-Za-z0-9]{4,12})$/);
+  if (m) finderOrOwnTap(m[1].toUpperCase()); else ownerHub();
+
+  /* ================= someone tapped /tag/<code> ================= */
+  async function finderOrOwnTap(code) {
+    const mine = myTags().find(t => t.code === code);
+    if (mine) return ownTap(code, mine);
+    app.append(el('div', 'eye', '— ARC · TAG'));
+    const h = el('h1', null, 'Gefunden?'); app.append(h);
+    const lead = el('p', 'lead', 'Lädt …'); app.append(lead);
+    let info;
+    try { const r = await fetch(`${API}?code=${code}`, { cache: 'no-store' }); info = await r.json(); if (!r.ok) throw 0; }
+    catch (e) { lead.textContent = 'Dieser Tag ist unbekannt oder gerade nicht erreichbar.'; return; }
+
+    lead.textContent = '';
+    lead.append('Das gehört: ', el('b', null, info.label), '. Danke, dass du hilfst! Wenn du deinen Fundort teilst, bekommt der Besitzer eine Nachricht.');
+    if (info.note) { const c = el('div', 'card'); c.append(el('label', null, 'NACHRICHT DES BESITZERS'), el('div', null, info.note)); app.append(c); }
+
+    const card = el('div', 'card');
+    card.append(el('label', null, 'DEINE NACHRICHT (OPTIONAL)'));
+    const msg = el('textarea'); msg.placeholder = 'z. B. «Liegt beim Sekretariat» oder «Bei mir, ruf an»'; card.append(msg);
+    card.append(el('label', null, 'KONTAKT (OPTIONAL)'));
+    const contact = el('input'); contact.placeholder = 'Telefon / E-Mail, falls der Besitzer dich erreichen soll'; card.append(contact);
+    const share = el('button', 'go', '📍 Fundort teilen & Besitzer benachrichtigen');
+    const noLoc = el('button', 'ghost', 'Ohne Standort melden');
+    card.append(share, noLoc);
+    app.append(card);
+    app.append(el('p', 'note', 'Dein Standort wird nur dem Besitzer gezeigt — sonst niemandem. Keine App, kein Konto nötig.'));
+
+    async function report(withLoc) {
+      share.disabled = noLoc.disabled = true; share.textContent = withLoc ? 'Standort wird bestimmt …' : 'Sende …';
+      const loc = withLoc ? await locate(8000) : null;
+      const r = await sendScan({ action: 'scan', code, msg: msg.value, contact: contact.value, ...(loc || {}) });
+      app.replaceChildren(el('div', 'eye', '— ARC · TAG'), el('div', 'big', r ? '🙏' : '📮'),
+        el('h1', null, r ? 'Danke!' : 'Gespeichert.'),
+        el('p', 'lead', r ? 'Der Besitzer wurde benachrichtigt' + (loc ? ' — mit dem Fundort.' : '.') + ' Du bist ein guter Mensch.'
+                          : 'Gerade offline — deine Meldung wird automatisch gesendet, sobald du wieder Netz hast. Lass diese Seite kurz offen oder öffne sie später nochmals.'));
+    }
+    share.onclick = () => report(true);
+    noLoc.onclick = () => report(false);
+  }
+
+  /* ================= the owner tapped their own tag ================= */
+  async function ownTap(code, mine) {
+    app.append(el('div', 'eye', '— ARC · TAG'), el('div', 'big', '✓'), el('h1', null, 'Das ist dein Tag.'));
+    const lead = el('p', 'lead', `«${mine.label || code}» — von dir gesehen. Kein Alarm, du hältst es ja in der Hand.`);
+    app.append(lead);
+    const loc = await locate(4000);
+    post({ action: 'scan', code, key: mine.key, ...(loc || {}) }).catch(() => {});
+    const b = el('button', 'ghost', 'Zu meinen Tags'); b.onclick = () => { location.href = '/tag'; }; app.append(b);
+  }
+
+  /* ================= owner hub: create + watch your tags ================= */
+  function ownerHub() {
+    app.append(el('div', 'eye', '— ARC · TAG'), el('h1', null, 'Wenn gefunden, antippen.'),
+      el('p', 'lead', 'Ein NFC-Sticker oder QR-Code in deinem Portemonnaie. Findet es jemand und tippt drauf, siehst du wo — und ARC meldet sich auf deinem Handy. Tippst du selbst drauf, gibt es keinen Alarm.'));
+
+    const c = el('div', 'card');
+    c.append(el('label', null, 'WAS IST ES?'));
+    const label = el('input'); label.placeholder = 'Mein Portemonnaie'; label.maxLength = 40; c.append(label);
+    c.append(el('label', null, 'NACHRICHT FÜR DEN FINDER'));
+    const note = el('textarea'); note.maxLength = 240; note.placeholder = 'z. B. «Bitte beim Sekretariat abgeben oder Fundort teilen. Danke!»'; c.append(note);
+    const mk = el('button', 'go', '＋ Neuen Tag erstellen'); c.append(mk);
+    app.append(c);
+
+    const list = el('div'); app.append(list);
+    app.append(el('p', 'note', 'Ehrlich dazu: Das ist ein «wenn gefunden»-Tag — jemand muss ihn bewusst antippen oder scannen. Ein NFC-Sticker funkt nicht von selbst; automatisches Orten im Vorbeigehen bräuchte einen Bluetooth-Tracker mit Batterie.'));
+
+    mk.onclick = async () => {
+      mk.disabled = true; mk.textContent = 'Erstelle …';
+      try {
+        const r = await post({ action: 'create', label: label.value, note: note.value });
+        if (!r.code) throw 0;
+        const t = myTags(); t.unshift({ code: r.code, key: r.key, label: label.value || 'Mein Portemonnaie' }); saveTags(t);
+        label.value = note.value = ''; render();
+      } catch (e) { alert('Konnte den Tag nicht erstellen — bist du online?'); }
+      mk.disabled = false; mk.textContent = '＋ Neuen Tag erstellen';
+    };
+
+    async function render() {
+      list.replaceChildren();
+      const tags = myTags();
+      if (!tags.length) return;
+      list.append(el('label', null, 'DEINE TAGS'));
+      for (const t of tags) {
+        const card = el('div', 'card');
+        const hd = el('div', 'tag-head'); hd.append(el('div', 'tag-name', t.label || 'Tag'), el('div', 'code', t.code)); card.append(hd);
+        const url = `${location.origin}/tag/${t.code}`;
+        card.append(el('div', 'url', url));
+        const qr = el('div', 'qr'); card.append(qr);
+        try { new QRCode(qr, { text: url, width: 148, height: 148, correctLevel: QRCode.CorrectLevel.M }); } catch (e) { qr.remove(); }
+
+        const row = el('div');
+        if (bridge && bridge.writeNfc) {
+          const nfc = el('button', 'small go', '📡 Auf NFC-Sticker schreiben'); nfc.onclick = () => bridge.writeNfc(url); row.append(nfc);
+        }
+        const cp = el('button', 'small ghost', 'Link kopieren'); cp.onclick = () => navigator.clipboard && navigator.clipboard.writeText(url).then(() => cp.textContent = 'Kopiert ✓'); row.append(cp);
+        const clr = el('button', 'small ghost', 'Verlauf leeren'); clr.onclick = async () => { await post({ action: 'clear', code: t.code, key: t.key }).catch(() => {}); render(); }; row.append(clr);
+        const del = el('button', 'small ghost danger', 'Löschen'); del.onclick = async () => {
+          if (!confirm('Tag löschen? Ein gedruckter Sticker funktioniert danach nicht mehr.')) return;
+          await post({ action: 'delete', code: t.code, key: t.key }).catch(() => {});
+          saveTags(myTags().filter(x => x.code !== t.code)); render();
+        }; row.append(del);
+        card.append(row);
+
+        const scans = el('div'); card.append(scans);
+        list.append(card);
+        try {
+          const r = await fetch(`${API}?code=${t.code}&key=${encodeURIComponent(t.key)}`, { cache: 'no-store' }).then(x => x.json());
+          const s = (r.scans || []).slice().reverse();
+          if (!s.length) { scans.append(el('div', 'scan owner', 'Noch nie gescannt.')); continue; }
+          for (const x of s.slice(0, 15)) {
+            const line = el('div', 'scan ' + x.by);
+            line.append(el('span', 'badge ' + (x.by === 'finder' ? 'f' : 'o'), x.by === 'finder' ? 'GEFUNDEN' : 'DU'), when(x.at));
+            if (x.lat != null) { line.append(' · '); const a = el('a', null, 'Karte'); a.href = mapUrl(x); a.target = '_blank'; a.rel = 'noopener'; line.append(a); }
+            if (x.msg) line.append(el('div', null, '«' + x.msg + '»'));
+            if (x.contact) line.append(el('div', null, 'Kontakt: ' + x.contact));
+            scans.append(line);
+          }
+        } catch (e) { scans.append(el('div', 'scan owner', 'Verlauf gerade nicht erreichbar.')); }
+      }
+    }
+    render();
+  }
+})();
+</script>
+</body>
+</html>

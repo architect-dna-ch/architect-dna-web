@@ -62,6 +62,10 @@
   ],
   "rewrites": [
     {
+      "source": "/tag/:code",
+      "destination": "/tag/index.html"
+    },
+    {
       "source": "/studio",
       "destination": "/index.html"
     },
