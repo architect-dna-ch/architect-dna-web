@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Social-Mediathek</title>
+<meta name="description" content="Fotografie — Social-Mediathek auf architect-dna.ch">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="/icon.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0A0A0A;--ink:#F3F1EC;--ink2:#A6A29B;--ink3:#6C6963;--line:#232220;--card:#141413;--rust:#E0573B;
+--font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code',ui-monospace,monospace}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));padding-bottom:40px}
+header{max-width:1400px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 34px) 4px 22px}
+.eye{font:700 11px/1 var(--mono);letter-spacing:.22em;color:var(--rust);text-transform:uppercase}
+h1{font-size:clamp(42px,11vw,104px);line-height:.9;letter-spacing:-.055em;margin:14px 0 10px;font-weight:800;word-break:break-word}
+.who{font-size:17px;font-weight:700}
+.bio{color:var(--ink2);font-size:15px;line-height:1.5;max-width:56ch;margin-top:6px}
+.meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px;font:600 12px var(--mono);color:var(--ink3);letter-spacing:.06em}
+.meta a{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:8px 13px;font:600 13px var(--font);letter-spacing:0}
+.meta a:hover{border-color:var(--ink3)}
+main{max-width:1400px;margin:0 auto}
+.grid{columns:2 160px;column-gap:6px}
+@media(min-width:700px){.grid{columns:3 220px;column-gap:8px}}
+@media(min-width:1100px){.grid{columns:4 260px}}
+.ph{break-inside:avoid;margin-bottom:6px;position:relative;background:var(--card);border-radius:4px;overflow:hidden;cursor:zoom-in}
+@media(min-width:700px){.ph{margin-bottom:8px}}
+.ph img{display:block;width:100%;height:auto;transition:opacity .4s}
+.ph img.loading{opacity:0}
+.cap{font-size:12.5px;color:var(--ink2);padding:6px 2px 2px;line-height:1.4}
+.empty{color:var(--ink2);font-size:16px;line-height:1.6;padding:60px 4px;text-align:center}
+.empty b{display:block;color:var(--ink);font-size:22px;margin-bottom:6px}
+/* lightbox */
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.96);display:none;z-index:20;touch-action:pan-y}
+#lb.on{display:block}
+#lb img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:calc(100% - 90px);object-fit:contain;user-select:none}
+#lbcap{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 18px);text-align:center;color:var(--ink2);font-size:14px;padding:0 18px}
+.lbb{position:absolute;top:calc(env(safe-area-inset-top) + 12px);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(20,20,19,.7);color:var(--ink);font-size:20px;cursor:pointer}
+#lbx{right:14px}#lbn{right:14px;top:50%}#lbp{left:14px;top:50%}
+#lbcount{position:absolute;top:calc(env(safe-area-inset-top) + 24px);left:18px;font:600 12px var(--mono);color:var(--ink3)}
+footer{max-width:1400px;margin:40px auto 0;padding:0 4px;display:flex;justify-content:space-between;align-items:center;font:600 11px var(--mono);color:var(--ink3);letter-spacing:.08em}
+footer a{color:var(--ink3);text-decoration:none}
+#own{background:none;border:0;color:var(--ink3);font:600 11px var(--mono);cursor:pointer;padding:8px}
+/* owner tools */
+.panel{max-width:1400px;margin:0 auto 18px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--card);display:none}
+.panel.on{display:block}
+.panel label{display:block;font:700 10px var(--mono);letter-spacing:.14em;color:var(--ink3);margin:10px 0 5px}
+.panel input,.panel textarea{width:100%;background:#0E0E0D;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:15px var(--font);padding:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.btn{border:0;border-radius:20px;padding:11px 16px;font:700 14px var(--font);cursor:pointer;background:var(--ink);color:#111}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.rust{background:var(--rust);color:#fff}
+.msg{font-size:13px;color:var(--ink2)}
+.tools{display:none;gap:4px;padding:6px 2px 2px;flex-wrap:wrap}
+.editing .tools{display:flex}
+.tools button{border:1px solid var(--line);background:#0E0E0D;color:var(--ink);border-radius:14px;padding:5px 9px;font:600 12px var(--font);cursor:pointer}
+.tools .del{color:#ff8a73}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <div class="eye">— Social-Mediathek · Fotografie</div>
+  <h1 id="handle">…</h1>
+  <div class="who" id="name"></div>
+  <p class="bio" id="bio"></p>
+  <div class="meta"><span id="count"></span><a id="ig" href="#" target="_blank" rel="noopener" hidden>Instagram ↗</a></div>
+</header>
+
+<section class="panel" id="login">
+  <label for="code">ZUGANGSCODE</label>
+  <input id="code" autocomplete="current-password" placeholder="XXXXXX-XXXXXX-XXXXXX-XXXXXX">
+  <div class="row"><button class="btn" id="unlock">Bearbeiten</button><span class="msg" id="loginMsg"></span></div>
+</section>
+
+<section class="panel" id="edit">
+  <div class="row" style="margin-top:0">
+    <button class="btn rust" id="add">＋ Fotos hochladen</button>
+    <input type="file" id="files" accept="image/*" multiple class="sr">
+    <span class="msg" id="upMsg">Werden verkleinert und ohne Standortdaten hochgeladen.</span>
+  </div>
+  <label for="pName">NAME</label><input id="pName" maxlength="60">
+  <label for="pBio">KURZ ÜBER DICH</label><textarea id="pBio" maxlength="240" rows="2"></textarea>
+  <label for="pIg">INSTAGRAM-NAME</label><input id="pIg" maxlength="30">
+  <div class="row"><button class="btn" id="saveP">Profil speichern</button><button class="btn ghost" id="logout">Fertig</button><span class="msg" id="pMsg"></span></div>
+</section>
+
+<main><div class="grid" id="grid"></div><div class="empty" id="empty" hidden></div></main>
+
+<footer><a href="/">architect-dna.ch</a><button id="own" aria-label="Bearbeiten">· · ·</button></footer>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Foto">
+  <span id="lbcount"></span>
+  <img id="lbimg" alt="">
+  <button class="lbb" id="lbx" aria-label="Schliessen">✕</button>
+  <button class="lbb" id="lbp" aria-label="Vorheriges">‹</button>
+  <button class="lbb" id="lbn" aria-label="Nächstes">›</button>
+  <div id="lbcap"></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const API = '/api/portfolio';
+  const seg = location.pathname.replace(/\/+$/, '').split('/');
+  const u = (seg[2] || 'muh4rrrem').toLowerCase();
+  const KEYNAME = 'pf_key_' + u;
+  let data = { profile: {}, photos: [] }, key = null, editing = false, at = 0;
+  try { key = localStorage.getItem(KEYNAME); } catch (e) {}
+
+  const el = (t, c, txt) => { const e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+  const post = b => fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ u, ...b }) })
+    .then(r => r.json().then(j => ({ ok: r.ok, ...j })));
+
+  async function load() {
+    try {
+      const r = await fetch(`${API}?u=${encodeURIComponent(u)}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status === 404 ? 'Profil nicht gefunden.' : 'Gerade nicht erreichbar.');
+      data = await r.json();
+    } catch (e) { data = { profile: {}, photos: [], error: e.message }; }
+    render();
+  }
+
+  function render() {
+    const p = data.profile || {};
+    $('handle').textContent = u;
+    document.title = (p.name || u) + ' · Social-Mediathek';
+    $('name').textContent = p.name || '';
+    $('bio').textContent = p.bio || '';
+    const n = (data.photos || []).length;
+    $('count').textContent = n ? n + (n === 1 ? ' FOTO' : ' FOTOS') : '';
+    const ig = p.instagram || u;
+    $('ig').href = 'https://instagram.com/' + encodeURIComponent(ig);
+    $('ig').hidden = false;
+    $('ig').textContent = '@' + ig + ' ↗';
+
+    const g = $('grid'); g.replaceChildren();
+    document.body.classList.toggle('editing', editing);
+    (data.photos || []).forEach((ph, i) => {
+      const box = el('figure', 'ph');
+      const img = el('img', 'loading');
+      img.loading = i < 6 ? 'eager' : 'lazy';
+      img.decoding = 'async';
+      img.alt = ph.caption || ('Foto ' + (i + 1));
+      if (ph.w && ph.h) { img.width = ph.w; img.height = ph.h; }
+      img.onload = () => img.classList.remove('loading');
+      img.src = ph.url;
+      img.onclick = () => open(i);
+      box.append(img);
+      if (ph.caption) box.append(el('figcaption', 'cap', ph.caption));
+      const t = el('div', 'tools');
+      const b = (label, fn, cls) => { const x = el('button', cls || '', label); x.type = 'button'; x.onclick = e => { e.stopPropagation(); fn(); }; t.append(x); };
+      b('✎ Text', () => caption(ph));
+      b('↑', () => move(ph, 'up'));
+      b('↓', () => move(ph, 'down'));
+      b('Löschen', () => remove(ph), 'del');
+      box.append(t);
+      g.append(box);
+    });
+    const empty = $('empty');
+    empty.hidden = n > 0;
+    empty.replaceChildren();
+    if (!n) {
+      empty.append(el('b', null, data.error ? 'Gerade nicht erreichbar.' : 'Die ersten Fotos kommen bald.'));
+      empty.append(document.createTextNode(data.error ? 'Bitte später nochmals vorbeischauen.' : 'Schau so lange auf Instagram vorbei.'));
+    }
+    if (editing) { $('pName').value = p.name || ''; $('pBio').value = p.bio || ''; $('pIg').value = p.instagram || u; }
+  }
+
+  /* ---------- lightbox: tap, arrows, swipe, Esc ---------- */
+  function open(i) { at = i; show(); $('lb').classList.add('on'); document.body.style.overflow = 'hidden'; }
+  function close() { $('lb').classList.remove('on'); document.body.style.overflow = ''; }
+  function show() {
+    const ps = data.photos, ph = ps[at]; if (!ph) return;
+    $('lbimg').src = ph.url; $('lbimg').alt = ph.caption || '';
+    $('lbcap').textContent = ph.caption || '';
+    $('lbcount').textContent = (at + 1) + ' / ' + ps.length;
+    [at - 1, at + 1].forEach(j => { if (ps[j]) { const im = new Image(); im.src = ps[j].url; } });
+  }
+  const step = d => { const n = data.photos.length; at = (at + d + n) % n; show(); };
+  $('lbx').onclick = close; $('lbn').onclick = () => step(1); $('lbp').onclick = () => step(-1);
+  $('lb').addEventListener('click', e => { if (e.target.id === 'lb') close(); });
+  document.addEventListener('keydown', e => {
+    if (!$('lb').classList.contains('on')) return;
+    if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
+  });
+  let sx = null;
+  $('lb').addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  $('lb').addEventListener('touchend', e => {
+    if (sx == null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
+    if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+  });
+
+  /* ---------- owner ---------- */
+  $('own').onclick = () => {
+    if (key) return startEdit();
+    $('login').classList.toggle('on'); $('code').focus();
+  };
+  $('unlock').onclick = async () => {
+    const k = $('code').value.trim().toUpperCase();
+    $('loginMsg').textContent = 'Prüfe …';
+    const r = await post({ action: 'check', key: k }).catch(() => ({ ok: false }));
+    if (!r.ok) { $('loginMsg').textContent = 'Code stimmt nicht.'; return; }
+    key = k; try { localStorage.setItem(KEYNAME, k); } catch (e) {}
+    $('login').classList.remove('on'); startEdit();
+  };
+  function startEdit() { editing = true; $('edit').classList.add('on'); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  $('logout').onclick = () => { editing = false; $('edit').classList.remove('on'); render(); };
+  $('saveP').onclick = async () => {
+    $('pMsg').textContent = 'Speichere …';
+    const r = await post({ action: 'profile', key, name: $('pName').value, bio: $('pBio').value, instagram: $('pIg').value }).catch(() => ({}));
+    $('pMsg').textContent = r.ok ? 'Gespeichert ✓' : 'Ging nicht — nochmals versuchen.';
+    if (r.ok) load();
+  };
+  async function caption(ph) {
+    const t = window.prompt ? window.prompt('Text zum Foto', ph.caption || '') : null;
+    if (t == null) return;
+    const r = await post({ action: 'caption', key, id: ph.id, caption: t }).catch(() => ({}));
+    if (r.ok) { ph.caption = t.trim(); render(); }
+  }
+  async function move(ph, dir) { const r = await post({ action: 'move', key, id: ph.id, dir }).catch(() => ({})); if (r.ok) load(); }
+  async function remove(ph) {
+    if (window.confirm && !window.confirm('Dieses Foto löschen?')) return;
+    const r = await post({ action: 'delete', key, id: ph.id }).catch(() => ({}));
+    if (r.ok) { data.photos = data.photos.filter(x => x.id !== ph.id); render(); }
+  }
+
+  // Resize on the phone: ≤ 2400 px, JPEG. Drawing to a canvas also drops EXIF — including GPS.
+  function shrink(file, maxSide, q) {
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        res({ data: c.toDataURL('image/jpeg', q), w: c.width, h: c.height });
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Bild nicht lesbar')); };
+      img.src = url;
+    });
+  }
+  $('add').onclick = () => $('files').click();
+  $('files').onchange = async () => {
+    const fs = [...($('files').files || [])]; $('files').value = '';
+    let done = 0, failed = 0;
+    for (const f of fs) {
+      $('upMsg').textContent = `Lade ${done + failed + 1} von ${fs.length} …`;
+      try {
+        let im = await shrink(f, 2400, 0.86);
+        if (im.data.length > 3_900_000) im = await shrink(f, 2000, 0.8);
+        const r = await post({ action: 'upload', key, image: im.data, w: im.w, h: im.h });
+        if (!r.ok) throw new Error(r.error); done++;
+      } catch (e) { failed++; }
+    }
+    $('upMsg').textContent = failed ? `${done} hochgeladen, ${failed} fehlgeschlagen.` : `${done} Foto${done === 1 ? '' : 's'} hochgeladen ✓`;
+    load();
+  };
+
+  load();
+})();
+</script>
+</body>
+</html>

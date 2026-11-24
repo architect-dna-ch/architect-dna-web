@@ -62,6 +62,10 @@
   ],
   "rewrites": [
     {
+      "source": "/social-mediathek/:handle",
+      "destination": "/social-mediathek/index.html"
+    },
+    {
       "source": "/tag/:code",
       "destination": "/tag/index.html"
     },
