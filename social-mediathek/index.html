@@ -132,6 +132,7 @@ footer a{color:var(--ink3);text-decoration:none}
     $('bio').textContent = p.bio || '';
     const n = (data.photos || []).length;
     $('count').textContent = n ? n + (n === 1 ? ' FOTO' : ' FOTOS') : '';
+    $('count').hidden = !n;                       // an empty count must not push the Instagram button aside
     const ig = p.instagram || u;
     $('ig').href = 'https://instagram.com/' + encodeURIComponent(ig);
     $('ig').hidden = false;
