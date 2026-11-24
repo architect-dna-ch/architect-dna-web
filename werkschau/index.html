@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ARC·DNA Werkschau</title>
-<meta name="description" content="Not the product. The DNA behind it. Idea, concept, delivery — one mind. Five apps, 59 screens and 500+ builds, designed and shipped from Bern by Architect-DNA.">
+<meta name="description" content="Not the product. The DNA behind it. Idea, concept, delivery — one mind. Five apps, 59 screens and 600+ builds, designed and shipped from Bern by Architect-DNA.">
 <meta property="og:title" content="Architect-DNA — Not the product. The DNA behind it.">
-<meta property="og:description" content="Idea, concept, delivery — one mind. Five apps, 59 screens, 500+ builds. Designed and shipped from Bern.">
+<meta property="og:description" content="Idea, concept, delivery — one mind. Five apps, 59 screens, 600+ builds. Designed and shipped from Bern.">
 <meta property="og:image" content="https://architect-dna.ch/werkschau/og.png">
 <meta property="og:url" content="https://architect-dna.ch/werkschau/">
 <meta property="og:type" content="website">
@@ -57,6 +57,10 @@ h2{font-size:clamp(30px,5.2vw,58px);font-weight:900;letter-spacing:-.045em;line-
 .stat b{display:block;font-size:clamp(34px,5.6vw,64px);font-weight:900;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
 .stat span{display:block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dink2)}
 @media(max-width:640px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:none}.stat:nth-child(-n+2){border-bottom:1px solid var(--dline)}}
+.live{display:flex;align-items:center;gap:10px;margin-top:16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dink2)}
+.live i{width:8px;height:8px;border-radius:50%;background:#4FD18B;box-shadow:0 0 0 0 rgba(79,209,139,.6);animation:livePulse 2.2s infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(79,209,139,.55)}70%{box-shadow:0 0 0 10px rgba(79,209,139,0)}100%{box-shadow:0 0 0 0 rgba(79,209,139,0)}}
+.stat b.bump{color:var(--dacc);transition:color .2s}
 
 /* ── SYSTEM MAP ── */
 #map svg{width:100%;height:auto;max-width:760px;display:block;margin:36px auto 0;overflow:visible}
@@ -201,7 +205,7 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
   <div class="inner">
     <div class="eye">Architect-DNA · Bern · Werkschau 2026</div>
     <h1>Not the product.<br><em>The DNA <span style="white-space:nowrap">behind it.</span></em></h1>
-    <p class="lead"><b>Idea, concept, delivery — one mind.</b> Five apps, 59 screens and more than 500 builds, from first thought to live: a home screen you steer with your thumb, a launcher that predicts you, a camera that answers, a music system that follows you. Designed and shipped from Bern.</p>
+    <p class="lead"><b>Idea, concept, delivery — one mind.</b> Five apps, 59 screens and more than 600 builds, from first thought to live: a home screen you steer with your thumb, a launcher that predicts you, a camera that answers, a music system that follows you. Designed and shipped from Bern.</p>
     <div class="cue"><span>↓</span> Scroll — every piece below is live</div>
   </div>
 </section>
@@ -210,11 +214,12 @@ input[type=range]{width:100%;accent-color:var(--dacc);margin-top:10px}
 <section class="band dark" style="padding-top:0">
   <div class="inner">
     <div class="stats">
-      <div class="stat"><b data-to="526">526</b><span>Builds shipped</span></div>
-      <div class="stat"><b data-to="100">100k</b><span>Lines of code</span></div>
+      <div class="stat"><b data-to="628" id="liveBuilds">628</b><span>Builds shipped · 5 apps</span></div>
+      <div class="stat"><b data-to="100" data-suffix="k">100k</b><span>Lines of code</span></div>
       <div class="stat"><b data-to="59">59</b><span>Screens</span></div>
       <div class="stat"><b data-to="0">0</b><span>Trackers</span></div>
     </div>
+    <div class="live" id="liveLine" hidden><i></i><span id="liveText"></span></div>
   </div>
 </section>
 
@@ -621,6 +626,55 @@ const $ = s => document.querySelector(s);
   }
   btn.addEventListener("click", run);
   if(!reduce) auto=setTimeout(run,1400); else { setF(100,214); ph.classList.add("synced"); tb.classList.add("synced"); stat.className="tapstat ok"; stat.textContent="tap → instant sync"; }
+})();
+</script>
+<script>
+/* Live numbers: count up when the stats scroll into view; the build count refreshes itself from
+   /api/stats (every build of every ARC app, from the public release mirror) and pulses when it grows. */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = [...document.querySelectorAll('.stat b[data-to]')];
+  const show = (el, v) => { el.textContent = Math.round(v).toLocaleString('de-CH').replace(/[’']/g, "'") + (el.dataset.suffix || ''); };
+  function countUp(el, from, to, ms) {
+    if (reduce || from === to) { show(el, to); return; }
+    const t0 = performance.now();
+    const step = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); show(el, from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  let counted = false;
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => {
+    if (counted || !es.some(e => e.isIntersecting)) return;
+    counted = true; io.disconnect();
+    nums.forEach(el => countUp(el, 0, +el.dataset.to, 1400));
+  }, { threshold: .35 }) : null;
+  if (io && nums[0]) io.observe(nums[0].closest('.stats'));
+
+  const builds = document.getElementById('liveBuilds');
+  const line = document.getElementById('liveLine'), text = document.getElementById('liveText');
+  const ago = ms => { const m = Math.max(0, Math.round(ms / 60000));
+    return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
+  let last = null;
+  async function refresh() {
+    try {
+      const r = await fetch('/api/stats', { cache: 'no-store' });
+      if (!r.ok) return;
+      const d = await r.json();
+      if (!d.builds) return;
+      const before = +builds.dataset.to;
+      builds.dataset.to = d.builds;
+      if (counted && d.builds !== before) {
+        countUp(builds, before, d.builds, 900);
+        builds.classList.add('bump'); setTimeout(() => builds.classList.remove('bump'), 1800);
+      } else if (!counted) show(builds, d.builds);
+      last = d.lastShipped;
+      paint();
+      line.hidden = false;
+    } catch (e) { /* keep the last known numbers */ }
+  }
+  function paint() { if (last) text.textContent = 'Live · last build shipped ' + ago(Date.now() - last); }
+  refresh();
+  setInterval(refresh, 120000);
+  setInterval(paint, 30000);
 })();
 </script>
 </body>
