@@ -62,6 +62,30 @@
   ],
   "rewrites": [
     {
+      "source": "/api/konnekt",
+      "destination": "/api/arc?fn=konnekt"
+    },
+    {
+      "source": "/api/cal",
+      "destination": "/api/arc?fn=cal"
+    },
+    {
+      "source": "/api/crowd",
+      "destination": "/api/arc?fn=crowd"
+    },
+    {
+      "source": "/api/tag",
+      "destination": "/api/arc?fn=tag"
+    },
+    {
+      "source": "/api/lens",
+      "destination": "/api/arc?fn=lens"
+    },
+    {
+      "source": "/api/portfolio",
+      "destination": "/api/arc?fn=portfolio"
+    },
+    {
       "source": "/social-mediathek/:handle",
       "destination": "/social-mediathek/index.html"
     },
@@ -75,11 +99,11 @@
     },
     {
       "source": "/api/wg/set",
-      "destination": "/api/wg/set.js"
+      "destination": "/api/wg?op=set"
     },
     {
       "source": "/api/wg/get",
-      "destination": "/api/wg/get.js"
+      "destination": "/api/wg?op=get"
     },
     {
       "source": "/api/reach",
@@ -95,11 +119,11 @@
     },
     {
       "source": "/api/concepts/get",
-      "destination": "/api/concepts/get.js"
+      "destination": "/api/concepts?op=get"
     },
     {
       "source": "/api/concepts/save",
-      "destination": "/api/concepts/save.js"
+      "destination": "/api/concepts?op=save"
     },
     {
       "source": "/",

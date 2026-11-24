@@ -1,7 +1,7 @@
 name: Deploy to Vercel
+# Vercel's Git integration deploys every push to main by itself (Project → Settings → Git), so this
+# workflow only runs by hand — e.g. as a fallback. It needs the VERCEL_* repo secrets to work.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 jobs:
   deploy:

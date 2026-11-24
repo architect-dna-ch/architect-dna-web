@@ -2,11 +2,11 @@
 // returns the next ~2 weeks of events as JSON for the magic-mirror page. The secret URL lives in
 // the GOOGLE_ICS_URL environment variable (never sent to the browser). Multiple calendars: set
 // GOOGLE_ICS_URL to several URLs separated by commas.
-const ical = require('node-ical');
+import ical from 'node-ical';
 
 const HORIZON_DAYS = 16;
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store');
 
