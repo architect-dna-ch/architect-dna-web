@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 // upload only writes its image; a small meta JSON (profile, captions, order) is saved under a fresh
 // name each time, the newest one wins, and any image it doesn't know yet is added on read.
 const OWNERS = {
-  muh4rrrem: 'ceb9e58f6387170c70beddeb681ee35bdb967267f083c259300b4d9cdaff187e',
+  muh4rrrem: '742640fbc4776257a9ae173628a0715053fd906c5b7cee76d27c54e797afb5d6',
 };
 const MAX_IMAGE_CHARS = 4_000_000;   // ~3 MB of JPEG as base64, under the 4.5 MB request limit
 const MAX_PHOTOS = 300;
