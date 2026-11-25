@@ -11,11 +11,13 @@ import crypto from 'node:crypto';
 // upload only writes its image; a small meta JSON (profile, captions, order) is saved under a fresh
 // name each time, the newest one wins, and any image it doesn't know yet is added on read.
 const OWNERS = {
-  muh4rrrem: '742640fbc4776257a9ae173628a0715053fd906c5b7cee76d27c54e797afb5d6',
+  muh4rrrem: '39fd9ea17ca8854ac559996bd3ad1b70cdc6c4ca509fa78b0db1bd666400415c',
 };
 const MAX_IMAGE_CHARS = 4_000_000;   // ~3 MB of JPEG as base64, under the 4.5 MB request limit
 const MAX_PHOTOS = 300;
 
+// codes are compared without dashes/spaces and case: E2F394-45A7… == e2f39445a7…
+const normCode = s => String(s || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
 const sha = s => crypto.createHash('sha256').update(String(s)).digest('hex');
 const clip = (s, n) => String(s || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
 const handleOf = s => String(s || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 30);
@@ -65,7 +67,7 @@ async function save(u, d, old) {
 function isOwner(u, key) {
   const want = OWNERS[u];
   if (!want || !key) return false;
-  const got = sha(key);
+  const got = sha(normCode(key));
   return got.length === want.length && crypto.timingSafeEqual(Buffer.from(got), Buffer.from(want));
 }
 
@@ -103,14 +105,19 @@ export default async function handler(req, res) {
       const m = image.match(/^data:image\/(jpeg|webp|png);base64,([A-Za-z0-9+/=]+)$/);
       if (!m) return res.status(400).json({ error: 'bad image' });
       if (image.length > MAX_IMAGE_CHARS) return res.status(413).json({ error: 'image too large' });
-      const count = (await listAll(u)).filter(x => IMG.test(x.pathname)).length;
-      if (count >= MAX_PHOTOS) return res.status(409).json({ error: 'gallery full' });
-      const id = crypto.randomBytes(8).toString('hex');
+      const bytes = Buffer.from(m[2], 'base64');
+      // id from the content: uploading the same photo again lands on the same file, never a duplicate
+      const id = crypto.createHash('sha256').update(bytes).digest('hex').slice(0, 16);
       const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
       const w = Math.max(0, Math.min(20000, Math.round(+b.w) || 0)), h = Math.max(0, Math.min(20000, Math.round(+b.h) || 0));
-      const blob = await put(`portfolio/${u}/${id}_${w}x${h}.${ext}`, Buffer.from(m[2], 'base64'), {
-        access: 'public', addRandomSuffix: false, contentType: `image/${m[1]}`,
-      });
+      const path = `portfolio/${u}/${id}_${w}x${h}.${ext}`;
+      let blob;
+      try {
+        blob = await put(path, bytes, { access: 'public', addRandomSuffix: false, contentType: `image/${m[1]}` });
+      } catch (e) {
+        if (!/already exists/i.test(String(e && e.message))) throw e;
+        return res.status(200).json({ ok: true, duplicate: true });
+      }
       // no index write here: the next read finds the file, so parallel or quick uploads can't overwrite each other
       return res.status(200).json({ ok: true, photo: { id, url: blob.url, caption: '', w, h, at: Date.now() } });
     }
@@ -135,6 +142,7 @@ export default async function handler(req, res) {
     await save(u, d, old);
     return res.status(200).json({ ok: true });
   } catch (e) {
-    return res.status(500).json({ error: 'storage error' });
+    console.error('portfolio', b.action, e && e.message);
+    return res.status(500).json({ error: 'storage error', detail: String(e && e.message || '').slice(0, 160) });
   }
 }

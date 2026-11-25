@@ -263,17 +263,41 @@ footer a{color:var(--ink3);text-decoration:none}
   $('add').onclick = () => $('files').click();
   $('files').onchange = async () => {
     const fs = [...($('files').files || [])]; $('files').value = '';
-    let done = 0, failed = 0;
-    for (const f of fs) {
-      $('upMsg').textContent = `Lade ${done + failed + 1} von ${fs.length} …`;
+    let done = 0, dup = 0;
+    const failed = [], why = {};
+    const WHY = { 'wrong code': 'Code abgelaufen', 'bad image': 'Format nicht lesbar', 'image too large': 'zu gross',
+      'storage error': 'Speicher-Fehler', 'Bild nicht lesbar': 'Format nicht lesbar (HEIC?)' };
+    const send = im => post({ action: 'upload', key, image: im.data, w: im.w, h: im.h })
+      .catch(() => ({ ok: false, error: 'Netz weg' }));
+    for (let i = 0; i < fs.length; i++) {
+      const f = fs[i];
+      $('upMsg').textContent = `Lade ${i + 1} von ${fs.length} …`;
+      let err = null;
       try {
         let im = await shrink(f, 2400, 0.86);
         if (im.data.length > 3_900_000) im = await shrink(f, 2000, 0.8);
-        const r = await post({ action: 'upload', key, image: im.data, w: im.w, h: im.h });
-        if (!r.ok) throw new Error(r.error); done++;
-      } catch (e) { failed++; }
+        let r = await send(im);
+        if (!r.ok && r.error !== 'wrong code' && r.error !== 'bad image') {   // one calm retry for hiccups
+          await new Promise(z => setTimeout(z, 1500)); r = await send(im);
+        }
+        if (r.ok) { r.duplicate ? dup++ : done++; } else err = r.error || 'unbekannt';
+      } catch (e) { err = e.message || 'unbekannt'; }
+      if (err) {
+        failed.push(f.name); const w = WHY[err] || err; why[w] = (why[w] || 0) + 1;
+        if (err === 'wrong code') {                       // stop: everything after would fail the same way
+          for (let j = i + 1; j < fs.length; j++) { failed.push(fs[j].name); why[WHY[err]]++; }
+          key = null; try { localStorage.removeItem(KEYNAME); } catch (e) {}
+          break;
+        }
+      }
     }
-    $('upMsg').textContent = failed ? `${done} hochgeladen, ${failed} fehlgeschlagen.` : `${done} Foto${done === 1 ? '' : 's'} hochgeladen ✓`;
+    let msg = `${done} hochgeladen` + (dup ? `, ${dup} waren schon da` : '');
+    if (failed.length) msg += ` · ${failed.length} nicht: ` + Object.entries(why).map(([w, n]) => `${n}× ${w}`).join(', ')
+      + '. Einfach alle nochmals auswählen — doppelte werden übersprungen.';
+    else msg += ' ✓';
+    $('upMsg').textContent = msg;
+    if (!key) { editing = false; $('edit').classList.remove('on'); $('login').classList.add('on');
+      $('loginMsg').textContent = 'Bitte mit dem neuen Code anmelden.'; }
     load();
   };
 
