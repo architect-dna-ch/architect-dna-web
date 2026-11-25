@@ -91,11 +91,11 @@
     },
     {
       "source": "/social-mediathek/:handle",
-      "destination": "/social-mediathek/index.html"
+      "destination": "/social-mediathek"
     },
     {
       "source": "/tag/:code",
-      "destination": "/tag/index.html"
+      "destination": "/tag"
     },
     {
       "source": "/studio",
