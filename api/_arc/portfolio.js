@@ -106,8 +106,10 @@ export default async function handler(req, res) {
       if (!m) return res.status(400).json({ error: 'bad image' });
       if (image.length > MAX_IMAGE_CHARS) return res.status(413).json({ error: 'image too large' });
       const bytes = Buffer.from(m[2], 'base64');
-      // id from the content: uploading the same photo again lands on the same file, never a duplicate
-      const id = crypto.createHash('sha256').update(bytes).digest('hex').slice(0, 16);
+      // id from the ORIGINAL file's fingerprint (sent by the page; same in every browser), else from the
+      // uploaded bytes: choosing the same photo again lands on the same file, never a duplicate
+      const fh = /^[0-9a-f]{64}$/.test(String(b.fh || '')) ? String(b.fh) : crypto.createHash('sha256').update(bytes).digest('hex');
+      const id = fh.slice(0, 16);
       const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
       const w = Math.max(0, Math.min(20000, Math.round(+b.w) || 0)), h = Math.max(0, Math.min(20000, Math.round(+b.h) || 0));
       const path = `portfolio/${u}/${id}_${w}x${h}.${ext}`;

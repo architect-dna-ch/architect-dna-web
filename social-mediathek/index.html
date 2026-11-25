@@ -267,13 +267,19 @@ footer a{color:var(--ink3);text-decoration:none}
     const failed = [], why = {};
     const WHY = { 'wrong code': 'Code abgelaufen', 'bad image': 'Format nicht lesbar', 'image too large': 'zu gross',
       'storage error': 'Speicher-Fehler', 'Bild nicht lesbar': 'Format nicht lesbar (HEIC?)' };
-    const send = im => post({ action: 'upload', key, image: im.data, w: im.w, h: im.h })
+    const fingerprint = async f => {            // of the original file: identical in Chrome and in-app browsers
+      try { const d = await crypto.subtle.digest('SHA-256', await f.arrayBuffer());
+        return [...new Uint8Array(d)].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return ''; }
+    };
+    let fh = '';
+    const send = im => post({ action: 'upload', key, image: im.data, w: im.w, h: im.h, fh })
       .catch(() => ({ ok: false, error: 'Netz weg' }));
     for (let i = 0; i < fs.length; i++) {
       const f = fs[i];
       $('upMsg').textContent = `Lade ${i + 1} von ${fs.length} …`;
       let err = null;
       try {
+        fh = await fingerprint(f);
         let im = await shrink(f, 2400, 0.86);
         if (im.data.length > 3_900_000) im = await shrink(f, 2000, 0.8);
         let r = await send(im);
