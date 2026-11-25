@@ -123,6 +123,25 @@ export default async function handler(req, res) {
       // no index write here: the next read finds the file, so parallel or quick uploads can't overwrite each other
       return res.status(200).json({ ok: true, photo: { id, url: blob.url, caption: '', w, h, at: Date.now() } });
     }
+    if (b.action === 'dedupe') {
+      // byte-identical photos (e.g. a batch chosen twice) — same size first, then compare contents;
+      // keeps the oldest copy and its caption/place
+      const imgs = (await listAll(u)).filter(x => IMG.test(x.pathname))
+        .sort((x, y) => new Date(x.uploadedAt) - new Date(y.uploadedAt));
+      const bySize = new Map();
+      for (const x of imgs) bySize.set(x.size, [...(bySize.get(x.size) || []), x]);
+      const drop = [];
+      for (const group of bySize.values()) {
+        if (group.length < 2) continue;
+        const seen = new Set();
+        for (const x of group) {
+          const hsh = crypto.createHash('sha256').update(Buffer.from(await (await fetch(x.url)).arrayBuffer())).digest('hex');
+          if (seen.has(hsh)) drop.push(x.url); else seen.add(hsh);
+        }
+      }
+      if (drop.length) await del(drop);
+      return res.status(200).json({ ok: true, removed: drop.length });
+    }
     const { d, old } = await load(u);
     if (b.action === 'caption') {
       const p = d.photos.find(x => x.id === b.id);

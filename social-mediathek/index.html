@@ -301,6 +301,10 @@ footer a{color:var(--ink3);text-decoration:none}
     if (failed.length) msg += ` · ${failed.length} nicht: ` + Object.entries(why).map(([w, n]) => `${n}× ${w}`).join(', ')
       + '. Einfach alle nochmals auswählen — doppelte werden übersprungen.';
     else msg += ' ✓';
+    if (key && done) {                              // tidy up byte-identical doubles from earlier batches
+      const c = await post({ action: 'dedupe', key }).catch(() => ({}));
+      if (c.removed) msg += ` · ${c.removed} doppelte entfernt`;
+    }
     $('upMsg').textContent = msg;
     if (!key) { editing = false; $('edit').classList.remove('on'); $('login').classList.add('on');
       $('loginMsg').textContent = 'Bitte mit dem neuen Code anmelden.'; }
