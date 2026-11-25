@@ -114,6 +114,12 @@ footer a{color:var(--ink3);text-decoration:none}
 (() => {
   const $ = id => document.getElementById(id);
   const API = '/api/portfolio';
+  // Instagram adds utm_*/fbclid to the bio link: drop them from the address bar so shares stay clean
+  try {
+    const q = new URLSearchParams(location.search); let dirty = false;
+    for (const k of [...q.keys()]) if (/^(utm_|fbclid$|igsh$|igshid$|gclid$)/.test(k)) { q.delete(k); dirty = true; }
+    if (dirty) history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+  } catch (e) {}
   const seg = location.pathname.replace(/\/+$/, '').split('/');
   const u = (seg[2] || 'muh4rrrem').toLowerCase();
   const KEYNAME = 'pf_key_' + u;
