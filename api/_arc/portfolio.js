@@ -1,4 +1,4 @@
-import { head, put, del } from '@vercel/blob';
+import { list, put, del } from '@vercel/blob';
 import crypto from 'node:crypto';
 
 // Social-Mediathek — a public photo portfolio per handle (/social-mediathek/<handle>), for an
@@ -6,7 +6,10 @@ import crypto from 'node:crypto';
 // or delete. Owners are fixed here by the SHA-256 of their code — the code itself is never stored.
 //
 // Photos arrive already resized on the phone (≤ 2400 px JPEG, which also drops EXIF/GPS) and are
-// stored as public blobs; one JSON index per handle holds profile + order.
+// stored as public blobs. The photo files themselves are the truth: listing them is consistent, while
+// an overwritten JSON blob can be served stale for up to a minute (that lost 7 of 11 uploads). So an
+// upload only writes its image; a small meta JSON (profile, captions, order) is saved under a fresh
+// name each time, the newest one wins, and any image it doesn't know yet is added on read.
 const OWNERS = {
   muh4rrrem: 'ceb9e58f6387170c70beddeb681ee35bdb967267f083c259300b4d9cdaff187e',
 };
@@ -16,19 +19,47 @@ const MAX_PHOTOS = 300;
 const sha = s => crypto.createHash('sha256').update(String(s)).digest('hex');
 const clip = (s, n) => String(s || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
 const handleOf = s => String(s || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 30);
-const indexKey = u => `portfolio/${u}/index.json`;
+const IMG = /\/([0-9a-f]{16})(?:_(\d+)x(\d+))?\.(jpg|webp|png)$/;
 
-async function load(u) {
-  try {
-    const b = await head(indexKey(u));
-    const r = await fetch(b.url, { cache: 'no-store' });
-    return await r.json();
-  } catch (e) {
-    return { profile: { name: '', bio: '', instagram: u }, photos: [] };
-  }
+async function listAll(u) {
+  const out = [];
+  let cursor;
+  do {
+    const r = await list({ prefix: `portfolio/${u}/`, limit: 1000, cursor });
+    out.push(...r.blobs);
+    cursor = r.hasMore ? r.cursor : undefined;
+  } while (cursor);
+  return out;
 }
-async function save(u, d) {
-  await put(indexKey(u), JSON.stringify(d), { access: 'public', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
+
+/** {d, old}: the newest meta merged with every image blob; old = meta blobs to drop after a save. */
+async function load(u) {
+  const blobs = await listAll(u);
+  const metas = blobs.filter(b => /\/(meta-[^/]+|index)\.json$/.test(b.pathname))
+    .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+  let d = null;
+  for (const m of metas) {
+    try { d = await (await fetch(m.url, { cache: 'no-store' })).json(); break; } catch (e) { /* try older */ }
+  }
+  d = d || { profile: { name: '', bio: '', instagram: u }, photos: [] };
+  const files = new Map();
+  for (const b of blobs) {
+    const m = b.pathname.match(IMG);
+    if (m) files.set(m[1], { b, w: +m[2] || 0, h: +m[3] || 0 });
+  }
+  const known = new Set();
+  d.photos = (d.photos || []).filter(p => files.has(p.id) && !known.has(p.id) && known.add(p.id));
+  const fresh = [...files].filter(([id]) => !known.has(id))
+    .sort((a, b) => new Date(b[1].b.uploadedAt) - new Date(a[1].b.uploadedAt))
+    .map(([id, f]) => ({ id, url: f.b.url, caption: '', w: f.w, h: f.h, at: +new Date(f.b.uploadedAt) }));
+  d.photos = [...fresh, ...d.photos];
+  return { d, old: metas };
+}
+async function save(u, d, old) {
+  await put(`portfolio/${u}/meta-${Date.now()}.json`, JSON.stringify(d),
+    { access: 'public', addRandomSuffix: true, contentType: 'application/json' });
+  const stale = old.map(b => b.url);
+  if (stale.length) { try { await del(stale); } catch (e) { /* harmless leftovers */ } }
 }
 
 function isOwner(u, key) {
@@ -47,8 +78,9 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const u = handleOf(req.query.u);
     if (!OWNERS[u]) return res.status(404).json({ error: 'unknown profile' });
-    const d = await load(u);
-    res.setHeader('Cache-Control', 'public, max-age=30, s-maxage=30');
+    let d;
+    try { ({ d } = await load(u)); } catch (e) { return res.status(503).json({ error: 'storage error' }); }
+    res.setHeader('Cache-Control', 'public, max-age=10, s-maxage=10');
     return res.status(200).json({
       handle: u,
       profile: d.profile,
@@ -65,26 +97,24 @@ export default async function handler(req, res) {
 
   if (b.action === 'check') return res.status(200).json({ ok: true });
 
-  const d = await load(u);
-  d.photos = d.photos || [];
-
   try {
     if (b.action === 'upload') {
       const image = String(b.image || '');
       const m = image.match(/^data:image\/(jpeg|webp|png);base64,([A-Za-z0-9+/=]+)$/);
       if (!m) return res.status(400).json({ error: 'bad image' });
       if (image.length > MAX_IMAGE_CHARS) return res.status(413).json({ error: 'image too large' });
-      if (d.photos.length >= MAX_PHOTOS) return res.status(409).json({ error: 'gallery full' });
+      const count = (await listAll(u)).filter(x => IMG.test(x.pathname)).length;
+      if (count >= MAX_PHOTOS) return res.status(409).json({ error: 'gallery full' });
       const id = crypto.randomBytes(8).toString('hex');
       const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
-      const blob = await put(`portfolio/${u}/${id}.${ext}`, Buffer.from(m[2], 'base64'), {
+      const w = Math.max(0, Math.min(20000, Math.round(+b.w) || 0)), h = Math.max(0, Math.min(20000, Math.round(+b.h) || 0));
+      const blob = await put(`portfolio/${u}/${id}_${w}x${h}.${ext}`, Buffer.from(m[2], 'base64'), {
         access: 'public', addRandomSuffix: false, contentType: `image/${m[1]}`,
       });
-      const photo = { id, url: blob.url, caption: clip(b.caption, 200), w: +b.w || 0, h: +b.h || 0, at: Date.now() };
-      d.photos.unshift(photo);
-      await save(u, d);
-      return res.status(200).json({ ok: true, photo });
+      // no index write here: the next read finds the file, so parallel or quick uploads can't overwrite each other
+      return res.status(200).json({ ok: true, photo: { id, url: blob.url, caption: '', w, h, at: Date.now() } });
     }
+    const { d, old } = await load(u);
     if (b.action === 'caption') {
       const p = d.photos.find(x => x.id === b.id);
       if (!p) return res.status(404).json({ error: 'no such photo' });
@@ -102,7 +132,7 @@ export default async function handler(req, res) {
     } else {
       return res.status(400).json({ error: 'bad action' });
     }
-    await save(u, d);
+    await save(u, d, old);
     return res.status(200).json({ ok: true });
   } catch (e) {
     return res.status(500).json({ error: 'storage error' });
