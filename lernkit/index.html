@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lernkit</title>
+<meta name="description" content="Notenrechner, Fokus-Timer und Prüfungsplan – gratis, ohne Login, alles bleibt auf deinem Gerät.">
+<meta name="theme-color" content="#FAFAF8">
+<link rel="icon" href="/icon.png">
+<style>
+:root{--bg:#FAFAF8;--bg2:#F0EFEB;--card:#FFFFFF;--line:#E0E0D8;--text:#1A1A1A;--text2:#5A5A58;--text3:#9A9A98;--red:#B5271E;--ok:#2F7D4A;--warn:#B07A12;
+--font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F0F0E;--bg2:#1A1A18;--card:#161615;--line:#2A2A27;--text:#F2F0EB;--text2:#A9A59E;--text3:#6E6B66;--red:#E0573B;--ok:#6CC58B;--warn:#E0B14A}}
+:root[data-theme="dark"]{--bg:#0F0F0E;--bg2:#1A1A18;--card:#161615;--line:#2A2A27;--text:#F2F0EB;--text2:#A9A59E;--text3:#6E6B66;--red:#E0573B;--ok:#6CC58B;--warn:#E0B14A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{padding:0 max(16px,env(safe-area-inset-left)) 60px max(16px,env(safe-area-inset-right))}
+.wrap{max-width:760px;margin:0 auto}
+header{padding:calc(env(safe-area-inset-top) + 28px) 0 18px}
+.eye{font:700 11px/1 var(--mono);letter-spacing:.2em;color:var(--red);text-transform:uppercase}
+h1{font-size:clamp(40px,11vw,72px);letter-spacing:-.05em;line-height:.95;margin:12px 0 10px;font-weight:800}
+.lead{color:var(--text2);font-size:16px;line-height:1.5;max-width:52ch}
+nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;gap:6px;padding:10px 0;margin-bottom:8px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);font:600 14px var(--font);padding:9px 14px;border-radius:8px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+section{display:none;padding-top:14px}section.on{display:block}
+h2{font-size:24px;letter-spacing:-.03em;margin-bottom:4px}
+.hint{color:var(--text2);font-size:14px;line-height:1.5;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input,select{font:16px var(--font);color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px;min-width:0}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--red);outline-offset:1px}
+.btn{border:1px solid var(--line);background:var(--bg2);color:var(--text);font:600 14px var(--font);padding:9px 12px;border-radius:6px;cursor:pointer}
+.btn.pri{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn.ghost{background:transparent}
+.x{border:0;background:none;color:var(--text3);font-size:18px;cursor:pointer;padding:4px 8px}
+.subj-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.subj-h input{flex:1;font-weight:700}
+.avg{font:700 22px var(--mono);min-width:64px;text-align:right}
+.grades{display:flex;flex-direction:column;gap:6px}
+.g{display:grid;grid-template-columns:1fr 84px 84px 34px;gap:6px;align-items:center}
+.g input{width:100%}
+.lbl{font:600 11px var(--mono);color:var(--text3);letter-spacing:.06em;text-transform:uppercase}
+.need{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:14px;color:var(--text2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.need input{width:72px}
+.need b{color:var(--text)}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.total .big{font:800 44px var(--mono);letter-spacing:-.04em}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--red)}
+/* timer */
+.timer{text-align:center;padding:26px 14px}
+.ring{width:min(300px,78vw);aspect-ratio:1;margin:0 auto 16px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .t b{font:800 clamp(48px,14vw,72px) var(--mono);letter-spacing:-.04em}
+.ring .t span{font:600 12px var(--mono);color:var(--text2);letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+.chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chips button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.today{margin-top:14px;color:var(--text2);font:600 13px var(--mono)}
+/* exams */
+.ex{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.days{font:800 26px var(--mono);min-width:58px;text-align:center;line-height:1}
+.days small{display:block;font:600 10px var(--mono);color:var(--text3);letter-spacing:.08em;margin-top:3px}
+.ex .t{font-weight:700}.ex .d{color:var(--text2);font-size:13px;margin-top:2px}
+.plan{margin-top:8px;font-size:13px;color:var(--text2);line-height:1.5}
+.form{display:grid;grid-template-columns:1fr 150px auto;gap:8px}
+@media (max-width:520px){.form{grid-template-columns:1fr 1fr}.form .btn{grid-column:1/-1}.g{grid-template-columns:1fr 70px 70px 30px}}
+footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--line);color:var(--text3);font-size:13px;line-height:1.6}
+footer a{color:var(--text2)}
+.empty{color:var(--text3);font-size:14px;padding:10px 2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eye">— Geschenk an die Klasse</div>
+  <h1>Lernkit.</h1>
+  <p class="lead">Notenrechner, Fokus-Timer und Prüfungsplan. Gratis, ohne Login – alles bleibt auf deinem Gerät.</p>
+</header>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-tab="noten">Noten</button>
+  <button role="tab" aria-selected="false" data-tab="fokus">Fokus</button>
+  <button role="tab" aria-selected="false" data-tab="pruef">Prüfungen</button>
+</nav>
+
+<!-- ============ NOTEN ============ -->
+<section id="noten" class="on" role="tabpanel">
+  <h2>Notenrechner</h2>
+  <p class="hint">Fächer, Noten (1–6) und Gewichtung eintragen. Unten bei jedem Fach: welche Note du in der nächsten Prüfung brauchst.</p>
+  <div class="card total">
+    <div><div class="lbl">Gesamtschnitt</div><div class="big" id="tot">–</div></div>
+    <div class="hint" id="totHint" style="margin:0;text-align:right"></div>
+  </div>
+  <div id="subjects"></div>
+  <div class="row"><button class="btn pri" id="addSubj">+ Fach</button></div>
+</section>
+
+<!-- ============ FOKUS ============ -->
+<section id="fokus" role="tabpanel">
+  <h2>Fokus-Timer</h2>
+  <p class="hint">25 Minuten lernen, 5 Minuten Pause. Nach vier Runden eine lange Pause. Handy weg, Tab offen lassen.</p>
+  <div class="card timer">
+    <div class="ring">
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--line)" stroke-width="5"/>
+        <circle id="arc" cx="50" cy="50" r="45" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round" stroke-dasharray="282.74" stroke-dashoffset="0"/></svg>
+      <div class="t"><b id="clock">25:00</b><span id="phase">Fokus · Runde 1</span></div>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="btn pri" id="go" style="min-width:120px">Start</button>
+      <button class="btn" id="skip">Weiter</button>
+      <button class="btn ghost" id="reset">Zurück</button>
+    </div>
+    <div class="chips" id="modes">
+      <button class="btn" data-m="25,5,15" aria-pressed="true">25 / 5</button>
+      <button class="btn" data-m="50,10,20" aria-pressed="false">50 / 10</button>
+      <button class="btn" data-m="15,3,10" aria-pressed="false">15 / 3</button>
+    </div>
+    <div class="today" id="today"></div>
+  </div>
+</section>
+
+<!-- ============ PRÜFUNGEN ============ -->
+<section id="pruef" role="tabpanel">
+  <h2>Prüfungsplan</h2>
+  <p class="hint">Prüfung und Datum eintragen – du siehst die Tage bis dahin und wann du am besten anfängst.</p>
+  <div class="card">
+    <div class="form">
+      <input id="exName" placeholder="z. B. Mathe – Funktionen" aria-label="Prüfung">
+      <input id="exDate" type="date" aria-label="Datum">
+      <button class="btn pri" id="exAdd">Hinzufügen</button>
+    </div>
+  </div>
+  <div id="exams"></div>
+</section>
+
+<footer>
+  Ein kleines Geschenk von Muharrem · <a href="https://architect-dna.ch">architect-dna.ch</a><br>
+  Deine Daten bleiben im Browser dieses Geräts (kein Konto, kein Tracking). Viel Erfolg! ✌️
+</footer>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('lk_' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('lk_' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ---------- tabs ---------- */
+  document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('nav button').forEach(x => x.setAttribute('aria-selected', x === b));
+    document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.tab));
+    store.set('tab', b.dataset.tab);
+  });
+  const lastTab = store.get('tab', 'noten');
+  const tb = document.querySelector(`nav button[data-tab="${lastTab}"]`); if (tb) tb.click();
+
+  /* ---------- Noten ---------- */
+  let subjects = store.get('subjects', [
+    { name: 'Deutsch', grades: [] }, { name: 'Mathematik', grades: [] }, { name: 'Englisch', grades: [] }
+  ]);
+  const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : null; };
+  const avgOf = gs => {
+    let s = 0, w = 0;
+    gs.forEach(g => { const n = num(g.v), k = num(g.w) ?? 1; if (n !== null && n >= 1 && n <= 6 && k > 0) { s += n * k; w += k; } });
+    return w ? { avg: s / w, sum: s, w } : null;
+  };
+  const cls = a => a >= 4.5 ? 'ok' : a >= 4 ? 'warn' : 'bad';
+  const r1 = a => (Math.round(a * 100) / 100).toFixed(2);
+  const half = a => (Math.round(a * 2) / 2).toFixed(1);
+
+  function renderSubjects() {
+    const box = $('#subjects'); box.innerHTML = '';
+    subjects.forEach((s, i) => {
+      const a = avgOf(s.grades);
+      const c = document.createElement('div'); c.className = 'card';
+      c.innerHTML = `
+        <div class="subj-h">
+          <input value="${esc(s.name)}" aria-label="Fach" data-f="name">
+          <div class="avg ${a ? cls(a.avg) : ''}">${a ? r1(a.avg) : '–'}</div>
+          <button class="x" title="Fach löschen" data-f="del">×</button>
+        </div>
+        <div class="grades">
+          ${s.grades.length ? `<div class="g"><span class="lbl">Prüfung</span><span class="lbl">Note</span><span class="lbl">Gewicht</span><span></span></div>` : ''}
+          ${s.grades.map((g, j) => `
+            <div class="g">
+              <input value="${esc(g.t || '')}" placeholder="Prüfung ${j + 1}" data-g="${j}" data-k="t" aria-label="Prüfung">
+              <input value="${esc(g.v ?? '')}" inputmode="decimal" placeholder="5.0" data-g="${j}" data-k="v" aria-label="Note">
+              <input value="${esc(g.w ?? 1)}" inputmode="decimal" placeholder="1" data-g="${j}" data-k="w" aria-label="Gewicht">
+              <button class="x" title="Note löschen" data-g="${j}" data-k="del">×</button>
+            </div>`).join('')}
+        </div>
+        <div class="row" style="margin-top:8px"><button class="btn" data-f="add">+ Note</button>
+          <span class="hint" style="margin:0" data-out="half">${a ? `Zeugnis gerundet: <b>${half(a.avg)}</b>` : ''}</span></div>
+        <div class="need">Ziel <input value="${esc(s.target ?? 4.5)}" inputmode="decimal" data-f="target" aria-label="Ziel-Schnitt">
+          · nächste Prüfung zählt <input value="${esc(s.nextW ?? 1)}" inputmode="decimal" data-f="nextW" aria-label="Gewicht nächste Prüfung">×
+          <span data-out="need" style="flex-basis:100%"></span></div>`;
+      c.querySelector('[data-out="need"]').innerHTML = needText(s);
+      c.addEventListener('input', e => {
+        const t = e.target;
+        if (t.dataset.f === 'name') s.name = t.value;
+        else if (t.dataset.f === 'target') s.target = t.value;
+        else if (t.dataset.f === 'nextW') s.nextW = t.value;
+        else if (t.dataset.g !== undefined) s.grades[+t.dataset.g][t.dataset.k] = t.value;
+        save(); liveUpdate(c, s);
+      });
+      c.addEventListener('click', e => {
+        const t = e.target;
+        if (t.dataset.f === 'del') { if (confirm(`«${s.name}» löschen?`)) { subjects.splice(i, 1); save(); renderSubjects(); } }
+        else if (t.dataset.f === 'add') { s.grades.push({ t: '', v: '', w: 1 }); save(); renderSubjects(); focusLast(i); }
+        else if (t.dataset.k === 'del') { s.grades.splice(+t.dataset.g, 1); save(); renderSubjects(); }
+      });
+      box.appendChild(c);
+    });
+    renderTotal();
+  }
+  function focusLast(i) {
+    const cards = document.querySelectorAll('#subjects .card');
+    const ins = cards[i] && cards[i].querySelectorAll('[data-k="v"]');
+    if (ins && ins.length) ins[ins.length - 1].focus();
+  }
+  function needText(s) {
+    const a = avgOf(s.grades), T = num(s.target), w = num(s.nextW) ?? 1;
+    if (T === null || w <= 0) return '';
+    if (!a) return `→ du brauchst eine <b>${T.toFixed(1)}</b>`;
+    const need = (T * (a.w + w) - a.sum) / w;
+    if (need <= 1) return `→ <b class="ok">schon geschafft</b> – sogar mit einer 1`;
+    if (need > 6) return `→ <b class="bad">mit einer Prüfung nicht erreichbar</b> (bräuchte ${need.toFixed(2)})`;
+    return `→ du brauchst mindestens eine <b class="${need > 5 ? 'warn' : ''}">${(Math.ceil(need * 4) / 4).toFixed(2)}</b>`;
+  }
+  function liveUpdate(c, s) {
+    const a = avgOf(s.grades), el = c.querySelector('.avg');
+    el.textContent = a ? r1(a.avg) : '–'; el.className = 'avg ' + (a ? cls(a.avg) : '');
+    c.querySelector('[data-out="half"]').innerHTML = a ? `Zeugnis gerundet: <b>${half(a.avg)}</b>` : '';
+    c.querySelector('[data-out="need"]').innerHTML = needText(s);
+    renderTotal();
+  }
+  function renderTotal() {
+    const avgs = subjects.map(s => avgOf(s.grades)).filter(Boolean).map(a => a.avg);
+    if (!avgs.length) { $('#tot').textContent = '–'; $('#tot').className = 'big'; $('#totHint').textContent = 'Noch keine Noten'; return; }
+    const rounded = avgs.map(a => Math.round(a * 2) / 2);
+    const m = rounded.reduce((x, y) => x + y, 0) / rounded.length;
+    $('#tot').textContent = m.toFixed(2); $('#tot').className = 'big ' + cls(m);
+    const under = rounded.filter(a => a < 4).length;
+    $('#totHint').innerHTML = `${avgs.length} ${avgs.length === 1 ? 'Fach' : 'Fächer'} (auf halbe Noten gerundet)<br>${under ? `<span class="bad">${under} unter 4</span>` : '<span class="ok">alle ≥ 4</span>'}`;
+  }
+  const save = () => store.set('subjects', subjects);
+  $('#addSubj').onclick = () => { subjects.push({ name: 'Neues Fach', grades: [] }); save(); renderSubjects(); };
+  renderSubjects();
+
+  /* ---------- Fokus ---------- */
+  let mode = store.get('mode', [25, 5, 15]);
+  let phase = 'focus', round = 1, left = mode[0] * 60, running = false, endAt = 0, tick = null;
+  const C = 282.74;
+  const dayKey = new Date().toISOString().slice(0, 10);
+  let done = store.get('done', {});
+  const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  const total = () => (phase === 'focus' ? mode[0] : phase === 'short' ? mode[1] : mode[2]) * 60;
+  function draw() {
+    $('#clock').textContent = fmt(Math.max(0, Math.ceil(left)));
+    $('#phase').textContent = phase === 'focus' ? `Fokus · Runde ${round}` : phase === 'short' ? 'Kurze Pause' : 'Lange Pause';
+    $('#arc').setAttribute('stroke', phase === 'focus' ? 'var(--red)' : 'var(--ok)');
+    $('#arc').setAttribute('stroke-dashoffset', String(C * (1 - left / total())));
+    document.title = running ? `${fmt(Math.ceil(left))} · ${phase === 'focus' ? 'Fokus' : 'Pause'}` : 'Lernkit';
+    const n = done[dayKey] || 0;
+    $('#today').textContent = n ? `Heute: ${n} Fokus-Runde${n === 1 ? '' : 'n'} (${n * mode[0]} Min.)` : '';
+  }
+  function beep() {
+    try {
+      const a = new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.25, 0.5].forEach(t => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; o.connect(g); g.connect(a.destination);
+        g.gain.setValueAtTime(0.0001, a.currentTime + t); g.gain.exponentialRampToValueAtTime(0.3, a.currentTime + t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + t + 0.2); o.start(a.currentTime + t); o.stop(a.currentTime + t + 0.22); });
+    } catch (e) {}
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  }
+  function next(auto) {
+    if (phase === 'focus') {
+      if (auto) { done[dayKey] = (done[dayKey] || 0) + 1; store.set('done', done); }
+      phase = round % 4 === 0 ? 'long' : 'short';
+    } else { phase = 'focus'; round++; }
+    left = total();
+    if (running) endAt = Date.now() + left * 1000;
+    draw();
+  }
+  function loop() {
+    left = (endAt - Date.now()) / 1000;
+    if (left <= 0) { beep(); next(true); }
+    draw();
+  }
+  $('#go').onclick = () => {
+    running = !running;
+    if (running) { endAt = Date.now() + left * 1000; tick = setInterval(loop, 250); $('#go').textContent = 'Pause'; }
+    else { clearInterval(tick); left = Math.max(0, (endAt - Date.now()) / 1000); $('#go').textContent = 'Weiter'; }
+    draw();
+  };
+  $('#skip').onclick = () => next(false);
+  $('#reset').onclick = () => { running = false; clearInterval(tick); phase = 'focus'; round = 1; left = mode[0] * 60; $('#go').textContent = 'Start'; draw(); };
+  document.querySelectorAll('#modes button').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.m === mode.join(','));
+    b.onclick = () => {
+      mode = b.dataset.m.split(',').map(Number); store.set('mode', mode);
+      document.querySelectorAll('#modes button').forEach(x => x.setAttribute('aria-pressed', x === b));
+      $('#reset').click();
+    };
+  });
+  draw();
+
+  /* ---------- Prüfungen ---------- */
+  let exams = store.get('exams', []);
+  const dayDiff = d => Math.round((new Date(d + 'T00:00') - new Date(new Date().toDateString())) / 86400000);
+  function renderExams() {
+    exams.sort((a, b) => a.d.localeCompare(b.d));
+    const box = $('#exams'); box.innerHTML = '';
+    if (!exams.length) { box.innerHTML = '<div class="empty">Noch keine Prüfung eingetragen.</div>'; return; }
+    exams.forEach((e, i) => {
+      const n = dayDiff(e.d), past = n < 0;
+      const start = new Date(new Date(e.d + 'T00:00').getTime() - Math.min(10, Math.max(3, Math.ceil(n / 2))) * 86400000);
+      const startTxt = n <= 2 ? 'jetzt: Zusammenfassung lesen, alte Aufgaben lösen, früh schlafen'
+        : `beginnen spätestens am <b>${start.toLocaleDateString('de-CH', { weekday: 'short', day: 'numeric', month: 'short' })}</b> – jeden Tag 2–3 Fokus-Runden, den letzten Tag nur repetieren`;
+      const c = document.createElement('div'); c.className = 'card';
+      c.innerHTML = `<div class="ex">
+          <div class="days ${past ? '' : n <= 3 ? 'bad' : n <= 7 ? 'warn' : ''}">${past ? '✓' : n}<small>${past ? 'VORBEI' : n === 1 ? 'TAG' : 'TAGE'}</small></div>
+          <div><div class="t">${esc(e.t)}</div><div class="d">${new Date(e.d + 'T00:00').toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+          <button class="x" title="Löschen">×</button></div>
+        ${past ? '' : `<div class="plan">${startTxt}</div>`}`;
+      c.querySelector('.x').onclick = () => { exams.splice(i, 1); store.set('exams', exams); renderExams(); };
+      box.appendChild(c);
+    });
+  }
+  $('#exAdd').onclick = () => {
+    const t = $('#exName').value.trim(), d = $('#exDate').value;
+    if (!t || !d) { (t ? $('#exDate') : $('#exName')).focus(); return; }
+    exams.push({ t, d }); store.set('exams', exams); $('#exName').value = ''; renderExams();
+  };
+  $('#exName').addEventListener('keydown', e => { if (e.key === 'Enter') $('#exAdd').click(); });
+  renderExams();
+})();
+</script>
+</body>
+</html>
