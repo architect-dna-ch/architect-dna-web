@@ -76,7 +76,11 @@ body.landing header,body.landing main,body.landing #login,body.landing #edit,bod
 #apply label{display:block;font:700 10px var(--mono);letter-spacing:.14em;color:var(--ink3);margin:14px 0 6px}
 #apply input,#apply textarea{width:100%;background:#0E0E0D;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:16px var(--font);padding:11px}
 .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
-.shot{aspect-ratio:1;border:1px dashed var(--line);border-radius:8px;background:#0E0E0D center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;font:600 10px var(--mono);color:var(--ink2);padding:6px;text-align:center}
+.shot{aspect-ratio:1;border:1px dashed var(--line);border-radius:8px;background:#0E0E0D center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;font:600 10px var(--mono);color:var(--ink2);padding:6px;text-align:center;position:relative;overflow:hidden}
+/* camera label on a photo: white on a dark fade, readable on any picture */
+.shot.has{color:#fff;padding:22px 6px 7px;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.shot.has::before{content:'';position:absolute;inset:auto 0 0 0;height:60%;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,0));z-index:0}
+.shot.has span{position:relative;z-index:1}
 /* admin: applications */
 .app{border-top:1px solid var(--line);padding:12px 0}
 .app .shots{grid-template-columns:repeat(3,1fr)}
@@ -444,14 +448,15 @@ body.landing header,body.landing main,body.landing #login,body.landing #edit,bod
       const fs = [...($('aFiles').files || [])].slice(0, 3); $('aFiles').value = '';
       picked = []; $('aMsg').textContent = 'Prüfe Fotos …';
       const boxes = $('aShots').children;
-      for (let i = 0; i < 3; i++) { boxes[i].style.backgroundImage = ''; boxes[i].textContent = String(i + 1); }
+      for (let i = 0; i < 3; i++) { boxes[i].style.backgroundImage = ''; boxes[i].classList.remove('has'); boxes[i].textContent = String(i + 1); }
       for (let i = 0; i < fs.length; i++) {
         const cam = await exifCam(fs[i]);
         if (!cam) { boxes[i].textContent = '✗ kein Kamera-Foto'; continue; }
         const im = await shrink(fs[i], 1400, 0.82);
         if (Math.max(im.w, im.h) < 1000) { boxes[i].textContent = '✗ zu klein'; continue; }
         picked.push({ image: im.data, cam });
-        boxes[i].style.backgroundImage = `url(${im.data})`; boxes[i].textContent = '📷 ' + cam;
+        boxes[i].style.backgroundImage = `url(${im.data})`; boxes[i].classList.add('has');
+        boxes[i].replaceChildren(el('span', '', '📷 ' + cam));
       }
       $('aMsg').textContent = picked.length === 3 ? '3 echte Fotos ✓' : `${picked.length} von 3 gültig – nur Fotos direkt aus der Kamera (kein Screenshot, kein Download, nicht bearbeitet).`;
     };
@@ -485,7 +490,7 @@ body.landing header,body.landing main,body.landing #login,body.landing #edit,bod
       d.append(el('div', 'who', `${a.name || '–'} · ${a.wish}`));
       d.append(el('div', 'msg', `@${a.instagram || '–'} · ${a.email}${a.why ? ' · ' + a.why : ''}`));
       const sh = el('div', 'shots');
-      for (const s of a.shots || []) { const x = el('div', 'shot', '📷 ' + s.cam); x.style.backgroundImage = `url(${s.url})`; sh.append(x); }
+      for (const s of a.shots || []) { const x = el('div', 'shot has'); x.append(el('span', '', '📷 ' + s.cam)); x.style.backgroundImage = `url(${s.url})`; sh.append(x); }
       d.append(sh);
       const row = el('div', 'row');
       const yes = el('button', 'btn rust', 'Aufnehmen'), no = el('button', 'btn ghost', 'Ablehnen'), out = el('span', 'msg');
