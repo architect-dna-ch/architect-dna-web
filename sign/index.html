@@ -63,6 +63,7 @@ input[type=text]{width:100%;background:var(--card);border:1px solid var(--line);
   <div class="step">4 · PLATZIEREN</div>
   <p class="hint">Gesetzte Elemente ziehen zum Verschieben, Punkt unten rechts zum Vergrössern, × zum Entfernen.</p>
   <div id="pages"></div>
+  <label class="hint" style="display:flex;gap:8px;align-items:center;margin-top:14px"><input type="checkbox" id="brand" checked> Klein unten rechts vermerken: «signiert mit architect-dna.ch/sign»</label>
   <p class="lock">🔒 Keine Uploads, kein Konto. Das unterschriebene PDF wird direkt auf deinem Gerät erstellt.</p>
 </div>
 
@@ -206,6 +207,13 @@ input[type=text]{width:100%;background:var(--card);border:1px solid var(--line);
           const size = parseFloat(s.el.querySelector('.t').style.fontSize) * (W / pr.width);
           const h = box.height * (H / pr.height);
           page.drawText(s.content, { x, y: H - s.y * H - h * 0.78, size, font, color: rgb(0.07, 0.07, 0.07) });
+        }
+      }
+      if ($('brand').checked) {                       // a small, light mark bottom right on every signed page
+        const signed = [...new Set(stamps.map(s => s.page))];
+        for (const n of signed) {
+          const page = doc.getPages()[n], W = page.getWidth(), txt = 'signiert mit architect-dna.ch/sign', size = 6.5;
+          page.drawText(txt, { x: W - font.widthOfTextAtSize(txt, size) - 18, y: 14, size, font, color: rgb(0.55, 0.55, 0.55) });
         }
       }
       const out = await doc.save(), blob = new Blob([out], { type: 'application/pdf' });
