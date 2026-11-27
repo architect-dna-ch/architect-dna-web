@@ -198,7 +198,7 @@ footer a{color:var(--ink3);text-decoration:none}
   function show() {
     const ps = data.photos, ph = ps[at]; if (!ph) return;
     $('lbimg').src = ph.url; $('lbimg').alt = ph.caption || '';
-    $('lbcap').textContent = ph.caption || '';
+    $('lbcap').textContent = [ph.caption, ph.cam ? '📷 ' + ph.cam : ''].filter(Boolean).join('  ·  ');
     $('lbcount').textContent = (at + 1) + ' / ' + ps.length;
     [at - 1, at + 1].forEach(j => { if (ps[j]) { const im = new Image(); im.src = ps[j].url; } });
   }
@@ -251,6 +251,38 @@ footer a{color:var(--ink3);text-decoration:none}
   }
 
   // Resize on the phone: ≤ 2400 px, JPEG. Drawing to a canvas also drops EXIF — including GPS.
+  /* Real photography only: read the camera (Make + Model) and the original size from the photo's EXIF.
+     Screenshots, downloads, memes and AI images carry no camera, so they don't get in. */
+  async function exifCam(file) {
+    try {
+      const buf = new DataView(await file.slice(0, 256 * 1024).arrayBuffer());
+      if (buf.getUint16(0) !== 0xFFD8) return null;                       // not a JPEG straight from a camera
+      let o = 2;
+      while (o + 4 < buf.byteLength) {
+        const marker = buf.getUint16(o), len = buf.getUint16(o + 2);
+        if (marker === 0xFFE1 && buf.getUint32(o + 4) === 0x45786966) {  // "Exif"
+          const t = o + 10, le = buf.getUint16(t) === 0x4949;
+          const u16 = p => buf.getUint16(p, le), u32 = p => buf.getUint32(p, le);
+          const ifd = t + u32(t + 4), n = u16(ifd), tags = {};
+          for (let i = 0; i < n; i++) {
+            const e = ifd + 2 + i * 12, tag = u16(e), type = u16(e + 2), cnt = u32(e + 4);
+            if ((tag === 0x010F || tag === 0x0110) && type === 2) {
+              const at = cnt > 4 ? t + u32(e + 8) : e + 8;
+              let s = ''; for (let k = 0; k < cnt - 1; k++) s += String.fromCharCode(buf.getUint8(at + k));
+              tags[tag] = s.trim();
+            }
+          }
+          const make = tags[0x010F] || '', model = tags[0x0110] || '';
+          if (!model) return null;
+          return model.toLowerCase().startsWith(make.toLowerCase()) || !make ? model : make + ' ' + model;
+        }
+        if ((marker & 0xFF00) !== 0xFF00) break;
+        o += 2 + len;
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function shrink(file, maxSide, q) {
     return new Promise((res, rej) => {
       const url = URL.createObjectURL(file), img = new Image();
@@ -272,24 +304,29 @@ footer a{color:var(--ink3);text-decoration:none}
     let done = 0, dup = 0;
     const failed = [], why = {};
     const WHY = { 'wrong code': 'Code abgelaufen', 'bad image': 'Format nicht lesbar', 'image too large': 'zu gross',
-      'storage error': 'Speicher-Fehler', 'Bild nicht lesbar': 'Format nicht lesbar (HEIC?)' };
+      'storage error': 'Speicher-Fehler', 'Bild nicht lesbar': 'Format nicht lesbar (HEIC?)',
+      'no camera': 'kein Kamera-Foto (Screenshot, Download, KI oder bearbeitet)', 'too small': 'zu klein (unter 1200 px)' };
     const fingerprint = async f => {            // of the original file: identical in Chrome and in-app browsers
       try { const d = await crypto.subtle.digest('SHA-256', await f.arrayBuffer());
         return [...new Uint8Array(d)].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return ''; }
     };
     let fh = '';
-    const send = im => post({ action: 'upload', key, image: im.data, w: im.w, h: im.h, fh })
+    let cam = '';
+    const send = im => post({ action: 'upload', key, image: im.data, w: im.w, h: im.h, fh, cam })
       .catch(() => ({ ok: false, error: 'Netz weg' }));
     for (let i = 0; i < fs.length; i++) {
       const f = fs[i];
       $('upMsg').textContent = `Lade ${i + 1} von ${fs.length} …`;
       let err = null;
       try {
+        cam = await exifCam(f);
+        if (!cam) throw new Error('no camera');
         fh = await fingerprint(f);
         let im = await shrink(f, 2400, 0.86);
+        if (Math.max(im.w, im.h) < 1200) throw new Error('too small');
         if (im.data.length > 3_900_000) im = await shrink(f, 2000, 0.8);
         let r = await send(im);
-        if (!r.ok && r.error !== 'wrong code' && r.error !== 'bad image') {   // one calm retry for hiccups
+        if (!r.ok && !['wrong code', 'bad image', 'no camera'].includes(r.error)) {   // one calm retry for hiccups
           await new Promise(z => setTimeout(z, 1500)); r = await send(im);
         }
         if (r.ok) { r.duplicate ? dup++ : done++; } else err = r.error || 'unbekannt';

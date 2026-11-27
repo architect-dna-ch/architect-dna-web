@@ -21,7 +21,8 @@ const normCode = s => String(s || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
 const sha = s => crypto.createHash('sha256').update(String(s)).digest('hex');
 const clip = (s, n) => String(s || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
 const handleOf = s => String(s || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 30);
-const IMG = /\/([0-9a-f]{16})(?:_(\d+)x(\d+))?\.(jpg|webp|png)$/;
+// <id>_<w>x<h>[_<camera>].<ext> — the camera ("Google-Pixel-9a") comes from the original photo's EXIF
+const IMG = /\/([0-9a-f]{16})(?:_(\d+)x(\d+))?(?:_([A-Za-z0-9-]{1,48}))?\.(jpg|webp|png)$/;
 
 async function listAll(u) {
   const out = [];
@@ -47,13 +48,14 @@ async function load(u) {
   const files = new Map();
   for (const b of blobs) {
     const m = b.pathname.match(IMG);
-    if (m) files.set(m[1], { b, w: +m[2] || 0, h: +m[3] || 0 });
+    if (m) files.set(m[1], { b, w: +m[2] || 0, h: +m[3] || 0, cam: m[4] ? m[4].replace(/-/g, ' ') : '' });
   }
   const known = new Set();
-  d.photos = (d.photos || []).filter(p => files.has(p.id) && !known.has(p.id) && known.add(p.id));
+  d.photos = (d.photos || []).filter(p => files.has(p.id) && !known.has(p.id) && known.add(p.id))
+    .map(p => ({ ...p, cam: files.get(p.id).cam }));
   const fresh = [...files].filter(([id]) => !known.has(id))
     .sort((a, b) => new Date(b[1].b.uploadedAt) - new Date(a[1].b.uploadedAt))
-    .map(([id, f]) => ({ id, url: f.b.url, caption: '', w: f.w, h: f.h, at: +new Date(f.b.uploadedAt) }));
+    .map(([id, f]) => ({ id, url: f.b.url, caption: '', w: f.w, h: f.h, cam: f.cam, at: +new Date(f.b.uploadedAt) }));
   d.photos = [...fresh, ...d.photos];
   return { d, old: metas };
 }
@@ -86,7 +88,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       handle: u,
       profile: d.profile,
-      photos: (d.photos || []).map(({ id, url, caption, w, h, at }) => ({ id, url, caption, w, h, at })),
+      photos: (d.photos || []).map(({ id, url, caption, w, h, cam, at }) => ({ id, url, caption, w, h, cam: cam || '', at })),
     });
   }
 
@@ -112,7 +114,10 @@ export default async function handler(req, res) {
       const id = fh.slice(0, 16);
       const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
       const w = Math.max(0, Math.min(20000, Math.round(+b.w) || 0)), h = Math.max(0, Math.min(20000, Math.round(+b.h) || 0));
-      const path = `portfolio/${u}/${id}_${w}x${h}.${ext}`;
+      // real photography only: the page sends the camera from the original's EXIF; no camera, no upload
+      const cam = String(b.cam || '').replace(/[^A-Za-z0-9 ]+/g, ' ').trim().replace(/\s+/g, '-').slice(0, 48);
+      if (!cam) return res.status(422).json({ error: 'no camera' });
+      const path = `portfolio/${u}/${id}_${w}x${h}_${cam}.${ext}`;
       let blob;
       try {
         blob = await put(path, bytes, { access: 'public', addRandomSuffix: false, contentType: `image/${m[1]}` });
