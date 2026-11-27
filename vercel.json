@@ -98,6 +98,18 @@
       "destination": "/tag"
     },
     {
+      "source": "/api/pulse",
+      "destination": "/api/arc?fn=pulse"
+    },
+    {
+      "source": "/pulse/:event/screen",
+      "destination": "/pulse"
+    },
+    {
+      "source": "/pulse/:event",
+      "destination": "/pulse"
+    },
+    {
       "source": "/studio",
       "destination": "/index.html"
     },

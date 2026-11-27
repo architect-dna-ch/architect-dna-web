@@ -9,8 +9,9 @@ import tag from './_arc/tag.js';
 import lens from './_arc/lens.js';
 import portfolio from './_arc/portfolio.js';
 import stats from './_arc/stats.js';
+import pulse from './_arc/pulse.js';
 
-const HANDLERS = { konnekt, cal, crowd, tag, lens, portfolio, stats };
+const HANDLERS = { konnekt, cal, crowd, tag, lens, portfolio, stats, pulse };
 
 export default async function handler(req, res) {
   const fn = String((req.query && req.query.fn) || '');

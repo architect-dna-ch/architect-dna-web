@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARC Pulse</title>
+<meta name="description" content="Das Eisbrecher-Spiel für Partys: QR scannen, Farbe finden, Mission machen.">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="/icon.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0A0A0A;--ink:#F4F1EC;--ink2:#A9A39A;--ink3:#6F6A63;--line:#2B2824;--card:#151412;--rust:#E0573B;--c:#E0573B;
+--font:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',sans-serif;--mono:'SF Mono','Fira Code',ui-monospace,monospace}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;min-height:100%}
+body{min-height:100dvh}
+.view{display:none;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 26px) 20px calc(env(safe-area-inset-bottom) + 24px)}
+.view.on{display:flex;flex-direction:column}
+.eye{font:700 11px/1 var(--mono);letter-spacing:.22em;color:var(--rust)}
+h1{font-size:clamp(46px,13vw,96px);letter-spacing:-.055em;line-height:.9;font-weight:800;margin:12px 0 12px}
+.lead{color:var(--ink2);font-size:17px;line-height:1.5;max-width:46ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;font-size:15px;line-height:1.45}
+.card b{display:block;margin-bottom:2px}
+label{display:block;font:700 10px var(--mono);letter-spacing:.16em;color:var(--ink3);margin:18px 0 6px}
+input{width:100%;background:#111;border:1px solid var(--line);border-radius:10px;color:var(--ink);font:18px var(--font);padding:13px}
+.btn{border:0;border-radius:28px;padding:15px 20px;font:800 17px var(--font);cursor:pointer;background:var(--ink);color:#111;margin-top:14px}
+.btn.rust{background:var(--rust);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+.msg{color:var(--ink2);font-size:14px;margin-top:10px;min-height:1em}
+.spacer{flex:1}
+/* the glow */
+#play{position:relative;overflow:hidden;align-items:center;text-align:center}
+#glow{position:absolute;inset:-20%;background:radial-gradient(circle at 50% 42%,var(--c) 0%,transparent 62%);opacity:.75;animation:breathe 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes breathe{0%,100%{transform:scale(.92);opacity:.55}50%{transform:scale(1.06);opacity:.95}}
+#play>*:not(#glow){position:relative}
+#sym{font-size:min(46vw,260px);line-height:1;margin-top:3vh;color:#fff;text-shadow:0 0 40px var(--c)}
+#colorName{font:800 22px var(--font);letter-spacing:.02em;margin-top:6px}
+#mission{font:800 clamp(22px,6.2vw,34px)/1.18 var(--font);letter-spacing:-.02em;max-width:22ch;margin:22px auto 0}
+#sub{color:#fff;opacity:.85;font-size:15px;margin-top:10px;max-width:34ch}
+#timer{font:700 13px var(--mono);letter-spacing:.14em;opacity:.8;margin-top:16px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#play .btn{min-width:150px}
+#paused{display:none;position:absolute;inset:0;background:rgba(10,10,10,.92);z-index:5;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+#paused.on{display:flex}
+/* big screen */
+#screen{align-items:center;text-align:center;justify-content:center}
+#screen h1{font-size:clamp(40px,8vw,120px)}
+#qr{background:#fff;padding:18px;border-radius:18px;margin:18px auto}
+.stats{display:flex;gap:36px;justify-content:center;margin-top:12px}
+.stats div{font:800 clamp(36px,6vw,80px) var(--font)}
+.stats span{display:block;font:700 12px var(--mono);letter-spacing:.16em;color:var(--ink3)}
+#bigMission{font:800 clamp(22px,3.4vw,46px)/1.2 var(--font);max-width:28ch;margin:22px auto 0}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:6px 12px;font:600 13px var(--mono);color:var(--ink2);margin-top:10px}
+a{color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<!-- 1) organiser: create a party -->
+<section class="view" id="home">
+  <div class="eye">— ARC PULSE</div>
+  <h1>Die Party<br>bricht das Eis.</h1>
+  <p class="lead">Alle scannen einen QR-Code. Alle paar Minuten leuchten die Handys in einer Farbe – such die anderen mit deiner Farbe und macht zusammen die Mission. Niemand muss sich trauen. Es ist ein Spiel.</p>
+  <div class="card"><b>✓ Nur wer mitmacht, spielt mit</b>Niemand wird angeschrieben, der nicht selbst beigetreten ist. Pause jederzeit.</div>
+  <div class="card"><b>✓ Kein Konto, keine App</b>Nur ein Vorname. Läuft im Browser.</div>
+  <label for="evName">NAME DER PARTY</label><input id="evName" maxlength="60" placeholder="z. B. Lenas 25.">
+  <label for="evMin">MINUTEN PRO RUNDE</label><input id="evMin" type="number" min="3" max="30" value="10">
+  <button class="btn rust" id="create">Party starten</button>
+  <p class="msg" id="homeMsg"></p>
+  <div class="spacer"></div>
+  <p class="msg"><a href="/">architect-dna.ch</a></p>
+</section>
+
+<!-- 2) guest: join -->
+<section class="view" id="join">
+  <div class="eye" id="joinEye">— ARC PULSE</div>
+  <h1 id="joinTitle">Mach mit.</h1>
+  <p class="lead">Dein Handy leuchtet gleich in einer Farbe. Finde die anderen mit derselben Farbe und macht die Mission zusammen.</p>
+  <label for="myName">DEIN VORNAME</label><input id="myName" maxlength="20" autocomplete="given-name">
+  <button class="btn rust" id="joinBtn">Los</button>
+  <p class="msg" id="joinMsg"></p>
+  <div class="spacer"></div>
+  <p class="msg">Nur Vorname, kein Konto. Du kannst jederzeit pausieren.</p>
+</section>
+
+<!-- 3) guest: the glowing screen -->
+<section class="view" id="play">
+  <div id="glow"></div>
+  <div class="eye" style="color:#fff;opacity:.8" id="playEye">— RUNDE 1</div>
+  <div id="sym">●</div>
+  <div id="colorName">Orange</div>
+  <div id="mission">Mission lädt …</div>
+  <div id="sub"></div>
+  <div id="timer"></div>
+  <div class="spacer"></div>
+  <div class="row"><button class="btn" id="doneBtn">Erledigt ✓</button><button class="btn ghost" id="pauseBtn">Pause</button></div>
+  <div id="paused"><div class="eye">— PAUSE</div><h1 style="font-size:48px">Kurz raus.</h1><p class="lead" style="text-align:center">Du bekommst keine Missionen, bis du weitermachst.</p><button class="btn rust" id="resumeBtn">Weiter spielen</button></div>
+</section>
+
+<!-- 4) big screen for the room -->
+<section class="view" id="screen">
+  <div class="eye">— ARC PULSE</div>
+  <h1 id="scName">Party</h1>
+  <div id="qr"></div>
+  <div class="chip" id="scUrl"></div>
+  <div class="stats"><div id="scPeople">0<span>DABEI</span></div><div id="scDone">0<span>MISSIONEN ✓</span></div><div id="scTimer">–<span>NÄCHSTE RUNDE</span></div></div>
+  <div id="bigMission"></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const API = '/api/pulse';
+  const seg = location.pathname.replace(/\/+$/, '').split('/');      // /pulse/<event>[/screen]
+  const ev = seg[2] || '', isScreen = seg[3] === 'screen';
+  const show = id => document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
+  const post = b => fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) })
+    .then(r => r.json().then(j => ({ ok: r.ok, ...j }))).catch(() => ({ ok: false, error: 'Netz weg' }));
+  const store = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+                  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+
+  /* ---------------- the game: missions, colours, groups ---------------- */
+  const COLORS = [['#E0573B', 'Orange'], ['#3FA7FF', 'Blau'], ['#3CD07A', 'Grün'], ['#C77DFF', 'Lila'],
+                  ['#FFD23F', 'Gelb'], ['#FF5FA2', 'Pink'], ['#2EE6D6', 'Türkis'], ['#FFFFFF', 'Weiss']];
+  const SYMS = ['●', '▲', '■', '★'];
+  // party missions: n = group size; easy and warm first, bolder later in the night
+  const MISSIONS = [
+    { n: 2, t: 'Findet euch. Fragt euch: Was war das Beste an deiner Woche?' },
+    { n: 2, t: 'Erfindet zusammen einen geheimen Handschlag. Zeigt ihn später jemandem.' },
+    { n: 4, t: 'Findet eure Farbe. Einigt euch auf einen Song, den der DJ spielen soll.' },
+    { n: 2, t: 'Zwei Wahrheiten, eine Lüge: Wer errät die Lüge des anderen?' },
+    { n: 2, t: 'Macht ein Selfie mit der witzigsten Grimasse, die ihr hinkriegt.' },
+    { n: 4, t: 'Findet alle mit eurer Farbe. Was habt ihr alle vier gemeinsam? (Kein Wetter!)' },
+    { n: 2, t: 'Erzählt euch den peinlichsten Moment eurer Schulzeit.' },
+    { n: 2, t: 'Bringt euch gegenseitig einen Tanzmove bei. 10 Sekunden reichen.' },
+    { n: 3, t: 'Zu dritt: Erfindet einen Bandnamen und den ersten Songtitel.' },
+    { n: 2, t: 'Fragt: Wenn du morgen in eine andere Stadt ziehen müsstest – welche?' },
+    { n: 4, t: 'Ihr vier: Findet jemanden, der eine andere Farbe hat, und stellt euch gemeinsam vor.' },
+    { n: 2, t: 'Was ist das Mutigste, das du je gemacht hast? Erzählt es euch.' },
+    { n: 2, t: 'Stosst auf etwas an, das heute gut gelaufen ist.' },
+    { n: 3, t: 'Zu dritt: Ein Foto, auf dem ihr wie ein Albumcover ausseht.' },
+    { n: 2, t: 'Welches Essen könntest du für immer essen? Einigt euch auf ein gemeinsames.' },
+    { n: 4, t: 'Gruppenbild mit eurer Farbe – alle Handys leuchtend in die Kamera!' },
+    { n: 2, t: 'Erzählt euch einen Traum, den ihr noch habt. Einen echten.' },
+    { n: 2, t: 'High five mit drei Leuten, deren Handy gerade leuchtet.' },
+  ];
+  const hash = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const missionOf = (e, r) => MISSIONS[(hash(e) + r * 7) % MISSIONS.length];
+
+  /** The same groups on every phone: people who joined before the round began and aren't paused,
+   *  shuffled by a hash of (person, round), cut into groups of the mission's size; a single
+   *  leftover joins the last group. Group g → colour g%8 and symbol ⌊g/8⌋. */
+  function groupsFor(st, r) {
+    const start = st.event.start + r * st.event.roundMs, paused = new Set(st.paused);
+    const elig = st.people.filter(p => p.at < start && !paused.has(p.pid))
+      .sort((a, b) => hash(a.pid + ':' + r) - hash(b.pid + ':' + r));
+    const n = missionOf(st.event.id, r).n, gs = [];
+    for (let i = 0; i < elig.length; i += n) gs.push(elig.slice(i, i + n));
+    if (gs.length > 1 && gs[gs.length - 1].length === 1) gs[gs.length - 2].push(...gs.pop());
+    return gs;
+  }
+
+  /* ---------------- polling the state, with the server's clock ---------------- */
+  let st = null, skew = 0;
+  async function poll() {
+    try {
+      const r = await fetch(`${API}?e=${encodeURIComponent(ev)}`, { cache: 'no-store' });
+      if (r.status === 404) return 'gone';
+      const j = await r.json();
+      skew = j.now - Date.now(); st = j;
+      return 'ok';
+    } catch (e) { return 'err'; }
+  }
+  const now = () => Date.now() + skew;
+  const roundNow = () => Math.max(0, Math.floor((now() - st.event.start) / st.event.roundMs));
+  const leftMs = () => st.event.roundMs - ((now() - st.event.start) % st.event.roundMs);
+  const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+
+  /* ---------------- 1) create ---------------- */
+  if (!ev) {
+    show('home');
+    $('create').onclick = async () => {
+      $('create').disabled = true; $('homeMsg').textContent = 'Starte …';
+      const r = await post({ action: 'create', name: $('evName').value, minutes: $('evMin').value });
+      $('create').disabled = false;
+      if (!r.ok) { $('homeMsg').textContent = 'Ging nicht: ' + (r.error || ''); return; }
+      location.href = `/pulse/${r.id}/screen`;
+    };
+    return;
+  }
+
+  /* ---------------- 4) the big screen ---------------- */
+  if (isScreen) {
+    show('screen');
+    const url = `${location.origin}/pulse/${ev}`;
+    $('scUrl').textContent = url.replace(/^https?:\/\//, '');
+    try { new QRCode($('qr'), { text: url, width: 260, height: 260, correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
+    const tick = () => {
+      if (!st) return;
+      const r = roundNow(), total = Object.values(st.done || {}).reduce((a, x) => a + x.length, 0);
+      $('scName').textContent = st.event.name;
+      $('scPeople').firstChild.nodeValue = st.people.length - st.paused.length;
+      $('scDone').firstChild.nodeValue = Math.floor(total / 2);
+      $('scTimer').firstChild.nodeValue = mmss(leftMs());
+      $('bigMission').textContent = 'Runde ' + (r + 1) + ': ' + missionOf(ev, r).t;
+    };
+    (async function loop() { await poll(); tick(); setTimeout(loop, 8000); })();
+    setInterval(tick, 1000);
+    return;
+  }
+
+  /* ---------------- 2) join / 3) play ---------------- */
+  const KEY = 'pulse_' + ev;
+  let me = store.get(KEY), lastRound = -1, doneRounds = new Set((me && me.done) || []);
+  async function start() {
+    const s = await poll();
+    if (s === 'gone') { show('join'); $('joinTitle').textContent = 'Party nicht gefunden.'; $('joinBtn').hidden = true; return; }
+    if (!me) {
+      show('join');
+      if (st) { $('joinEye').textContent = '— ' + st.event.name.toUpperCase(); }
+      $('joinBtn').onclick = async () => {
+        const name = $('myName').value.trim(); if (!name) { $('myName').focus(); return; }
+        $('joinBtn').disabled = true; $('joinMsg').textContent = 'Trete bei …';
+        const r = await post({ action: 'join', e: ev, name });
+        $('joinBtn').disabled = false;
+        if (!r.ok) { $('joinMsg').textContent = 'Ging nicht: ' + (r.error || ''); return; }
+        me = { pid: r.pid, name, at: r.at, done: [] }; store.set(KEY, me);
+        play();
+      };
+      return;
+    }
+    play();
+  }
+
+  function render() {
+    if (!st || !me) return;
+    const r = roundNow(), mine = st.people.find(p => p.pid === me.pid);
+    $('timer').textContent = 'NÄCHSTE MISSION IN ' + mmss(leftMs());
+    if (r !== lastRound) { lastRound = r; if (navigator.vibrate) navigator.vibrate([120, 80, 120]); }
+    $('playEye').textContent = '— RUNDE ' + (r + 1) + ' · ' + st.event.name.toUpperCase();
+    // joined during this round: wait for the next one
+    if (!mine || mine.at >= st.event.start + r * st.event.roundMs) {
+      setColor('#3A3631', '…', 'Gleich geht\'s los');
+      $('mission').textContent = 'Du bist dabei! Deine erste Mission kommt in ' + mmss(leftMs()) + '.';
+      $('sub').textContent = 'Bis dahin: Getränk holen, umschauen.';
+      $('doneBtn').hidden = true; return;
+    }
+    const gs = groupsFor(st, r), g = gs.findIndex(x => x.some(p => p.pid === me.pid));
+    if (g < 0) { setColor('#3A3631', '…', ''); $('mission').textContent = 'Kurz warten …'; $('sub').textContent = ''; return; }
+    const [hex, cname] = COLORS[g % COLORS.length], sym = SYMS[Math.floor(g / COLORS.length) % SYMS.length];
+    setColor(hex, sym, cname + ' ' + sym);
+    const m = missionOf(ev, r), others = gs[g].length - 1;
+    $('mission').textContent = m.t;
+    $('sub').textContent = others <= 0 ? 'Du bist gerade allein in deiner Farbe – such jemanden mit einer anderen Farbe und macht die Mission trotzdem.'
+      : `Such ${others === 1 ? 'die Person' : 'die ' + others + ' Personen'} mit «${cname} ${sym}». Handy hochhalten hilft.`;
+    $('doneBtn').hidden = false;
+    $('doneBtn').textContent = doneRounds.has(r) ? 'Erledigt ✓✓' : 'Erledigt ✓';
+    $('doneBtn').disabled = doneRounds.has(r);
+  }
+  function setColor(hex, sym, label) {
+    document.documentElement.style.setProperty('--c', hex);
+    $('sym').textContent = sym; $('colorName').textContent = label;
+    document.querySelector('meta[name=theme-color]').setAttribute('content', hex);
+  }
+
+  function play() {
+    show('play');
+    (async function loop() { await poll(); render(); setTimeout(loop, 10_000); })();
+    setInterval(render, 1000);
+    // keep the screen on while playing (where supported)
+    try { navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); } catch (e) {}
+    $('doneBtn').onclick = async () => {
+      const r = roundNow(); doneRounds.add(r); me.done = [...doneRounds]; store.set(KEY, me); render();
+      if (navigator.vibrate) navigator.vibrate(60);
+      await post({ action: 'done', e: ev, pid: me.pid, r });
+    };
+    $('pauseBtn').onclick = async () => { $('paused').classList.add('on'); await post({ action: 'pause', e: ev, pid: me.pid, on: true }); };
+    $('resumeBtn').onclick = async () => { $('paused').classList.remove('on'); await post({ action: 'pause', e: ev, pid: me.pid, on: false }); };
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
