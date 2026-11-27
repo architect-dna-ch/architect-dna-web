@@ -499,8 +499,23 @@ body.landing header,body.landing main,body.landing #login,body.landing #edit,bod
         const x = await post({ action: 'approve', key, id: a.id, handle: h }).catch(() => ({}));
         if (!x.ok) { out.textContent = x.error === 'handle taken' ? 'Name vergeben.' : 'Ging nicht.'; return; }
         out.textContent = '';
-        row.replaceChildren(el('div', 'msg', `✓ Aufgenommen. Schick an ${a.email}:`),
-          el('div', 'who', x.link), el('div', 'who', 'Code: ' + x.code));
+        // one tap opens the mail app with everything filled in
+        const subject = 'Deine Galerie ist offen – Social-Mediathek';
+        const bodyTxt = `Hoi ${(a.name || '').split(' ')[0] || ''}\n\n`
+          + `Willkommen! Deine Galerie ist bereit:\n${x.link}\n\n`
+          + `Dein Zugangscode (gut aufbewahren, nicht teilen):\n${x.code}\n\n`
+          + `So geht's:\n1. Link öffnen\n2. Ganz unten auf «· · ·» tippen und den Code eingeben\n`
+          + `3. «Fotos hochladen» – nur Fotos direkt aus der Kamera, jedes bekommt den Kamera-Nachweis\n`
+          + `4. Link in deine Instagram-Bio, und mit «↗ Story» einzelne Fotos teilen\n\n`
+          + `Am besten im Browser (Chrome/Safari) bearbeiten, nicht in der Instagram-App.\n\n`
+          + `Viel Freude damit!\nMuharrem · architect-dna.ch`;
+        const mail = el('a', 'btn rust', '✉ E-Mail öffnen');
+        mail.href = `mailto:${encodeURIComponent(a.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyTxt)}`;
+        const copy = el('button', 'btn ghost', 'Text kopieren');
+        copy.onclick = () => navigator.clipboard.writeText(bodyTxt).then(() => { copy.textContent = 'Kopiert ✓'; }).catch(() => {});
+        const r2 = el('div', 'row'); r2.append(mail, copy);
+        row.replaceChildren(el('div', 'msg', `✓ Aufgenommen: ${a.email}`),
+          el('div', 'who', x.link), el('div', 'who', 'Code: ' + x.code), r2);
       };
       no.onclick = async () => { if (!confirm('Bewerbung ablehnen und löschen?')) return; const x = await post({ action: 'reject', key, id: a.id }).catch(() => ({})); if (x.ok) d.remove(); };
       row.append(yes, no, out); d.append(row);
