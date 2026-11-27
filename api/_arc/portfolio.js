@@ -13,6 +13,38 @@ import crypto from 'node:crypto';
 const OWNERS = {
   muh4rrrem: '39fd9ea17ca8854ac559996bd3ad1b70cdc6c4ca509fa78b0db1bd666400415c',
 };
+const ADMIN = 'muh4rrrem';            // reviews applications and admits new photographers
+
+/* Admitted photographers live in Blob (mediathek/owners-*.json, newest wins — same trick as the meta),
+ * merged with the fixed ones above. Cached for 30 s per instance. */
+let ownersCache = null, ownersAt = 0;
+async function owners(fresh) {
+  if (!fresh && ownersCache && Date.now() - ownersAt < 30_000) return ownersCache;
+  let extra = {};
+  try {
+    const r = await list({ prefix: 'mediathek/owners-', limit: 1000 });
+    const newest = r.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))[0];
+    if (newest) extra = await (await fetch(newest.url, { cache: 'no-store' })).json();
+  } catch (e) { /* only the fixed ones */ }
+  ownersCache = { ...extra, ...OWNERS }; ownersAt = Date.now();
+  return ownersCache;
+}
+async function saveOwners(map) {
+  const extra = { ...map }; for (const k of Object.keys(OWNERS)) delete extra[k];
+  await put(`mediathek/owners-${Date.now()}.json`, JSON.stringify(extra), { access: 'public', addRandomSuffix: true, contentType: 'application/json' });
+  const r = await list({ prefix: 'mediathek/owners-', limit: 1000 });
+  const old = r.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)).slice(1).map(b => b.url);
+  if (old.length) { try { await del(old); } catch (e) { /* harmless */ } }
+  ownersCache = null;
+}
+const applyHits = new Map();             // ip → [timestamps]: 5 applications per hour per address
+function rateOk(ip) {
+  const now = Date.now(), a = (applyHits.get(ip) || []).filter(t => now - t < 3_600_000);
+  if (a.length >= 5) return false;
+  a.push(now); applyHits.set(ip, a); return true;
+}
+const camSlug = c => String(c || '').replace(/[^A-Za-z0-9 ]+/g, ' ').trim().replace(/\s+/g, '-').slice(0, 48);
+const newCode = () => { const h = crypto.randomBytes(12).toString('hex').toUpperCase(); return h.match(/.{6}/g).join('-'); };
 const MAX_IMAGE_CHARS = 4_000_000;   // ~3 MB of JPEG as base64, under the 4.5 MB request limit
 const MAX_PHOTOS = 300;
 
@@ -66,8 +98,8 @@ async function save(u, d, old) {
   if (stale.length) { try { await del(stale); } catch (e) { /* harmless leftovers */ } }
 }
 
-function isOwner(u, key) {
-  const want = OWNERS[u];
+async function isOwner(u, key) {
+  const want = (await owners())[u];
   if (!want || !key) return false;
   const got = sha(normCode(key));
   return got.length === want.length && crypto.timingSafeEqual(Buffer.from(got), Buffer.from(want));
@@ -81,7 +113,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     const u = handleOf(req.query.u);
-    if (!OWNERS[u]) return res.status(404).json({ error: 'unknown profile' });
+    if (!(await owners())[u]) return res.status(404).json({ error: 'unknown profile' });
     let d;
     try { ({ d } = await load(u)); } catch (e) { return res.status(503).json({ error: 'storage error' }); }
     res.setHeader('Cache-Control', 'public, max-age=10, s-maxage=10');
@@ -95,9 +127,74 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   res.setHeader('Cache-Control', 'no-store');
   const b = req.body || {};
+
+  /* ---- anyone: apply for a gallery (name, wished handle, Instagram, e-mail, 3 camera photos) ---- */
+  if (b.action === 'apply') {
+    const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+    if (!rateOk(ip)) return res.status(429).json({ error: 'too many' });
+    const wish = handleOf(b.wish), email = clip(b.email, 120);
+    if (!wish || wish.length < 3 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'missing fields' });
+    if ((await owners())[wish]) return res.status(409).json({ error: 'handle taken' });
+    const photos = Array.isArray(b.photos) ? b.photos.slice(0, 3) : [];
+    if (photos.length < 3) return res.status(400).json({ error: 'three photos' });
+    const id = Date.now().toString(36) + crypto.randomBytes(3).toString('hex');
+    try {
+      const shots = [];
+      for (let i = 0; i < 3; i++) {
+        const m = String(photos[i].image || '').match(/^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/);
+        const cam = camSlug(photos[i].cam);
+        if (!m || !cam) return res.status(422).json({ error: 'no camera' });
+        if (m[1].length > 1_400_000) return res.status(413).json({ error: 'image too large' });
+        const blob = await put(`mediathek/apply/${id}/${i}_${cam}.jpg`, Buffer.from(m[1], 'base64'),
+          { access: 'public', addRandomSuffix: true, contentType: 'image/jpeg' });
+        shots.push({ url: blob.url, cam: cam.replace(/-/g, ' ') });
+      }
+      await put(`mediathek/apply/${id}/a.json`, JSON.stringify({
+        id, at: Date.now(), name: clip(b.name, 60), wish, instagram: handleOf(b.instagram), email,
+        why: clip(b.why, 300), shots,
+      }), { access: 'public', addRandomSuffix: true, contentType: 'application/json' });
+      return res.status(200).json({ ok: true });
+    } catch (e) {
+      return res.status(500).json({ error: 'storage error' });
+    }
+  }
+
   const u = handleOf(b.u);
-  if (!OWNERS[u]) return res.status(404).json({ error: 'unknown profile' });
-  if (!isOwner(u, b.key)) return res.status(403).json({ error: 'wrong code' });
+  if (!(await owners())[u]) return res.status(404).json({ error: 'unknown profile' });
+  if (!(await isOwner(u, b.key))) return res.status(403).json({ error: 'wrong code' });
+
+  /* ---- admin: review applications, admit or decline ---- */
+  if (b.action === 'applications' || b.action === 'approve' || b.action === 'reject') {
+    if (u !== ADMIN) return res.status(403).json({ error: 'not admin' });
+    try {
+      const r = await list({ prefix: 'mediathek/apply/', limit: 1000 });
+      if (b.action === 'applications') {
+        const metas = r.blobs.filter(x => /\/a-?[^/]*\.json$/.test(x.pathname) || x.pathname.endsWith('/a.json'));
+        const apps = [];
+        for (const m of metas) { try { apps.push(await (await fetch(m.url, { cache: 'no-store' })).json()); } catch (e) { /* skip */ } }
+        apps.sort((x, y) => y.at - x.at);
+        return res.status(200).json({ ok: true, applications: apps });
+      }
+      const aid = String(b.id || '').replace(/[^a-z0-9]/g, '');
+      const mine = r.blobs.filter(x => x.pathname.startsWith(`mediathek/apply/${aid}/`));
+      if (!aid || !mine.length) return res.status(404).json({ error: 'no such application' });
+      if (b.action === 'approve') {
+        const handle = handleOf(b.handle);
+        if (!handle || handle.length < 3) return res.status(400).json({ error: 'bad handle' });
+        const map = await owners(true);
+        if (map[handle]) return res.status(409).json({ error: 'handle taken' });
+        const code = newCode();
+        map[handle] = sha(normCode(code));
+        await saveOwners(map);
+        try { await del(mine.map(x => x.url)); } catch (e) { /* tidy later */ }
+        return res.status(200).json({ ok: true, handle, code, link: `https://architect-dna.ch/social-mediathek/${handle}` });
+      }
+      try { await del(mine.map(x => x.url)); } catch (e) { /* already gone */ }
+      return res.status(200).json({ ok: true });
+    } catch (e) {
+      return res.status(500).json({ error: 'storage error' });
+    }
+  }
 
   if (b.action === 'check') return res.status(200).json({ ok: true });
 

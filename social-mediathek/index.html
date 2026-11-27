@@ -65,9 +65,52 @@ footer a{color:var(--ink3);text-decoration:none}
 .tools .del{color:#ff8a73}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 :focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+/* landing + application (/social-mediathek without a handle) */
+#landing{display:none;max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 34px) 4px 40px}
+body.landing #landing{display:block}
+body.landing header,body.landing main,body.landing #login,body.landing #edit,body.landing footer{display:none}
+.lead{font-size:18px;line-height:1.5;color:var(--ink2);max-width:52ch;margin:6px 0 22px}
+.points{display:grid;gap:10px;margin:0 0 26px}
+.points div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card);font-size:15px;line-height:1.45}
+.points b{display:block;color:var(--ink);margin-bottom:2px}
+#apply label{display:block;font:700 10px var(--mono);letter-spacing:.14em;color:var(--ink3);margin:14px 0 6px}
+#apply input,#apply textarea{width:100%;background:#0E0E0D;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:16px var(--font);padding:11px}
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.shot{aspect-ratio:1;border:1px dashed var(--line);border-radius:8px;background:#0E0E0D center/cover no-repeat;display:flex;align-items:flex-end;justify-content:center;font:600 10px var(--mono);color:var(--ink2);padding:6px;text-align:center}
+/* admin: applications */
+.app{border-top:1px solid var(--line);padding:12px 0}
+.app .shots{grid-template-columns:repeat(3,1fr)}
+.app .shot{border-style:solid}
+#lbshare{width:auto;padding:0 16px;border-radius:24px;font:600 14px var(--font)}
 </style>
 </head>
 <body>
+<section id="landing">
+  <div class="eye">— Social-Mediathek · Fotografie</div>
+  <h1>Echt.<br>Bewiesen.</h1>
+  <p class="lead">Eine Galerie für deine Fotos, direkt aus der Kamera – mit Kamera-Nachweis auf jedem Bild. Ein Link für deine Instagram-Bio.</p>
+  <div class="points">
+    <div><b>📷 Nur echte Fotos</b>Jedes Bild trägt die Kamera, mit der es gemacht wurde – Handy oder Kamera. Screenshots, Downloads und KI-Bilder kommen nicht rein.</div>
+    <div><b>⌁ Ruhig</b>Keine Werbung, keine Likes, kein Feed. Nur deine Bilder, gross und schnell.</div>
+    <div><b>✦ Auf Einladung</b>Jede Galerie wird angeschaut, bevor sie aufgeht. So bleibt das Niveau.</div>
+  </div>
+  <form id="apply" onsubmit="return false">
+    <div class="eye" style="margin-top:6px">— Galerie beantragen</div>
+    <label for="aName">NAME</label><input id="aName" maxlength="60" autocomplete="name">
+    <label for="aWish">WUNSCH-LINK</label><input id="aWish" maxlength="30" placeholder="z. B. lena.shoots" autocapitalize="off">
+    <label for="aIg">INSTAGRAM</label><input id="aIg" maxlength="30" placeholder="@deinname" autocapitalize="off">
+    <label for="aMail">E-MAIL</label><input id="aMail" type="email" maxlength="120" autocomplete="email">
+    <label for="aWhy">WAS FOTOGRAFIERST DU? (optional)</label><textarea id="aWhy" rows="2" maxlength="300"></textarea>
+    <label>3 FOTOS, DIREKT AUS DER KAMERA</label>
+    <div class="shots" id="aShots"><div class="shot">1</div><div class="shot">2</div><div class="shot">3</div></div>
+    <input type="file" id="aFiles" accept="image/jpeg" multiple class="sr">
+    <div class="row"><button class="btn ghost" id="aPick" type="button">Fotos wählen</button>
+      <button class="btn rust" id="aSend" type="button">Bewerben</button></div>
+    <p class="msg" id="aMsg" style="margin-top:10px"></p>
+  </form>
+  <footer style="display:flex;margin-top:40px;padding:0"><a href="/">architect-dna.ch</a><a href="/social-mediathek/muh4rrrem">Beispiel ansehen →</a></footer>
+</section>
+
 <header>
   <div class="eye">— Social-Mediathek · Fotografie</div>
   <h1 id="handle">…</h1>
@@ -92,6 +135,10 @@ footer a{color:var(--ink3);text-decoration:none}
   <label for="pBio">KURZ ÜBER DICH</label><textarea id="pBio" maxlength="240" rows="2"></textarea>
   <label for="pIg">INSTAGRAM-NAME</label><input id="pIg" maxlength="30">
   <div class="row"><button class="btn" id="saveP">Profil speichern</button><button class="btn ghost" id="logout">Fertig</button><span class="msg" id="pMsg"></span></div>
+  <div id="adminBox" hidden>
+    <div class="row"><button class="btn ghost" id="loadApps">Bewerbungen ansehen</button><span class="msg" id="appsMsg"></span></div>
+    <div id="apps"></div>
+  </div>
 </section>
 
 <main><div class="grid" id="grid"></div><div class="empty" id="empty" hidden></div></main>
@@ -105,7 +152,7 @@ footer a{color:var(--ink3);text-decoration:none}
     <button class="lbb" id="lbp" aria-label="Vorheriges">‹</button>
     <span id="lbcount"></span>
     <button class="lbb" id="lbx" aria-label="Schliessen">✕ Schliessen</button>
-    <span id="lbspace" style="min-width:56px"></span>
+    <button class="lbb" id="lbshare" aria-label="Als Story teilen">↗ Story</button>
     <button class="lbb" id="lbn" aria-label="Nächstes">›</button>
   </div>
 </div>
@@ -121,7 +168,9 @@ footer a{color:var(--ink3);text-decoration:none}
     if (dirty) history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
   } catch (e) {}
   const seg = location.pathname.replace(/\/+$/, '').split('/');
-  const u = (seg[2] || 'muh4rrrem').toLowerCase();
+  const landing = !seg[2];                     // /social-mediathek alone: the pitch and the application
+  const u = (seg[2] || '').toLowerCase();
+  if (landing) document.body.classList.add('landing');
   const KEYNAME = 'pf_key_' + u;
   let data = { profile: {}, photos: [] }, key = null, editing = false, at = 0;
   try { key = localStorage.getItem(KEYNAME); } catch (e) {}
@@ -229,7 +278,7 @@ footer a{color:var(--ink3);text-decoration:none}
     key = k; try { localStorage.setItem(KEYNAME, k); } catch (e) {}
     $('login').classList.remove('on'); startEdit();
   };
-  function startEdit() { editing = true; $('edit').classList.add('on'); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  function startEdit() { showAdmin(); editing = true; $('edit').classList.add('on'); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   $('logout').onclick = () => { editing = false; $('edit').classList.remove('on'); render(); };
   $('saveP').onclick = async () => {
     $('pMsg').textContent = 'Speichere …';
@@ -352,6 +401,106 @@ footer a{color:var(--ink3);text-decoration:none}
     if (!key) { editing = false; $('edit').classList.remove('on'); $('login').classList.add('on');
       $('loginMsg').textContent = 'Bitte mit dem neuen Code anmelden.'; }
     load();
+  };
+
+  /* ---------- story share card: 1080×1920 with the photo, the camera and the link ---------- */
+  $('lbshare').onclick = async () => {
+    const ph = data.photos[at]; if (!ph) return;
+    const btn = $('lbshare'); btn.textContent = '…';
+    try {
+      const img = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = rej; i.src = ph.url + (ph.url.includes('?') ? '&' : '?') + 'card=1'; });
+      const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+      const g = c.getContext('2d');
+      g.fillStyle = '#0A0A0A'; g.fillRect(0, 0, W, H);
+      const pad = 70, boxW = W - 2 * pad, boxH = 1380, sc = Math.min(boxW / img.naturalWidth, boxH / img.naturalHeight);
+      const iw = img.naturalWidth * sc, ih = img.naturalHeight * sc, ix = (W - iw) / 2, iy = 150 + (boxH - ih) / 2;
+      g.drawImage(img, ix, iy, iw, ih);
+      g.fillStyle = '#E0573B'; g.font = '700 30px ui-monospace, monospace'; g.fillText('— SOCIAL-MEDIATHEK', pad, 105);
+      g.fillStyle = '#F3F1EC'; g.font = '800 64px -apple-system, Helvetica, Arial, sans-serif';
+      g.fillText('@' + (data.profile.instagram || u), pad, 1640);
+      g.fillStyle = '#A6A29B'; g.font = '500 38px -apple-system, Helvetica, Arial, sans-serif';
+      g.fillText(ph.cam ? '📷 ' + ph.cam + '  ·  ✓ echt, aus der Kamera' : '✓ echt, aus der Kamera', pad, 1712);
+      g.fillStyle = '#6C6963'; g.font = '600 30px ui-monospace, monospace';
+      g.fillText('architect-dna.ch/social-mediathek/' + u, pad, 1800);
+      const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', 0.92));
+      const file = new File([blob], `${u}-story.jpg`, { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: 'architect-dna.ch/social-mediathek/' + u });
+      } else {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      }
+    } catch (e) {
+      if (!(e && e.name === 'AbortError')) alert('Story-Bild ging gerade nicht.');
+    }
+    btn.textContent = '↗ Story';
+  };
+
+  /* ---------- landing: the application ---------- */
+  if (landing) {
+    let picked = [];
+    $('aPick').onclick = () => $('aFiles').click();
+    $('aFiles').onchange = async () => {
+      const fs = [...($('aFiles').files || [])].slice(0, 3); $('aFiles').value = '';
+      picked = []; $('aMsg').textContent = 'Prüfe Fotos …';
+      const boxes = $('aShots').children;
+      for (let i = 0; i < 3; i++) { boxes[i].style.backgroundImage = ''; boxes[i].textContent = String(i + 1); }
+      for (let i = 0; i < fs.length; i++) {
+        const cam = await exifCam(fs[i]);
+        if (!cam) { boxes[i].textContent = '✗ kein Kamera-Foto'; continue; }
+        const im = await shrink(fs[i], 1400, 0.82);
+        if (Math.max(im.w, im.h) < 1000) { boxes[i].textContent = '✗ zu klein'; continue; }
+        picked.push({ image: im.data, cam });
+        boxes[i].style.backgroundImage = `url(${im.data})`; boxes[i].textContent = '📷 ' + cam;
+      }
+      $('aMsg').textContent = picked.length === 3 ? '3 echte Fotos ✓' : `${picked.length} von 3 gültig – nur Fotos direkt aus der Kamera (kein Screenshot, kein Download, nicht bearbeitet).`;
+    };
+    $('aSend').onclick = async () => {
+      const body = { action: 'apply', name: $('aName').value, wish: $('aWish').value, instagram: $('aIg').value.replace(/^@/, ''),
+        email: $('aMail').value, why: $('aWhy').value, photos: picked };
+      if (!body.wish.trim() || !body.email.trim()) { $('aMsg').textContent = 'Wunsch-Link und E-Mail fehlen noch.'; return; }
+      if (picked.length < 3) { $('aMsg').textContent = 'Bitte 3 echte Kamera-Fotos wählen.'; return; }
+      $('aSend').disabled = true; $('aMsg').textContent = 'Sende …';
+      const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(x => x.json().then(j => ({ ok: x.ok, ...j }))).catch(() => ({ ok: false, error: 'Netz weg' }));
+      $('aSend').disabled = false;
+      const WHY = { 'handle taken': 'Dieser Link ist schon vergeben – wähle einen anderen.', 'too many': 'Zu viele Versuche – später nochmals.',
+        'missing fields': 'Wunsch-Link (mind. 3 Zeichen) und gültige E-Mail angeben.', 'no camera': 'Ein Foto hat keinen Kamera-Nachweis.' };
+      $('aMsg').textContent = r.ok ? 'Danke! Deine Bewerbung ist da. Du bekommst Bescheid per E-Mail.' : (WHY[r.error] || 'Ging nicht: ' + (r.error || 'unbekannt'));
+      if (r.ok) $('apply').querySelectorAll('input,textarea,button').forEach(x => x.disabled = true);
+    };
+    return;
+  }
+
+  /* ---------- admin: review applications ---------- */
+  function showAdmin() { $('adminBox').hidden = u !== 'muh4rrrem'; }
+  $('loadApps').onclick = async () => {
+    $('appsMsg').textContent = 'Lade …';
+    const r = await post({ action: 'applications', key }).catch(() => ({}));
+    const box = $('apps'); box.innerHTML = '';
+    if (!r.ok) { $('appsMsg').textContent = 'Ging nicht.'; return; }
+    $('appsMsg').textContent = r.applications.length ? r.applications.length + ' offen' : 'Keine offenen Bewerbungen.';
+    for (const a of r.applications) {
+      const d = el('div', 'app');
+      d.append(el('div', 'who', `${a.name || '–'} · ${a.wish}`));
+      d.append(el('div', 'msg', `@${a.instagram || '–'} · ${a.email}${a.why ? ' · ' + a.why : ''}`));
+      const sh = el('div', 'shots');
+      for (const s of a.shots || []) { const x = el('div', 'shot', '📷 ' + s.cam); x.style.backgroundImage = `url(${s.url})`; sh.append(x); }
+      d.append(sh);
+      const row = el('div', 'row');
+      const yes = el('button', 'btn rust', 'Aufnehmen'), no = el('button', 'btn ghost', 'Ablehnen'), out = el('span', 'msg');
+      yes.onclick = async () => {
+        const h = (prompt('Link-Name für die Galerie', a.wish) || '').trim(); if (!h) return;
+        const x = await post({ action: 'approve', key, id: a.id, handle: h }).catch(() => ({}));
+        if (!x.ok) { out.textContent = x.error === 'handle taken' ? 'Name vergeben.' : 'Ging nicht.'; return; }
+        out.textContent = '';
+        row.replaceChildren(el('div', 'msg', `✓ Aufgenommen. Schick an ${a.email}:`),
+          el('div', 'who', x.link), el('div', 'who', 'Code: ' + x.code));
+      };
+      no.onclick = async () => { if (!confirm('Bewerbung ablehnen und löschen?')) return; const x = await post({ action: 'reject', key, id: a.id }).catch(() => ({})); if (x.ok) d.remove(); };
+      row.append(yes, no, out); d.append(row);
+      box.append(d);
+    }
   };
 
   load();
