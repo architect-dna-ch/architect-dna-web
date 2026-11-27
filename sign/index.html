@@ -213,7 +213,12 @@ input[type=text]{width:100%;background:var(--card);border:1px solid var(--line);
         const signed = [...new Set(stamps.map(s => s.page))];
         for (const n of signed) {
           const page = doc.getPages()[n], W = page.getWidth(), txt = 'signiert mit architect-dna.ch/sign', size = 6.5;
-          page.drawText(txt, { x: W - font.widthOfTextAtSize(txt, size) - 18, y: 14, size, font, color: rgb(0.55, 0.55, 0.55) });
+          const orange = rgb(0.878, 0.341, 0.231), tw = font.widthOfTextAtSize(txt, size), cube = 8, gap = 3;
+          const x0 = W - tw - cube - gap - 18;
+          // the architect-dna cube (logo.svg, 14×14), scaled to the text height; svg paths draw from their top-left
+          for (const d of ['M7 1L1 4v6l6 3 6-3V4L7 1z', 'M7 1v12M1 4l6 3 6-3'])
+            page.drawSvgPath(d, { x: x0, y: 14 + cube - 1, scale: cube / 14, borderColor: orange, borderWidth: 0.6 });
+          page.drawText(txt, { x: x0 + cube + gap, y: 14, size, font, color: orange });
         }
       }
       const out = await doc.save(), blob = new Blob([out], { type: 'application/pdf' });
